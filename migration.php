@@ -6,7 +6,6 @@
 $magentoDir = require __DIR__ . '/etc/magento_path.php';
 require_once "{$magentoDir}/app/autoload.php";
 use Magento\Framework\App\Bootstrap;
-include __DIR__ . '/src/Migration.php';
 
 $params = [];
 $bootstrap = Bootstrap::create($magentoDir, $params);
