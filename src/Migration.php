@@ -1,6 +1,7 @@
 <?php
 /**
- * @copyright Copyright (c) 2015 X.commerce, Inc. (http://www.magentocommerce.com)
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
  */
 
 namespace Migration;
@@ -36,5 +37,6 @@ class Migration implements \Magento\Framework\AppInterface
      */
     public function catchException(\Magento\Framework\App\Bootstrap $bootstrap, \Exception $exception)
     {
+        return true;
     }
 }

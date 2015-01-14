@@ -4,6 +4,7 @@
  */
 
 namespace Migration\Test;
+
 use Migration\Migration;
 
 class MigrationTest extends \PHPUnit_Framework_TestCase
@@ -36,6 +37,7 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
         $bootstrap = $this->getMock('Magento\Framework\App\Bootstrap', [], [], '', false);
         /** @var \Exception|\PHPUnit_Framework_TestCase $exception */
         $exception = $this->getMock('\Exception', [], [], '', false);
-        $this->migration->catchException($bootstrap, $exception);
+        $result = $this->migration->catchException($bootstrap, $exception);
+        $this->assertTrue($result);
     }
 }
