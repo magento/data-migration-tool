@@ -3,9 +3,7 @@
  * @copyright Copyright (c) 2015 X.commerce, Inc. (http://www.magentocommerce.com)
  */
 
-namespace Migration\Test;
-
-use Migration\Migration;
+namespace Migration;
 
 class MigrationTest extends \PHPUnit_Framework_TestCase
 {
