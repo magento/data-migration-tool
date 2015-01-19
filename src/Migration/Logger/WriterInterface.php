@@ -40,6 +40,7 @@ interface WriterInterface
      * Logging level setter
      *
      * @param string $level
+     * @return $this
      */
     public function setLoggingLevel($level);
 

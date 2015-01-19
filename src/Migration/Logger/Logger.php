@@ -31,6 +31,7 @@ class Logger
 
     /**
      * @param WriterInterface $writer
+     * @return void
      */
     public function addWriter(WriterInterface $writer)
     {
@@ -48,8 +49,9 @@ class Logger
     /**
      * Log some message
      *
-     * @param $message
+     * @param string $message
      * @param string $logLevel
+     * @return void
      */
     public function log($message, $logLevel = self::LOG_LEVEL_INFO)
     {
@@ -64,6 +66,7 @@ class Logger
      * Log message with info level
      *
      * @param string $message
+     * @return void
      */
     public function logInfo($message)
     {
@@ -74,6 +77,7 @@ class Logger
      * Log message with debug level
      *
      * @param string $message
+     * @return void
      */
     public function logDebug($message)
     {
@@ -84,6 +88,7 @@ class Logger
      * Log success message
      *
      * @param string $message
+     * @return void
      */
     public function logSuccess($message)
     {
@@ -96,6 +101,7 @@ class Logger
      * Log error message
      *
      * @param string $message
+     * @return void
      */
     public function logError($message)
     {
@@ -107,7 +113,7 @@ class Logger
     /**
      * Check if log level is correct
      *
-     * @param $logLevel
+     * @param string $logLevel
      * @return bool
      */
     public function isLogLevelValid($logLevel)

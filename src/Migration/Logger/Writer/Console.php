@@ -68,6 +68,7 @@ class Console implements Logger\WriterInterface
     public function setLoggingLevel($level)
     {
         $this->loggingLevel = $level;
+        return $this;
     }
 
     /**
