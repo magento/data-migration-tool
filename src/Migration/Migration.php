@@ -17,7 +17,7 @@ class Migration implements \Magento\Framework\AppInterface
     protected $response;
 
     /**
-     * @var \Migration\App\Shell
+     * @var \Migration\App\ShellFactory
      */
     protected $shellFactory;
 
@@ -29,6 +29,7 @@ class Migration implements \Magento\Framework\AppInterface
     /**
      * @param \Magento\Framework\App\Console\Response $response
      * @param App\ShellFactory $shellFactory
+     * @param string $entryPoint
      */
     public function __construct(
         \Magento\Framework\App\Console\Response $response,

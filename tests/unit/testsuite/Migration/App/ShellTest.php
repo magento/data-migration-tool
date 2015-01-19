@@ -28,10 +28,29 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell = new Shell($filesystem, '');
     }
 
-    public function testRun()
+    /**
+     * @dataProvider runDataProvider
+     * @param array $args
+     * @param string $outputContains
+     */
+    public function testRun($args, $outputContains)
     {
+        $this->shell->setRawArgs($args);
+        ob_start();
         $result = $this->shell->run();
+        $output = ob_get_contents();
+        ob_end_clean();
         $this->assertSame($this->shell, $result);
+        $this->assertContains($outputContains, $output);
+    }
+
+    public function runDataProvider()
+    {
+        return array(
+            array(['--config', 'file/to/config.xml'], 'file/to/config.xml'),
+            array(['--type', 'mapStep'], 'mapStep'),
+            array(['--help'], 'Usage:  php -f')
+        );
     }
 
     public function testGetUsageHelp()
