@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Magento;
+namespace Migration;
 
 /**
  * Launches the application
@@ -17,7 +17,7 @@ class Migration implements \Magento\Framework\AppInterface
     protected $response;
 
     /**
-     * @var \Migration\Magento\App\Shell
+     * @var \Migration\App\Shell
      */
     protected $shellFactory;
 
@@ -32,7 +32,7 @@ class Migration implements \Magento\Framework\AppInterface
      */
     public function __construct(
         \Magento\Framework\App\Console\Response $response,
-        \Migration\Magento\App\ShellFactory $shellFactory,
+        \Migration\App\ShellFactory $shellFactory,
         $entryPoint
     ) {
         $this->shellFactory = $shellFactory;

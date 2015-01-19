@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Magento;
+namespace Migration;
 
 class MigrationTest extends \PHPUnit_Framework_TestCase
 {
@@ -14,7 +14,7 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
     protected $migration;
 
     /**
-     * @var \Migration\Magento\App\ShellFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ShellFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $shellFactory;
 
@@ -26,13 +26,13 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->response = $this->getMock('\Magento\Framework\App\Console\Response', [], [], '', false);
-        $this->shellFactory = $this->getMock('\Migration\Magento\App\ShellFactory', [], [], '', false);
+        $this->shellFactory = $this->getMock('\Migration\App\ShellFactory', ['create'], [], '', false);
         $this->migration = new Migration($this->response, $this->shellFactory, basename(__FILE__));
     }
 
     public function testLaunch()
     {
-        $shell = $this->getMock('\Migration\Magento\App\Shell', [], [], '', false);
+        $shell = $this->getMock('\Migration\App\Shell', [], [], '', false);
         $shell->expects($this->any())
             ->method('run');
         $this->shellFactory->expects($this->any())

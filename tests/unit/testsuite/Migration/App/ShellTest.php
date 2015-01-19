@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Magento\App;
+namespace Migration\App;
 
 class ShellTest extends \PHPUnit_Framework_TestCase
 {

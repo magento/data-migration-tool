@@ -10,6 +10,6 @@ use Magento\Framework\App\Bootstrap;
 
 $params = [];
 $bootstrap = Bootstrap::create($magentoDir, $params);
-/** @var Migration\Magento\Migration $application */
-$application = $bootstrap->createApplication('Migration\Magento\Migration', ['entryPoint' => basename(__FILE__)]);
+/** @var Migration\Migration $application */
+$application = $bootstrap->createApplication('Migration\Migration', ['entryPoint' => basename(__FILE__)]);
 $bootstrap->run($application);
