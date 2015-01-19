@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration;
+namespace Migration\Magento;
 
 /**
  * Launches the application
@@ -17,11 +17,27 @@ class Migration implements \Magento\Framework\AppInterface
     protected $response;
 
     /**
-     * @param \Magento\Framework\App\Console\Response $response
+     * @var \Migration\Magento\App\Shell
      */
-    public function __construct(\Magento\Framework\App\Console\Response $response)
-    {
+    protected $shellFactory;
+
+    /**
+     * @var string
+     */
+    protected $entryPoint;
+
+    /**
+     * @param \Magento\Framework\App\Console\Response $response
+     * @param App\ShellFactory $shellFactory
+     */
+    public function __construct(
+        \Magento\Framework\App\Console\Response $response,
+        \Migration\Magento\App\ShellFactory $shellFactory,
+        $entryPoint
+    ) {
+        $this->shellFactory = $shellFactory;
         $this->response = $response;
+        $this->entryPoint = $entryPoint;
     }
 
     /**
@@ -29,6 +45,8 @@ class Migration implements \Magento\Framework\AppInterface
      */
     public function launch()
     {
+        $shell = $this->shellFactory->create(['entryPoint' => $this->entryPoint]);
+        $shell->run();
         return $this->response;
     }
 
@@ -37,6 +55,6 @@ class Migration implements \Magento\Framework\AppInterface
      */
     public function catchException(\Magento\Framework\App\Bootstrap $bootstrap, \Exception $exception)
     {
-        return true;
+        return false;
     }
 }
