@@ -59,6 +59,9 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->logger->log($message, 'INFO');
     }
 
+    /**
+     * @return array
+     */
     public function logInfoDataProvider()
     {
         return [
@@ -86,6 +89,9 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->logger->logInfo($message);
     }
 
+    /**
+     * @return array
+     */
     public function logDebugDataProvider()
     {
         return [
@@ -133,6 +139,9 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $this->logger->logError($message);
     }
 
+    /**
+     * @return array
+     */
     public function logLevelValidationDataProvider()
     {
         return [

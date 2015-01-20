@@ -50,7 +50,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
             if ($this->logger->isLogLevelValid($verbose)) {
                 $this->consoleLogWriter->setLoggingLevel($verbose);
             } else {
-                $this->logger->logError("Invalid 'verbose' param provided!");
+                $this->logger->logError("Invalid verbosity level provided!");
                 return;
             }
         }
