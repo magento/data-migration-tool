@@ -13,4 +13,14 @@
     <testsuite name="Migration tool Unit Tests">
         <directory suffix="Test.php">testsuite</directory>
     </testsuite>
+<!--
+    <filter>
+        <whitelist addUncoveredFilesFromWhiteList="true">
+            <directory suffix="php">../../src/Migration/</directory>
+        </whitelist>
+    </filter>
+    <logging>
+        <log type="coverage-html" target="tmp/coverage" charset="UTF-8" yui="true" highlight="true"/>
+    </logging>
+-->
 </phpunit>

@@ -8,14 +8,21 @@ namespace Migration\App;
 class Shell extends \Magento\Framework\App\AbstractShell
 {
     /**
+     * @var \Migration\Config
+     */
+    protected $config;
+
+    /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param string $entryPoint
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
-        $entryPoint
+        $entryPoint,
+        \Migration\Config $config
     ) {
         parent::__construct($filesystem, $entryPoint);
+        $this->config = $config;
     }
 
     /**
@@ -28,7 +35,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
         }
 
         if ($this->getArg('config')) {
-            \Zend_Debug::dump($this->getArg('config'), 'config');
+            $this->config->init($this->getArg('config'));
         }
         if ($this->getArg('type')) {
             \Zend_Debug::dump($this->getArg('type'), 'type');
