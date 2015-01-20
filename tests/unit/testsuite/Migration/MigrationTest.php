@@ -1,6 +1,7 @@
 <?php
 /**
- * @copyright Copyright (c) 2015 X.commerce, Inc. (http://www.magentocommerce.com)
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
  */
 
 namespace Migration;
@@ -13,18 +14,30 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
     protected $migration;
 
     /**
+     * @var \Migration\App\ShellFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $shellFactory;
+
+    /**
      * @var \Magento\Framework\App\Console\Response|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $response;
 
     protected function setUp()
     {
-        $this->response = $this->getMock('Magento\Framework\App\Console\Response', [], [], '', false);
-        $this->migration = new Migration($this->response);
+        $this->response = $this->getMock('\Magento\Framework\App\Console\Response', [], [], '', false);
+        $this->shellFactory = $this->getMock('\Migration\App\ShellFactory', ['create'], [], '', false);
+        $this->migration = new Migration($this->response, $this->shellFactory, basename(__FILE__));
     }
 
     public function testLaunch()
     {
+        $shell = $this->getMock('\Migration\App\Shell', [], [], '', false);
+        $shell->expects($this->any())
+            ->method('run');
+        $this->shellFactory->expects($this->any())
+            ->method('create')
+            ->will($this->returnValue($shell));
         $result = $this->migration->launch();
         $this->assertEquals($this->response, $result);
     }
@@ -36,6 +49,6 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
         /** @var \Exception|\PHPUnit_Framework_TestCase $exception */
         $exception = $this->getMock('\Exception', [], [], '', false);
         $result = $this->migration->catchException($bootstrap, $exception);
-        $this->assertTrue($result);
+        $this->assertFalse($result);
     }
 }
