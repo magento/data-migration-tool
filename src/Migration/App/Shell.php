@@ -18,6 +18,11 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $consoleLogWriter;
 
     /**
+     * @var \Migration\Config
+     */
+    protected $config;
+
+    /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Logger\Writer\Console $consoleWriter
@@ -26,6 +31,8 @@ class Shell extends \Magento\Framework\App\AbstractShell
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
+        $entryPoint,
+        \Migration\Config $config,
         \Migration\Logger\Logger $logger,
         \Migration\Logger\Writer\Console $consoleWriter,
         $entryPoint
@@ -33,6 +40,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
         $this->logger = $logger;
         $this->consoleLogWriter = $consoleWriter;
         parent::__construct($filesystem, $entryPoint);
+        $this->config = $config;
     }
 
     /**
@@ -57,6 +65,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
 
         if ($this->getArg('config')) {
             $this->logger->logInfo($this->getArg('config'));
+            $this->config->init($this->getArg('config'));
         }
         if ($this->getArg('type')) {
             $this->logger->logInfo($this->getArg('type'));
