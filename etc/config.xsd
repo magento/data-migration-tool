@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @copyright Copyright (c) 2014 X.commerce, Inc. (http://www.magentocommerce.com)
+ */
+-->
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+    <xs:annotation>
+        <xs:documentation>Migration Tool Configuration</xs:documentation>
+    </xs:annotation>
+
+    <xs:element name="config" type="configType"/>
+
+    <xs:complexType name="configType">
+        <xs:annotation>
+            <xs:documentation>Configuration root node</xs:documentation>
+        </xs:annotation>
+        <xs:all>
+            <xs:element name="steps" type="stepsType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="options" type="optionsType" maxOccurs="1" minOccurs="1"/>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="stepsType">
+        <xs:annotation>
+            <xs:documentation>Definition of steps.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="step" type="stepType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="stepType">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[a-zA-Z_\\\\]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="sourceType">
+        <xs:annotation>
+            <xs:documentation>Definition data source.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="database" type="resourceTypeDatabase"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="destinationType">
+        <xs:annotation>
+            <xs:documentation>Definition of data destination.</xs:documentation>
+        </xs:annotation>
+        <xs:choice>
+            <xs:element name="database" type="resourceTypeDatabase"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="resourceTypeDatabase">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="host" type="xs:string" use="required"/>
+        <xs:attribute name="user" type="xs:string" use="required"/>
+        <xs:attribute name="password" type="xs:string" use="optional"/>
+    </xs:complexType>
+
+    <xs:simpleType name="resourceType">
+        <xs:restriction base="xs:string">
+            <xs:enumeration value="database"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="optionsType">
+        <xs:annotation>
+            <xs:documentation>Definition of options.</xs:documentation>
+        </xs:annotation>
+        <xs:sequence>
+            <xs:element name="map_file" type="xmlFile"/>
+            <xs:element name="settings_map_file" type="xmlFile" />
+            <xs:element name="bulk_size" type="xs:int"/>
+            <xs:any minOccurs="0" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:simpleType name="xmlFile">
+        <xs:restriction base="xs:string">
+            <xs:pattern value="[-A-Za-z0-9\._]+\.xml"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>

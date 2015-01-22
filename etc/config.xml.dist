@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * @copyright Copyright (c) 2014 X.commerce, Inc. (http://www.magentocommerce.com)
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
+    <steps />
+    <source>
+        <database host="localhost" name="magento1" user="root"/>
+    </source>
+    <destination>
+        <database host="localhost" name="magento2" user="root"/>
+    </destination>
+    <options>
+        <map_file>map-file.xml</map_file>
+        <settings_map_file>settings-map-file.xml</settings_map_file>
+        <bulk_size>100</bulk_size>
+    </options>
+</config>
