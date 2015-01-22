@@ -37,7 +37,8 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             ->willReturn($read);
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
         $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);;
-        $this->shell = new Shell($this->filesystem, $this->logger, $this->consoleLogWriter, '');
+        $config = $this->getMock('\Migration\Config', [], [], '', false);
+        $this->shell = new Shell($this->filesystem, $config, $this->logger, $this->consoleLogWriter, '');
     }
 
     /**
@@ -56,7 +57,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     public function runDataProvider()
     {
         return array(
-            array(['--config', 'file/to/config.xml'], 'file/to/config.xml'),
+            array(['--config', 'file/to/config.xml'], 'Loaded custom config file: file/to/config.xml'),
             array(['--type', 'mapStep'], 'mapStep')
         );
     }

@@ -21,8 +21,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->config->init(realpath(__DIR__ . '/_files/test-config.xml'));
     }
 
-    public function testDefaultConfigValid()
+    public function testDefaultConfigFile()
     {
+        $defaultConfigFile = realpath(__DIR__ . '/../../../..') . '/etc/config.xml';
+        if (!file_exists($defaultConfigFile)) {
+            $this->setExpectedException('Exception', 'Invalid config filename: ' . $defaultConfigFile);
+        }
+
         $config = new Config();
         $config->init();
         $this->assertNotEmpty($config->getOption('map_file'));
@@ -30,7 +35,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidConfigFile()
     {
-        $this->setExpectedException('Exception', 'File non-existent.xml doesn\'t exists');
+        $this->setExpectedException('Exception', 'Invalid config filename: non-existent.xml');
         $config = new Config();
         $config->init('non-existent.xml');
     }

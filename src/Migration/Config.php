@@ -24,15 +24,11 @@ class Config
      */
     protected $options;
 
-    public function __construct()
-    {
-        $this->init();
-    }
-
     /**
      * Init configuration
      *
      * @param string $configFile
+     * @return $this
      * @throws \Exception
      */
     public function init($configFile = null)
@@ -41,12 +37,11 @@ class Config
             $configFile = $this->getConfigDirectoryPath() . self::CONFIGURATION_FILE;
         }
 
-        if (file_exists($configFile)) {
-            $xml = file_get_contents($configFile);
-        } else {
-            throw new \Exception('File '. $configFile .' doesn\'t exists');
+        if (empty($configFile) || !file_exists($configFile)) {
+            throw new \Exception('Invalid config filename: '. $configFile);
         }
 
+        $xml = file_get_contents($configFile);
         $document = new \Magento\Framework\Config\Dom($xml);
 
         if (!$document->validate($this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA)) {
@@ -54,6 +49,7 @@ class Config
         }
 
         $this->config = new \DOMXPath($document->getDom());
+        return $this;
     }
 
     /**
