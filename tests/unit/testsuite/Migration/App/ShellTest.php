@@ -14,18 +14,30 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $shell;
 
     /**
-     * @var \Magento\Framework\App\Console\Response|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $response;
+    protected $filesystem;
+
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
+    /**
+     * @var \Migration\Logger\Writer\Console|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $consoleLogWriter;
 
     protected function setUp()
     {
-        $filesystem = $this->getMock('\Magento\Framework\Filesystem', [], [], '', false);
+        $this->filesystem = $this->getMock('\Magento\Framework\Filesystem', [], [], '', false);
         $read = $this->getMock('\Magento\Framework\Filesystem\Directory\ReadInterface', [], [], '', false);
-        $filesystem->expects($this->any())
+        $this->filesystem->expects($this->any())
             ->method('getDirectoryRead')
             ->willReturn($read);
-        $this->shell = new Shell($filesystem, '');
+        $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
+        $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);;
+        $this->shell = new Shell($this->filesystem, $this->logger, $this->consoleLogWriter, '');
     }
 
     /**
@@ -36,21 +48,47 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     public function testRun($args, $outputContains)
     {
         $this->shell->setRawArgs($args);
-        ob_start();
+        $this->logger->expects($this->once())->method('logInfo')->with($outputContains);
         $result = $this->shell->run();
-        $output = ob_get_contents();
-        ob_end_clean();
         $this->assertSame($this->shell, $result);
-        $this->assertContains($outputContains, $output);
     }
 
     public function runDataProvider()
     {
         return array(
             array(['--config', 'file/to/config.xml'], 'file/to/config.xml'),
-            array(['--type', 'mapStep'], 'mapStep'),
-            array(['--help'], 'Usage:  php -f')
+            array(['--type', 'mapStep'], 'mapStep')
         );
+    }
+
+    public function testRunVerboseValid()
+    {
+        $level = 'DEBUG';
+        $this->shell->setRawArgs(['--verbose', $level]);
+        $this->logger->expects($this->once())->method('isLogLevelValid')->with($level)->will($this->returnValue(true));
+        $this->consoleLogWriter->expects($this->once())->method('setLoggingLevel')->with($level);
+        $this->shell->run();
+    }
+
+    public function testRunVerboseInvalid()
+    {
+        $level = 'DUMMY';
+        $this->shell->setRawArgs(['--verbose', $level]);
+        $this->logger->expects($this->once())->method('isLogLevelValid')->with($level)->will($this->returnValue(false));
+        $this->consoleLogWriter->expects($this->never())->method('setLoggingLevel');
+        $this->logger->expects($this->once())->method('logError');
+        $this->shell->run();
+    }
+
+    public function testRunShowHelp()
+    {
+        $this->shell->setRawArgs(['help']);
+        ob_start();
+        $result = $this->shell->run();
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertSame($this->shell, $result);
+        $this->assertContains('Usage:  php -f', $output);
     }
 
     public function testGetUsageHelp()
