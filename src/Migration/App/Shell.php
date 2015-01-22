@@ -70,7 +70,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
             $this->logger->logInfo('Loaded custom config file: ' . $this->getArg('config'));
             $this->config->init($this->getArg('config'));
         } else {
-            $this->logger->logInfo('Loaded default config file: ' . $this->getArg('config'));
+            $this->logger->logInfo('Loaded default config file');
             $this->config->init();
         }
 
