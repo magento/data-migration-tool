@@ -53,7 +53,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->once())
             ->method('getDestination')
             ->will($this->returnValue($config));
-        $this->adapter = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\Mysql', ['insert'], [], '', false);
+        $this->adapter = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\Mysql', ['insert', 'query'], [], '', false);
         $this->adapterFactory = $this->getMock('\Migration\Resource\AdapterFactory', ['create'], [], '', false);
         $this->adapterFactory->expects($this->once())
             ->method('create')
@@ -64,13 +64,13 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
 
     public function testSave()
     {
-        $data = ['data1', 'data2'];
+        $data = [['data1' => 'value']];
         $resourceName = 'core_config_data';
-        $this->adapter->expects($this->once())
+        $this->adapter->expects($this->any())
             ->method('insert')
-            ->with($resourceName, $data)
-            ->will($this->returnValue(2));
+            ->with($resourceName, ['data1' => 'value'])
+            ->will($this->returnSelf());
         $this->resourceDestination->setResourceUnitName($resourceName);
-        $this->assertEquals(2, $this->resourceDestination->save($data));
+        $this->resourceDestination->save($data);
     }
 }

@@ -11,3 +11,4 @@ $vendorDir = require $magentoDir . '/app/etc/vendor_path.php';
 $vendorAutoload = require $magentoDir . "/{$vendorDir}/autoload.php";
 $testsBaseDir = "$magentoDir/$vendorDir/magento/migration-tool/tests/integration";
 $vendorAutoload->add('Migration\\Test\\', "{$testsBaseDir}/testsuite/Migration");
+$vendorAutoload->addPsr4('Migration\\TestFramework\\', "{$testsBaseDir}/framework");

@@ -44,6 +44,7 @@ abstract class AbstractResource
     ) {
         $config['config'] = $this->getResourceConfig($configReader);
         $this->resourceAdapter = $adapterFactory->create($config);
+        $this->resourceAdapter->query('SET FOREIGN_KEY_CHECKS=0;');
         $this->bulkSize = $configReader->getOption('bulk_size');
     }
 

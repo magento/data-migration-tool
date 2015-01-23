@@ -10,7 +10,7 @@
          colors="true"
          bootstrap="./framework/bootstrap.php"
 >
-    <testsuite name="Migration tool Unit Tests">
+    <testsuite name="Migration tool Integration Tests">
         <directory suffix="Test.php">testsuite</directory>
     </testsuite>
     <php>
