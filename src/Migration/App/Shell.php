@@ -5,8 +5,16 @@
  */
 namespace Migration\App;
 
+/**
+ * Class Shell
+ */
 class Shell extends \Magento\Framework\App\AbstractShell
 {
+    /**
+     * @var \Migration\Config
+     */
+    protected $config;
+
     /**
      * @var \Migration\Logger\Logger
      */
@@ -19,6 +27,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
 
     /**
      * @param \Magento\Framework\Filesystem $filesystem
+     * @param \Migration\Config $config
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Logger\Writer\Console $consoleWriter
      * @param string $entryPoint
@@ -26,6 +35,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
+        \Migration\Config $config,
         \Migration\Logger\Logger $logger,
         \Migration\Logger\Writer\Console $consoleWriter,
         $entryPoint
@@ -33,6 +43,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
         $this->logger = $logger;
         $this->consoleLogWriter = $consoleWriter;
         parent::__construct($filesystem, $entryPoint);
+        $this->config = $config;
     }
 
     /**
@@ -56,8 +67,13 @@ class Shell extends \Magento\Framework\App\AbstractShell
         }
 
         if ($this->getArg('config')) {
-            $this->logger->logInfo($this->getArg('config'));
+            $this->logger->logInfo('Loaded custom config file: ' . $this->getArg('config'));
+            $this->config->init($this->getArg('config'));
+        } else {
+            $this->logger->logInfo('Loaded default config file');
+            $this->config->init();
         }
+
         if ($this->getArg('type')) {
             $this->logger->logInfo($this->getArg('type'));
         }
