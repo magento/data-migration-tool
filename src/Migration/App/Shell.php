@@ -5,16 +5,10 @@
  */
 namespace Migration\App;
 
-/**
- * Class Shell
- */
+use Migration\Steps\StepInterface;
+
 class Shell extends \Magento\Framework\App\AbstractShell
 {
-    /**
-     * @var \Migration\Config
-     */
-    protected $config;
-
     /**
      * @var \Migration\Logger\Logger
      */
@@ -26,22 +20,35 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $consoleLogWriter;
 
     /**
+     * @var \Migration\Steps\StepFactory
+     */
+    protected $stepFactory;
+
+    /**
+     * @var \Migration\Config
+     */
+    protected $config;
+
+    /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Config $config
      * @param \Migration\Logger\Logger $logger
+     * @param \Migration\Steps\StepFactory $stepFactory
      * @param \Migration\Logger\Writer\Console $consoleWriter
-     * @param string $entryPoint
+     * @param $entryPoint
      * @throws \Exception
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
         \Migration\Config $config,
         \Migration\Logger\Logger $logger,
+        \Migration\Steps\StepFactory $stepFactory,
         \Migration\Logger\Writer\Console $consoleWriter,
         $entryPoint
     ) {
         $this->logger = $logger;
         $this->consoleLogWriter = $consoleWriter;
+        $this->stepFactory = $stepFactory;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
     }
@@ -67,20 +74,17 @@ class Shell extends \Magento\Framework\App\AbstractShell
         }
 
         if ($this->getArg('config')) {
-            $this->logger->logInfo('Loaded custom config file: ' . $this->getArg('config'));
+            $this->logger->logInfo($this->getArg('config'));
             $this->config->init($this->getArg('config'));
-        } else {
-            $this->logger->logInfo('Loaded default config file');
-            $this->config->init();
         }
-
         if ($this->getArg('type')) {
             $this->logger->logInfo($this->getArg('type'));
         }
 
-        /**
-         * @TODO: call Step Manager
-         */
+        /** @var StepInterface $step */
+        foreach ($this->stepFactory->getSteps() as $step) {
+            $step->run();
+        }
 
         return $this;
     }
