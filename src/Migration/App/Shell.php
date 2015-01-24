@@ -7,6 +7,9 @@ namespace Migration\App;
 
 use Migration\Steps\StepInterface;
 
+/**
+ * Class Shell
+ */
 class Shell extends \Magento\Framework\App\AbstractShell
 {
     /**
@@ -74,9 +77,13 @@ class Shell extends \Magento\Framework\App\AbstractShell
         }
 
         if ($this->getArg('config')) {
-            $this->logger->logInfo($this->getArg('config'));
+            $this->logger->logInfo('Loaded custom config file: ' . $this->getArg('config'));
             $this->config->init($this->getArg('config'));
+        } else {
+            $this->logger->logInfo('Loaded default config file');
+            $this->config->init();
         }
+
         if ($this->getArg('type')) {
             $this->logger->logInfo($this->getArg('type'));
         }
