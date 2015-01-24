@@ -56,27 +56,16 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    /**
-     * @dataProvider runDataProvider
-     * @param array $args
-     * @param string $outputContains
-     */
-    public function testRun($args, $outputContains)
+    public function testRun()
     {
+        $args = ['--config', 'file/to/config.xml', '--type', 'mapStep'];
         $this->shell->setRawArgs($args);
-        $this->logger->expects($this->once())->method('logInfo')->with($outputContains);
+        $this->logger->expects($this->at(1))->method('logInfo')->with('Loaded custom config file: file/to/config.xml');
+        $this->logger->expects($this->at(2))->method('logInfo')->with('mapStep');
         $step = $this->getMock('\Migration\Steps\StepInterface');
         $this->stepFactory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $result = $this->shell->run();
         $this->assertSame($this->shell, $result);
-    }
-
-    public function runDataProvider()
-    {
-        return array(
-            array(['--config', 'file/to/config.xml'], 'file/to/config.xml'),
-            array(['--type', 'mapStep'], 'mapStep')
-        );
     }
 
     public function testRunVerboseValid()
