@@ -52,7 +52,7 @@ class DocumentIterator implements DocumentIteratorInterface
     {
         return $this->documentFactory->create([
             'documentProvider' => $this->documentProvider,
-            'recordsIterator' => $this->recordIterator,
+            'recordIterator' => $this->recordIterator,
             'documentName' => $this->items[$this->position]
         ]);
     }

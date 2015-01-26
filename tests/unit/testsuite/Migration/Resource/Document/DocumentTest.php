@@ -10,7 +10,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\Resource\Record\RecordIteratorFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $recordsIteratorFactory;
+    protected $recordIteratorFactory;
 
     /**
      * @var \Migration\Resource\Document\ProviderInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -30,7 +30,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->recordsIteratorFactory = $this->getMock(
+        $this->recordIteratorFactory = $this->getMock(
             '\Migration\Resource\Record\RecordIteratorFactory',
             array(),
             array(),
@@ -39,28 +39,28 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         );
         $this->document = new \Migration\Resource\Document\Document(
             $this->documentProvider,
-            $this->recordsIteratorFactory,
+            $this->recordIteratorFactory,
             'test_document'
         );
     }
 
-    public function testGetRecordsIterator()
+    public function testGetRecordIterator()
     {
-        $recordsIterator = $this->getMock(
+        $recordIterator = $this->getMock(
             '\Migration\Resource\Record\RecordIterator',
             array(),
             array(),
             '',
             false
         );
-        $this->recordsIteratorFactory->expects($this->atLeastOnce())
+        $this->recordIteratorFactory->expects($this->atLeastOnce())
             ->method('create')
             ->with($this->equalTo(array(
                 'documentName' => 'test_document',
             )))
-            ->will($this->returnValue($recordsIterator));
+            ->will($this->returnValue($recordIterator));
 
-        $this->assertSame($recordsIterator, $this->document->getRecordsIterator());
+        $this->assertSame($recordIterator, $this->document->getRecordIterator());
     }
 
     public function testGetName()

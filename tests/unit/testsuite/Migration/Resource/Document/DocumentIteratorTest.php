@@ -63,14 +63,6 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $this->documentProvider->expects($this->any())
             ->method('getDocumentList')
             ->will($this->returnValue(['doc1', 'doc2', 'doc3', 'doc4', 'doc5']));
-        $this->documentFactory->expects($this->any())
-            ->method('create')
-            ->with($this->equalTo(array(
-                'documentProvider' => $this->documentProvider,
-                'recordsIterator' => $this->recordIterator,
-                'documentName' => 'doc1'
-            )))
-            ->will($this->returnValue($this->document));
 
         $this->documentIterator = new \Migration\Resource\Document\DocumentIterator(
             $this->documentFactory,
@@ -82,6 +74,14 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
 
     public function testCurrent()
     {
+        $this->documentFactory->expects($this->any())
+            ->method('create')
+            ->with($this->equalTo(array(
+                'documentProvider' => $this->documentProvider,
+                'recordIterator' => $this->recordIterator,
+                'documentName' => 'doc1'
+            )))
+            ->will($this->returnValue($this->document));
         $this->assertSame($this->document, $this->documentIterator->current());
     }
 
@@ -147,11 +147,22 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
     public function testIterator()
     {
         $result = '';
+        $this->documentFactory->expects($this->any())
+            ->method('create')
+            ->willReturnCallback(function($data){
+                $this->assertSame($this->documentProvider, $data['documentProvider']);
+                $this->assertSame($this->recordIterator, $data['recordIterator']);
+                $document = $this->getMock('\Migration\Resource\Document\Document', array(), array(), '', false);
+                $document->expects($this->any())
+                    ->method('getName')
+                    ->will($this->returnValue($data['documentName']));
+                return $document;
+            });
 
         foreach($this->documentIterator as $key => $value) {
             $result .= ' ' . $key . '=>' . $value->getName();
         }
 
-        $this->assertEquals(' 0=>item1 1=>item2 2=>item3 3=>item4 4=>item5', $result);
+        $this->assertEquals(' 0=>doc1 1=>doc2 2=>doc3 3=>doc4 4=>doc5', $result);
     }
 }

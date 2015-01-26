@@ -24,23 +24,23 @@ class Document implements DocumentInterface
 
     /**
      * @param ProviderInterface $documentProvider
-     * @param \Migration\Resource\Record\RecordIteratorFactory $recordsIteratorFactory
+     * @param \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory
      * @param string $documentName
      */
     public function __construct(
         ProviderInterface $documentProvider,
-        \Migration\Resource\Record\RecordIteratorFactory $recordsIteratorFactory,
+        \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory,
         $documentName
     ) {
         $this->documentProvider = $documentProvider;
-        $this->recordIteratorFactory = $recordsIteratorFactory;
+        $this->recordIteratorFactory = $recordIteratorFactory;
         $this->documentName = $documentName;
     }
 
     /**
      * @inheritdoc
      */
-    public function getRecordsIterator()
+    public function getRecordIterator()
     {
         return $this->recordIteratorFactory->create(array(
             'documentName' => $this->getName(),

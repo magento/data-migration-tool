@@ -10,7 +10,7 @@ interface DocumentInterface
     /**
      * @return \Migration\Resource\Record\RecordIteratorInterface
      */
-    public function getRecordsIterator();
+    public function getRecordIterator();
 
     /**
      * Get Document name
