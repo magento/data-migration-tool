@@ -17,7 +17,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Resource\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $adapter;
 
@@ -30,6 +30,11 @@ class SourceTest extends \PHPUnit_Framework_TestCase
      * @var \Migration\Resource\Source
      */
     protected $resourceSource;
+
+    /**
+     * @var \Migration\Resource\Document\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentFactory;
 
     /**
      * @var int
@@ -51,7 +56,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             'password' => 'upass',
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getSource'], [], '', false);
-        $this->config->expects($this->once())
+        $this->config->expects($this->any())
             ->method('getOption')
             ->with('bulk_size')
             ->will($this->returnValue($this->bulkSize));
@@ -59,7 +64,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->method('getSource')
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
-            '\Magento\Framework\DB\Adapter\Pdo\Mysql',
+            '\Migration\Resource\Adapter\Mysql',
             ['select', 'fetchAll', 'query'],
             [],
             '',
@@ -70,33 +75,16 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->resourceSource = new \Migration\Resource\Source($this->adapterFactory, $this->config);
+        $this->documentFactory = $this->getMock('\Migration\Resource\Document\DocumentFactory', [], [], '', false);
     }
 
-    public function testGetNextBunch()
+    public function testCreate()
     {
-        $resourceName = 'core_config_data';
-        $position = 5;
-        $data = ['key' => 'value'];
-        $select = $this->getMock('\Magento\Framework\DB\Select', ['from', 'limit'], [], '', false);
-        $select->expects($this->once())
-            ->method('from')
-            ->with($resourceName, '*')
-            ->will($this->returnSelf());
-        $select->expects($this->once())
-            ->method('limit')
-            ->with($this->bulkSize, $position)
-            ->will($this->returnSelf());
-        $this->adapter->expects($this->once())
-            ->method('select')
-            ->will($this->returnValue($select));
-        $this->adapter->expects($this->once())
-            ->method('fetchAll')
-            ->with($select)
-            ->will($this->returnValue($data));
-        $this->resourceSource->setPosition($position);
-        $this->resourceSource->setResourceUnitName($resourceName);
-        $this->assertEquals($data, $this->resourceSource->getNextBunch());
-        $this->assertEquals($this->bulkSize + $position, $this->resourceSource->getPosition());
+        $this->resourceSource = new \Migration\Resource\Source(
+            $this->adapterFactory,
+            $this->config,
+            $this->documentFactory
+        );
+        $this->assertInstanceOf('\Migration\Resource\Source', $this->resourceSource);
     }
 }

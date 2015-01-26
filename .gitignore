@@ -9,3 +9,6 @@ atlassian*
 /.idea
 /.gitattributes
 /node_modules
+/etc/config.xml
+/etc/magento_path.php
+/tests/unit/tmp

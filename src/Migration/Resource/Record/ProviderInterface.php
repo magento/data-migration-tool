@@ -10,22 +10,18 @@ interface ProviderInterface
     /**
      * Get Page size
      *
+     * @param string $documentName
      * @return int
      */
-    public function getPageSize();
-
-    /**
-     * Get Page size
-     *
-     * @return int
-     */
-    public function getRecordsCount();
+    public function getRecordsCount($documentName);
 
     /**
      * Load Page
      *
-     * @param $pageNumber
+     * @param string $documentName
+     * @param int $pageNumber
+     * @param int $pageSize
      * @return array
      */
-    public function loadPage($pageNumber);
+    public function loadPage($documentName, $pageNumber, $pageSize);
 }

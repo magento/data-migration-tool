@@ -15,7 +15,7 @@ class AdapterFactory
     /**
      * @var string
      */
-    protected $defaultClassName = '\Magento\Framework\DB\Adapter\Pdo\Mysql';
+    protected $defaultClassName = '\Migration\Resource\Adapter\Mysql';
 
     /**
      * @var \Migration\Config
@@ -46,7 +46,7 @@ class AdapterFactory
      * Create class instance with specified parameters
      *
      * @param array $data
-     * @return \Magento\Framework\DB\Adapter\AdapterInterface
+     * @return AdapterInterface
      */
     public function create(array $data = [])
     {

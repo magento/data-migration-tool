@@ -12,91 +12,69 @@ namespace Migration\Resource;
 abstract class AbstractResource
 {
     /**
-     * @var \Magento\Framework\DB\Adapter\AdapterInterface
+     * @var AdapterInterface
      */
-    protected $resourceAdapter;
+    protected $adapter;
 
     /**
-     * @var int
+     * @var \Migration\Config
      */
-    protected $position = 0;
+    protected $configReader;
 
     /**
-     * @var string
+     * @var \Migration\Resource\Document\DocumentFactory
      */
-    protected $resourceUnitName;
+    protected $documentFactory;
 
     /**
-     * @var int
-     */
-    protected $bulkSize = 0;
-
-    /**
-     * Constructor
-     *
-     * @param AdapterFactory $adapterFactory
+     * @param \Migration\Resource\AdapterFactory $adapterFactory
      * @param \Migration\Config $configReader
+     * @param Document\DocumentFactory $documentFactory
      */
     public function __construct(
         \Migration\Resource\AdapterFactory $adapterFactory,
-        \Migration\Config $configReader
-
+        \Migration\Config $configReader,
+        \Migration\Resource\Document\DocumentFactory $documentFactory
     ) {
-        $config['config'] = $this->getResourceConfig($configReader);
-        $this->resourceAdapter = $adapterFactory->create($config);
-        $this->resourceAdapter->query('SET FOREIGN_KEY_CHECKS=0;');
-        $this->bulkSize = $configReader->getOption('bulk_size');
+        $this->configReader = $configReader;
+        $this->adapter = $adapterFactory->create(['config' => $this->getResourceConfig()]);
+        $this->documentFactory = $documentFactory;
     }
 
     /**
-     * Returns definition of resource object
-     *
-     * @return array
+     * @param $documentName
+     * @return \Migration\Resource\Document\Document
      */
-    public function getDataDefinition()
+    public function getDocument($documentName)
     {
-        return $this->resourceAdapter->describeTable($this->resourceUnitName);
+        return $this->documentFactory->create(['documentName' => $documentName]);
     }
 
     /**
-     * Setter for current position
-     *
-     * @param int $position
-     * @return $this
+     * @param string $documentName
+     * @return Record\RecordIteratorInterface
      */
-    public function setPosition($position)
+    public function getRecords($documentName)
     {
-        $this->position = $position;
-        return $this;
+        $records = $this->getDocument($documentName)->getRecordIterator();
+        $records->setRecordProvider($this->adapter)
+            ->setPageSize($this->configReader->getOption('bulk_size'));
+        return $records;
     }
 
     /**
-     * Getter for current position
-     *
+     * @param string $documentName
      * @return int
      */
-    public function getPosition()
+    public function getRecordsCount($documentName)
     {
-        return $this->position;
-    }
-
-    /**
-     * Setter for resource unit name
-     *
-     * @param string $resourceName
-     * @return $this
-     */
-    public function setResourceUnitName($resourceName)
-    {
-        $this->resourceUnitName = $resourceName;
-        return $this;
+        return $this->adapter->getRecordsCount($documentName);
     }
 
     /**
      * Returns configuration data for resource initialization
      *
-     * @param \Migration\Config $configReader
      * @return array
      */
-    abstract protected function getResourceConfig(\Migration\Config $configReader);
+    abstract protected function getResourceConfig();
 }

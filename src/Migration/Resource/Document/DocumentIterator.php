@@ -106,13 +106,13 @@ class DocumentIterator implements DocumentIteratorInterface
     }
 
     /**
-     * @param ProviderInterface $documentProvider
-     * @return void
+     * @inheritdoc
      */
     public function setDocumentProvider($documentProvider)
     {
         $this->documentProvider = $documentProvider;
         $this->items = $this->documentProvider->getDocumentList();
         $this->position = 0;
+        return $this;
     }
 }

@@ -38,7 +38,6 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->document = new \Migration\Resource\Document\Document(
-            $this->documentProvider,
             $this->recordIteratorFactory,
             'test_document'
         );

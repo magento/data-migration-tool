@@ -19,14 +19,21 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->recordProvider = $this->getMockForAbstractClass(
+        $this->recordProvider = $this->getMock(
             '\Migration\Resource\Record\ProviderInterface',
+            array('loadPage', 'getRecordsCount'),
             array(),
             '',
             false
         );
         $this->recordIterator = new \Migration\Resource\Record\RecordIterator('test_name');
         $this->recordIterator->setRecordProvider($this->recordProvider);
+    }
+
+    public function testGetPageSize()
+    {
+        $this->recordIterator->setPageSize(100);
+        $this->assertEquals(100, $this->recordIterator->getPageSize());
     }
 
     public function testCurrent()
@@ -45,11 +52,8 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
     public function testKey()
     {
         $this->recordProvider->expects($this->any())
-            ->method('getPageSize')
-            ->will($this->returnValue(10));
-        $this->recordProvider->expects($this->any())
             ->method('loadPage')
-            ->with($this->equalTo('test_name'), $this->equalTo(0))
+            ->with($this->equalTo('test_name'), $this->equalTo(2), $this->equalTo(1))
             ->will($this->returnValue(['item1', 'item2', 'item3', 'item4']));
         $this->recordIterator->seek(2);
 
@@ -59,14 +63,11 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
     public function testValid()
     {
         $this->recordProvider->expects($this->any())
-            ->method('getPageSize')
-            ->will($this->returnValue(10));
-        $this->recordProvider->expects($this->any())
             ->method('getRecordsCount')
             ->will($this->returnValue(30));
         $this->recordProvider->expects($this->any())
             ->method('loadPage')
-            ->with($this->equalTo('test_name'), $this->equalTo(2))
+            ->with($this->equalTo('test_name'), $this->equalTo(25), $this->equalTo(1))
             ->will($this->returnValue(['item1', 'item2']));
         $this->recordIterator->setRecordProvider($this->recordProvider);
         $this->recordIterator->seek(25);
@@ -76,14 +77,11 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
     public function testNotValid()
     {
         $this->recordProvider->expects($this->any())
-            ->method('getPageSize')
-            ->will($this->returnValue(10));
-        $this->recordProvider->expects($this->any())
             ->method('getRecordsCount')
             ->will($this->returnValue(10));
         $this->recordProvider->expects($this->any())
             ->method('loadPage')
-            ->with($this->equalTo('test_name'), $this->equalTo(2))
+            ->with($this->equalTo('test_name'), $this->equalTo(25), $this->equalTo(1))
             ->will($this->returnValue(['item1', 'item2']));
         $this->recordIterator->seek(25);
         $this->assertFalse($this->recordIterator->valid());
@@ -105,16 +103,18 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
     public function testIterator()
     {
         $this->recordProvider->expects($this->any())
-            ->method('getPageSize')
-            ->will($this->returnValue(10));
-        $this->recordProvider->expects($this->any())
             ->method('getRecordsCount')
             ->will($this->returnValue(5));
-        $this->recordProvider->expects($this->any())
+        $this->recordProvider->expects($this->at(1))
             ->method('loadPage')
-            ->with($this->equalTo('test_name'), $this->equalTo(0))
-            ->will($this->returnValue(['item1', 'item2', 'item3', 'item4', 'item5']));
+            ->with($this->equalTo('test_name'), $this->equalTo(0), $this->equalTo(3))
+            ->will($this->returnValue(['item1', 'item2', 'item3']));
+        $this->recordProvider->expects($this->at(2))
+            ->method('loadPage')
+            ->with($this->equalTo('test_name'), $this->equalTo(1), $this->equalTo(3))
+            ->will($this->returnValue(['item4', 'item5']));
         $this->recordIterator->setRecordProvider($this->recordProvider);
+        $this->recordIterator->setPageSize(3);
 
         $result = '';
 

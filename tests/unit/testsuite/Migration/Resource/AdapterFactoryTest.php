@@ -41,7 +41,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $adapterClassName = '\Magento\Framework\DB\Adapter\Pdo\Mysql';
+        $adapterClassName = '\Migration\Resource\Adapter\Mysql';
         $data = ['config' => ['key' => 'value']];
         $adapter = $this->getMock($adapterClassName, [], [], '', false);
         $this->config->expects($this->once())
@@ -50,7 +50,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(null));
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with('\Magento\Framework\DB\Adapter\Pdo\Mysql', $data)
+            ->with('\Migration\Resource\Adapter\Mysql', $data)
             ->will($this->returnValue($adapter));
         $this->assertInstanceOf($adapterClassName, $this->adapterFactory->create($data));
     }

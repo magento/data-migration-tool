@@ -12,29 +12,11 @@ namespace Migration\Resource;
 class Source extends AbstractResource
 {
     /**
-     * Returns next bunch of data
-     *
-     * @return array
-     */
-    public function getNextBunch()
-    {
-        if (!$this->resourceUnitName) {
-            throw new \InvalidArgumentException('Resource name is not set');
-        }
-        $select = $this->resourceAdapter->select();
-        $select->from($this->resourceUnitName, '*')
-            ->limit($this->bulkSize, $this->getPosition());
-        $bunch = $this->resourceAdapter->fetchAll($select);
-        $this->setPosition($this->bulkSize + $this->getPosition());
-        return $bunch;
-    }
-
-    /**
      * @inheritdoc
      */
-    protected function getResourceConfig(\Migration\Config $configReader)
+    protected function getResourceConfig()
     {
-        $source = $configReader->getSource();
+        $source = $this->configReader->getSource();
         $config['host'] = $source['database']['host'];
         $config['dbname'] = $source['database']['name'];
         $config['username'] = $source['database']['user'];

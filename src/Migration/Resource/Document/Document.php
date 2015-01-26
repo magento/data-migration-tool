@@ -23,16 +23,13 @@ class Document implements DocumentInterface
     protected $documentName;
 
     /**
-     * @param ProviderInterface $documentProvider
      * @param \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory
      * @param string $documentName
      */
     public function __construct(
-        ProviderInterface $documentProvider,
         \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory,
         $documentName
     ) {
-        $this->documentProvider = $documentProvider;
         $this->recordIteratorFactory = $recordIteratorFactory;
         $this->documentName = $documentName;
     }

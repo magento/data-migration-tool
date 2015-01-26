@@ -37,10 +37,32 @@ class RecordIterator implements RecordIteratorInterface
     protected $documentName;
 
     /**
-     * @param string $documentName
+     * @var int
+     */
+    protected $pageSize = 1;
+
+    /**
+     * @param $documentName
      */
     public function __construct($documentName) {
         $this->documentName = $documentName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getPageSize()
+    {
+        return $this->pageSize;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setPageSize($pageSize)
+    {
+        $this->pageSize = $pageSize;
+        return $this;
     }
 
     /**
@@ -56,7 +78,7 @@ class RecordIterator implements RecordIteratorInterface
      */
     public function key()
     {
-        return $this->recordProvider->getPageSize() * $this->currentPage + $this->position;
+        return $this->pageSize * $this->currentPage + $this->position;
     }
 
     /**
@@ -65,7 +87,7 @@ class RecordIterator implements RecordIteratorInterface
     public function next()
     {
         $this->position++;
-        if ($this->position >= $this->recordProvider->getPageSize()) {
+        if ($this->position >= $this->pageSize) {
             $this->currentPage++;
             $this->loadPage();
         }
@@ -85,10 +107,9 @@ class RecordIterator implements RecordIteratorInterface
      */
     public function seek($position)
     {
-        $pageSize = $this->recordProvider->getPageSize();
-        $this->currentPage =  (int)floor($position / $pageSize);
+        $this->currentPage =  (int)floor($position / $this->pageSize);
         $this->loadPage();
-        $this->position =  ($position % $pageSize);
+        $this->position =  ($position % $this->pageSize);
     }
 
     /**
@@ -113,7 +134,8 @@ class RecordIterator implements RecordIteratorInterface
     public function setRecordProvider($recordProvider)
     {
         $this->recordProvider = $recordProvider;
-        $this->itemsCount = $this->recordProvider->getRecordsCount();
+        $this->itemsCount = $this->recordProvider->getRecordsCount($this->documentName);
+        return $this;
     }
 
     /**
@@ -124,6 +146,6 @@ class RecordIterator implements RecordIteratorInterface
     protected function loadPage()
     {
         $this->position = 0;
-        $this->items = $this->recordProvider->loadPage($this->documentName, $this->currentPage);
+        $this->items = $this->recordProvider->loadPage($this->documentName, $this->currentPage, $this->pageSize);
     }
 }

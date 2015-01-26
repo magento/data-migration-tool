@@ -84,8 +84,16 @@ class Helper
                 $source['database']['host'],
                 $source['database']['user'],
                 $source['database']['password'],
-                "DROP DATABASE IF EXISTS `{$source['database']['name']}`;
-                    CREATE DATABASE IF NOT EXISTS `{$source['database']['name']}`;"
+                "DROP DATABASE IF EXISTS `{$source['database']['name']}`"
+            ]
+        );
+        $this->shell->execute(
+            'mysql --host=%s --user=%s --password=%s -e %s',
+            [
+                $source['database']['host'],
+                $source['database']['user'],
+                $source['database']['password'],
+                "CREATE DATABASE IF NOT EXISTS `{$source['database']['name']}`"
             ]
         );
         $this->shell->execute(
@@ -94,8 +102,16 @@ class Helper
                 $destination['database']['host'],
                 $destination['database']['user'],
                 $destination['database']['password'],
-                "DROP DATABASE IF EXISTS `{$destination['database']['name']}`;
-                    CREATE DATABASE IF NOT EXISTS `{$destination['database']['name']}`;"
+                "DROP DATABASE IF EXISTS `{$destination['database']['name']}`"
+            ]
+        );
+        $this->shell->execute(
+            'mysql --host=%s --user=%s --password=%s -e %s',
+            [
+                $destination['database']['host'],
+                $destination['database']['user'],
+                $destination['database']['password'],
+                "CREATE DATABASE `{$destination['database']['name']}`"
             ]
         );
         $this->shell->execute(

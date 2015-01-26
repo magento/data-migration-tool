@@ -11,19 +11,29 @@ namespace Migration\Resource;
  */
 class SourceDestinationTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var \Migration\Resource\Source $source
+     */
+    protected $source;
+
+    /** @var \Migration\Resource\Destination $destination */
+    protected $destination;
+
     protected function setUp()
     {
-        /** @var \Migration\Resource\Source $source */
-        $this->source = \Migration\TestFramework\Helper::getInstance()->getObjectManager()->get('\Migration\Resource\Source');
-        /** @var \Migration\Resource\Destination $destination */
-        $this->destination = \Migration\TestFramework\Helper::getInstance()->getObjectManager()->get('\Migration\Resource\Destination');
+        $helper = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
+        $this->source = $helper->get('\Migration\Resource\Source');
+        $this->destination = $helper->get('\Migration\Resource\Destination');
     }
 
-    public function testGetNextBunch()
+    public function testMigrate()
     {
-        $this->source->setResourceUnitName('catalog_product_entity');
-        $data = $this->source->getNextBunch();
-        $this->destination->setResourceUnitName('catalog_product_entity');
-        $this->destination->save($data);
+        $sourceCount = $this->source->getRecordsCount('catalog_product_entity');
+        $records = $this->source->getRecords('catalog_product_entity');
+
+        $this->destination->saveRecords('catalog_product_entity', $records);
+        $destinationCount = $this->source->getRecordsCount('catalog_product_entity');
+
+        $this->assertEquals($sourceCount, $destinationCount);
     }
 }

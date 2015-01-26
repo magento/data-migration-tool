@@ -9,7 +9,7 @@ interface DocumentIteratorInterface extends \SeekableIterator, \Countable
 {
     /**
      * @param ProviderInterface $documentProvider
-     * @return void
+     * @return $this
      */
     public function setDocumentProvider($documentProvider);
 

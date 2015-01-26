@@ -14,12 +14,26 @@ class Destination extends AbstractResource
     /**
      * Save data into destination resource
      *
-     * @param $data
+     * @param string $documentName
+     * @param \Migration\Resource\Record\RecordIteratorInterface $records
+     * @return $this
      */
-    public function save(array $data)
+    public function saveRecords($documentName, $records)
     {
-        foreach($data as $row) {
-            $this->resourceAdapter->insert($this->resourceUnitName, $row);
+        $pageSize = $this->configReader->getOption('bulk_size');
+        $i = 0;
+        $data = [];
+        foreach($records as $row) {
+            $i++;
+            $data[] = $row;
+            if ($i == $pageSize) {
+                $this->adapter->insertRecords($documentName, $data);
+                $data = [];
+                $i = 0;
+            }
+        }
+        if ($i>0) {
+            $this->adapter->insertRecords($documentName, $data);
         }
         return $this;
     }
@@ -27,9 +41,9 @@ class Destination extends AbstractResource
     /**
      * @inheritdoc
      */
-    protected function getResourceConfig(\Migration\Config $configReader)
+    protected function getResourceConfig()
     {
-        $destination = $configReader->getDestination();
+        $destination = $this->configReader->getDestination();
         $config['host'] = $destination['database']['host'];
         $config['dbname'] = $destination['database']['name'];
         $config['username'] = $destination['database']['user'];

@@ -18,4 +18,15 @@ interface RecordIteratorInterface extends \SeekableIterator, \Countable
      * @return array
      */
     public function current();
+
+    /**
+     * @return int
+     */
+    public function getPageSize();
+
+    /**
+     * @param int $pageSize
+     * @return $this
+     */
+    public function setPageSize($pageSize);
 }
