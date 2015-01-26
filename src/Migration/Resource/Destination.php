@@ -16,9 +16,12 @@ class Destination extends AbstractResource
      *
      * @param $data
      */
-    public function save($data)
+    public function save(array $data)
     {
-        return $this->resourceAdapter->insert($this->resourceUnitName, $data);
+        foreach($data as $row) {
+            $this->resourceAdapter->insert($this->resourceUnitName, $row);
+        }
+        return $this;
     }
 
     /**

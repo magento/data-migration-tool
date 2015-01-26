@@ -60,7 +60,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Magento\Framework\DB\Adapter\Pdo\Mysql',
-            ['select', 'fetchAll'],
+            ['select', 'fetchAll', 'query'],
             [],
             '',
             false
