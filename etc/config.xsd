@@ -79,7 +79,7 @@
             <xs:element name="map_file" type="xmlFile"/>
             <xs:element name="settings_map_file" type="xmlFile" />
             <xs:element name="bulk_size" type="xs:int"/>
-            <xs:any minOccurs="0" processContents="skip"/>
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:sequence>
     </xs:complexType>
 
