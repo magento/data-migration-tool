@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Steps;
+namespace Migration\Step;
 
 /**
  * Interface StepInterface

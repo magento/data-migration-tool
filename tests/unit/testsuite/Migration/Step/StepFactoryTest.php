@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Steps;
+namespace Migration\Step;
 
 /**
  * Class StepFactoryTest
@@ -36,23 +36,23 @@ class StepFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $step = $this->getMock('\Migration\Steps\StepInterface');
+        $step = $this->getMock('\Migration\Step\StepInterface');
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($step));
         $this->assertSame($step, $this->factory->create('\Migration\Steps\Integrity'));
     }
 
     public function testCreateStepWithException()
     {
-        $this->setExpectedException('\Exception', 'Class: \Migration\Steps\Integrity must implement StepInterface.');
-        $this->factory->create('\Migration\Steps\Integrity');
+        $this->setExpectedException('\Exception', 'Class: \Migration\Step\Integrity must implement StepInterface.');
+        $this->factory->create('\Migration\Step\Integrity');
     }
 
     public function testGetSteps()
     {
-        $step = $this->getMock('\Migration\Steps\StepInterface');
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue(['\Migration\Steps\Test']));
-        $this->objectManager->expects($this->once())->method('create')->with('\Migration\Steps\Test')
+        $step = $this->getMock('\Migration\Step\StepInterface');
+        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue(['\Migration\Step\Test']));
+        $this->objectManager->expects($this->once())->method('create')->with('\Migration\Step\Test')
             ->will($this->returnValue($step));
-        $this->assertEquals([], $this->factory->getSteps());
+        $this->assertEquals([$step], $this->factory->getSteps());
     }
 }

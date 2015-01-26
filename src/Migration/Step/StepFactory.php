@@ -3,9 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Steps;
+namespace Migration\Step;
 
-use \Magento\Framework\ObjectManager\ObjectManager;
+use \Magento\Framework\ObjectManagerInterface;
 
 /**
  * Class StepFactory
@@ -23,15 +23,15 @@ class StepFactory
     protected $steps;
 
     /**
-     * @var ObjectManager
+     * @var ObjectManagerInterface
      */
     protected $objectManager;
 
     /**
      * @param \Migration\Config $config
-     * @param ObjectManager $objectManager
+     * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(\Migration\Config $config, ObjectManager $objectManager)
+    public function __construct(\Migration\Config $config, ObjectManagerInterface $objectManager)
     {
         $this->config = $config;
         $this->objectManager = $objectManager;
@@ -46,7 +46,7 @@ class StepFactory
         if (is_null($this->steps)) {
             $this->steps = [];
             foreach ($this->config->getSteps() as $stepClass) {
-                $steps[] = $this->create($stepClass);
+                $this->steps[] = $this->create($stepClass);
             }
         }
 
