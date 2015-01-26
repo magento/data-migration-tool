@@ -10,7 +10,7 @@ use Migration\Logger\Logger;
 /**
  * Class AbstractStep
  */
-class AbstractStep
+class AbstractStep implements StepInterface
 {
     /**
      * @var Progress
@@ -30,6 +30,13 @@ class AbstractStep
     {
         $this->logger = $logger;
         $this->progress = $progress;
+    }
+
+    /**
+     * {@inherit_doc}
+     */
+    public function run()
+    {
         $this->progress->setStep($this);
     }
 }

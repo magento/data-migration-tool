@@ -28,6 +28,11 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $directoryWriteFactory;
+
     public function setUp()
     {
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
@@ -36,7 +41,10 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->output->expects($this->any())->method('getVerbosity')
             ->will($this->returnValue(OutputInterface::VERBOSITY_QUIET));
-        $this->progress = new Progress($this->config, $this->output);
+        $this->directoryWriteFactory = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\WriteFactory')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->progress = new Progress($this->config, $this->output, $this->directoryWriteFactory);
 
         $step = $this->getMock('\Migration\Step\StepInterface');
         $this->progress->setStep($step);

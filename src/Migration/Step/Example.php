@@ -8,13 +8,14 @@ namespace Migration\Step;
 /**
  * Class Example
  */
-class Example extends AbstractStep implements StepInterface
+class Example extends AbstractStep
 {
     /**
      * {@inherit_doc}
      */
     public function run()
     {
+        parent::run();
         $status = $this->progress->getStatus();
         if ($status == Progress::COMPLETED) {
             $this->logger->logInfo("Step already completed. Skipped.");

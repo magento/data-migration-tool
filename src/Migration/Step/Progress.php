@@ -19,7 +19,7 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     /**
      * @var string
      */
-    protected $progressFile = '/tmp/migration-tool-progress.log';
+    protected $lockFileName = 'migration-tool-progress.lock';
 
     /**
      * @var array
@@ -32,11 +32,21 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     protected $currentStep;
 
     /**
-     * @param \Migration\Config $config
-     * @param \Symfony\Component\Console\Output\ConsoleOutput $output
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory
      */
-    public function __construct(\Migration\Config $config, ConsoleOutput $output)
-    {
+    protected $directoryWriteFactory;
+
+    /**
+     * @param \Migration\Config $config
+     * @param ConsoleOutput $output
+     * @param \Magento\Framework\Filesystem\Directory\WriteFactory $directoryWriteFactory
+     */
+    public function __construct(
+        \Migration\Config $config,
+        ConsoleOutput $output,
+        \Magento\Framework\Filesystem\Directory\WriteFactory $directoryWriteFactory
+    ) {
+        $this->directoryWriteFactory = $directoryWriteFactory;
         parent::__construct($output);
         $this->loadProgress();
     }
@@ -76,7 +86,7 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     {
         $this->data[$this->currentStep]['status'] = $status;
         $this->data[$this->currentStep]['progress'] = $this->getProgress();
-        file_put_contents($this->progressFile, serialize($this->data));
+        file_put_contents($this->getLockFile(), serialize($this->data));
         return $this;
     }
 
@@ -86,8 +96,8 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
      */
     protected function loadProgress()
     {
-        if (file_exists($this->progressFile)) {
-            $data = unserialize(file_get_contents($this->progressFile));
+        if (file_exists($this->getLockFile())) {
+            $data = unserialize(file_get_contents($this->getLockFile()));
             if (is_array($data)) {
                 $this->data = $data;
             }
@@ -127,4 +137,17 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
             ? $this->data[$this->currentStep]['progress']
             : 0;
     }
+
+    /**
+     * @return string
+     */
+    protected function getLockFile()
+    {
+        $lockFileDir = dirname(dirname(dirname(__DIR__))) . '/var';
+        if (!is_dir($lockFileDir)) {
+            $this->directoryWriteFactory->create($lockFileDir)->create();
+        }
+        return $lockFileDir . DIRECTORY_SEPARATOR . $this->lockFileName;
+    }
+
 }
