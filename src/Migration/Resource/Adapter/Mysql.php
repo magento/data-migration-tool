@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Adapter;
 
+/**
+ * Mysql adapter
+ */
 class Mysql implements \Migration\Resource\AdapterInterface
 {
     /**

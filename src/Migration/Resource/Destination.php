@@ -32,7 +32,7 @@ class Destination extends AbstractResource
                 $i = 0;
             }
         }
-        if ($i>0) {
+        if ($i > 0) {
             $this->adapter->insertRecords($documentName, $data);
         }
         return $this;

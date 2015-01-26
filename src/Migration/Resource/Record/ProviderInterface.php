@@ -5,10 +5,13 @@
  */
 namespace Migration\Resource\Record;
 
+/**
+ * Provider interface class
+ */
 interface ProviderInterface
 {
     /**
-     * Get Page size
+     * Returns number of records of document
      *
      * @param string $documentName
      * @return int

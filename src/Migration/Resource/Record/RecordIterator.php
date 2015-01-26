@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Record;
 
+/**
+ * Record iterator class
+ */
 class RecordIterator implements RecordIteratorInterface
 {
     /**
@@ -44,7 +47,8 @@ class RecordIterator implements RecordIteratorInterface
     /**
      * @param $documentName
      */
-    public function __construct($documentName) {
+    public function __construct($documentName)
+    {
         $this->documentName = $documentName;
     }
 

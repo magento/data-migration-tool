@@ -5,10 +5,15 @@
  */
 namespace Migration\Resource;
 
+/**
+ * Adapter interface class
+ */
 interface AdapterInterface
     extends \Migration\Resource\Document\ProviderInterface, \Migration\Resource\Record\ProviderInterface
 {
     /**
+     * Insert records into document
+     *
      * @param string $documentName
      * @param array $records
      * @return int

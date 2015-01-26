@@ -5,9 +5,14 @@
  */
 namespace Migration\Resource\Document;
 
+/**
+ * Document interface class
+ */
 interface DocumentInterface
 {
     /**
+     * Get record iterator
+     *
      * @return \Migration\Resource\Record\RecordIteratorInterface
      */
     public function getRecordIterator();

@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Document;
 
+/**
+ * Document class
+ */
 class Document implements DocumentInterface
 {
     /**

@@ -5,9 +5,14 @@
  */
 namespace Migration\Resource\Record;
 
+/**
+ * Record iterator interface class
+ */
 interface RecordIteratorInterface extends \SeekableIterator, \Countable
 {
     /**
+     * Set record provider
+     *
      * @param ProviderInterface $recordProvider
      * @return $this
      */
@@ -20,11 +25,15 @@ interface RecordIteratorInterface extends \SeekableIterator, \Countable
     public function current();
 
     /**
+     * Get page size
+     *
      * @return int
      */
     public function getPageSize();
 
     /**
+     * Set page size
+     *
      * @param int $pageSize
      * @return $this
      */

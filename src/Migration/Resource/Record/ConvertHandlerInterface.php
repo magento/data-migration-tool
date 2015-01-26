@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Record;
 
+/**
+ * Convert handler interface class
+ */
 interface ConvertHandlerInterface extends \Iterator
 {
     /**

@@ -5,9 +5,14 @@
  */
 namespace Migration\Resource\Document;
 
+/**
+ * Document iterator interface class
+ */
 interface DocumentIteratorInterface extends \SeekableIterator, \Countable
 {
     /**
+     * Set document provider
+     *
      * @param ProviderInterface $documentProvider
      * @return $this
      */

@@ -46,7 +46,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $adapter = $this->getMock($adapterClassName, [], [], '', false);
         $this->config->expects($this->once())
             ->method('getOption')
-            ->with('resource_class_name')
+            ->with('resource_adapter_class_name')
             ->will($this->returnValue(null));
         $this->objectManager->expects($this->once())
             ->method('create')

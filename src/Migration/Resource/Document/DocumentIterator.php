@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Document;
 
+/**
+ * Document iterator class
+ */
 class DocumentIterator implements DocumentIteratorInterface
 {
     /**

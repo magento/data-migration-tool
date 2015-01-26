@@ -50,7 +50,7 @@ class AdapterFactory
      */
     public function create(array $data = [])
     {
-        $classNameInConfig = $this->configReader->getOption('resource_class_name');
+        $classNameInConfig = $this->configReader->getOption('resource_adapter_class_name');
         $className = !empty($classNameInConfig) ? $classNameInConfig : $this->defaultClassName;
         return $this->objectManager->create($className, $data);
     }

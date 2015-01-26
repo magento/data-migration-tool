@@ -42,6 +42,8 @@ abstract class AbstractResource
     }
 
     /**
+     * Returns document object
+     *
      * @param $documentName
      * @return \Migration\Resource\Document\Document
      */
@@ -51,6 +53,8 @@ abstract class AbstractResource
     }
 
     /**
+     * Returns records
+     *
      * @param string $documentName
      * @return Record\RecordIteratorInterface
      */
@@ -63,6 +67,8 @@ abstract class AbstractResource
     }
 
     /**
+     * Returns number of records of document
+     *
      * @param string $documentName
      * @return int
      */

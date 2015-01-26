@@ -5,6 +5,9 @@
  */
 namespace Migration\Resource\Document;
 
+/**
+ * Provider interface class
+ */
 interface ProviderInterface
 {
     /**

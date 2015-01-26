@@ -7,31 +7,74 @@
 namespace Migration\TestFramework;
 
 /**
- *
+ * Helper for preparing databases, initialize ObjectManager
  */
 class Helper
 {
+    /**
+     * @var \Migration\TestFramework\Helper
+     */
     protected static $instance;
 
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
     protected $objectManager;
 
+    /**
+     * @var \Magento\Framework\Shell
+     */
     protected $shell;
 
+    /**
+     * @var string
+     */
     protected $magentoDir;
 
+    /**
+     * @var string
+     */
+    protected $dbDumpSourcePath;
+
+    /**
+     * @var string
+     */
+    protected $dbDumpDestinationPath;
+
+    /**
+     * @var string
+     */
+    public $configPath;
+
+    /**
+     * Constructor
+     *
+     * @param \Magento\Framework\Shell $shell
+     * @param string $magentoDir
+     * @param string $dbDumpSourcePath
+     * @param string $dbDumpDestinationPath
+     * @param string $configPath
+     */
     public function __construct(
         \Magento\Framework\Shell $shell,
         $magentoDir,
         $dbDumpSourcePath,
-        $dbDumpDestinationPath
+        $dbDumpDestinationPath,
+        $configPath
     ) {
         $this->shell = $shell;
         $this->magentoDir = $magentoDir;
         $this->dbDumpSourcePath = $dbDumpSourcePath;
         $this->dbDumpDestinationPath = $dbDumpDestinationPath;
+        $this->configPath = $configPath;
         $this->reinstallDb();
     }
 
+    /**
+     * Initializes and returns singleton instance of this class
+     *
+     * @return Helper
+     */
     public static function getInstance()
     {
         if (!self::$instance) {
@@ -39,17 +82,21 @@ class Helper
             $magentoDir = require __DIR__ . '/../../../etc/magento_path.php';
             $dbDumpSourcePath = __DIR__ . '/../etc/' . DB_DUMP_SOURCE;
             $dbDumpDestinationPath = __DIR__ . '/../etc/' . DB_DUMP_DESTINATION;
+            $configPath = __DIR__ . '/../etc/config.xml';
             self::$instance = new Helper(
                 $shell,
                 $magentoDir,
                 $dbDumpSourcePath,
-                $dbDumpDestinationPath
+                $dbDumpDestinationPath,
+                $configPath
             );
         }
         return self::$instance;
     }
 
     /**
+     * Getter for ObjectManager
+     *
      * @return \Magento\Framework\ObjectManagerInterface
      */
     public function getObjectManager()
@@ -61,7 +108,7 @@ class Helper
     }
 
     /**
-     * Create ObjectManager
+     * Init ObjectManager
      *
      * @return \Magento\Framework\ObjectManagerInterface
      */
@@ -72,10 +119,15 @@ class Helper
         return (new \Magento\Framework\App\ObjectManagerFactory($dirList, $driverPool))->create([]);
     }
 
+    /**
+     * Reinstall Db for source and destination
+     *
+     * @throws \Magento\Framework\Exception
+     */
     protected function reinstallDb()
     {
         /** @var \Migration\Config $configReader */
-        $configReader  = $this->getObjectManager()->get('\Migration\Config')->init();
+        $configReader  = $this->getObjectManager()->get('\Migration\Config')->init($this->configPath);
         $source = $configReader->getSource();
         $destination = $configReader->getDestination();
         $this->shell->execute(
@@ -134,5 +186,13 @@ class Helper
                 $this->dbDumpDestinationPath
             ]
         );
+    }
+
+    /**
+     * getter for config path
+     */
+    public function getConfigPath()
+    {
+        return $this->configPath;
     }
 }

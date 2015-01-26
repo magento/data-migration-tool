@@ -13,10 +13,6 @@ require_once __DIR__ . '/autoload.php';
 if (!defined('TESTS_TEMP_DIR')) {
     define('TESTS_TEMP_DIR', dirname(__DIR__) . '/tmp');
 }
-if (!defined('TESTS_ETC_DIR')) {
-    define('TESTS_ETC_DIR', dirname(__DIR__) . '/etc');
-}
-
 require BP . '/app/functions.php';
 
 if (is_dir(TESTS_TEMP_DIR)) {
