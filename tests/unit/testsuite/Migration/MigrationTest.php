@@ -23,15 +23,29 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
      */
     protected $response;
 
+    /**
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory
+     */
+    protected $writeFactory;
+
     protected function setUp()
     {
+        $this->writeFactory = $this->getMockBuilder('\Magento\Framework\Filesystem\Directory\WriteFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
         $this->response = $this->getMock('\Magento\Framework\App\Console\Response', [], [], '', false);
         $this->shellFactory = $this->getMock('\Migration\App\ShellFactory', ['create'], [], '', false);
-        $this->migration = new Migration($this->response, $this->shellFactory, basename(__FILE__));
+        $this->migration = new Migration($this->response, $this->shellFactory, $this->writeFactory, basename(__FILE__));
     }
 
     public function testLaunch()
     {
+        $writer = $this->getMock('Magento\Framework\Filesystem\Directory\WriteInterface');
+        $writer->expects($this->any())->method('isDirectory')->will($this->returnValue(false));
+        $writer->expects($this->any())->method('create')->will($this->returnValue(true));
+        $this->writeFactory->expects($this->any())->method('create')->will($this->returnValue($writer));
+
         $shell = $this->getMock('\Migration\App\Shell', [], [], '', false);
         $shell->expects($this->any())
             ->method('run');

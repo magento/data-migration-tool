@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Steps;
+namespace Migration\Step;
 
 /**
  * Interface StepInterface
@@ -13,6 +13,13 @@ interface StepInterface
 {
     /**
      * Run step
+     *
+     * @return void
      */
     public function run();
+
+    /**
+     * @return int
+     */
+    public function getMaxSteps();
 }

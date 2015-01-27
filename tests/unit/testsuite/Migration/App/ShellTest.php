@@ -6,6 +6,9 @@
 
 namespace Migration\App;
 
+/**
+ * Class ShellTest
+ */
 class ShellTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -29,9 +32,9 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $consoleLogWriter;
 
     /**
-     * @var \Migration\Steps\StepFactory
+     * @var \Migration\Step\StepFactory
      */
-    protected $stepFactory;
+    protected $stepManager;
 
     protected function setUp()
     {
@@ -43,14 +46,14 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
         $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);;
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
-        $this->stepFactory = $this->getMockBuilder('\Migration\Steps\StepFactory')->setMethods(['getSteps'])
+        $this->stepManager = $this->getMockBuilder('\Migration\Step\StepManager')->setMethods(['runSteps'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->shell = new Shell(
             $this->filesystem,
             $config,
             $this->logger,
-            $this->stepFactory,
+            $this->stepManager,
             $this->consoleLogWriter,
             ''
         );
@@ -62,8 +65,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell->setRawArgs($args);
         $this->logger->expects($this->at(1))->method('logInfo')->with('Loaded custom config file: file/to/config.xml');
         $this->logger->expects($this->at(2))->method('logInfo')->with('mapStep');
-        $step = $this->getMock('\Migration\Steps\StepInterface');
-        $this->stepFactory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
+        $this->stepManager->expects($this->once())->method('runSteps');
         $result = $this->shell->run();
         $this->assertSame($this->shell, $result);
     }
@@ -73,7 +75,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $level = 'DEBUG';
         $this->shell->setRawArgs(['--verbose', $level]);
         $this->logger->expects($this->once())->method('isLogLevelValid')->with($level)->will($this->returnValue(true));
-        $this->stepFactory->expects($this->once())->method('getSteps')->will($this->returnValue([]));
+        $this->stepManager->expects($this->once())->method('runSteps');
         $this->consoleLogWriter->expects($this->once())->method('setLoggingLevel')->with($level);
         $this->shell->run();
     }

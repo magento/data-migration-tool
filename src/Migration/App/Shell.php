@@ -23,9 +23,9 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $consoleLogWriter;
 
     /**
-     * @var \Migration\Steps\StepFactory
+     * @var \Migration\Step\StepManager
      */
-    protected $stepFactory;
+    protected $stepManager;
 
     /**
      * @var \Migration\Config
@@ -36,7 +36,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Config $config
      * @param \Migration\Logger\Logger $logger
-     * @param \Migration\Steps\StepFactory $stepFactory
+     * @param \Migration\Step\StepManager $stepManager
      * @param \Migration\Logger\Writer\Console $consoleWriter
      * @param $entryPoint
      * @throws \Exception
@@ -45,13 +45,13 @@ class Shell extends \Magento\Framework\App\AbstractShell
         \Magento\Framework\Filesystem $filesystem,
         \Migration\Config $config,
         \Migration\Logger\Logger $logger,
-        \Migration\Steps\StepFactory $stepFactory,
+        \Migration\Step\StepManager $stepManager,
         \Migration\Logger\Writer\Console $consoleWriter,
         $entryPoint
     ) {
         $this->logger = $logger;
         $this->consoleLogWriter = $consoleWriter;
-        $this->stepFactory = $stepFactory;
+        $this->stepManager = $stepManager;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
     }
@@ -88,10 +88,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
             $this->logger->logInfo($this->getArg('type'));
         }
 
-        /** @var StepInterface $step */
-        foreach ($this->stepFactory->getSteps() as $step) {
-            $step->run();
-        }
+        $this->stepManager->runSteps();
 
         return $this;
     }
