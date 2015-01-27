@@ -17,8 +17,7 @@ class Example extends AbstractStep
     {
         parent::run();
         $currentProgress = $this->progress->getProgress();
-        for($i = $currentProgress; $i < $this->progress->getMaxSteps(); $i++)
-        {
+        for ($i = $currentProgress; $i < $this->progress->getMaxSteps(); $i++) {
             $this->progress->advance();
             sleep(1);
         }

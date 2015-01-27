@@ -45,7 +45,7 @@ class RecordIterator implements RecordIteratorInterface
     protected $pageSize = 1;
 
     /**
-     * @param $documentName
+     * @param string $documentName
      */
     public function __construct($documentName)
     {

@@ -33,6 +33,7 @@ class AdapterFactory
      * Factory constructor
      *
      * @param ObjectManagerInterface $objectManager
+     * @param \Migration\Config $configReader
      */
     public function __construct(
         ObjectManagerInterface $objectManager,

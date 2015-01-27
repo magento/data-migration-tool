@@ -23,7 +23,7 @@ class Destination extends AbstractResource
         $pageSize = $this->configReader->getOption('bulk_size');
         $i = 0;
         $data = [];
-        foreach($records as $row) {
+        foreach ($records as $row) {
             $i++;
             $data[] = $row;
             if ($i == $pageSize) {

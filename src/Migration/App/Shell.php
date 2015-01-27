@@ -38,7 +38,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Step\StepManager $stepManager
      * @param \Migration\Logger\Writer\Console $consoleWriter
-     * @param $entryPoint
+     * @param string $entryPoint
      * @throws \Exception
      */
     public function __construct(

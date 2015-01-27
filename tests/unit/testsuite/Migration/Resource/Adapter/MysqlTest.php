@@ -39,9 +39,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             ->with($adapterConfigs)
             ->willReturn($this->pdoMysql);
 
-        $this->adapterMysql = new \Migration\Resource\Adapter\Mysql(
-            $mysqlFactory, $config
-        );
+        $this->adapterMysql = new \Migration\Resource\Adapter\Mysql($mysqlFactory, $config);
     }
 
     public function testGetDocumentStructure()

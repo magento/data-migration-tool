@@ -15,11 +15,11 @@ class ConsoleTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        /** @var \Migration\Logger\Writer\Console\Creator|\PHPUnit_Framework_MockObject_MockObject $сonsoleCreator */
-        $сonsoleCreator = $this->getMock('Migration\Logger\Writer\Console\Creator', [], [], '', false);
+        /** @var \Migration\Logger\Writer\Console\Creator|\PHPUnit_Framework_MockObject_MockObject $consoleCreator */
+        $consoleCreator = $this->getMock('Migration\Logger\Writer\Console\Creator', [], [], '', false);
         $this->consoleAdapter = $this->getMock('Zend\Console\Adapter\Posix', [], [], '', false);
-        $сonsoleCreator->expects($this->once())->method('create')->will($this->returnValue($this->consoleAdapter));
-        $this->console = new Console($сonsoleCreator);
+        $consoleCreator->expects($this->once())->method('create')->will($this->returnValue($this->consoleAdapter));
+        $this->console = new Console($consoleCreator);
     }
 
     public function testWrite()

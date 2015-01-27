@@ -62,6 +62,8 @@ class Migration implements \Magento\Framework\AppInterface
 
     /**
      * Create required directories
+     *
+     * @return void
      */
     protected function createDirectories()
     {

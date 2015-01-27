@@ -37,12 +37,10 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     protected $filesystem;
 
     /**
-     * @param \Migration\Config $config
      * @param ConsoleOutput $output
      * @param \Magento\Framework\Filesystem\Driver\File $filesystem
      */
     public function __construct(
-        \Migration\Config $config,
         ConsoleOutput $output,
         \Magento\Framework\Filesystem\Driver\File $filesystem
     ) {

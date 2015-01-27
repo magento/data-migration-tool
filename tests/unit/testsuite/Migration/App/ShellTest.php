@@ -44,7 +44,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             ->method('getDirectoryRead')
             ->willReturn($read);
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
-        $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);;
+        $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
         $this->stepManager = $this->getMockBuilder('\Migration\Step\StepManager')->setMethods(['runSteps'])
             ->disableOriginalConstructor()

@@ -38,17 +38,15 @@ class Document implements DocumentInterface
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getRecordIterator()
     {
-        return $this->recordIteratorFactory->create(array(
-            'documentName' => $this->getName(),
-        ));
+        return $this->recordIteratorFactory->create(['documentName' => $this->getName()]);
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function getName()
     {

@@ -44,7 +44,7 @@ abstract class AbstractResource
     /**
      * Returns document object
      *
-     * @param $documentName
+     * @param string $documentName
      * @return \Migration\Resource\Document\Document
      */
     public function getDocument($documentName)

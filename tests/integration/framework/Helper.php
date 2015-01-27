@@ -122,6 +122,7 @@ class Helper
     /**
      * Reinstall Db for source and destination
      *
+     * @return void
      * @throws \Magento\Framework\Exception
      */
     protected function reinstallDb()
@@ -190,6 +191,8 @@ class Helper
 
     /**
      * getter for config path
+     *
+     * @return string
      */
     public function getConfigPath()
     {

@@ -54,8 +54,8 @@ class StepFactory
     }
 
     /**
-     * @param $stepClass
-     * @return mixed
+     * @param string $stepClass
+     * @return StepInterface
      * @throws \Exception
      */
     public function create($stepClass)

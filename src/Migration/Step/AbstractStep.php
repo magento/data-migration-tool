@@ -33,7 +33,7 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * {@inherit_doc}
+     * {@inheritdoc}
      */
     public function run()
     {

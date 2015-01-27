@@ -149,7 +149,7 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
         $result = '';
         $this->documentFactory->expects($this->any())
             ->method('create')
-            ->willReturnCallback(function($data){
+            ->willReturnCallback(function ($data) {
                 $this->assertSame($this->documentProvider, $data['documentProvider']);
                 $this->assertSame($this->recordIterator, $data['recordIterator']);
                 $document = $this->getMock('\Migration\Resource\Document\Document', array(), array(), '', false);
@@ -159,7 +159,7 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
                 return $document;
             });
 
-        foreach($this->documentIterator as $key => $value) {
+        foreach ($this->documentIterator as $key => $value) {
             $result .= ' ' . $key . '=>' . $value->getName();
         }
 

@@ -118,7 +118,7 @@ class RecordIteratorTest extends \PHPUnit_Framework_TestCase
 
         $result = '';
 
-        foreach($this->recordIterator as $key => $value) {
+        foreach ($this->recordIterator as $key => $value) {
             $result .= ' ' . $key . '=>' . $value;
         }
 

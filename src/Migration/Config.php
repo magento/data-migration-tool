@@ -129,8 +129,7 @@ class Config
      */
     public function getOption($name)
     {
-        if (is_null($this->options))
-        {
+        if (is_null($this->options)) {
             $this->options = [];
             foreach ($this->config->query('//options/*') as $item) {
                 $this->options[$item->nodeName] = $item->nodeValue;
