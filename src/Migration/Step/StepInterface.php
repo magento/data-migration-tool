@@ -13,6 +13,8 @@ interface StepInterface
 {
     /**
      * Run step
+     *
+     * @return void
      */
     public function run();
 

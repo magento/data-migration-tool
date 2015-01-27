@@ -63,7 +63,7 @@ class Migration implements \Magento\Framework\AppInterface
     /**
      * Create required directories
      */
-    public function createDirectories()
+    protected function createDirectories()
     {
         $directories = [
             dirname(dirname(__DIR__)) . '/var'
