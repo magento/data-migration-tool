@@ -15,4 +15,9 @@ interface StepInterface
      * Run step
      */
     public function run();
+
+    /**
+     * @return int
+     */
+    public function getMaxSteps();
 }

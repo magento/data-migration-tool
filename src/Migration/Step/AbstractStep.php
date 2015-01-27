@@ -10,7 +10,7 @@ use Migration\Logger\Logger;
 /**
  * Class AbstractStep
  */
-class AbstractStep implements StepInterface
+abstract class AbstractStep implements StepInterface
 {
     /**
      * @var Progress
@@ -39,4 +39,9 @@ class AbstractStep implements StepInterface
     {
         $this->progress->setStep($this);
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    abstract public function getMaxSteps();
 }

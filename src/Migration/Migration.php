@@ -27,15 +27,23 @@ class Migration implements \Magento\Framework\AppInterface
     protected $entryPoint;
 
     /**
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory
+     */
+    protected $directoryWriteFactory;
+
+    /**
      * @param \Magento\Framework\App\Console\Response $response
      * @param App\ShellFactory $shellFactory
+     * @param \Magento\Framework\Filesystem\Directory\WriteFactory $directoryWriteFactory
      * @param string $entryPoint
      */
     public function __construct(
         \Magento\Framework\App\Console\Response $response,
         \Migration\App\ShellFactory $shellFactory,
+        \Magento\Framework\Filesystem\Directory\WriteFactory $directoryWriteFactory,
         $entryPoint
     ) {
+        $this->directoryWriteFactory = $directoryWriteFactory;
         $this->shellFactory = $shellFactory;
         $this->response = $response;
         $this->entryPoint = $entryPoint;
@@ -46,9 +54,26 @@ class Migration implements \Magento\Framework\AppInterface
      */
     public function launch()
     {
+        $this->createDirectories();
         $shell = $this->shellFactory->create(['entryPoint' => $this->entryPoint]);
         $shell->run();
         return $this->response;
+    }
+
+    /**
+     * Create required directories
+     */
+    public function createDirectories()
+    {
+        $directories = [
+            dirname(dirname(__DIR__)) . '/var'
+        ];
+        foreach ($directories as $path) {
+            $writer = $this->directoryWriteFactory->create($path);
+            if (!$writer->isDirectory()) {
+                $writer->create();
+            }
+        }
     }
 
     /**

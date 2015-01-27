@@ -29,9 +29,9 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var \Magento\Framework\Filesystem\Directory\WriteFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $directoryWriteFactory;
+    protected $filesystem;
 
     public function setUp()
     {
@@ -41,13 +41,37 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->output->expects($this->any())->method('getVerbosity')
             ->will($this->returnValue(OutputInterface::VERBOSITY_QUIET));
-        $this->directoryWriteFactory = $this->getMockBuilder('Magento\Framework\Filesystem\Directory\WriteFactory')
+        $this->filesystem = $this->getMockBuilder('\Magento\Framework\Filesystem\Driver\File')
+            ->setMethods(['isExists', 'filePutContents', 'fileGetContents'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->progress = new Progress($this->config, $this->output, $this->directoryWriteFactory);
+        $this->filesystem->expects($this->any())->method('filePutContents')->will($this->returnValue(true));
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
+        $this->progress = new Progress($this->config, $this->output, $this->filesystem);
 
         $step = $this->getMock('\Migration\Step\StepInterface');
         $this->progress->setStep($step);
+    }
+
+    public function testLoadProgress()
+    {
+        $filesystem = $this->getMockBuilder('\Magento\Framework\Filesystem\Driver\File')
+            ->setMethods(['isExists', 'fileGetContents'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $step = $this->getMock('\Migration\Step\StepInterface');
+        $progress = sprintf(
+            'a:1:{s:%s:"%s";a:2:{s:6:"status";s:11:"in_progress";s:8:"progress";i:7;}}',
+            strlen(get_class($step)),
+            get_class($step)
+        );
+        $filesystem->expects($this->any())->method('fileGetContents')->will($this->returnValue($progress));
+
+        $this->progress = new Progress($this->config, $this->output, $filesystem);
+        $this->progress->setStep($step);
+        $this->assertEquals(7, $this->progress->getProgress());
+        $this->assertEquals(7, $this->progress->getStepProgress());
     }
 
     public function testStart()
@@ -58,8 +82,8 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
 
     public function testAdvance()
     {
-        $this->progress->advance();
-        $this->assertEquals($this->progress->getProgress(), 1);
+        $this->progress->advance(5);
+        $this->assertEquals(5, $this->progress->getStepProgress());
     }
 
     public function testFinish()
@@ -78,5 +102,18 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
 
         $this->progress->advance(2);
         $this->assertEquals(3, $this->progress->getStepProgress());
+    }
+
+    public function testCheckStep()
+    {
+        $filesystem = $this->getMockBuilder('\Magento\Framework\Filesystem\Driver\File')
+            ->setMethods(['isExists'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
+        $this->setExpectedException('Exception', 'Step is not specified');
+        $progress = new Progress($this->config, $this->output, $filesystem);
+        $progress->start();
+
     }
 }
