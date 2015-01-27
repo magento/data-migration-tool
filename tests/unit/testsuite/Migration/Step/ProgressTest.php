@@ -19,11 +19,6 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     protected $output;
 
     /**
-     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
-
-    /**
      * @var \Migration\Step\Progress
      */
     protected $progress;
@@ -35,7 +30,6 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
         $this->output = $this->getMockBuilder('\Symfony\Component\Console\Output\ConsoleOutput')
             ->disableOriginalConstructor()
             ->getMock();
@@ -47,7 +41,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->filesystem->expects($this->any())->method('filePutContents')->will($this->returnValue(true));
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
-        $this->progress = new Progress($this->config, $this->output, $this->filesystem);
+        $this->progress = new Progress($this->output, $this->filesystem);
 
         $step = $this->getMock('\Migration\Step\StepInterface');
         $this->progress->setStep($step);
@@ -68,7 +62,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         );
         $filesystem->expects($this->any())->method('fileGetContents')->will($this->returnValue($progress));
 
-        $this->progress = new Progress($this->config, $this->output, $filesystem);
+        $this->progress = new Progress($this->output, $filesystem);
         $this->progress->setStep($step);
         $this->assertEquals(7, $this->progress->getProgress());
         $this->assertEquals(7, $this->progress->getStepProgress());
@@ -112,7 +106,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
         $this->setExpectedException('Exception', 'Step is not specified');
-        $progress = new Progress($this->config, $this->output, $filesystem);
+        $progress = new Progress($this->output, $filesystem);
         $progress->start();
 
     }

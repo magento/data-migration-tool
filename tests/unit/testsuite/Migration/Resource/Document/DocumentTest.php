@@ -26,14 +26,14 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentProvider = $this->getMockForAbstractClass(
             '\Migration\Resource\Document\ProviderInterface',
-            array(),
+            [],
             '',
             false
         );
         $this->recordIteratorFactory = $this->getMock(
             '\Migration\Resource\Record\RecordIteratorFactory',
-            array(),
-            array(),
+            ['create'],
+            [],
             '',
             false
         );
@@ -47,16 +47,16 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     {
         $recordIterator = $this->getMock(
             '\Migration\Resource\Record\RecordIterator',
-            array(),
-            array(),
+            [],
+            [],
             '',
             false
         );
         $this->recordIteratorFactory->expects($this->atLeastOnce())
             ->method('create')
-            ->with($this->equalTo(array(
+            ->with($this->equalTo([
                 'documentName' => 'test_document',
-            )))
+            ]))
             ->will($this->returnValue($recordIterator));
 
         $this->assertSame($recordIterator, $this->document->getRecordIterator());

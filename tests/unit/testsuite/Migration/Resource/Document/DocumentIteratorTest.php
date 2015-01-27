@@ -36,27 +36,27 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentFactory = $this->getMock(
             '\Migration\Resource\Document\DocumentFactory',
-            array(),
-            array(),
+            ['create'],
+            [],
             '',
             false
         );
         $this->recordIterator = $this->getMockForAbstractClass(
             '\Migration\Resource\Record\RecordIteratorInterface',
-            array(),
+            [],
             '',
             false
         );
         $this->document = $this->getMock(
             '\Migration\Resource\Document\Document',
-            array(),
-            array(),
+            [],
+            [],
             '',
             false
         );
         $this->documentProvider = $this->getMockForAbstractClass(
             '\Migration\Resource\Document\ProviderInterface',
-            array(),
+            [],
             '',
             false
         );
@@ -76,11 +76,11 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $this->documentFactory->expects($this->any())
             ->method('create')
-            ->with($this->equalTo(array(
+            ->with($this->equalTo([
                 'documentProvider' => $this->documentProvider,
                 'recordIterator' => $this->recordIterator,
                 'documentName' => 'doc1'
-            )))
+            ]))
             ->will($this->returnValue($this->document));
         $this->assertSame($this->document, $this->documentIterator->current());
     }
@@ -134,7 +134,7 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
     {
         $provider = $this->getMockForAbstractClass(
             '\Migration\Resource\Document\ProviderInterface',
-            array(),
+            [],
             '',
             false
         );
@@ -152,7 +152,7 @@ class DocumentIteratorTest extends \PHPUnit_Framework_TestCase
             ->willReturnCallback(function ($data) {
                 $this->assertSame($this->documentProvider, $data['documentProvider']);
                 $this->assertSame($this->recordIterator, $data['recordIterator']);
-                $document = $this->getMock('\Migration\Resource\Document\Document', array(), array(), '', false);
+                $document = $this->getMock('\Migration\Resource\Document\Document', [], [], '', false);
                 $document->expects($this->any())
                     ->method('getName')
                     ->will($this->returnValue($data['documentName']));

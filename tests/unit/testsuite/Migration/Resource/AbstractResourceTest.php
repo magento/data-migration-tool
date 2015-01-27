@@ -67,7 +67,13 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock('\Migration\Resource\Document\DocumentFactory', [], [], '', false);
+        $this->documentFactory = $this->getMock(
+            '\Migration\Resource\Document\DocumentFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,

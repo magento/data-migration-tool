@@ -33,7 +33,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             'password' => 'upass',
         ]];
         $this->pdoMysql = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\Mysql', [], [], '', false);
-        $mysqlFactory = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\MysqlFactory', [], [], '', false);
+        $mysqlFactory = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\MysqlFactory', ['create'], [], '', false);
         $mysqlFactory->expects($this->any())
             ->method('create')
             ->with($adapterConfigs)
