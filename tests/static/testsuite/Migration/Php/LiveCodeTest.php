@@ -9,8 +9,7 @@ use Magento\Framework\Test\Utility;
 use Magento\TestFramework\CodingStandard\Tool\CodeMessDetector;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;
-use Magento\TestFramework\CodingStandard\Tool\CopyPasteDetector;
-use PHP_PMD_TextUI_Command;
+use PHPMD\TextUI\Command;
 use PHPUnit_Framework_TestCase;
 use Magento\Framework\Test\Utility\Files;
 
@@ -158,45 +157,25 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
     /**
      * Run mess detector on code
      *
-     * @param array $whiteList
      * @return void
-     * @dataProvider whiteListDataProvider
      */
-    public function testCodeMess($whiteList)
+    public function testCodeMess()
     {
-        if (count($whiteList) == 1) {
-            $formattedPath = preg_replace('~/~', '_', preg_replace('~' . self::$pathToSource . '~', '', $whiteList[0]));
-        } else {
-            $formattedPath = '_app_lib';
-        }
-        $reportFile = self::$reportDir . '/phpmd_report' . $formattedPath . '.xml';
+        $reportFile = self::$reportDir . '/phpmd_report.xml';
         $codeMessDetector = new CodeMessDetector(realpath(__DIR__ . '/_files/phpmd/ruleset.xml'), $reportFile);
 
         if (!$codeMessDetector->canRun()) {
             $this->markTestSkipped('PHP Mess Detector is not available.');
         }
 
+        self::setupFileLists();
         $this->assertEquals(
-            PHP_PMD_TextUI_Command::EXIT_SUCCESS,
-            $codeMessDetector->run($whiteList, self::$blackList),
+            Command::EXIT_SUCCESS,
+            $codeMessDetector->run(self::$whiteList),
             "PHP Code Mess has found error(s): See detailed report in {$reportFile}"
         );
 
         // delete empty reports
         unlink($reportFile);
-    }
-
-    /**
-     * To improve the test execution performance the whitelist is split into smaller parts:
-     * @return array
-     */
-    public function whiteListDataProvider()
-    {
-        $whiteList = [];
-        self::setupFileLists();
-        foreach (self::$whiteList as $path) {
-            $whiteList[] = [[$path]];
-        }
-        return $whiteList;
     }
 }
