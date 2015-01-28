@@ -2,4 +2,3 @@
 # Glob patterns are supported
 #
 src
-tests

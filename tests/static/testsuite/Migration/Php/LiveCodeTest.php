@@ -89,7 +89,7 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
         if (!$codeSniffer->canRun()) {
             $this->markTestSkipped('PHP Code Sniffer is not installed.');
         }
-        if (version_compare($codeSniffer->version(), '1.4.7') === -1) {
+        if (version_compare($wrapper->version(), '1.4.7') === -1) {
             $this->markTestSkipped('PHP Code Sniffer Build Too Old.');
         }
         self::setupFileLists('phpcs');
