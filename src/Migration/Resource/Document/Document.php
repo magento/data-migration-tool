@@ -8,17 +8,17 @@ namespace Migration\Resource\Document;
 /**
  * Document class
  */
-class Document implements DocumentInterface
+class Document
 {
     /**
-     * @var ProviderInterface
+     * @var \Migration\Resource\Record\RecordCollectionFactory
      */
-    protected $documentProvider;
+    protected $recordCollectionFactory;
 
     /**
-     * @var \Migration\Resource\Record\RecordIteratorFactory
+     * @var string
      */
-    protected $recordIteratorFactory;
+    protected $structure;
 
     /**
      * @var string
@@ -26,30 +26,44 @@ class Document implements DocumentInterface
     protected $documentName;
 
     /**
-     * @param \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory
+     * @param \Migration\Resource\Record\RecordCollectionFactory $recordCollectionFactory
      * @param string $documentName
      */
     public function __construct(
-        \Migration\Resource\Record\RecordIteratorFactory $recordIteratorFactory,
+        \Migration\Resource\Record\RecordCollectionFactory $recordCollectionFactory,
+        \Migration\Resource\Document\Structure $structure,
         $documentName
     ) {
-        $this->recordIteratorFactory = $recordIteratorFactory;
+        $this->recordCollectionFactory = $recordCollectionFactory;
+        $this->structure = $structure;
         $this->documentName = $documentName;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function getRecordIterator()
+    public function getRecords()
     {
-        return $this->recordIteratorFactory->create(['documentName' => $this->getName()]);
+        return $this->recordCollectionFactory->create(array(
+            'documentName' => $this->getName(),
+        ));
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getName()
     {
         return $this->documentName;
+    }
+
+    /**
+     * Get Document name
+     *
+     * @return string
+     */
+    public function getStructure()
+    {
+        return $this->structure;
     }
 }
