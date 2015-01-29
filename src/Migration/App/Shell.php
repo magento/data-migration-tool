@@ -5,8 +5,6 @@
  */
 namespace Migration\App;
 
-use Migration\Steps\StepInterface;
-
 /**
  * Class Shell
  */
@@ -18,9 +16,9 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $logger;
 
     /**
-     * @var \Migration\Logger\Writer\Console
+     * @var \Migration\Logger\Manager
      */
-    protected $consoleLogWriter;
+    protected $logManager;
 
     /**
      * @var \Migration\Step\StepManager
@@ -35,22 +33,22 @@ class Shell extends \Magento\Framework\App\AbstractShell
     /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Config $config
-     * @param \Migration\Logger\Logger $logger
      * @param \Migration\Step\StepManager $stepManager
-     * @param \Migration\Logger\Writer\Console $consoleWriter
+     * @param \Migration\Logger\Logger $logger
+     * @param \Migration\Logger\Manager $logManager
      * @param string $entryPoint
      * @throws \Exception
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
         \Migration\Config $config,
-        \Migration\Logger\Logger $logger,
         \Migration\Step\StepManager $stepManager,
-        \Migration\Logger\Writer\Console $consoleWriter,
+        \Migration\Logger\Logger $logger,
+        \Migration\Logger\Manager $logManager,
         $entryPoint
     ) {
         $this->logger = $logger;
-        $this->consoleLogWriter = $consoleWriter;
+        $this->logManager = $logManager;
         $this->stepManager = $stepManager;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
@@ -65,30 +63,30 @@ class Shell extends \Magento\Framework\App\AbstractShell
             return $this;
         }
 
-        $this->logger->addWriter($this->consoleLogWriter);
-        $verbose = $this->getArg('verbose');
-        if ($verbose) {
-            if ($this->logger->isLogLevelValid($verbose)) {
-                $this->consoleLogWriter->setLoggingLevel($verbose);
+        try {
+            $verbose = $this->getArg('verbose');
+            if (!empty($verbose)) {
+                $this->logManager->process($verbose);
             } else {
-                $this->logger->logError("Invalid verbosity level provided!");
-                return;
+                $this->logManager->process();
             }
-        }
 
-        if ($this->getArg('config')) {
-            $this->logger->logInfo('Loaded custom config file: ' . $this->getArg('config'));
-            $this->config->init($this->getArg('config'));
-        } else {
-            $this->logger->logInfo('Loaded default config file');
-            $this->config->init();
-        }
+            if ($this->getArg('config')) {
+                $this->logger->info('Loaded custom config file: ' . $this->getArg('config'));
+                $this->config->init($this->getArg('config'));
+            } else {
+                $this->logger->info('Loaded default config file');
+                $this->config->init();
+            }
 
-        if ($this->getArg('type')) {
-            $this->logger->logInfo($this->getArg('type'));
-        }
+            if ($this->getArg('type')) {
+                $this->logger->info($this->getArg('type'));
+            }
 
-        $this->stepManager->runSteps();
+            $this->stepManager->runSteps();
+        } catch (\Exception $e) {
+            $this->logger->error('Application failed with exception: ' . $e->getMessage());
+        }
 
         return $this;
     }

@@ -22,7 +22,7 @@ class Example extends AbstractStep
             sleep(1);
         }
         $this->progress->finish();
-        $this->logger->log('');
+        $this->logger->info('');
     }
 
     /**
