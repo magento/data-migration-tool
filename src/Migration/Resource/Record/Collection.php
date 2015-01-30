@@ -8,18 +8,29 @@ namespace Migration\Resource\Record;
 /**
  * Record iterator class
  */
-class RecordCollection extends \Migration\Resource\AbstractCollection
+class Collection extends \Migration\Resource\AbstractCollection
 {
     /**
-     * @param Record $record
+     * @var \Migration\Resource\Record[]
+     */
+    protected $data;
+
+    /**
+     * Add Record to collection
+     *
+     * @param \Migration\Resource\Record $record
+     * @return $this
      */
     public function addRecord($record)
     {
         $this->data[] = $record;
+        return $this;
     }
 
     /**
-     * @param $columnName
+     * Get column data
+     *
+     * @param string $columnName
      * @return array
      */
     public function getValue($columnName)
@@ -31,6 +42,13 @@ class RecordCollection extends \Migration\Resource\AbstractCollection
         return $result;
     }
 
+    /**
+     * Set column data
+     *
+     * @param string $columnName
+     * @param mixed $value
+     * @return $this
+     */
     public function setValue($columnName, $value)
     {
         foreach($this->data as $item) {
