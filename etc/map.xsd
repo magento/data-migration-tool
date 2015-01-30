@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="diff" type="diffType" />
+
+    <xs:complexType name="diffType">
+        <xs:all>
+            <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1">
+                <xs:unique name="uniqueSourceTableName">
+                    <xs:selector xpath="table" />
+                    <xs:field xpath="@name" />
+                </xs:unique>
+                <xs:unique name="uniqueSourceTableFieldPair">
+                    <xs:selector xpath="field" />
+                    <xs:field xpath="@table" />
+                    <xs:field xpath="@name" />
+                </xs:unique>
+            </xs:element>
+            <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1">
+                <xs:unique name="uniqueDestTableName">
+                    <xs:selector xpath="table" />
+                    <xs:field xpath="@name" />
+                </xs:unique>
+                <xs:unique name="uniqueDestTableFieldPair">
+                    <xs:selector xpath="field" />
+                    <xs:field xpath="@table" />
+                    <xs:field xpath="@name" />
+                </xs:unique>
+            </xs:element>
+        </xs:all>
+    </xs:complexType>
+
+    <xs:complexType name="sourceType">
+        <xs:sequence>
+            <xs:element name="table" type="sourceTableType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="field" type="sourceFieldType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="sourceTableType">
+        <xs:choice>
+            <xs:element name="ignore" type="xs:boolean"/>
+            <xs:element name="map" type="notEmptyString"/>
+        </xs:choice>
+        <xs:attribute name="name"/>
+    </xs:complexType>
+
+    <xs:complexType name="sourceFieldType">
+        <xs:sequence>
+            <xs:element name="ignore" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="map" type="fieldMapType" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="set_value" type="notEmptyString" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="convert" type="handlerType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="notEmptyString"/>
+        <xs:attribute name="table" type="notEmptyString"/>
+    </xs:complexType>
+
+    <xs:complexType name="fieldMapType">
+        <xs:choice>
+            <xs:sequence>
+                <xs:element name="table" type="notEmptyString"/>
+                <xs:element name="field" type="notEmptyString"/>
+            </xs:sequence>
+            <xs:sequence>
+                <xs:element name="table" type="notEmptyString"/>
+            </xs:sequence>
+            <xs:sequence>
+                <xs:element name="field" type="notEmptyString"/>
+            </xs:sequence>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="handlerType">
+        <xs:sequence>
+            <xs:element name="params" type="handlerParamsType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="handler">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9a-zA-Z_\\\\]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="handlerParamsType">
+        <xs:sequence>
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="destinationType">
+        <xs:sequence>
+            <xs:element name="table" type="destinationTableType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="field" type="destinationFieldType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="destinationTableType">
+        <xs:choice>
+            <xs:element name="ignore" type="xs:boolean"/>
+        </xs:choice>
+        <xs:attribute name="name"/>
+    </xs:complexType>
+
+    <xs:complexType name="destinationFieldType">
+        <xs:sequence>
+            <xs:element name="ignore" type="xs:boolean" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="set_value" type="notEmptyString" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="convert" type="handlerType" minOccurs="0" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="name" type="notEmptyString"/>
+        <xs:attribute name="table" type="notEmptyString"/>
+    </xs:complexType>
+
+    <xs:simpleType name="notEmptyString">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+        </xs:restriction>
+    </xs:simpleType>
+</xs:schema>
