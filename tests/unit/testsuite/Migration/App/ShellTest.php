@@ -27,9 +27,9 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\Logger\Writer\Console|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Logger\Manager|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $consoleLogWriter;
+    protected $logManager;
 
     /**
      * @var \Migration\Step\StepFactory
@@ -44,7 +44,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             ->method('getDirectoryRead')
             ->willReturn($read);
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
-        $this->consoleLogWriter = $this->getMock('\Migration\Logger\Writer\Console', [], [], '', false);
+        $this->logManager = $this->getMock('\Migration\Logger\Manager', [], [], '', false);
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
         $this->stepManager = $this->getMockBuilder('\Migration\Step\StepManager')->setMethods(['runSteps'])
             ->disableOriginalConstructor()
@@ -52,9 +52,9 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell = new Shell(
             $this->filesystem,
             $config,
-            $this->logger,
             $this->stepManager,
-            $this->consoleLogWriter,
+            $this->logger,
+            $this->logManager,
             ''
         );
     }
@@ -63,8 +63,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     {
         $args = ['--config', 'file/to/config.xml', '--type', 'mapStep'];
         $this->shell->setRawArgs($args);
-        $this->logger->expects($this->at(1))->method('logInfo')->with('Loaded custom config file: file/to/config.xml');
-        $this->logger->expects($this->at(2))->method('logInfo')->with('mapStep');
+        $this->logger->expects($this->at(1))->method('info')->with('mapStep');
         $this->stepManager->expects($this->once())->method('runSteps');
         $result = $this->shell->run();
         $this->assertSame($this->shell, $result);
@@ -74,19 +73,20 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     {
         $level = 'DEBUG';
         $this->shell->setRawArgs(['--verbose', $level]);
-        $this->logger->expects($this->once())->method('isLogLevelValid')->with($level)->will($this->returnValue(true));
         $this->stepManager->expects($this->once())->method('runSteps');
-        $this->consoleLogWriter->expects($this->once())->method('setLoggingLevel')->with($level);
+        $this->logManager->expects($this->once())->method('process')->with($level);
         $this->shell->run();
     }
 
-    public function testRunVerboseInvalid()
+    public function testRunWithException()
     {
-        $level = 'DUMMY';
-        $this->shell->setRawArgs(['--verbose', $level]);
-        $this->logger->expects($this->once())->method('isLogLevelValid')->with($level)->will($this->returnValue(false));
-        $this->consoleLogWriter->expects($this->never())->method('setLoggingLevel');
-        $this->logger->expects($this->once())->method('logError');
+        $this->logManager->expects($this->once())->method('process');
+        $errorMessage = 'test error message';
+        $exception = new \Exception($errorMessage);
+        $this->stepManager->expects($this->once())->method('runSteps')->will($this->throwException($exception));
+        $this->logger->expects($this->once())->method('error')->with(
+            'Application failed with exception: test error message'
+        );
         $this->shell->run();
     }
 

@@ -32,18 +32,18 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getSteps'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['logInfo'])
+            ->setMethods(['info'])
             ->getMock();
         $this->manager = new StepManager($this->logger, $this->factory);
     }
 
     public function testRunSteps()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface');
+        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
         $step->expects($this->once())->method('run');
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->at(0))->method('logInfo')->with("Step 1 of 1");
-        $this->logger->expects($this->at(1))->method('logInfo')->with("Migration completed");
+        $this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
+        $this->logger->expects($this->at(1))->method('info')->with("Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }

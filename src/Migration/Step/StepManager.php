@@ -41,11 +41,11 @@ class StepManager
     {
         $steps = $this->factory->getSteps();
         foreach ($steps as $index => $step) {
-            $this->logger->logInfo(sprintf('Step %s of %s', $index + 1, count($steps)));
+            $this->logger->info(sprintf('Step %s of %s', $index + 1, count($steps)));
             /** @var StepInterface $step */
             $step->run();
         }
-        $this->logger->logInfo("Migration completed");
+        $this->logger->info("Migration completed");
         return $this;
     }
 }
