@@ -22,25 +22,26 @@ abstract class AbstractResource
     protected $configReader;
 
     /**
-     * @var \Migration\Resource\Document\DocumentFactory
+     * @var \Migration\Resource\DocumentFactory
      */
     protected $documentFactory;
 
     /**
-     * @var \Migration\Resource\Document\StructureFactory
+     * @var \Migration\Resource\StructureFactory
      */
     protected $structureFactory;
 
     /**
-     * @param \Migration\Resource\AdapterFactory $adapterFactory
+     * @param AdapterFactory $adapterFactory
      * @param \Migration\Config $configReader
-     * @param Document\DocumentFactory $documentFactory
+     * @param DocumentFactory $documentFactory
+     * @param StructureFactory $structureFactory
      */
     public function __construct(
         \Migration\Resource\AdapterFactory $adapterFactory,
         \Migration\Config $configReader,
-        \Migration\Resource\Document\DocumentFactory $documentFactory,
-        \Migration\Resource\Document\StructureFactory $structureFactory
+        \Migration\Resource\DocumentFactory $documentFactory,
+        \Migration\Resource\StructureFactory $structureFactory
     ) {
         $this->configReader = $configReader;
         $this->adapter = $adapterFactory->create(['config' => $this->getResourceConfig()]);
@@ -52,7 +53,7 @@ abstract class AbstractResource
      * Returns document object
      *
      * @param $documentName
-     * @return \Migration\Resource\Document\Document
+     * @return \Migration\Resource\Document
      */
     public function getDocument($documentName)
     {
@@ -64,7 +65,7 @@ abstract class AbstractResource
      * Returns document object
      *
      * @param $documentName
-     * @return \Migration\Resource\Document\Document
+     * @return \Migration\Resource\Document
      */
     public function getStructure($documentName)
     {

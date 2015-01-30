@@ -11,8 +11,15 @@ namespace Migration\Resource\Document;
 class StructureCollection extends \Migration\Resource\AbstractCollection
 {
     /**
-     * @param string $documentName
-     * @return null
+     * @var \Migration\Resource\Structure[]
+     */
+    protected $data;
+
+    /**
+     * Get Structure from collection
+     *
+     * @param $documentName
+     * @return \Migration\Resource\Structure|null
      */
     public function getStructure($documentName)
     {
@@ -23,8 +30,10 @@ class StructureCollection extends \Migration\Resource\AbstractCollection
     }
 
     /**
+     * Add Structure to collection
+     *
      * @param string $documentName
-     * @param Structure $structure
+     * @param \Migration\Resource\Structure $structure
      * @return $this
      */
     public function addStructure($documentName, $structure)

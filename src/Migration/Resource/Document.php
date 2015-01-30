@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Resource\Document;
+namespace Migration\Resource;
 
 /**
  * Document class
@@ -11,12 +11,12 @@ namespace Migration\Resource\Document;
 class Document
 {
     /**
-     * @var \Migration\Resource\Record\RecordCollectionFactory
+     * @var \Migration\Resource\Record\CollectionFactory
      */
     protected $recordCollectionFactory;
 
     /**
-     * @var string
+     * @var \Migration\Resource\Structure
      */
     protected $structure;
 
@@ -26,12 +26,12 @@ class Document
     protected $documentName;
 
     /**
-     * @param \Migration\Resource\Record\RecordCollectionFactory $recordCollectionFactory
+     * @param \Migration\Resource\Record\CollectionFactory $recordCollectionFactory
      * @param string $documentName
      */
     public function __construct(
-        \Migration\Resource\Record\RecordCollectionFactory $recordCollectionFactory,
-        \Migration\Resource\Document\Structure $structure,
+        \Migration\Resource\Record\CollectionFactory $recordCollectionFactory,
+        \Migration\Resource\Structure $structure,
         $documentName
     ) {
         $this->recordCollectionFactory = $recordCollectionFactory;
@@ -40,7 +40,7 @@ class Document
     }
 
     /**
-     * @inheritdoc
+     * @return Record\Collection
      */
     public function getRecords()
     {
@@ -50,7 +50,9 @@ class Document
     }
 
     /**
-     * @inheritdoc
+     * Get Document name
+     *
+     * @return string
      */
     public function getName()
     {
@@ -58,9 +60,9 @@ class Document
     }
 
     /**
-     * Get Document name
+     * Get document Structure
      *
-     * @return string
+     * @return \Migration\Resource\Structure
      */
     public function getStructure()
     {

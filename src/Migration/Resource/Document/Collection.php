@@ -8,11 +8,18 @@ namespace Migration\Resource\Document;
 /**
  * Document iterator class
  */
-class DocumentCollection extends \Migration\Resource\AbstractCollection
+class Collection extends \Migration\Resource\AbstractCollection
 {
     /**
-     * @param string $documentName
-     * @return null
+     * @var \Migration\Resource\Document[]
+     */
+    protected $data;
+
+    /**
+     * Get Document from collection
+     *
+     * @param $documentName
+     * @return \Migration\Resource\Document|null
      */
     public function getDocument($documentName)
     {
@@ -23,7 +30,9 @@ class DocumentCollection extends \Migration\Resource\AbstractCollection
     }
 
     /**
-     * @param Document $document
+     * Add Document to collection
+     *
+     * @param \Migration\Resource\Document $document
      * @return $this
      */
     public function addDocument($document)
