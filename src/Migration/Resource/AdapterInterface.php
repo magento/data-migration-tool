@@ -8,9 +8,45 @@ namespace Migration\Resource;
 /**
  * Adapter interface class
  */
-interface AdapterInterface extends \Migration\Resource\Document\ProviderInterface,
- \Migration\Resource\Record\ProviderInterface
+interface AdapterInterface
 {
+    /**
+     * Get Documents list
+     *
+     * @return array
+     */
+    public function getDocumentList();
+
+    /**
+     * Get Document Fields list
+     * Returns array:
+     * [
+     *     'fieldName' => 'options'
+     * ]
+     *
+     * @param string $documentName
+     * @return array
+     */
+    public function getDocumentStructure($documentName);
+
+    /**
+     * Returns number of records of document
+     *
+     * @param string $documentName
+     * @return int
+     */
+    public function getRecordsCount($documentName);
+
+    /**
+     * Load Page
+     *
+     * @param string $documentName
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function loadPage($documentName, $pageNumber, $pageSize);
+
     /**
      * Insert records into document
      *

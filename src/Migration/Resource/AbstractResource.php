@@ -22,48 +22,55 @@ abstract class AbstractResource
     protected $configReader;
 
     /**
-     * @var \Migration\Resource\Document\DocumentFactory
+     * @var \Migration\Resource\DocumentFactory
      */
     protected $documentFactory;
 
     /**
-     * @param \Migration\Resource\AdapterFactory $adapterFactory
+     * @var \Migration\Resource\StructureFactory
+     */
+    protected $structureFactory;
+
+    /**
+     * @param AdapterFactory $adapterFactory
      * @param \Migration\Config $configReader
-     * @param Document\DocumentFactory $documentFactory
+     * @param DocumentFactory $documentFactory
+     * @param StructureFactory $structureFactory
      */
     public function __construct(
         \Migration\Resource\AdapterFactory $adapterFactory,
         \Migration\Config $configReader,
-        \Migration\Resource\Document\DocumentFactory $documentFactory
+        \Migration\Resource\DocumentFactory $documentFactory,
+        \Migration\Resource\StructureFactory $structureFactory
     ) {
         $this->configReader = $configReader;
         $this->adapter = $adapterFactory->create(['config' => $this->getResourceConfig()]);
         $this->documentFactory = $documentFactory;
+        $this->structureFactory = $structureFactory;
     }
 
     /**
      * Returns document object
      *
      * @param string $documentName
-     * @return \Migration\Resource\Document\Document
+     * @return \Migration\Resource\Document
      */
     public function getDocument($documentName)
     {
-        return $this->documentFactory->create(['documentName' => $documentName]);
+        $structure = $this->getStructure($documentName);
+        return $this->documentFactory->create(['structure' => $structure, 'documentName' => $documentName]);
     }
 
     /**
-     * Returns records
+     * Returns document object
      *
      * @param string $documentName
-     * @return Record\RecordIteratorInterface
+     * @return \Migration\Resource\Document
      */
-    public function getRecords($documentName)
+    public function getStructure($documentName)
     {
-        $records = $this->getDocument($documentName)->getRecordIterator();
-        $records->setRecordProvider($this->adapter)
-            ->setPageSize($this->configReader->getOption('bulk_size'));
-        return $records;
+        $data = $this->adapter->getDocumentStructure($documentName);
+        return $this->structureFactory->create(['documentName' => $documentName, 'data' => $data]);
     }
 
     /**

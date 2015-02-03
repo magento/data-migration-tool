@@ -15,7 +15,7 @@ class Destination extends AbstractResource
      * Save data into destination resource
      *
      * @param string $documentName
-     * @param \Migration\Resource\Record\RecordIteratorInterface $records
+     * @param \Migration\Resource\Record\Collection $records
      * @return $this
      */
     public function saveRecords($documentName, $records)

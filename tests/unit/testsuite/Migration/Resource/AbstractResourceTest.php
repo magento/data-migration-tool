@@ -24,9 +24,14 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     protected $adapterFactory;
 
     /**
-     * @var \Migration\Resource\Document\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Resource\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $documentFactory;
+
+    /**
+     * @var \Migration\Resource\StructureFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $structureFactory;
 
     /**
      * @var \Migration\Resource\Destination
@@ -57,7 +62,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['insertRecords', 'getRecordsCount'],
+            ['insertRecords', 'getRecordsCount', 'getDocumentStructure'],
             [],
             '',
             false
@@ -68,60 +73,42 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock(
-            '\Migration\Resource\Document\DocumentFactory',
+            '\Migration\Resource\DocumentFactory',
             ['create'],
             [],
             '',
             false
         );
+        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', ['create'], [], '', false);
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
             $this->config,
-            $this->documentFactory
+            $this->documentFactory,
+            $this->structureFactory
         );
     }
 
     public function testGetDocument()
     {
         $resourceName = 'core_config_data';
-        $document = $this->getMock('\Migration\Resource\Document\Document', [], [], '', false);
+        $structureData = ['id' => 'int'];
+        $structure = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
+        $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
         $this->documentFactory->expects($this->any())
             ->method('create')
-            ->with($this->equalTo(['documentName' => $resourceName]))
+            ->with($this->equalTo(['structure' => $structure, 'documentName' => $resourceName]))
             ->will($this->returnValue($document));
+        $this->adapter->expects($this->any())
+            ->method('getDocumentStructure')
+            ->with($this->equalTo($resourceName))
+            ->willReturn($structureData);
+        $this->structureFactory->expects($this->any())
+            ->method('create')
+            ->with($this->equalTo(['documentName' => $resourceName, 'data' => $structureData]))
+            ->willReturn($structure);
 
         $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
-    }
-
-    public function testGetRecords()
-    {
-        $resourceName = 'core_config_data';
-        $recordsIterator = $this->getMock(
-            '\Migration\Resource\Records\RecordsIterator',
-            ['setRecordProvider', 'setPageSize'],
-            [],
-            '',
-            false
-        );
-        $recordsIterator->expects($this->any())
-            ->method('setRecordProvider')
-            ->with($this->equalTo($this->adapter))
-            ->willReturnSelf();
-        $recordsIterator->expects($this->any())
-            ->method('setPageSize')
-            ->with($this->equalTo(10))
-            ->willReturnSelf();
-        $document = $this->getMock('\Migration\Resource\Document\Document', [], [], '', false);
-        $document->expects($this->any())
-            ->method('getRecordIterator')
-            ->will($this->returnValue($recordsIterator));
-        $this->documentFactory->expects($this->any())
-            ->method('create')
-            ->with($this->equalTo(['documentName' => $resourceName]))
-            ->will($this->returnValue($document));
-
-        $this->assertSame($recordsIterator, $this->resourceDestination->getRecords($resourceName));
     }
 
     public function testGetRecordsCount()
