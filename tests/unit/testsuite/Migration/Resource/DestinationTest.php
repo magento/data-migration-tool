@@ -27,9 +27,14 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
     protected $adapterFactory;
 
     /**
-     * @var \Migration\Resource\Document\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Resource\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $documentFactory;
+
+    /**
+     * @var \Migration\Resource\StructureFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $structureFactory;
 
     /**
      * @var \Migration\Resource\Destination
@@ -64,12 +69,14 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock('\Migration\Resource\Document\DocumentFactory', [], [], '', false);
+        $this->documentFactory = $this->getMock('\Migration\Resource\DocumentFactory', [], [], '', false);
+        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
             $this->config,
-            $this->documentFactory
+            $this->documentFactory,
+            $this->structureFactory
         );
     }
 
@@ -84,7 +91,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->method('insertRecords')
             ->with($resourceName, [['data' => 'value4']])
             ->will($this->returnSelf());
-        $records = $this->getMock('\Migration\Resource\Record\RecordIteratorInterface', [], [], '', false);
+        $records = $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $records->expects($this->any())
             ->method('current')
             ->willReturnCallback(function () {
