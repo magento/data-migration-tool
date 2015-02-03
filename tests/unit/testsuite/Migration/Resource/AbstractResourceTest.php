@@ -79,7 +79,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
+        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', ['create'], [], '', false);
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
