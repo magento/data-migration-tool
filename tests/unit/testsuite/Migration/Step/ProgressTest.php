@@ -86,6 +86,12 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Progress::COMPLETED, $this->progress->getStatus());
     }
 
+    public function testFail()
+    {
+        $this->progress->fail();
+        $this->assertEquals(Progress::FAILED, $this->progress->getStatus());
+    }
+
     public function testGetStepProgress()
     {
         $this->progress->start();

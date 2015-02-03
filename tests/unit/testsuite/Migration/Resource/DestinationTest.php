@@ -32,6 +32,16 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
     protected $documentFactory;
 
     /**
+     * @var \Migration\Resource\StructureFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $structureFactory;
+
+    /**
+     * @var \Migration\Resource\Document\Collection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentCollection;
+
+    /**
      * @var \Migration\Resource\Destination
      */
     protected $resourceDestination;
@@ -65,11 +75,15 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock('\Migration\Resource\Document\DocumentFactory', [], [], '', false);
+        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
+        $this->documentCollection = $this->getMock('\Migration\Resource\Document\Collection', [], [], '', false);
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
             $this->config,
-            $this->documentFactory
+            $this->documentFactory,
+            $this->structureFactory,
+            $this->documentCollection
         );
     }
 

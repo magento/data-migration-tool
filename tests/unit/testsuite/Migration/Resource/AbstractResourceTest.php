@@ -24,9 +24,19 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     protected $adapterFactory;
 
     /**
-     * @var \Migration\Resource\Document\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Resource\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $documentFactory;
+
+    /**
+     * @var \Migration\Resource\StructureFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $structureFactory;
+
+    /**
+     * @var \Migration\Resource\Document\Collection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentCollection;
 
     /**
      * @var \Migration\Resource\Destination
@@ -57,7 +67,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['insertRecords', 'getRecordsCount'],
+            ['insertRecords', 'getRecordsCount', 'getDocumentList'],
             [],
             '',
             false
@@ -68,8 +78,16 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock(
-            '\Migration\Resource\Document\DocumentFactory',
+            '\Migration\Resource\DocumentFactory',
             ['create'],
+            [],
+            '',
+            false
+        );
+        $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
+        $this->documentCollection = $this->getMock(
+            '\Migration\Resource\Document\Collection',
+            ['addDocument'],
             [],
             '',
             false
@@ -78,7 +96,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
             $this->config,
-            $this->documentFactory
+            $this->documentFactory,
+            $this->structureFactory,
+            $this->documentCollection
         );
     }
 
@@ -92,6 +112,15 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($document));
 
         $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
+    }
+
+    public function testGetDocumentList()
+    {
+        $documentList = ['core_config_data'];
+        $this->adapter->expects($this->any())
+            ->method('getDocumentList')
+            ->willReturn($documentList);
+        $this->assertEquals($documentList, $this->resourceDestination->getDocumentList());
     }
 
     public function testGetRecords()
