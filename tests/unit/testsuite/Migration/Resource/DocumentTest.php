@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Resource\Document;
+namespace Migration\Resource;
 
 class DocumentTest extends \PHPUnit_Framework_TestCase
 {
@@ -26,15 +26,15 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     {
         $this->structure = $this->getMock(
             '\Migration\Resource\Structure',
-            array(),
-            array(),
+            [],
+            [],
             '',
             false
         );
         $this->recordCollectionFactory = $this->getMock(
             '\Migration\Resource\Record\CollectionFactory',
             ['create'],
-            array(),
+            [],
             '',
             false
         );
@@ -45,12 +45,12 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-    public function getRecords()
+    public function testGetRecords()
     {
         $recordCollection = $this->getMock(
             '\Migration\Resource\Record\RecordCollection',
-            array(),
-            array(),
+            [],
+            [],
             '',
             false
         );
@@ -67,5 +67,10 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     public function testGetName()
     {
         $this->assertEquals('test_document', $this->document->getName());
+    }
+
+    public function testGetStructure()
+    {
+        $this->assertSame($this->structure, $this->document->getStructure());
     }
 }

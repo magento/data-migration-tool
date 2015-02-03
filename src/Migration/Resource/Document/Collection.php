@@ -18,13 +18,15 @@ class Collection extends \Migration\Resource\AbstractCollection
     /**
      * Get Document from collection
      *
-     * @param $documentName
+     * @param string $documentName
      * @return \Migration\Resource\Document|null
      */
     public function getDocument($documentName)
     {
-        if (isset($this->data[$documentName])) {
-            return $this->data[$documentName];
+        foreach ($this->data as $document) {
+            if ($document->getName() == $documentName) {
+                return $document;
+            }
         }
         return null;
     }
@@ -37,7 +39,7 @@ class Collection extends \Migration\Resource\AbstractCollection
      */
     public function addDocument($document)
     {
-        $this->data[$document->getName()] = $document;
+        $this->data[] = $document;
         return $this;
     }
 }

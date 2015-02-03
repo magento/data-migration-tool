@@ -5,7 +5,7 @@
  */
 namespace Migration\Resource\Document;
 
-class DocumentCollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var []
@@ -37,5 +37,23 @@ class DocumentCollectionTest extends \PHPUnit_Framework_TestCase
         }
 
         $this->assertEquals(' 0=>Doc1 1=>Doc2 2=>Doc3', $result);
+    }
+
+    public function testGetDocument()
+    {
+        $this->assertSame($this->data[2], $this->documentCollection->getDocument('Doc3'));
+    }
+
+    public function testGetDocumentNotExists()
+    {
+        $this->assertNull($this->documentCollection->getDocument('Doc5'));
+    }
+
+    public function testAddDocument()
+    {
+        $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        $document->expects($this->any())->method('getName')->will($this->returnValue('Doc4'));
+        $this->documentCollection->addDocument($document);
+        $this->assertSame($document, $this->documentCollection->getDocument('Doc4'));
     }
 }

@@ -11,7 +11,7 @@ namespace Migration\Resource;
 abstract class AbstractCollection implements \Iterator, \Countable
 {
     /**
-     * @var []
+     * @var array
      */
     protected $data;
 
@@ -23,7 +23,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @param array $data
      */
-    public function __construct(array $data=[])
+    public function __construct(array $data = [])
     {
         $this->data = $data;
         $this->rewind();
