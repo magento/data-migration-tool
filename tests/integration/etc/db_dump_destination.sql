@@ -55,6 +55,7 @@ CREATE TABLE IF NOT EXISTS `catalog_product_entity` (
   `required_options` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Required Options',
   `created_at` timestamp NULL DEFAULT NULL COMMENT 'Creation Time',
   `updated_at` timestamp NULL DEFAULT NULL COMMENT 'Update Time',
+  `custom_extension_field_destination` smallint(5) NULL DEFAULT NULL COMMENT 'Extension Field',
   PRIMARY KEY (`entity_id`),
   KEY `IDX_CATALOG_PRODUCT_ENTITY_ENTITY_TYPE_ID` (`entity_type_id`),
   KEY `IDX_CATALOG_PRODUCT_ENTITY_ATTRIBUTE_SET_ID` (`attribute_set_id`),
@@ -64,6 +65,13 @@ CREATE TABLE IF NOT EXISTS `catalog_product_entity` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Table';
 
 -- Data exporting was unselected.
+
+-- Dumping structure for table magento.custom_extension_source
+DROP TABLE IF EXISTS `custom_extension_destination`;
+CREATE TABLE IF NOT EXISTS `custom_extension_destination` (
+  `entity_id` smallint(5) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Entity Id',
+  PRIMARY KEY (`entity_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
 /*!40014 SET FOREIGN_KEY_CHECKS=IF(@OLD_FOREIGN_KEY_CHECKS IS NULL, 1, @OLD_FOREIGN_KEY_CHECKS) */;

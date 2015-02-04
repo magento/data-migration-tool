@@ -12,6 +12,13 @@ namespace Migration\Logger;
 class Logger extends \Monolog\Logger
 {
     /**
+     * All messages from logger
+     *
+     * @var array
+     */
+    protected static $messages = [];
+
+    /**
      * @param string $name
      * @param array $handlers
      * @param array $processors
@@ -19,5 +26,24 @@ class Logger extends \Monolog\Logger
     public function __construct($name = 'Migration', array $handlers = [], array $processors = [])
     {
         parent::__construct($name, $handlers, $processors);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function addRecord($level, $message, array $context = [])
+    {
+        parent::addRecord($level, $message, $context);
+        self::$messages[$level][] = $message;
+    }
+
+    /**
+     * Returns all log messages
+     *
+     * @return array
+     */
+    public static function getMessages()
+    {
+        return self::$messages;
     }
 }

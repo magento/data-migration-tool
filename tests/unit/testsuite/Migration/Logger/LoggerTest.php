@@ -21,4 +21,19 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $logger = new Logger($someName);
         $this->assertEquals($someName, $logger->getName());
     }
+
+    /**
+     * @covers Migration\Logger\Logger::addRecord
+     * @covers Migration\Logger\Logger::getMessages
+     */
+    public function testAddRecord()
+    {
+        $infoMessage = 'info1';
+        $errorMessage = 'error1';
+        $this->logger->addRecord(\Monolog\Logger::INFO, $infoMessage);
+        $this->logger->addRecord(\Monolog\Logger::ERROR, $errorMessage);
+        $messages = \Migration\Logger\Logger::getMessages();
+        $this->assertEquals($infoMessage, $messages[\Monolog\Logger::INFO][0]);
+        $this->assertEquals($errorMessage, $messages[\Monolog\Logger::ERROR][0]);
+    }
 }
