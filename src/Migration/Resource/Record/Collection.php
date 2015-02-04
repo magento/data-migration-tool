@@ -36,7 +36,7 @@ class Collection extends \Migration\Resource\AbstractCollection
     public function getValue($columnName)
     {
         $result = [];
-        foreach($this->data as $item) {
+        foreach ($this->data as $item) {
             $result[] = $item->getValue($columnName);
         }
         return $result;
@@ -51,7 +51,7 @@ class Collection extends \Migration\Resource\AbstractCollection
      */
     public function setValue($columnName, $value)
     {
-        foreach($this->data as $item) {
+        foreach ($this->data as $item) {
             $item->setValue($columnName, $value);
         }
         return $this;

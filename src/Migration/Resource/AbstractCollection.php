@@ -8,10 +8,10 @@ namespace Migration\Resource;
 /**
  * Record iterator class
  */
-class AbstractCollection implements \Iterator, \Countable
+abstract class AbstractCollection implements \Iterator, \Countable
 {
     /**
-     * @var []
+     * @var array
      */
     protected $data;
 
@@ -19,6 +19,15 @@ class AbstractCollection implements \Iterator, \Countable
      * @var int
      */
     protected $position;
+
+    /**
+     * @param array $data
+     */
+    public function __construct(array $data = [])
+    {
+        $this->data = $data;
+        $this->rewind();
+    }
 
     /**
      * @inheritdoc

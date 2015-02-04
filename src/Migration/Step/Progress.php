@@ -110,11 +110,13 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
 
     /**
      * Save progress as failed
+     * @return $this
      */
     public function fail()
     {
         $this->checkStep();
         $this->saveProgress(self::FAILED);
+        return $this;
     }
 
     /**

@@ -6,8 +6,6 @@
 
 namespace Migration\Step;
 
-use \Symfony\Component\Console\Output\OutputInterface;
-
 /**
  * Class ProgressTest
  */
@@ -79,7 +77,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $sourceValueMap = [];
         $destinationValueMap = [];
         $i = 0;
-        foreach($documentListSource as $i => $document) {
+        foreach ($documentListSource as $i => $document) {
             $sourceDocument = $this->getMock(
                 '\Migration\Resource\Document\Document',
                 ['getName', 'getStructure'],
@@ -132,9 +130,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
         $error = "The documents bellow are not exist in the source resource:\ndoc3\n";
         $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
-        $error = "In the documents bellow fields are not exist in the destination resource:\nDocument name:doc1; Fields:field2\n";
+        $error = "In the documents bellow fields are not exist in the destination resource:"
+            . "\nDocument name:doc1; Fields:field2\n";
         $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
-        $error = "In the documents bellow fields are not exist in the source resource:\nDocument name:doc1; Fields:field3\n";
+        $error = "In the documents bellow fields are not exist in the source resource:"
+            . "\nDocument name:doc1; Fields:field3\n";
         $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
         $this->integrity->run();
     }
