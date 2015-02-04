@@ -36,7 +36,6 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
         $document = $this->source->getDocument('catalog_product_entity');
         $records = $document->getRecords();
         $this->destination->saveRecords('catalog_product_entity', $records);
-        //$this->destination->saveRecords('catalog_product_entity', $records);
         $destinationCount = $this->source->getRecordsCount('catalog_product_entity');
 
         $this->assertEquals($sourceCount, $destinationCount);

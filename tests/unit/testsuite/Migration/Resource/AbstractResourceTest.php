@@ -120,6 +120,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with($this->equalTo(['documentName' => $resourceName, 'data' => $structureData]))
             ->willReturn($structure);
+        $this->adapter->expects($this->any())
+            ->method('getDocumentList')
+            ->willReturn([$resourceName]);
 
         $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
     }

@@ -46,6 +46,8 @@ class Integrity extends AbstractStep
      *
      * @param Progress $progress
      * @param Logger $logger
+     * @param Resource\Source $source
+     * @param Resource\Destination $destination
      */
     public function __construct(
         Progress $progress,
