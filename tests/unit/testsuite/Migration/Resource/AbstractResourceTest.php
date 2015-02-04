@@ -34,6 +34,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     protected $structureFactory;
 
     /**
+     * @var \Migration\Resource\Document\Collection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentCollection;
+
+    /**
      * @var \Migration\Resource\Destination
      */
     protected $resourceDestination;
@@ -62,7 +67,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['insertRecords', 'getRecordsCount', 'getDocumentStructure'],
+            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList'],
             [],
             '',
             false
@@ -80,12 +85,20 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', ['create'], [], '', false);
+        $this->documentCollection = $this->getMock(
+            '\Migration\Resource\Document\Collection',
+            ['addDocument'],
+            [],
+            '',
+            false
+        );
 
         $this->resourceDestination = new \Migration\Resource\Destination(
             $this->adapterFactory,
             $this->config,
             $this->documentFactory,
-            $this->structureFactory
+            $this->structureFactory,
+            $this->documentCollection
         );
     }
 
@@ -107,6 +120,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with($this->equalTo(['documentName' => $resourceName, 'data' => $structureData]))
             ->willReturn($structure);
+        $this->adapter->expects($this->any())
+            ->method('getDocumentList')
+            ->willReturn([$resourceName]);
 
         $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
     }

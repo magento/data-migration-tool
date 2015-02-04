@@ -42,6 +42,11 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     protected $structureFactory;
 
     /**
+     * @var \Migration\Resource\Document\Collection|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentCollection;
+
+    /**
      * @var int
      */
     protected $bulkSize = 10;
@@ -82,6 +87,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock('\Migration\Resource\DocumentFactory', [], [], '', false);
         $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
+        $this->documentCollection = $this->getMock('\Migration\Resource\Document\Collection', [], [], '', false);
     }
 
     public function testCreate()
@@ -90,7 +96,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             $this->adapterFactory,
             $this->config,
             $this->documentFactory,
-            $this->structureFactory
+            $this->structureFactory,
+            $this->documentCollection
         );
         $this->assertInstanceOf('\Migration\Resource\Source', $this->resourceSource);
     }

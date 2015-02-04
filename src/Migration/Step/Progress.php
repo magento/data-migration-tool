@@ -109,6 +109,17 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     }
 
     /**
+     * Save progress as failed
+     * @return $this
+     */
+    public function fail()
+    {
+        $this->checkStep();
+        $this->saveProgress(self::FAILED);
+        return $this;
+    }
+
+    /**
      * @param string $status
      * @return $this
      */
@@ -116,7 +127,7 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     {
         $this->checkStep();
         $this->data[$this->currentStep]['status'] = $status;
-        $this->data[$this->currentStep]['progress'] = $this->getProgress();
+        $this->data[$this->currentStep]['progress'] = $status == self::FAILED ? 0 : $this->getProgress();
         $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         return $this;
     }
