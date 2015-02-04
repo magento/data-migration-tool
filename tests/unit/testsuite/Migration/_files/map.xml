@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>source-document</document>
+                <to>dest-document</to>
+            </rename>
+            <ignore>
+                <document>source-document-ignored</document>
+            </ignore>
+        </document_rules>
+
+        <field_rules>
+            <ignore>
+                <field>source-document::field1</field>
+            </ignore>
+            <move>
+                <field>source-document::field2</field>
+                <to>dest-document::field2</to>
+            </move>
+            <transform>
+                <field>source-document::field-with-handler</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="default_value" value="10"/>
+                </handler>
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <document_rules>
+            <ignore>
+                <document>dest-document-ignored</document>
+            </ignore>
+
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>dest-document::field-new</field>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>
