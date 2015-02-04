@@ -84,7 +84,7 @@ class Integrity extends AbstractStep
                 if ($sourceFieldsNotExist) {
                     $this->missingDocumentFields['source'][$documentSource->getName()] = $sourceFieldsNotExist;
                 }
-                if($destinationFieldsNotExist) {
+                if ($destinationFieldsNotExist) {
                     $this->missingDocumentFields['destination'][$documentSource->getName()]
                         = $destinationFieldsNotExist;
                 }
@@ -105,20 +105,20 @@ class Integrity extends AbstractStep
      */
     protected function processMissingEntities()
     {
-        if (!empty($this->missingDocuments['source'])){
+        if (!empty($this->missingDocuments['source'])) {
             $this->logger->error(sprintf(
                 "The documents bellow are not exist in the destination resource:\n%s\n",
                 implode(',', $this->missingDocuments['source'])
             ));
         }
-        if (!empty($this->missingDocuments['destination'])){
+        if (!empty($this->missingDocuments['destination'])) {
             $this->logger->error(sprintf(
                 "The documents bellow are not exist in the source resource:\n%s\n",
                 implode(',', $this->missingDocuments['destination'])
             ));
         }
         $errorMsgFields = '';
-        if (!empty($this->missingDocumentFields['source'])){
+        if (!empty($this->missingDocumentFields['source'])) {
             foreach ($this->missingDocumentFields['source'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     "Document name:%s; Fields:%s\n",
@@ -131,7 +131,7 @@ class Integrity extends AbstractStep
             );
         }
         $errorMsgFields = '';
-        if (!empty($this->missingDocumentFields['destination'])){
+        if (!empty($this->missingDocumentFields['destination'])) {
             foreach ($this->missingDocumentFields['destination'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     "Document name:%s; Fields:%s\n",
@@ -157,7 +157,7 @@ class Integrity extends AbstractStep
             || !empty($this->missingDocuments['destination'])
             || !empty($this->missingDocumentFields['source'])
             || !empty($this->missingDocumentFields['destination'])
-        ){
+        ) {
             $errorFound = true;
             $this->progress->fail();
         }

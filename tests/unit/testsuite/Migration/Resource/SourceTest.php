@@ -99,7 +99,6 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             $this->documentFactory,
             $this->structureFactory,
             $this->documentCollection
-
         );
         $this->assertInstanceOf('\Migration\Resource\Source', $this->resourceSource);
     }
