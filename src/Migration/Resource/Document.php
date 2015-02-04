@@ -26,7 +26,8 @@ class Document
     protected $documentName;
 
     /**
-     * @param \Migration\Resource\Record\CollectionFactory $recordCollectionFactory
+     * @param Record\CollectionFactory $recordCollectionFactory
+     * @param Structure $structure
      * @param string $documentName
      */
     public function __construct(
@@ -44,9 +45,9 @@ class Document
      */
     public function getRecords()
     {
-        return $this->recordCollectionFactory->create(array(
+        return $this->recordCollectionFactory->create([
             'documentName' => $this->getName(),
-        ));
+        ]);
     }
 
     /**

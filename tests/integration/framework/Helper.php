@@ -129,26 +129,40 @@ class Helper
     {
         /** @var \Migration\Config $configReader */
         $configReader  = $this->getObjectManager()->get('\Migration\Config')->init($this->configPath);
+        $cleanup = $configReader->getOption('test_cleanup_source_db');
         $source = $configReader->getSource();
         $destination = $configReader->getDestination();
-        $this->shell->execute(
-            'mysql --host=%s --user=%s --password=%s -e %s',
-            [
-                $source['database']['host'],
-                $source['database']['user'],
-                $source['database']['password'],
-                "DROP DATABASE IF EXISTS `{$source['database']['name']}`"
-            ]
-        );
-        $this->shell->execute(
-            'mysql --host=%s --user=%s --password=%s -e %s',
-            [
-                $source['database']['host'],
-                $source['database']['user'],
-                $source['database']['password'],
-                "CREATE DATABASE IF NOT EXISTS `{$source['database']['name']}`"
-            ]
-        );
+
+        if ($cleanup!==null && $cleanup) {
+            $this->shell->execute(
+                'mysql --host=%s --user=%s --password=%s -e %s',
+                [
+                    $source['database']['host'],
+                    $source['database']['user'],
+                    $source['database']['password'],
+                    "DROP DATABASE IF EXISTS `{$source['database']['name']}`"
+                ]
+            );
+            $this->shell->execute(
+                'mysql --host=%s --user=%s --password=%s -e %s',
+                [
+                    $source['database']['host'],
+                    $source['database']['user'],
+                    $source['database']['password'],
+                    "CREATE DATABASE IF NOT EXISTS `{$source['database']['name']}`"
+                ]
+            );
+            $this->shell->execute(
+                'mysql --host=%s --user=%s --password=%s --database=%s < %s',
+                [
+                    $source['database']['host'],
+                    $source['database']['user'],
+                    $source['database']['password'],
+                    $source['database']['name'],
+                    $this->dbDumpSourcePath
+                ]
+            );
+        }
         $this->shell->execute(
             'mysql --host=%s --user=%s --password=%s -e %s',
             [
@@ -165,16 +179,6 @@ class Helper
                 $destination['database']['user'],
                 $destination['database']['password'],
                 "CREATE DATABASE `{$destination['database']['name']}`"
-            ]
-        );
-        $this->shell->execute(
-            'mysql --host=%s --user=%s --password=%s --database=%s < %s',
-            [
-                $source['database']['host'],
-                $source['database']['user'],
-                $source['database']['password'],
-                $source['database']['name'],
-                $this->dbDumpSourcePath
             ]
         );
         $this->shell->execute(

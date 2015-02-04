@@ -60,7 +60,7 @@ abstract class AbstractResource
     /**
      * Returns document object
      *
-     * @param $documentName
+     * @param string $documentName
      * @return \Migration\Resource\Document|false
      */
     public function getDocument($documentName)
@@ -76,7 +76,7 @@ abstract class AbstractResource
     /**
      * Returns document object
      *
-     * @param $documentName
+     * @param string $documentName
      * @return \Migration\Resource\Structure
      */
     public function getStructure($documentName)

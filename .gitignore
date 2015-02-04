@@ -10,6 +10,5 @@ atlassian*
 /.gitattributes
 /node_modules
 /etc/config.xml
-/etc/magento_path.php
 /tests/unit/tmp
 /tests/integration/etc/config.xml
