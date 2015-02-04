@@ -25,7 +25,7 @@ class MapReaderTest extends \PHPUnit_Framework_TestCase
     {
         $defaultConfigFile = realpath(__DIR__ . '/../../../..') . '/etc/map.xml';
         if (!file_exists($defaultConfigFile)) {
-            $this->setExpectedException('Exception', 'Invalid config filename: ' . $defaultConfigFile);
+            $this->setExpectedException('Exception', 'Invalid map filename: ' . $defaultConfigFile);
         }
         $config = new MapReader();
         $config->init();
