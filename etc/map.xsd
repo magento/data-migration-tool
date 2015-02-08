@@ -79,7 +79,7 @@
     <xs:complexType name="moveFieldType">
         <xs:sequence>
             <xs:element name="field" type="fieldFormatType"/>
-            <xs:element name="to" type="notEmptyString"/>
+            <xs:element name="to" type="fieldFormatType"/>
         </xs:sequence>
     </xs:complexType>
 
