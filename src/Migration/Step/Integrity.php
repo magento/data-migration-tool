@@ -43,7 +43,9 @@ class Integrity extends AbstractStep
     protected $missingDocumentFields;
 
     /**
-     * @var $this
+     * Map reader
+     *
+     * @var MapReader
      */
     protected $map;
 
@@ -86,6 +88,8 @@ class Integrity extends AbstractStep
     }
 
     /**
+     * Check if source and destination resources have equal document names and fields
+     *
      * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
      * @return $this
      * @throws \Exception
@@ -122,7 +126,7 @@ class Integrity extends AbstractStep
     /**
      * Process missing entities
      *
-     * @return bool
+     * @return $this
      */
     protected function processMissingEntities()
     {
@@ -164,6 +168,8 @@ class Integrity extends AbstractStep
                 "Next fields from destination are not mapped:\n{$errorMsgFields}"
             );
         }
+
+        return $this;
     }
 
     /**
