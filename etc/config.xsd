@@ -86,7 +86,7 @@
 
     <xs:simpleType name="xmlFile">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[-A-Za-z0-9\._]+\.xml"/>
+            <xs:pattern value="[-/A-Za-z0-9\._]+\.xml"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

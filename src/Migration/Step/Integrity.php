@@ -6,6 +6,7 @@
 namespace Migration\Step;
 
 use Migration\Logger\Logger;
+use Migration\MapReader;
 use Migration\Resource;
 
 /**
@@ -42,21 +43,29 @@ class Integrity extends AbstractStep
     protected $missingDocumentFields;
 
     /**
-     * Constructor
+     * Map reader
      *
+     * @var MapReader
+     */
+    protected $map;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
+     * @param MapReader $mapReader
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         Resource\Source $source,
-        Resource\Destination $destination
+        Resource\Destination $destination,
+        MapReader $mapReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
+        $this->map = $mapReader;
         parent::__construct($progress, $logger);
     }
 
@@ -66,33 +75,11 @@ class Integrity extends AbstractStep
     public function run()
     {
         parent::run();
-        $currentProgress = $this->progress->getProgress();
-        $documentListSource = $this->source->getDocumentList();
-        $documentListDestination = $this->destination->getDocumentList();
-        $this->missingDocuments['source'] = array_diff($documentListSource, $documentListDestination);
-        $this->missingDocuments['destination'] = array_diff($documentListDestination, $documentListSource);
-        $this->checkMismatch();
-        for ($i = $currentProgress; $i < $this->progress->getMaxSteps(); $i++) {
-            $this->progress->advance();
-            $this->checkMismatch();
-            $documentSource = $this->source->getDocument($documentListSource[$i]);
-            $documentDestination = $this->destination->getDocument($documentSource->getName());
-            $this->logger->debug("Integrity check of {$documentSource->getName()}");
-            if ($documentSource && $documentDestination) {
-                $documentSourceStructure = array_keys($documentSource->getStructure()->getFields());
-                $documentDestinationStructure = array_keys($documentDestination->getStructure()->getFields());
-                $sourceFieldsNotExist = array_diff($documentSourceStructure, $documentDestinationStructure);
-                $destinationFieldsNotExist = array_diff($documentDestinationStructure, $documentSourceStructure);
-                if ($sourceFieldsNotExist) {
-                    $this->missingDocumentFields['source'][$documentSource->getName()] = $sourceFieldsNotExist;
-                }
-                if ($destinationFieldsNotExist) {
-                    $this->missingDocumentFields['destination'][$documentSource->getName()]
-                        = $destinationFieldsNotExist;
-                }
-            }
-        }
+
+        $this->check(MapReader::TYPE_SOURCE);
+        $this->check(MapReader::TYPE_DEST);
         $this->processMissingEntities();
+
         if (!$this->checkMismatch()) {
             $this->progress->finish();
         } else {
@@ -101,26 +88,62 @@ class Integrity extends AbstractStep
     }
 
     /**
+     * Check if source and destination resources have equal document names and fields
+     *
+     * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
+     * @return $this
+     * @throws \Exception
+     */
+    protected function check($type)
+    {
+        $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->destination;
+        $destination = $type == MapReader::TYPE_SOURCE ? $this->destination : $this->source;
+
+        $sourceDocuments = $source->getDocumentList();
+        $destDocuments = array_flip($destination->getDocumentList());
+        foreach ($sourceDocuments as $document) {
+            $this->progress->advance();
+            $mappedDocument = $this->map->getDocumentMap($document, $type);
+            if ($mappedDocument !== false) {
+                if (!isset($destDocuments[$mappedDocument])) {
+                    $this->missingDocuments[$type][$document] = true;
+                } else {
+                    $fields = array_keys($source->getDocument($document)->getStructure()->getFields());
+                    $destFields = $destination->getDocument($mappedDocument)->getStructure()->getFields();
+                    foreach ($fields as $field) {
+                        $mappedField = $this->map->getFieldMap($document, $field, $type);
+                        if ($mappedField && !isset($destFields[$mappedField])) {
+                            $this->missingDocumentFields[$type][$document][] = $mappedField;
+                        }
+                    }
+                }
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * Process missing entities
      *
-     * @return bool
+     * @return $this
      */
     protected function processMissingEntities()
     {
-        if (!empty($this->missingDocuments['source'])) {
+        if (isset($this->missingDocuments['source'])) {
             $this->logger->error(sprintf(
-                "The documents bellow are not exist in the destination resource:\n%s\n",
-                implode(',', $this->missingDocuments['source'])
+                "Next documents from source are not mapped:\n%s\n",
+                implode(',', array_keys($this->missingDocuments['source']))
             ));
         }
-        if (!empty($this->missingDocuments['destination'])) {
+        if (isset($this->missingDocuments['destination'])) {
             $this->logger->error(sprintf(
-                "The documents bellow are not exist in the source resource:\n%s\n",
-                implode(',', $this->missingDocuments['destination'])
+                "Next documents from destination are not mapped:\n%s\n",
+                implode(',', array_keys($this->missingDocuments['destination']))
             ));
         }
         $errorMsgFields = '';
-        if (!empty($this->missingDocumentFields['source'])) {
+        if (isset($this->missingDocumentFields['source'])) {
             foreach ($this->missingDocumentFields['source'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     "Document name:%s; Fields:%s\n",
@@ -129,11 +152,11 @@ class Integrity extends AbstractStep
                 );
             }
             $this->logger->error(
-                "In the documents bellow fields are not exist in the destination resource:\n{$errorMsgFields}"
+                "Next fields from source are not mapped:\n{$errorMsgFields}"
             );
         }
         $errorMsgFields = '';
-        if (!empty($this->missingDocumentFields['destination'])) {
+        if (isset($this->missingDocumentFields['destination'])) {
             foreach ($this->missingDocumentFields['destination'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     "Document name:%s; Fields:%s\n",
@@ -142,9 +165,11 @@ class Integrity extends AbstractStep
                 );
             }
             $this->logger->error(
-                "In the documents bellow fields are not exist in the source resource:\n{$errorMsgFields}"
+                "Next fields from destination are not mapped:\n{$errorMsgFields}"
             );
         }
+
+        return $this;
     }
 
     /**
@@ -154,16 +179,16 @@ class Integrity extends AbstractStep
      */
     protected function checkMismatch()
     {
-        $errorFound = false;
+        $hasErrors = false;
         if (!empty($this->missingDocuments['source'])
             || !empty($this->missingDocuments['destination'])
             || !empty($this->missingDocumentFields['source'])
             || !empty($this->missingDocumentFields['destination'])
         ) {
-            $errorFound = true;
+            $hasErrors = true;
             $this->progress->fail();
         }
-        return $errorFound;
+        return $hasErrors;
     }
 
     /**
@@ -171,6 +196,6 @@ class Integrity extends AbstractStep
      */
     public function getMaxSteps()
     {
-        return count($this->source->getDocumentList());
+        return count($this->source->getDocumentList()) + count($this->destination->getDocumentList());
     }
 }
