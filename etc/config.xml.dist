@@ -6,7 +6,9 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
-    <steps />
+    <steps>
+        <step>\Migration\Step\Integrity</step>
+    </steps>
     <source>
         <database host="localhost" name="magento1" user="root"/>
     </source>
