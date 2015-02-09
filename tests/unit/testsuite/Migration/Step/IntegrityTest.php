@@ -3,8 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Migration\Step;
+
+use Migration\MapReader;
 
 /**
  * Class ProgressTest
@@ -36,6 +37,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $integrity;
 
+    /**
+     * @var \Migration\MapReader
+     */
+    protected $map;
+
     public function setUp()
     {
         $this->progress = $this->getMock(
@@ -54,88 +60,115 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination);
+        $this->map = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination, $this->map);
     }
 
-    public function testRun()
+    public function testRunMainFlow()
     {
-        $documentListSource = ['doc1', 'doc2'];
-        $documentListDestination = ['doc1', 'doc3'];
-        $documentSourceStructure = ['field1' => [], 'field2' => []];
-        $documentDestinationStructure = ['field1' => [], 'field3' => []];
-        $this->progress->expects($this->any())->method('getProgress')->will($this->returnValue(0));
-        $this->progress
-            ->expects($this->any())
-            ->method('getMaxSteps')
-            ->will($this->returnValue(count($documentListSource)));
-        $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue($documentListSource));
-        $this->destination
-            ->expects($this->any())
-            ->method('getDocumentList')
-            ->will($this->returnValue($documentListDestination));
+        $fields = ['field1' => []];
 
-        $sourceValueMap = [];
-        $destinationValueMap = [];
-        $i = 0;
-        foreach ($documentListSource as $i => $document) {
-            $sourceDocument = $this->getMock(
-                '\Migration\Resource\Document\Document',
-                ['getName', 'getStructure'],
-                [],
-                '',
-                false
-            );
-            $sourceStructure = $this->getMock('\Migration\Resource\Document\Structure', ['getFields'], [], '', false);
-            $sourceStructure->expects($this->any())
-                ->method('getFields')
-                ->will($this->returnValue($documentSourceStructure));
-            $sourceDocument->expects($this->any())->method('getStructure')->will($this->returnValue($sourceStructure));
-            $sourceDocument->expects($this->any())->method('getName')->will($this->returnValue($document));
-            if (in_array($document, $documentListDestination)) {
-                $destinationDocument = $this->getMock(
-                    '\Migration\Resource\Document\Document',
-                    ['getName', 'getStructure'],
-                    [],
-                    '',
-                    false
-                );
-                $destinationStructure = $this->getMock(
-                    '\Migration\Resource\Document\Structure',
-                    ['getFields'],
-                    [],
-                    '',
-                    false
-                );
-                $destinationStructure->expects($this->any())
-                    ->method('getFields')
-                    ->will($this->returnValue($documentDestinationStructure));
-                $destinationDocument->expects($this->any())
-                    ->method('getStructure')
-                    ->will($this->returnValue($destinationStructure));
-                $destinationDocument->expects($this->any())->method('getName')->will($this->returnValue($document));
-            } else {
-                $destinationDocument = false;
-            }
-            $sourceValueMap[] = [$document, $sourceDocument];
-            $destinationValueMap[] = [$document, $destinationDocument];
-            $this->logger
-                ->expects($this->at($i))
-                ->method('debug')
-                ->with($this->equalTo("Integrity check of {$document}"));
-        }
-        $this->source->method('getDocument')->will($this->returnValueMap($sourceValueMap));
-        $this->destination->method('getDocument')->will($this->returnValueMap($destinationValueMap));
+        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+            ->disableOriginalConstructor()->setMethods([])->getMock();
+        $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
 
-        $error = "The documents bellow are not exist in the destination resource:\ndoc2\n";
-        $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
-        $error = "The documents bellow are not exist in the source resource:\ndoc3\n";
-        $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
-        $error = "In the documents bellow fields are not exist in the destination resource:"
-            . "\nDocument name:doc1; Fields:field2\n";
-        $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
-        $error = "In the documents bellow fields are not exist in the source resource:"
-            . "\nDocument name:doc1; Fields:field3\n";
-        $this->logger->expects($this->at(++$i))->method('error')->with($this->equalTo($error));
+        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+
+        $this->progress->expects($this->once())->method('setStep')->with($this->integrity);
+
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+            ->will($this->returnValue(['document']));
+
+        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
+
+        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+
+        $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
+
+        $this->logger->expects($this->never())->method('error');
+
         $this->integrity->run();
+    }
+
+    public function testRunDocumentIgnored()
+    {
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+            ->will($this->returnValue(['document2']));
+        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnValue(false));
+        $this->logger->expects($this->never())->method('error');
+        $this->integrity->run();
+    }
+
+    public function testRunWithDestinationDocMissed()
+    {
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
+        $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
+        $this->logger->expects($this->exactly(1))->method('error')
+            ->with("Next documents from source are not mapped:\ndocument\n");
+
+        $this->integrity->run();
+    }
+
+    public function testRunWithSourceDocMissed()
+    {
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+            ->will($this->returnValue(['document']));
+        $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
+        $this->logger->expects($this->once())->method('error')
+            ->with("Next documents from destination are not mapped:\ndocument\n");
+
+        $this->integrity->run();
+    }
+
+    public function testRunWithSourceFieldErrors()
+    {
+        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $structure->expects($this->at(0))->method('getFields')->will($this->returnValue(['field1' => []]));
+        $structure->expects($this->at(1))->method('getFields')->will($this->returnValue(['field2' => []]));
+        $structure->expects($this->at(2))->method('getFields')->will($this->returnValue(['field2' => []]));
+        $structure->expects($this->at(3))->method('getFields')->will($this->returnValue(['field1' => []]));
+
+        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+            ->will($this->returnValue(['document']));
+
+        $this->source->expects($this->exactly(2))->method('getDocument')->will($this->returnValue($document));
+        $this->destination->expects($this->exactly(2))->method('getDocument')->with('document')
+            ->will($this->returnValue($document));
+
+        $this->map->expects($this->exactly(2))->method('getDocumentMap')->with('document')
+            ->will($this->returnArgument(0));
+        $this->map->expects($this->at(1))->method('getFieldMap')->with('document', 'field1')
+            ->will($this->returnValue('field1'));
+        $this->map->expects($this->at(3))->method('getFieldMap')->with('document', 'field2')
+            ->will($this->returnValue('field2'));
+
+        $this->logger->expects($this->at(0))->method('error')
+            ->with("Next fields from source are not mapped:\nDocument name:document; Fields:field1\n");
+        $this->logger->expects($this->at(1))->method('error')
+            ->with("Next fields from destination are not mapped:\nDocument name:document; Fields:field2\n");
+
+        $this->integrity->run();
+    }
+
+    public function testGetMaxSteps()
+    {
+        $this->source->expects($this->once())->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->once())->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->assertEquals(2, $this->integrity->getMaxSteps());
     }
 }

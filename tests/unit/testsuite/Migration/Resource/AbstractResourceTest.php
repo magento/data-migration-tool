@@ -127,6 +127,15 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
     }
 
+    public function testGetWrongDocument()
+    {
+        $this->adapter->expects($this->any())
+            ->method('getDocumentList')
+            ->willReturn(['document']);
+
+        $this->assertFalse($this->resourceDestination->getDocument('badDocument'));
+    }
+
     public function testGetRecordsCount()
     {
         $resourceName = 'core_config_data';

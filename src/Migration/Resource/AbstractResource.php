@@ -37,6 +37,11 @@ abstract class AbstractResource
     protected $documentCollection;
 
     /**
+     * @var array
+     */
+    protected $documentList;
+
+    /**
      * @param AdapterFactory $adapterFactory
      * @param \Migration\Config $configReader
      * @param DocumentFactory $documentFactory
@@ -92,7 +97,10 @@ abstract class AbstractResource
      */
     public function getDocumentList()
     {
-        return $this->adapter->getDocumentList();
+        if (is_null($this->documentList)) {
+            $this->documentList = $this->adapter->getDocumentList();
+        }
+        return $this->documentList;
     }
 
     /**
