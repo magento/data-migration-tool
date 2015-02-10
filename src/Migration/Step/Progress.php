@@ -27,9 +27,14 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     protected $data;
 
     /**
-     * @var string
+     * @var StepInterface
      */
     protected $currentStep;
+
+    /**
+     * @var string
+     */
+    protected $currentStepClass;
 
     /**
      * @var \Magento\Framework\Filesystem\DriverInterface
@@ -46,7 +51,6 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     ) {
         $this->filesystem = $filesystem;
         parent::__construct($output);
-        $this->loadProgress();
     }
 
     /**
@@ -55,13 +59,11 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
      */
     public function setStep(StepInterface $step)
     {
-        $this->currentStep = get_class($step);
-        if (!isset($this->data[$this->currentStep])) {
-            $this->data[$this->currentStep] = [];
+        $this->currentStep = $step;
+        $this->currentStepClass = get_class($this->currentStep);
+        if (!isset($this->data[$this->currentStepClass])) {
+            $this->data[$this->currentStepClass] = [];
         }
-
-        parent::start($step->getMaxSteps());
-        parent::setProgress($this->getStepProgress());
 
         return $this;
     }
@@ -85,7 +87,10 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     {
         $this->checkStep();
         parent::start($max);
-        $this->saveProgress();
+        $this->loadProgress();
+        if (is_null($this->data)) {
+            $this->saveProgress();
+        }
     }
 
     /**
@@ -112,10 +117,13 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
      * Save progress as failed
      * @return $this
      */
-    public function fail()
+    public function reset()
     {
         $this->checkStep();
-        $this->saveProgress(self::FAILED);
+        $this->data[$this->currentStepClass]['status'] = self::IN_PROGRESS;
+        $this->data[$this->currentStepClass]['progress'] = 0;
+        parent::setProgress($this->getStepProgress());
+        $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         return $this;
     }
 
@@ -126,8 +134,8 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     protected function saveProgress($status = self::IN_PROGRESS)
     {
         $this->checkStep();
-        $this->data[$this->currentStep]['status'] = $status;
-        $this->data[$this->currentStep]['progress'] = $status == self::FAILED ? 0 : $this->getProgress();
+        $this->data[$this->currentStepClass]['status'] = $status;
+        $this->data[$this->currentStepClass]['progress'] = $this->getProgress();
         $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         return $this;
     }
@@ -143,6 +151,7 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
             if (is_array($data)) {
                 $this->data = $data;
             }
+            parent::setProgress($this->getStepProgress());
         }
         return $this;
     }
@@ -153,8 +162,8 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     public function getStatus()
     {
         $this->checkStep();
-        return isset($this->data[$this->currentStep]) && isset($this->data[$this->currentStep]['status'])
-            ? $this->data[$this->currentStep]['status']
+        return isset($this->data[$this->currentStepClass]) && isset($this->data[$this->currentStepClass]['status'])
+            ? $this->data[$this->currentStepClass]['status']
             : null;
     }
 
@@ -164,8 +173,8 @@ class Progress extends \Symfony\Component\Console\Helper\ProgressBar
     public function getStepProgress()
     {
         $this->checkStep();
-        return isset($this->data[$this->currentStep]) && isset($this->data[$this->currentStep]['progress'])
-            ? $this->data[$this->currentStep]['progress']
+        return isset($this->data[$this->currentStepClass]) && isset($this->data[$this->currentStepClass]['progress'])
+            ? $this->data[$this->currentStepClass]['progress']
             : 0;
     }
 

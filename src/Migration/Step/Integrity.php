@@ -75,16 +75,14 @@ class Integrity extends AbstractStep
     public function run()
     {
         parent::run();
+        $this->progress->reset();
+        $this->progress->start($this->getMaxSteps());
 
         $this->check(MapReader::TYPE_SOURCE);
         $this->check(MapReader::TYPE_DEST);
-        $this->processMissingEntities();
 
-        if (!$this->checkMismatch()) {
-            $this->progress->finish();
-        } else {
-            $this->progress->fail();
-        }
+        $this->progress->finish();
+        $this->displayErrors();
     }
 
     /**
@@ -128,67 +126,47 @@ class Integrity extends AbstractStep
      *
      * @return $this
      */
-    protected function processMissingEntities()
+    protected function displayErrors()
     {
         if (isset($this->missingDocuments['source'])) {
             $this->logger->error(sprintf(
-                "Next documents from source are not mapped:\n%s\n",
-                implode(',', array_keys($this->missingDocuments['source']))
+                PHP_EOL . 'Next documents from source are not mapped:%s',
+                PHP_EOL . implode(',', array_keys($this->missingDocuments['source']))
             ));
         }
         if (isset($this->missingDocuments['destination'])) {
             $this->logger->error(sprintf(
-                "Next documents from destination are not mapped:\n%s\n",
-                implode(',', array_keys($this->missingDocuments['destination']))
+                PHP_EOL . 'Next documents from destination are not mapped:%s',
+                PHP_EOL . implode(',', array_keys($this->missingDocuments['destination']))
             ));
         }
         $errorMsgFields = '';
         if (isset($this->missingDocumentFields['source'])) {
             foreach ($this->missingDocumentFields['source'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
-                    "Document name:%s; Fields:%s\n",
+                    PHP_EOL . 'Document name: %s; Fields: %s',
                     $document,
                     implode(',', $fields)
                 );
             }
             $this->logger->error(
-                "Next fields from source are not mapped:\n{$errorMsgFields}"
+                PHP_EOL . 'Next fields from source are not mapped:' . $errorMsgFields
             );
         }
         $errorMsgFields = '';
         if (isset($this->missingDocumentFields['destination'])) {
             foreach ($this->missingDocumentFields['destination'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
-                    "Document name:%s; Fields:%s\n",
+                    PHP_EOL . 'Document name: %s; Fields: %s',
                     $document,
                     implode(',', $fields)
                 );
             }
             $this->logger->error(
-                "Next fields from destination are not mapped:\n{$errorMsgFields}"
+                PHP_EOL . 'Next fields from destination are not mapped:' . $errorMsgFields
             );
         }
-
         return $this;
-    }
-
-    /**
-     * Check mismatch
-     *
-     * @return bool
-     */
-    protected function checkMismatch()
-    {
-        $hasErrors = false;
-        if (!empty($this->missingDocuments['source'])
-            || !empty($this->missingDocuments['destination'])
-            || !empty($this->missingDocumentFields['source'])
-            || !empty($this->missingDocumentFields['destination'])
-        ) {
-            $hasErrors = true;
-            $this->progress->fail();
-        }
-        return $hasErrors;
     }
 
     /**

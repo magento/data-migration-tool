@@ -47,26 +47,28 @@ class Helper
     public $configPath;
 
     /**
-     * Constructor
-     *
+     * @var bool
+     */
+    protected $doCleanup;
+
+    /**
      * @param \Magento\Framework\Shell $shell
-     * @param string $magentoDir
-     * @param string $dbDumpSourcePath
-     * @param string $dbDumpDestinationPath
-     * @param string $configPath
+     * @param $magentoDir
+     * @param $dbDumpSourcePath
+     * @param $dbDumpDestinationPath
+     * @throws \Exception
      */
     public function __construct(
         \Magento\Framework\Shell $shell,
         $magentoDir,
         $dbDumpSourcePath,
-        $dbDumpDestinationPath,
-        $configPath
+        $dbDumpDestinationPath
     ) {
         $this->shell = $shell;
         $this->magentoDir = $magentoDir;
         $this->dbDumpSourcePath = $dbDumpSourcePath;
         $this->dbDumpDestinationPath = $dbDumpDestinationPath;
-        $this->configPath = $configPath;
+        $this->doCleanup = defined(CLEANUP_DATABASE) ? CLEANUP_DATABASE : true;
         $this->reinstallDb();
     }
 
@@ -80,15 +82,13 @@ class Helper
         if (!self::$instance) {
             $shell = new \Magento\Framework\Shell(new \Magento\Framework\Shell\CommandRenderer());
             $magentoDir = require __DIR__ . '/../../../etc/magento_path.php';
-            $dbDumpSourcePath = __DIR__ . '/../etc/' . DB_DUMP_SOURCE;
-            $dbDumpDestinationPath = __DIR__ . '/../etc/' . DB_DUMP_DESTINATION;
-            $configPath = __DIR__ . '/../etc/config.xml';
+            $dbDumpSourcePath = __DIR__ . '/../' . DB_DUMP_SOURCE;
+            $dbDumpDestinationPath = __DIR__ . '/../' . DB_DUMP_DESTINATION;
             self::$instance = new Helper(
                 $shell,
                 $magentoDir,
                 $dbDumpSourcePath,
-                $dbDumpDestinationPath,
-                $configPath
+                $dbDumpDestinationPath
             );
         }
         return self::$instance;
@@ -122,43 +122,42 @@ class Helper
     /**
      * Reinstall Db for source and destination
      *
-     * @return void
+     * @throws \Exception
      * @throws \Magento\Framework\Exception
      */
     protected function reinstallDb()
     {
-        /** @var \Migration\Config $configReader */
-        $configReader  = $this->getObjectManager()->get('\Migration\Config')->init($this->configPath);
-        $cleanup = $configReader->getOption('test_cleanup_source_db');
-        $source = $configReader->getSource();
-        $destination = $configReader->getDestination();
-
-        if ($cleanup!==null && $cleanup) {
+        $mysqlConfigPath = dirname(__DIR__) . '/etc/mysql.php';
+        if (!is_file($mysqlConfigPath)) {
+            throw new \Exception('Database configuration file does not exists: ' . $mysqlConfigPath);
+        }
+        $config = include $mysqlConfigPath;
+        if ($this->doCleanup) {
             $this->shell->execute(
                 'mysql --host=%s --user=%s --password=%s -e %s',
                 [
-                    $source['database']['host'],
-                    $source['database']['user'],
-                    $source['database']['password'],
-                    "DROP DATABASE IF EXISTS `{$source['database']['name']}`"
+                    $config['source_db_host'],
+                    $config['source_db_user'],
+                    $config['source_db_pass'],
+                    "DROP DATABASE IF EXISTS `{$config['source_db_name']}`"
                 ]
             );
             $this->shell->execute(
                 'mysql --host=%s --user=%s --password=%s -e %s',
                 [
-                    $source['database']['host'],
-                    $source['database']['user'],
-                    $source['database']['password'],
-                    "CREATE DATABASE IF NOT EXISTS `{$source['database']['name']}`"
+                    $config['source_db_host'],
+                    $config['source_db_user'],
+                    $config['source_db_pass'],
+                    "CREATE DATABASE IF NOT EXISTS `{$config['source_db_name']}`"
                 ]
             );
             $this->shell->execute(
                 'mysql --host=%s --user=%s --password=%s --database=%s < %s',
                 [
-                    $source['database']['host'],
-                    $source['database']['user'],
-                    $source['database']['password'],
-                    $source['database']['name'],
+                    $config['source_db_host'],
+                    $config['source_db_user'],
+                    $config['source_db_pass'],
+                    $config['source_db_name'],
                     $this->dbDumpSourcePath
                 ]
             );
@@ -166,28 +165,28 @@ class Helper
         $this->shell->execute(
             'mysql --host=%s --user=%s --password=%s -e %s',
             [
-                $destination['database']['host'],
-                $destination['database']['user'],
-                $destination['database']['password'],
-                "DROP DATABASE IF EXISTS `{$destination['database']['name']}`"
+                $config['dest_db_host'],
+                $config['dest_db_user'],
+                $config['dest_db_pass'],
+                "DROP DATABASE IF EXISTS `{$config['dest_db_name']}`"
             ]
         );
         $this->shell->execute(
             'mysql --host=%s --user=%s --password=%s -e %s',
             [
-                $destination['database']['host'],
-                $destination['database']['user'],
-                $destination['database']['password'],
-                "CREATE DATABASE `{$destination['database']['name']}`"
+                $config['dest_db_host'],
+                $config['dest_db_user'],
+                $config['dest_db_pass'],
+                "CREATE DATABASE `{$config['dest_db_name']}`"
             ]
         );
         $this->shell->execute(
             'mysql --host=%s --user=%s --password=%s --database=%s < %s',
             [
-                $destination['database']['host'],
-                $destination['database']['user'],
-                $destination['database']['password'],
-                $destination['database']['name'],
+                $config['dest_db_host'],
+                $config['dest_db_user'],
+                $config['dest_db_pass'],
+                $config['dest_db_name'],
                 $this->dbDumpDestinationPath
             ]
         );
