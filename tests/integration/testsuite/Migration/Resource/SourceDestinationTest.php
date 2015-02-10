@@ -25,19 +25,23 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')->init($helper->getConfigPath());
+        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config.xml');
         $this->source = $objectManager->get('\Migration\Resource\Source');
         $this->destination = $objectManager->get('\Migration\Resource\Destination');
     }
 
-    public function testMigrate()
+    public function testGetRecordsCount()
     {
-        $sourceCount = $this->source->getRecordsCount('catalog_product_entity');
-        $document = $this->source->getDocument('catalog_product_entity');
-        $records = $document->getRecords();
-        $this->destination->saveRecords('catalog_product_entity', $records);
-        $destinationCount = $this->source->getRecordsCount('catalog_product_entity');
+        $sourceCount = $this->source->getRecordsCount('table_with_data');
+        $destinationCount = $this->destination->getRecordsCount('table_without_data');
+        $this->assertEquals(7, $sourceCount);
+        $this->assertEquals(0, $destinationCount);
+    }
 
-        $this->assertEquals($sourceCount, $destinationCount);
+    public function testGetFields()
+    {
+        $sourceStruct = $this->source->getDocument('table_with_data')->getStructure()->getFields();
+        $destStruct = $this->destination->getDocument('table_without_data')->getStructure()->getFields();
+        $this->assertEquals(array_keys($sourceStruct), array_keys($destStruct));
     }
 }

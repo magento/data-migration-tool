@@ -49,6 +49,7 @@ class Config
         }
 
         $this->config = new \DOMXPath($document->getDom());
+        $this->options = null;
         return $this;
     }
 

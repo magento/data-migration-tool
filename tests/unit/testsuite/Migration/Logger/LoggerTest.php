@@ -30,6 +30,12 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $infoMessage = 'info1';
         $errorMessage = 'error1';
+        $consoleHandler = $this->getMockBuilder('\Migration\Logger\ConsoleHandler')
+            ->disableOriginalConstructor()
+            ->setMethods(['handle'])
+            ->getMock();
+        $consoleHandler->expects($this->any())->method('handle')->will($this->returnValue(true));
+        $this->logger->pushHandler($consoleHandler);
         $this->logger->addRecord(\Monolog\Logger::INFO, $infoMessage);
         $this->logger->addRecord(\Monolog\Logger::ERROR, $errorMessage);
         $messages = \Migration\Logger\Logger::getMessages();

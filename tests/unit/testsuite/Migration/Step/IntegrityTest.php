@@ -38,19 +38,16 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $integrity;
 
     /**
-     * @var \Migration\MapReader
+     * @var \Migration\MapReader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $map;
 
     public function setUp()
     {
-        $this->progress = $this->getMock(
-            '\Migration\Step\Progress',
-            ['getProgress', 'getMaxSteps', 'advance', 'finish', 'setStep', 'fail'],
-            [],
-            '',
-            false
-        );
+        $this->progress = $this->getMockBuilder('\Migration\Step\Progress')
+            ->setMethods(['getProgress', 'getMaxSteps', 'advance', 'finish', 'setStep', 'reset', 'start'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
         $this->destination = $this->getMock(
@@ -61,7 +58,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->map = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
-            ->setMethods([])
+            ->setMethods(['getFieldMap', 'getDocumentMap'])
             ->getMock();
         $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination, $this->map);
     }
@@ -79,8 +76,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->progress->expects($this->once())->method('setStep')->with($this->integrity);
 
-        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(3))->method('getDocumentList')
             ->will($this->returnValue(['document']));
 
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
@@ -97,8 +94,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function testRunDocumentIgnored()
     {
-        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(3))->method('getDocumentList')
             ->will($this->returnValue(['document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnValue(false));
         $this->logger->expects($this->never())->method('error');
@@ -107,23 +104,23 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function testRunWithDestinationDocMissed()
     {
-        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
+        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->exactly(1))->method('error')
-            ->with("Next documents from source are not mapped:\ndocument\n");
+            ->with(PHP_EOL . 'Next documents from source are not mapped:' . PHP_EOL . 'document');
 
         $this->integrity->run();
     }
 
     public function testRunWithSourceDocMissed()
     {
-        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
-        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue([]));
+        $this->destination->expects($this->exactly(3))->method('getDocumentList')
             ->will($this->returnValue(['document']));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->once())->method('error')
-            ->with("Next documents from destination are not mapped:\ndocument\n");
+            ->with(PHP_EOL . 'Next documents from destination are not mapped:' . PHP_EOL . 'document');
 
         $this->integrity->run();
     }
@@ -142,8 +139,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
-        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(2))->method('getDocumentList')
+        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(3))->method('getDocumentList')
             ->will($this->returnValue(['document']));
 
         $this->source->expects($this->exactly(2))->method('getDocument')->will($this->returnValue($document));
@@ -157,10 +154,14 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->at(3))->method('getFieldMap')->with('document', 'field2')
             ->will($this->returnValue('field2'));
 
-        $this->logger->expects($this->at(0))->method('error')
-            ->with("Next fields from source are not mapped:\nDocument name:document; Fields:field1\n");
-        $this->logger->expects($this->at(1))->method('error')
-            ->with("Next fields from destination are not mapped:\nDocument name:document; Fields:field2\n");
+        $this->logger->expects($this->at(0))->method('error')->with(
+            PHP_EOL . 'Next fields from source are not mapped:' .
+            PHP_EOL . 'Document name: document; Fields: field1'
+        );
+        $this->logger->expects($this->at(1))->method('error')->with(
+            PHP_EOL . 'Next fields from destination are not mapped:'.
+            PHP_EOL . 'Document name: document; Fields: field2'
+        );
 
         $this->integrity->run();
     }

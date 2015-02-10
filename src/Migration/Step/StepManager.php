@@ -45,7 +45,7 @@ class StepManager
             /** @var StepInterface $step */
             $step->run();
         }
-        $this->logger->info("Migration completed");
+        $this->logger->info(PHP_EOL . "Migration completed");
         return $this;
     }
 }

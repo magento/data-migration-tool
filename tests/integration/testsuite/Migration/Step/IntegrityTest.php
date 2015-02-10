@@ -11,49 +11,71 @@ namespace Migration\Step\Integrity;
  */
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Migration\Step\Integrity $integrity
-     */
-    protected $integrity;
 
-    protected function setUp()
+    public function testRunWithMap()
     {
-        $helper = \Migration\TestFramework\Helper::getInstance();
-        $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')->init($helper->getConfigPath());
+        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
+        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config.xml');
         $logManager = $objectManager->get('\Migration\Logger\Manager');
+
+        /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
-        $this->integrity = $objectManager->get('\Migration\Step\Integrity');
+
+        /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
+        $progressBar = $this->getMockBuilder('\Migration\Step\Progress')->disableOriginalConstructor()->getMock();
+        $mapReader = $objectManager->create('\Migration\MapReader');
+
+        $integrity = $objectManager->create(
+            '\Migration\Step\Integrity',
+            ['progress' => $progressBar, 'mapReader' => $mapReader]
+        );
+        ob_start();
+        $integrity->run();
+        ob_end_clean();
+
+        $logOutput = \Migration\Logger\Logger::getMessages();
+        $this->assertFalse(isset($logOutput[\Monolog\Logger::ERROR]));
     }
 
-    public function testRun()
+    public function testRunWithoutMap()
     {
-        $this->integrity->run();
-        $messages = \Migration\Logger\Logger::getMessages();
-        $errorDocumentDestination = "/.*The documents bellow are not exist in the destination resource:\n"
-            ."custom_extension_source$/";
-        $errorDocumentSource = "/.*The documents bellow are not exist in the source resource:\n"
-            ."custom_extension_destination$/";
-        $errorFieldDestination = "/.*In the documents bellow fields are not exist in the destination resource:\n"
-            ."Document name:catalog_product_entity; Fields:custom_extension_field_source$/";
-        $errorFieldSource = "/.*In the documents bellow fields are not exist in the source resource:\n"
-            ."Document name:catalog_product_entity; Fields:custom_extension_field_destination$/";
-        $this->assertTrue(array_key_exists(\Monolog\Logger::ERROR, $messages));
-        $foundErrors = 0;
-        foreach ($messages[\Monolog\Logger::ERROR] as $message) {
-            if (preg_match($errorDocumentDestination, $message)) {
-                ++$foundErrors;
-            }
-            if (preg_match($errorDocumentSource, $message)) {
-                ++$foundErrors;
-            }
-            if (preg_match($errorFieldDestination, $message)) {
-                ++$foundErrors;
-            }
-            if (preg_match($errorFieldSource, $message)) {
-                ++$foundErrors;
-            }
+        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
+        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config-with-empty-map.xml');
+
+        /** @var \Migration\Logger\Manager $logManager */
+        $logManager = $objectManager->get('\Migration\Logger\Manager');
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+
+        /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
+        $progressBar = $this->getMockBuilder('\Migration\Step\Progress')->disableOriginalConstructor()->getMock();
+        $mapReader = $objectManager->create('\Migration\MapReader');
+        $integrity = $objectManager->create(
+            '\Migration\Step\Integrity',
+            ['progress' => $progressBar, 'mapReader' => $mapReader]
+        );
+        ob_start();
+        $integrity->run();
+        ob_end_clean();
+
+        $messages = [];
+        $messages[] = 'Next documents from source are not mapped:';
+        $messages[] = 'source_table_ignored,source_table_renamed,table_with_data';
+
+        $messages[] = 'Next documents from destination are not mapped:';
+        $messages[] = 'dest_table_ignored,dest_table_renamed,table_without_data';
+
+        $messages[] = 'Next fields from source are not mapped:';
+        $messages[] = 'Document name: common_table; Fields: source_field_ignored';
+
+        $messages[] = 'Next fields from destination are not mapped:';
+        $messages[] = 'Document name: common_table; Fields: dest_field_ignored';
+
+        $logOutput = \Migration\Logger\Logger::getMessages();
+        $this->assertTrue(isset($logOutput[\Monolog\Logger::ERROR]));
+        $errors = implode("\n", $logOutput[\Monolog\Logger::ERROR]);
+
+        foreach ($messages as $text) {
+            $this->assertContains($text, $errors);
         }
-        $this->assertEquals(4, $foundErrors);
     }
 }

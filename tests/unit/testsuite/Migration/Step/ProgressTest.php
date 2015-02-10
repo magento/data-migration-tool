@@ -64,6 +64,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
 
         $this->progress = new Progress($this->output, $filesystem);
         $this->progress->setStep($step);
+        $this->progress->start(10);
         $this->assertEquals(7, $this->progress->getProgress());
         $this->assertEquals(7, $this->progress->getStepProgress());
     }
@@ -86,15 +87,15 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(Progress::COMPLETED, $this->progress->getStatus());
     }
 
-    public function testFail()
+    public function testReset()
     {
-        $this->progress->fail();
-        $this->assertEquals(Progress::FAILED, $this->progress->getStatus());
+        $this->progress->reset();
+        $this->assertEquals(Progress::IN_PROGRESS, $this->progress->getStatus());
     }
 
     public function testGetStepProgress()
     {
-        $this->progress->start();
+        $this->progress->start(5);
         $this->assertEquals(0, $this->progress->getStepProgress());
 
         $this->progress->advance();
@@ -113,7 +114,6 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
         $this->setExpectedException('Exception', 'Step is not specified');
         $progress = new Progress($this->output, $filesystem);
-        $progress->start();
-
+        $progress->start(5);
     }
 }

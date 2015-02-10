@@ -43,7 +43,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('run');
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
-        $this->logger->expects($this->at(1))->method('info')->with("Migration completed");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }
