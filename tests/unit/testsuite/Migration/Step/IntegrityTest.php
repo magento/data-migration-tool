@@ -5,10 +5,8 @@
  */
 namespace Migration\Step;
 
-use Migration\MapReader;
-
 /**
- * Class ProgressTest
+ * Class IntegrityTest
  */
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
