@@ -182,7 +182,7 @@ class MapReader
         }
 
         $queryResult = $this->xml->query(
-            sprintf('//source/field_rules/move/field[text()="%s::%s"]', $document, $field)
+            sprintf('//source/field_rules/move/*[text()="%s::%s"]', $document, $field)
         );
         if ($queryResult->length > 0) {
             /** @var \DOMElement $node */

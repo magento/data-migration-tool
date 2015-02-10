@@ -6,7 +6,9 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
-    <steps />
+    <steps>
+        <step>\Migration\Step\Integrity</step>
+    </steps>
     <source>
         <database host="localhost" name="magento1" user="root"/>
     </source>
@@ -14,7 +16,7 @@
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>map-file.xml</map_file>
+        <map_file>etc/map.xml</map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
     </options>

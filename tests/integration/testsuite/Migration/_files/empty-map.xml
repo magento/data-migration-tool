@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <ignore><document>admin_assert</document></ignore>
+            <rename>
+                <document>admin_role</document>
+                <to>authorization_role</to>
+            </rename>
+            <rename>
+                <document>admin_rule</document>
+                <to>authorization_rule</to>
+            </rename>
+        </document_rules>
+
+        <field_rules>
+            <ignore><field>catalog_category_entity::entity_type_id</field></ignore>
+            <ignore><field>catalog_category_entity_datetime::entity_type_id</field></ignore>
+            <ignore><field>catalog_category_entity_decimal::entity_type_id</field></ignore>
+            <ignore><field>catalog_category_entity_int::entity_type_id</field></ignore>
+            <ignore><field>catalog_category_entity_text::entity_type_id</field></ignore>
+            <ignore><field>catalog_category_entity_varchar::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_datetime::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_decimal::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_int::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_text::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_varchar::entity_type_id</field></ignore>
+            <ignore><field>catalog_product_entity_gallery::entity_type_id</field></ignore>
+            <ignore><field>admin_rule::assert_id</field></ignore>
+            <ignore><field>admin_rule::role_type</field></ignore>
+            <transform>
+                <field>authorization_role::user_type</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[1:10;3:30;4:40]"/>
+                </handler>
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <document_rules>
+            <ignore><document>admin_system_messages</document></ignore>
+        </document_rules>
+
+        <field_rules>
+            <ignore><field>authorization_role::user_type</field></ignore>
+            <transform>
+                <field>authorization_role::user_type</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="2"/>
+                </handler>
+            </transform>
+        </field_rules>
+    </destination>
+</map>
