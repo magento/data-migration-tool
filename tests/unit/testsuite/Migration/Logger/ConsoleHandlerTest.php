@@ -47,8 +47,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $output = ob_get_contents();
         ob_end_clean();
         $this->assertTrue($result);
-        $this->assertEquals("Success message\n", $output);
-
+        $this->assertEquals("Success message" . PHP_EOL, $output);
     }
 
     /**

@@ -46,6 +46,7 @@ class Document
     public function getRecords()
     {
         return $this->recordCollectionFactory->create([
+            'structure' => $this->structure,
             'documentName' => $this->getName(),
         ]);
     }

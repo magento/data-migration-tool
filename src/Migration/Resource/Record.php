@@ -16,11 +16,53 @@ class Record
     protected $data;
 
     /**
+     * @var \Migration\Resource\Structure
+     */
+    protected $structure;
+
+    /**
      * @param array $data
      */
     public function __construct(array $data = [])
     {
         $this->data = $data;
+    }
+
+    /**
+     * @return Structure
+     */
+    public function getStructure()
+    {
+        return $this->structure;
+    }
+
+    /**
+     * @param Structure $structure
+     */
+    public function setStructure($structure)
+    {
+        $this->structure = $structure;
+    }
+
+    /**
+     * @param Structure $structure
+     * @return bool
+     */
+    public function validateStructure($structure = null)
+    {
+        if (!$structure) {
+            $structure = $this->structure;
+        }
+        if (!$structure) {
+            return false;
+        }
+
+        foreach (array_keys($this->data) as $field) {
+            if (!$structure->hasField($field)) {
+                return false;
+            }
+        }
+        return true;
     }
 
     /**
@@ -40,9 +82,13 @@ class Record
      * @param string $columnName
      * @param mixed $value
      * @return $this
+     * @throws \Exception
      */
     public function setValue($columnName, $value)
     {
+        if ($this->structure && !$this->structure->hasField($columnName)) {
+            throw new \Exception("Record structure does not contain field $columnName");
+        }
         $this->data[$columnName] = $value;
         return $this;
     }
@@ -52,10 +98,14 @@ class Record
      *
      * @param array $data
      * @return $this
+     * @throws \Exception
      */
     public function setData($data)
     {
         $this->data = $data;
+        if ($this->structure && !$this->validateStructure()) {
+            throw new \Exception("Record structure does not match provided Data");
+        }
         return $this;
     }
 }
