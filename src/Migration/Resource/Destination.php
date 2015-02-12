@@ -23,9 +23,10 @@ class Destination extends AbstractResource
         $pageSize = $this->configReader->getOption('bulk_size');
         $i = 0;
         $data = [];
+        /** @var \Migration\Resource\Record $row */
         foreach ($records as $row) {
             $i++;
-            $data[] = $row;
+            $data[] = $row->getData();
             if ($i == $pageSize) {
                 $this->adapter->insertRecords($documentName, $data);
                 $data = [];

@@ -38,6 +38,7 @@ class Record
 
     /**
      * @param Structure $structure
+     * @return void
      */
     public function setStructure($structure)
     {
@@ -73,7 +74,7 @@ class Record
      */
     public function getValue($columnName)
     {
-        return $this->data[$columnName];
+        return isset($this->data[$columnName]) ? $this->data[$columnName] : null;
     }
 
     /**
@@ -107,5 +108,15 @@ class Record
             throw new \Exception("Record structure does not match provided Data");
         }
         return $this;
+    }
+
+    /**
+     * Get record data
+     *
+     * @return array
+     */
+    public function getData()
+    {
+        return $this->data;
     }
 }

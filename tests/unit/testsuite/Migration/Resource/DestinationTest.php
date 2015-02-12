@@ -104,7 +104,10 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->willReturnCallback(function () {
                 static $count = 0;
                 $count++;
-                return ['data' => "value$count"];
+                $data = ['data' => "value$count"];
+                $record = $this->getMock('\Migration\Resource\Record', ['getData'], [], '', false);
+                $record->expects($this->once())->method('getData')->will($this->returnValue($data));
+                return $record;
             });
         $records->expects($this->any())
             ->method('valid')

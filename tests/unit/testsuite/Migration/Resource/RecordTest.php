@@ -107,4 +107,9 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->record->setStructure($this->structure);
         $this->record->setData(['id' => 11, 'wrongName' => 'item2']);
     }
+
+    public function testGetData()
+    {
+        $this->assertEquals(['id' => 10, 'name' => 'item1'], $this->record->getData());
+    }
 }
