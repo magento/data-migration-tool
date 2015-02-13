@@ -10,7 +10,7 @@ use Migration\Resource\Record;
 /**
  * Handler to transform field according to the map
  */
-class Convert implements HandlerInterface
+class Convert extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var string
@@ -41,12 +41,12 @@ class Convert implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Record $record, $fieldName)
+    public function handle(Record $record)
     {
-        $value = $record->getValue($fieldName);
+        $value = $record->getValue($this->field);
         if (isset($this->map[$value])) {
             $value = $this->map[$value];
         }
-        $record->setValue($fieldName, $value);
+        $record->setValue($this->field, $value);
     }
 }

@@ -9,6 +9,7 @@ use Migration\Handler;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
+use Migration\Resource\Record;
 
 /**
  * Class Example
@@ -36,9 +37,9 @@ class Map extends AbstractStep
     protected $mapReader;
 
     /**
-     * @var Handler\ManagerFactory
+     * @var \Migration\RecordTransformerFactory
      */
-    protected $handlerManagerFactory;
+    protected $recordTransformerFactory;
 
     /**
      * @param Progress $progress
@@ -46,7 +47,7 @@ class Map extends AbstractStep
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
-     * @param Handler\ManagerFactory $handlerManagerFactory
+     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapReader $mapReader
      * @throws \Exception
      */
@@ -56,13 +57,13 @@ class Map extends AbstractStep
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        Handler\ManagerFactory $handlerManagerFactory,
+        \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapReader $mapReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
-        $this->handlerManagerFactory = $handlerManagerFactory;
+        $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
         $this->mapReader->init();
         parent::__construct($progress, $logger);
@@ -70,41 +71,43 @@ class Map extends AbstractStep
 
     /**
      * {@inheritdoc}
+     * @throws \Exception
      */
     public function run()
     {
         parent::run();
-        $documentListSource = $this->source->getDocumentList();
-        /** @var Resource\Document $sourceDocument */
-        foreach ($documentListSource as $sourceName) {
-            $sourceDocument = $this->source->getDocument($sourceName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceName, MapReader::TYPE_SOURCE);
+        $sourceDocuments = $this->source->getDocumentList();
+        foreach ($sourceDocuments as $sourceDocName) {
+            $sourceDocument = $this->source->getDocument($sourceDocName);
+            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
-            $destinationDocument = $this->destination->getDocument($destinationName);
-            if (!$destinationDocument) {
-                throw new \Exception("Failed to find destination document with name '$destinationName'.");
-            }
+            $destDocument = $this->destination->getDocument($destinationName);
 
-            /** @var Handler\Manager $handlerManager */
-            $handlerManager = $this->handlerManagerFactory->create();
-            $handlerManager->init($sourceDocument, $destinationDocument);
+            /** @var \Migration\RecordTransformer $recordTranformer */
+            $recordTranformer = $this->recordTransformerFactory->create(
+                [
+                    'sourceDocument' => $sourceDocument,
+                    'destDocument' => $destDocument,
+                    'mapReader' => $this->mapReader
+                ]
+            );
+            $recordTranformer->init();
+
             $pageNumber = 0;
-            while (!empty($bulk = $this->source->getRecords($sourceName, $pageNumber))) {
+            while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
-                $recordsCollection = $sourceDocument->getRecords();
+                $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
-                    $record = $this->recordFactory->create(['data' => $recordData]);
-                    $recordsCollection->addRecord($record);
+                    $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
+                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
+                    $recordTranformer->transform($record, $destRecord);
+                    $destinationRecords->addRecord($destRecord);
                 }
-                $destCollection = $handlerManager->process($recordsCollection);
-                $this->destination->saveRecords($destinationName, $destCollection);
+                $this->destination->saveRecords($destinationName, $destinationRecords);
             }
-            $this->progress->advance();
         }
-
-        $this->progress->finish();
     }
 
     /**

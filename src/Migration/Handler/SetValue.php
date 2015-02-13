@@ -10,7 +10,7 @@ use Migration\Resource\Record;
 /**
  * Handler to set constant value to the field
  */
-class SetValue implements HandlerInterface
+class SetValue extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var string
@@ -28,8 +28,8 @@ class SetValue implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Record $record, $fieldName)
+    public function handle(Record $record)
     {
-        $record->setValue($fieldName, $this->value);
+        $record->setValue($this->field, $this->value);
     }
 }

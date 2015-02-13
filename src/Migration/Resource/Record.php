@@ -22,10 +22,14 @@ class Record
 
     /**
      * @param array $data
+     * @param Document $document
      */
-    public function __construct(array $data = [])
+    public function __construct(array $data = [], Document $document = null)
     {
         $this->data = $data;
+        if (!is_null($document)) {
+            $this->setStructure($document->getStructure());
+        }
     }
 
     /**
@@ -118,5 +122,18 @@ class Record
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * @return array
+     * @throws \Exception
+     */
+    public function getFields()
+    {
+        if (empty($this->structure)) {
+            throw new \Exception("Structure not set");
+        }
+
+        return array_keys($this->structure->getFields());
     }
 }
