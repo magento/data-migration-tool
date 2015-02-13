@@ -5,7 +5,9 @@
  */
 namespace Migration\Handler;
 
-abstract class AbstractHandler
+use Migration\Resource\Record;
+
+abstract class AbstractHandler implements HandlerInterface
 {
     /**
      * Field, processed by the handler
@@ -15,14 +17,21 @@ abstract class AbstractHandler
     protected $field;
 
     /**
-     * Setting field, processed by the handler
-     *
-     * @param string $field
-     * @return $this
+     * {@inheritdoc}
      */
     public function setField($field)
     {
         $this->field = $field;
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Record $record)
+    {
+        if (!in_array($this->field, $record->getFields())) {
+            throw new \Exception("{$this->field} field not found in the record.");
+        }
     }
 }

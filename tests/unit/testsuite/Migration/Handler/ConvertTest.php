@@ -36,11 +36,14 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock('Migration\Resource\Record', ['setValue', 'getValue'], [], '', false);
+        $record = $this->getMock('Migration\Resource\Record', ['setValue', 'getValue', 'getFields'], [], '', false);
         $record->expects($this->once())->method('getValue')->will($this->returnValue($initialValue));
         $record->expects($this->once())->method('setValue')->with($fieldName, $processedValue);
+        $record->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
+
         $handler = new Convert($map);
-        $handler->handle($record, $fieldName);
+        $handler->setField($fieldName);
+        $handler->handle($record);
     }
 
     public function testInvalidMap()

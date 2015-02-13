@@ -109,7 +109,7 @@ class RecordTransformer
         foreach ($record->getFields() as $field) {
             $handler = $handlerManager->getHandler($field);
             if (!empty($handler)) {
-                $record = $handler->handle($record);
+                $handler->handle($record);
             }
         }
         return $record;

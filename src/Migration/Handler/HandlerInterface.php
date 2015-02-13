@@ -13,14 +13,14 @@ interface HandlerInterface
      * Handling record
      *
      * @param Record $record
-     * @return void
+     * @return Record
      */
     public function handle(Record $record);
 
     /**
      * Setting field, which should be processed in the handler
      *
-     * @param $field
+     * @param string $field
      * @return $this
      */
     public function setField($field);

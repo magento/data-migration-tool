@@ -30,6 +30,8 @@ class SetValue extends AbstractHandler implements HandlerInterface
      */
     public function handle(Record $record)
     {
+        parent::handle($record);
         $record->setValue($this->field, $this->value);
+        return $record;
     }
 }

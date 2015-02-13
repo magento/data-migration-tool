@@ -12,9 +12,12 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
         $value = 'value';
         $fieldName = 'fieldname';
         /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock('Migration\Resource\Record', ['setValue'], [], '', false);
+        $record = $this->getMock('Migration\Resource\Record', ['setValue', 'getFields'], [], '', false);
         $record->expects($this->once())->method('setValue')->with($fieldName, $value);
+        $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
+
         $handler = new SetValue($value);
-        $handler->handle($record, $fieldName);
+        $handler->setField($fieldName);
+        $handler->handle($record);
     }
 }

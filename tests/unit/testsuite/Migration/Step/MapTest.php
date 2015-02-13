@@ -43,9 +43,9 @@ class MapTest extends \PHPUnit_Framework_TestCase
     protected $mapReader;
 
     /**
-     * @var Handler\ManagerFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\RecordTransformerFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $handlerManagerFactory;
+    protected $recordTransformerFactory;
 
     /**
      * @var Map|\PHPUnit_Framework_MockObject_MockObject
@@ -71,7 +71,13 @@ class MapTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->recordFactory = $this->getMock('Migration\Resource\RecordFactory', ['create'], [], '', false);
-        $this->handlerManagerFactory = $this->getMock('Migration\Handler\ManagerFactory', ['create'], [], '', false);
+        $this->recordTransformerFactory = $this->getMock(
+            'Migration\RecordTransformerFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
         $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
         $this->mapReader->expects($this->once())->method('init');
         $this->mapStep = new Map(
@@ -80,7 +86,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $this->recordFactory,
-            $this->handlerManagerFactory,
+            $this->recordTransformerFactory,
             $this->mapReader
         );
     }
@@ -99,17 +105,6 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->mapStep->run();
     }
 
-    public function testGetMapEmptyDestinationDocument()
-    {
-        $sourceDocName = 'core_config_data';
-        $this->source->expects($this->once())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
-        $dstDocName = 'config_data';
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->destination->expects($this->once())->method('getDocument')->will($this->returnValue(false));
-        $this->setExpectedException('Exception');
-        $this->mapStep->run();
-    }
-
     public function testGetMap()
     {
         $sourceDocName = 'core_config_data';
@@ -124,31 +119,33 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('getDocument')->will(
             $this->returnValue($destinationDocument)
         );
-        $handlerManager = $destinationDocument = $this->getMock(
-            '\Migration\Handler\Manager',
-            ['init', 'process'],
+        $recordTransformer = $this->getMock(
+            'Migration\RecordTransformer',
+            ['init', 'transform'],
             [],
             '',
             false
         );
-        $this->handlerManagerFactory->expects($this->once())->method('create')->will(
-            $this->returnValue($handlerManager)
+        $this->recordTransformerFactory->expects($this->once())->method('create')->will(
+            $this->returnValue($recordTransformer)
         );
-        $handlerManager->expects($this->once())->method('init');
+        $recordTransformer->expects($this->once())->method('init');
 
         $bulk = [['id' => 4, 'name' => 'john']];
         $this->source->expects($this->at(2))->method('getRecords')->will($this->returnValue($bulk));
         $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue([]));
-        $recordCollection = $this->getMock('\Migration\Resource\Record\Collection', ['addRecord'], [], '', false);
-        $sourceDocument->expects($this->once())->method('getRecords')->will($this->returnValue($recordCollection));
-        $record = $this->getMock('\Migration\Resource\Record', [], [], '', false);
-        $this->recordFactory->expects($this->once())->method('create')->will($this->returnValue($record));
-        $recordCollection->expects($this->once())->method('addRecord')->with($record);
-        $destCollection =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
-        $handlerManager->expects($this->once())->method('process')->with($recordCollection)->will(
-            $this->returnValue($destCollection)
+        $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
+        $destinationDocument->expects($this->once())->method('getRecords')->will(
+            $this->returnValue($destinationRecords)
         );
-        $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destCollection);
+
+        $srcRecord = $this->getMock('\Migration\Resource\Record', [], [], '', false);
+        $dstRecord = $this->getMock('\Migration\Resource\Record', [], [], '', false);
+        $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($srcRecord));
+        $this->recordFactory->expects($this->at(1))->method('create')->will($this->returnValue($dstRecord));
+        $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
+
+        $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->mapStep->run();
     }
 }

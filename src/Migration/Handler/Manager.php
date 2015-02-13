@@ -6,11 +6,6 @@
 namespace Migration\Handler;
 
 use Magento\Framework\ObjectManagerInterface;
-use Migration\MapReader;
-use Migration\Resource\Document;
-use Migration\Resource\Record;
-use Migration\Resource\Record\Collection;
-use Migration\Resource\Structure;
 
 class Manager
 {
@@ -41,13 +36,12 @@ class Manager
      */
     public function initHandler($field, $handlerConfig = [])
     {
-        $handlerName = $handlerConfig['class'];
-        if (empty($handlerName)) {
+        if (empty($handlerConfig) || empty($handlerConfig['class'])) {
             return;
         }
-        $handler = $this->objectManager->create($handlerName, $handlerConfig['class']);
+        $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
         if (!$handler instanceof HandlerInterface) {
-            throw new \Exception("'$handlerName' is not correct handler.");
+            throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
         }
         $handler->setField($field);
         $this->handlers[$field] = $handler;
@@ -61,7 +55,7 @@ class Manager
      */
     public function getHandler($field)
     {
-        if ($this->handlers[$field]) {
+        if (!empty($this->handlers[$field])) {
             return $this->handlers[$field];
         }
         return null;

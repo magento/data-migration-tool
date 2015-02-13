@@ -100,7 +100,9 @@ class Map extends AbstractStep
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
+                    /** @var Record $record */
                     $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
+                    /** @var Record $destRecord */
                     $destRecord = $this->recordFactory->create(['document' => $destDocument]);
                     $recordTranformer->transform($record, $destRecord);
                     $destinationRecords->addRecord($destRecord);

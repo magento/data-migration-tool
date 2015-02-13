@@ -29,7 +29,9 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->structure->expects($this->any())->method('hasField')->willReturnCallback(function ($fieldName) {
             return in_array($fieldName, ['id', 'name']);
         });
-        $this->record = new \Migration\Resource\Record(['id' => 10, 'name' => 'item1']);
+        $document = $this->getMock('\Migration\Resource\Document', ['getStructure'], [], '', false);
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($this->structure));
+        $this->record = new \Migration\Resource\Record(['id' => 10, 'name' => 'item1'], $document);
     }
 
     /**
@@ -50,6 +52,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function testValidateStructure($result, $structure)
     {
+        $this->record->setStructure(null);
         $this->assertEquals($result, $this->record->validateStructure($structure));
     }
 
@@ -111,5 +114,32 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     public function testGetData()
     {
         $this->assertEquals(['id' => 10, 'name' => 'item1'], $this->record->getData());
+    }
+
+    public function getFieldsDataProvider()
+    {
+        return [
+            ['structureData' => ['id' => '123', 'name' => 'smnm'], 'fields' => ['id', 'name']]
+        ];
+    }
+
+    /**
+     * @param array $structureData
+     * @param array $fields
+     * @dataProvider getFieldsDataProvider
+     */
+    public function testGetFields($structureData, $fields)
+    {
+        $structure = $this->getMock('\Migration\Resource\Structure', ['getFields'], [], '', false);
+        $structure->expects($this->once())->method('getFields')->will($this->returnValue($structureData));
+        $this->record->setStructure($structure);
+        $this->assertEquals($fields, $this->record->getFields());
+    }
+
+    public function testGetFieldsInvalid()
+    {
+        $this->record->setStructure(null);
+        $this->setExpectedException('Exception', 'Structure not set');
+        $this->record->getFields();
     }
 }
