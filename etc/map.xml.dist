@@ -180,6 +180,9 @@
                 <document>cataloginventory_stock_status_cl</document>
             </ignore>
             <ignore>
+                <document>catalogsearch_fulltext</document>
+            </ignore>
+            <ignore>
                 <document>catalogsearch_fulltext_cl</document>
             </ignore>
             <ignore>
@@ -300,136 +303,13 @@
                 <document>eav_attribute_set</document>
             </ignore>
             <ignore>
-                <document>eav_entity</document>
-            </ignore>
-            <ignore>
                 <document>eav_entity_attribute</document>
-            </ignore>
-            <ignore>
-                <document>eav_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>eav_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>eav_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>eav_entity_store</document>
-            </ignore>
-            <ignore>
-                <document>eav_entity_text</document>
             </ignore>
             <ignore>
                 <document>eav_entity_type</document>
             </ignore>
             <ignore>
-                <document>eav_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>eav_form_element</document>
-            </ignore>
-            <ignore>
-                <document>eav_form_fieldset</document>
-            </ignore>
-            <ignore>
-                <document>eav_form_fieldset_label</document>
-            </ignore>
-            <ignore>
-                <document>eav_form_type</document>
-            </ignore>
-            <ignore>
-                <document>eav_form_type_entity</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_text</document>
-            </ignore>
-            <ignore>
                 <document>catalog_category_entity_url_key</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_gallery</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_group_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_media_gallery</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_media_gallery_value</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_text</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_tier_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity_text</document>
-            </ignore>
-            <ignore>
-                <document>customer_address_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity_text</document>
-            </ignore>
-            <ignore>
-                <document>customer_entity_varchar</document>
             </ignore>
             <ignore>
                 <document>enterprise_customer_sales_flat_order</document>
@@ -442,45 +322,6 @@
             </ignore>
             <ignore>
                 <document>enterprise_customer_sales_flat_quote_address</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_grid</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_eav_attribute</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_eav_attribute_website</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity_text</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_item_form_attribute</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_shipping_label</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_rma_status_history</document>
             </ignore>
             <ignore>
                 <document>enterprise_targetrule_index</document>
@@ -980,6 +821,58 @@
                 <document>sales_billing_agreement_order</document>
                 <to>paypal_billing_agreement_order</to>
             </rename>
+            <rename>
+                <document>enterprise_rma</document>
+                <to>magento_rma</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_grid</document>
+                <to>magento_rma_grid</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_eav_attribute</document>
+                <to>magento_rma_item_eav_attribute</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_eav_attribute_website</document>
+                <to>magento_rma_item_eav_attribute_website</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity</document>
+                <to>magento_rma_item_entity</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity_datetime</document>
+                <to>magento_rma_item_entity_datetime</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity_decimal</document>
+                <to>magento_rma_item_entity_decimal</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity_int</document>
+                <to>magento_rma_item_entity_int</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity_text</document>
+                <to>magento_rma_item_entity_text</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_entity_varchar</document>
+                <to>magento_rma_item_entity_varchar</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_item_form_attribute</document>
+                <to>magento_rma_item_form_attribute</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_shipping_label</document>
+                <to>magento_rma_shipping_label</to>
+            </rename>
+            <rename>
+                <document>enterprise_rma_status_history</document>
+                <to>magento_rma_status_history</to>
+            </rename>
         </document_rules>
         <field_rules>
             <move>
@@ -1060,6 +953,108 @@
             <ignore>
                 <field>enterprise_cms_page_revision::custom_root_template</field>
             </ignore>
+            <ignore>
+                <field>catalog_category_entity::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity_datetime::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity_decimal::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity_int::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity_text::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity_varchar::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_datetime::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_decimal::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_gallery::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_int::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_text::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_varchar::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity::attribute_set_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity_datetime::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity_decimal::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity_int::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity_text::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_address_entity_varchar::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity::attribute_set_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity_datetime::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity_decimal::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity_int::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity_text::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity_varchar::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity::attribute_set_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity_datetime::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity_decimal::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity_int::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity_text::entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>enterprise_rma_item_entity_varchar::entity_type_id</field>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1126,45 +1121,6 @@
             </ignore>
             <ignore>
                 <document>magento_customercustomattributes_sales_flat_quote_address</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_grid</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_eav_attribute</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_eav_attribute_website</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity_datetime</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity_decimal</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity_int</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity_text</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_item_form_attribute</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_shipping_label</document>
-            </ignore>
-            <ignore>
-                <document>magento_rma_status_history</document>
             </ignore>
             <ignore>
                 <document>magento_targetrule_index</document>
