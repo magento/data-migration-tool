@@ -28,10 +28,11 @@ class Convert implements HandlerInterface
         $map = explode(';', $map);
         $resultMap =[];
         foreach ($map as $mapRecord) {
-            list($key, $value) = explode(':', $mapRecord);
-            if (!isset($key) || !isset($value)) {
+            $explodedRecord = explode(':', $mapRecord);
+            if (count($explodedRecord) != 2) {
                 throw new \Exception('Invalid map provided to convert handler');
             }
+            list($key, $value) = $explodedRecord;
             $resultMap[$key] = $value;
         }
         $this->map = $resultMap;
