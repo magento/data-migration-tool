@@ -9,6 +9,9 @@
             <ignore>
                 <document>source-document-ignored</document>
             </ignore>
+            <ignore>
+                <document>source-document-ignored*</document>
+            </ignore>
         </document_rules>
 
         <field_rules>
@@ -43,6 +46,9 @@
         <document_rules>
             <ignore>
                 <document>dest-document-ignored</document>
+            </ignore>
+            <ignore>
+                <document>dest-document-ignored*</document>
             </ignore>
         </document_rules>
 

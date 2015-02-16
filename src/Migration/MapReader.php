@@ -26,6 +26,16 @@ class MapReader
     protected $config;
 
     /**
+     * @var array
+     */
+    protected $ignoredDocuments = [];
+
+    /**
+     * @var array
+     */
+    protected $wildcards;
+
+    /**
      * @param Config $config
      */
     public function __construct(Config $config)
@@ -92,8 +102,37 @@ class MapReader
     public function isDocumentIgnored($document, $type)
     {
         $this->validateType($type);
+        if (isset($this->ignoredDocuments[$type][$document])) {
+            return true;
+        }
+
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
-        return $map->length > 0;
+        $result = $map->length > 0;
+        if (!$result) {
+            foreach ($this->getWildcards($type) as $documentWildCard) {
+                $regexp = '/' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
+                $result = preg_match($regexp, $document) > 0;
+            }
+        }
+        if ($result) {
+            $this->ignoredDocuments[$type][$document] = true;
+        }
+        return $result;
+    }
+
+    /**
+     * @param string $type
+     * @return mixed
+     */
+    protected function getWildcards($type)
+    {
+        if (is_null($this->wildcards) || !isset($this->wildcards[$type])) {
+            $this->wildcards[$type] = [];
+            foreach ($this->xml->query(sprintf('//%s/document_rules/ignore/document[contains (.,"*")]', $type)) as $wildcard) {
+                $this->wildcards[$type][] = $wildcard;
+            }
+        }
+        return $this->wildcards[$type];
     }
 
     /**

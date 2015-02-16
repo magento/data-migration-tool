@@ -8,6 +8,7 @@ namespace Migration\Step;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -50,22 +51,30 @@ class Integrity extends AbstractStep
     protected $map;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param Config $config
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
+        $this->config = $config;
         parent::__construct($progress, $logger);
     }
 
@@ -96,9 +105,10 @@ class Integrity extends AbstractStep
     {
         $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->destination;
         $destination = $type == MapReader::TYPE_SOURCE ? $this->destination : $this->source;
-
-        $sourceDocuments = $source->getDocumentList();
-        $destDocuments = array_flip($destination->getDocumentList());
+        $sourceDocuments = $this->getDocumentListWithoutPrefix($source->getDocumentList(), MapReader::TYPE_SOURCE);
+        $destDocuments = array_flip(
+            $this->getDocumentListWithoutPrefix($destination->getDocumentList(), MapReader::TYPE_DEST)
+        );
         foreach ($sourceDocuments as $document) {
             $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
@@ -175,5 +185,22 @@ class Integrity extends AbstractStep
     public function getMaxSteps()
     {
         return count($this->source->getDocumentList()) + count($this->destination->getDocumentList());
+    }
+
+    /**
+     * @param array $documentList
+     * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
+     * @return mixed
+     */
+    protected function getDocumentListWithoutPrefix($documentList, $type)
+    {
+        $prefixType = $type == MapReader::TYPE_SOURCE ? 'source_prefix' : 'dest_prefix';
+        $prefix = $this->config->getOption($prefixType);
+        if (isset($prefix)) {
+            foreach ($documentList as $documentKey => $documentValue) {
+                $documentList[$documentKey] = preg_replace('/^' . $prefix . '/', '', $documentValue);
+            }
+        }
+        return $documentList;
     }
 }

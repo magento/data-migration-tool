@@ -107,6 +107,50 @@ LOCK TABLES `table_with_data` WRITE;
 INSERT INTO `table_with_data` VALUES (1,2,3),(2,3,4),(3,4,5),(4,5,6),(5,5,5),(6,6,7),(7,7,7);
 /*!40000 ALTER TABLE `table_with_data` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `source_table_1`
+--
+
+DROP TABLE IF EXISTS `source_table_1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `source_table_1` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `source_table_1`
+--
+
+LOCK TABLES `source_table_1` WRITE;
+/*!40000 ALTER TABLE `source_table_1` DISABLE KEYS */;
+/*!40000 ALTER TABLE `source_table_1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `source_table_2`
+--
+
+DROP TABLE IF EXISTS `source_table_2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `source_table_2` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `source_table_2`
+--
+
+LOCK TABLES `source_table_2` WRITE;
+/*!40000 ALTER TABLE `source_table_2` DISABLE KEYS */;
+/*!40000 ALTER TABLE `source_table_2` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

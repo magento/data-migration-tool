@@ -148,4 +148,15 @@ class MapReaderTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Exception', 'Unknown resource type: badType');
         $this->map->getOppositeType('badType');
     }
+    public function testIsDocumentIgnoredSource()
+    {
+        $this->map->isDocumentIgnored('source-document-ignored1', MapReader::TYPE_SOURCE);
+        $this->map->isDocumentIgnored('source-document-ignored1', MapReader::TYPE_SOURCE);
+    }
+
+    public function testIsDocumentIgnoredDest()
+    {
+        $this->map->isDocumentIgnored('dest-document-ignored1', MapReader::TYPE_DEST);
+        $this->map->isDocumentIgnored('dest-document-ignored1', MapReader::TYPE_DEST);
+    }
 }

@@ -105,6 +105,50 @@ LOCK TABLES `table_without_data` WRITE;
 /*!40000 ALTER TABLE `table_without_data` DISABLE KEYS */;
 /*!40000 ALTER TABLE `table_without_data` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Table structure for table `dest_table_1`
+--
+
+DROP TABLE IF EXISTS `dest_table_1`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dest_table_1` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dest_table_1`
+--
+
+LOCK TABLES `dest_table_1` WRITE;
+/*!40000 ALTER TABLE `dest_table_1` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dest_table_1` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `dest_table_2`
+--
+
+DROP TABLE IF EXISTS `dest_table_2`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `dest_table_2` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `dest_table_2`
+--
+
+LOCK TABLES `dest_table_2` WRITE;
+/*!40000 ALTER TABLE `dest_table_2` DISABLE KEYS */;
+/*!40000 ALTER TABLE `dest_table_2` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
