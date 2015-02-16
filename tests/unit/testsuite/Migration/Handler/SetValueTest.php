@@ -20,4 +20,14 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
         $handler->setField($fieldName);
         $handler->handle($record);
     }
+
+    public function testHandleException()
+    {
+        $value = 'value';
+        $record = $this->getMock('Migration\Resource\Record', ['getFields'], [], '', false);
+        $record->expects($this->once())->method('getFields')->will($this->returnValue([]));
+        $handler = new SetValue($value);
+        $this->setExpectedException('Exception');
+        $handler->handle($record);
+    }
 }

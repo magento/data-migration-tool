@@ -40,7 +40,7 @@ class Manager
             return;
         }
         $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
-        if (!$handler instanceof HandlerInterface) {
+        if (!($handler instanceof HandlerInterface)) {
             throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
         }
         $handler->setField($field);

@@ -82,7 +82,7 @@ class RecordTransformer
      * @param string $type
      * @return Handler\Manager
      */
-    public function initHandlerManager($type = MapReader::TYPE_SOURCE)
+    protected function initHandlerManager($type = MapReader::TYPE_SOURCE)
     {
         /** @var Resource\Document $document */
         $document = (MapReader::TYPE_SOURCE == $type) ? $this->sourceDocument : $this->destDocument;
@@ -104,7 +104,7 @@ class RecordTransformer
      * @return Record
      * @throws \Exception
      */
-    public function applyHandlers(Handler\Manager $handlerManager, Record $record)
+    protected function applyHandlers(Handler\Manager $handlerManager, Record $record)
     {
         foreach ($record->getFields() as $field) {
             $handler = $handlerManager->getHandler($field);
@@ -121,7 +121,7 @@ class RecordTransformer
      * @return void
      * @throws \Exception
      */
-    public function copy(Record $from, Record $to)
+    protected function copy(Record $from, Record $to)
     {
         foreach ($from->getFields() as $field) {
             if (!$this->mapReader->isFieldIgnored($this->sourceDocument->getName(), $field, MapReader::TYPE_SOURCE)) {
