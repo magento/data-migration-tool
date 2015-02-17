@@ -109,7 +109,9 @@ class Map extends AbstractStep
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
+            $this->progress->advance();
         }
+        $this->progress->finish();
     }
 
     /**
