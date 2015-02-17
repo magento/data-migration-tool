@@ -86,7 +86,7 @@ abstract class AbstractResource
      */
     public function getStructure($documentName)
     {
-        $data = $this->adapter->getDocumentStructure($documentName);
+        $data = $this->adapter->getDocumentStructure($this->addDocumentPrefix($documentName));
         return $this->structureFactory->create(['documentName' => $documentName, 'data' => $data]);
     }
 
@@ -100,6 +100,9 @@ abstract class AbstractResource
         if (is_null($this->documentList)) {
             $this->documentList = $this->adapter->getDocumentList();
         }
+        foreach ($this->documentList as &$documentName) {
+            $documentName = $this->removeDocumentPrefix($documentName);
+        }
         return $this->documentList;
     }
 
@@ -111,7 +114,35 @@ abstract class AbstractResource
      */
     public function getRecordsCount($documentName)
     {
-        return $this->adapter->getRecordsCount($documentName);
+        return $this->adapter->getRecordsCount($this->addDocumentPrefix($documentName));
+    }
+
+    /**
+     * Remove prefix from document name
+     *
+     * @param string $documentName
+     * @return sting
+     */
+    protected function removeDocumentPrefix($documentName) {
+        $prefix = $this->getDocumentPrefix();
+        if (isset($prefix) && (strpos($documentName, $prefix) === 0)) {
+            $documentName = substr($documentName, strlen($prefix));
+        }
+        return $documentName;
+    }
+
+    /**
+     * Add prefix for document name
+     *
+     * @param string $documentName
+     * @return string
+     */
+    protected function addDocumentPrefix($documentName) {
+        $prefix = $this->getDocumentPrefix();
+        if (isset($prefix) && (strpos($documentName, $prefix) !== 0)) {
+            $documentName = $prefix . $documentName;
+        }
+        return $documentName;
     }
 
     /**
@@ -120,4 +151,11 @@ abstract class AbstractResource
      * @return array
      */
     abstract protected function getResourceConfig();
+
+    /**
+     * Returns configuration data for documents prefix
+     *
+     * @return null|string
+     */
+    abstract protected function getDocumentPrefix();
 }

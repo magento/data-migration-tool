@@ -11,6 +11,8 @@ namespace Migration\Resource;
  */
 class Destination extends AbstractResource
 {
+    const DOCUMENT_PREFIX = 'dest_prefix';
+
     /**
      * Save data into destination resource
      *
@@ -23,6 +25,7 @@ class Destination extends AbstractResource
         $pageSize = $this->configReader->getOption('bulk_size');
         $i = 0;
         $data = [];
+        $documentName = $this->addDocumentPrefix($documentName);
         foreach ($records as $row) {
             $i++;
             $data[] = $row;
@@ -51,5 +54,13 @@ class Destination extends AbstractResource
             ? $destination['database']['password']
             : '';
         return $config;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function getDocumentPrefix()
+    {
+        return $this->configReader->getOption(self::DOCUMENT_PREFIX);
     }
 }

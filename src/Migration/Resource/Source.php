@@ -11,6 +11,8 @@ namespace Migration\Resource;
  */
 class Source extends AbstractResource
 {
+    const DOCUMENT_PREFIX = 'source_prefix';
+
     /**
      * @inheritdoc
      */
@@ -24,5 +26,13 @@ class Source extends AbstractResource
             ? $source['database']['password']
             : '';
         return $config;
+    }
+
+    /**
+     * @return null|string
+     */
+    protected function getDocumentPrefix()
+    {
+        return $this->configReader->getOption(self::DOCUMENT_PREFIX);
     }
 }

@@ -20,6 +20,6 @@
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix>prefix</source_prefix>
-        <dest_prefix>prefix</dest_prefix>
+        <dest_prefix>prefix<dest_prefix>
     </options>
 </config>

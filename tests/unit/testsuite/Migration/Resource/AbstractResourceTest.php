@@ -43,6 +43,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected $resourceDestination;
 
+    /**
+     * @var \Migration\Resource\Source
+     */
+    protected $resourceSource;
+
     protected function setUp()
     {
         $config = ['database' => [
@@ -57,13 +62,12 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             'username' => 'uname',
             'password' => 'upass',
         ]];
-        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination'], [], '', false);
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue(10));
+        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination', 'getSource'], [], '', false);
         $this->config->expects($this->once())
             ->method('getDestination')
+            ->will($this->returnValue($config));
+        $this->config->expects($this->once())
+            ->method('getSource')
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
@@ -73,7 +77,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->adapterFactory = $this->getMock('\Migration\Resource\AdapterFactory', ['create'], [], '', false);
-        $this->adapterFactory->expects($this->once())
+        $this->adapterFactory->expects($this->any())
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
@@ -100,21 +104,38 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             $this->structureFactory,
             $this->documentCollection
         );
+
+        $this->resourceSource = new \Migration\Resource\Source(
+            $this->adapterFactory,
+            $this->config,
+            $this->documentFactory,
+            $this->structureFactory,
+            $this->documentCollection
+        );
     }
 
-    public function testGetDocument()
+    /**
+     * @dataProvider getDocumentDataSource()
+     * @param string $prefix
+     * @param string $type
+     */
+    public function testGetDocument($prefix, $type)
     {
         $resourceName = 'core_config_data';
         $structureData = ['id' => 'int'];
         $structure = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
         $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        $this->config->expects($this->any())
+            ->method('getOption')
+            ->with($type)
+            ->will($this->returnValue($prefix));
         $this->documentFactory->expects($this->any())
             ->method('create')
             ->with($this->equalTo(['structure' => $structure, 'documentName' => $resourceName]))
             ->will($this->returnValue($document));
         $this->adapter->expects($this->any())
             ->method('getDocumentStructure')
-            ->with($this->equalTo($resourceName))
+            ->with($this->equalTo($prefix . $resourceName))
             ->willReturn($structureData);
         $this->structureFactory->expects($this->any())
             ->method('create')
@@ -122,13 +143,30 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->willReturn($structure);
         $this->adapter->expects($this->any())
             ->method('getDocumentList')
-            ->willReturn([$resourceName]);
+            ->willReturn([$prefix . $resourceName]);
 
-        $this->assertSame($document, $this->resourceDestination->getDocument($resourceName));
+        $resource = ($prefix == 'source') ? $this->resourceSource : $this->resourceDestination;
+        $this->assertSame($document, $resource->getDocument($resourceName));
+    }
+
+    /**
+     * @return array
+     */
+    public function getDocumentDataSource()
+    {
+        return[
+            ['source', 'source_prefix'],
+            ['destination', 'dest_prefix']
+        ];
     }
 
     public function testGetWrongDocument()
     {
+        $prefix = 'prefix_';
+        $this->config->expects($this->any())
+            ->method('getOption')
+            ->with('dest_prefix')
+            ->will($this->returnValue($prefix));
         $this->adapter->expects($this->any())
             ->method('getDocumentList')
             ->willReturn(['document']);
@@ -138,11 +176,16 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRecordsCount()
     {
+        $prefix = 'prefix_';
+        $this->config->expects($this->any())
+            ->method('getOption')
+            ->with('dest_prefix')
+            ->will($this->returnValue($prefix));
         $resourceName = 'core_config_data';
 
         $this->adapter->expects($this->any())
             ->method('getRecordsCount')
-            ->with($resourceName)
+            ->with($prefix . $resourceName)
             ->willReturn(10);
 
         $this->assertEquals(10, $this->resourceDestination->getRecordsCount($resourceName));
