@@ -141,7 +141,7 @@ abstract class AbstractResource
     protected function addDocumentPrefix($documentName)
     {
         $prefix = $this->getDocumentPrefix();
-        if (isset($prefix) && (strpos($documentName, $prefix) !== 0)) {
+        if (!empty($prefix) && (strpos($documentName, $prefix) !== 0)) {
             $documentName = $prefix . $documentName;
         }
         return $documentName;
