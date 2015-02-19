@@ -112,6 +112,9 @@ class MapReader
             foreach ($this->getWildcards($type) as $documentWildCard) {
                 $regexp = '/' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
                 $result = preg_match($regexp, $document) > 0;
+                if ($result === true) {
+                    break;
+                }
             }
         }
         if ($result) {
@@ -128,7 +131,8 @@ class MapReader
     {
         if (is_null($this->wildcards) || !isset($this->wildcards[$type])) {
             $this->wildcards[$type] = [];
-            foreach ($this->xml->query(sprintf('//%s/document_rules/ignore/document[contains (.,"*")]', $type)) as $wildcard) {
+            $searchExpression = sprintf('//%s/document_rules/ignore/document[contains (.,"*")]', $type);
+            foreach ($this->xml->query($searchExpression) as $wildcard) {
                 $this->wildcards[$type][] = $wildcard;
             }
         }

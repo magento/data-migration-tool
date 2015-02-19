@@ -121,11 +121,12 @@ abstract class AbstractResource
      * Remove prefix from document name
      *
      * @param string $documentName
-     * @return sting
+     * @return string
      */
-    protected function removeDocumentPrefix($documentName) {
+    protected function removeDocumentPrefix($documentName)
+    {
         $prefix = $this->getDocumentPrefix();
-        if (isset($prefix) && (strpos($documentName, $prefix) === 0)) {
+        if (!empty($prefix) && (strpos($documentName, $prefix) === 0)) {
             $documentName = substr($documentName, strlen($prefix));
         }
         return $documentName;
@@ -137,7 +138,8 @@ abstract class AbstractResource
      * @param string $documentName
      * @return string
      */
-    protected function addDocumentPrefix($documentName) {
+    protected function addDocumentPrefix($documentName)
+    {
         $prefix = $this->getDocumentPrefix();
         if (isset($prefix) && (strpos($documentName, $prefix) !== 0)) {
             $documentName = $prefix . $documentName;

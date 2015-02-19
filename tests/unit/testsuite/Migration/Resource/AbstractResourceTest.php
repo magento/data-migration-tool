@@ -62,7 +62,13 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             'username' => 'uname',
             'password' => 'upass',
         ]];
-        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination', 'getSource'], [], '', false);
+        $this->config = $this->getMock(
+            '\Migration\Config',
+            ['getOption', 'getDestination', 'getSource'],
+            [],
+            '',
+            false
+        );
         $this->config->expects($this->once())
             ->method('getDestination')
             ->will($this->returnValue($config));
