@@ -84,6 +84,7 @@ class Map extends AbstractStep
                 continue;
             }
             $destDocument = $this->destination->getDocument($destinationName);
+            $this->destination->clearDocument($destinationName);
 
             /** @var \Migration\RecordTransformer $recordTranformer */
             $recordTranformer = $this->recordTransformerFactory->create(

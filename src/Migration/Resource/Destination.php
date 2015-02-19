@@ -53,4 +53,13 @@ class Destination extends AbstractResource
             : '';
         return $config;
     }
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function clearDocument($documentName)
+    {
+        $this->adapter->deleteAllRecords($documentName);
+    }
 }

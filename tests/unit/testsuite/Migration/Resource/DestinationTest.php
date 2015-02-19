@@ -62,13 +62,15 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination'], [], '', false);
         $this->config->expects($this->once())
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue(3));
-        $this->config->expects($this->once())
             ->method('getDestination')
             ->will($this->returnValue($config));
-        $this->adapter = $this->getMock('\Migration\Resource\Adapter\Mysql', ['insertRecords'], [], '', false);
+        $this->adapter = $this->getMock(
+            '\Migration\Resource\Adapter\Mysql',
+            ['insertRecords', 'deleteAllRecords'],
+            [],
+            '',
+            false
+        );
         $this->adapterFactory = $this->getMock('\Migration\Resource\AdapterFactory', ['create'], [], '', false);
         $this->adapterFactory->expects($this->once())
             ->method('create')
@@ -89,6 +91,11 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
 
     public function testSaveRecords()
     {
+        $this->config->expects($this->once())
+            ->method('getOption')
+            ->with('bulk_size')
+            ->will($this->returnValue(3));
+
         $resourceName = 'core_config_data';
         $this->adapter->expects($this->at(0))
             ->method('insertRecords')
@@ -98,6 +105,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->method('insertRecords')
             ->with($resourceName, [['data' => 'value4']])
             ->will($this->returnSelf());
+
         $records = $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $records->expects($this->any())
             ->method('current')
@@ -122,5 +130,12 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             });
 
         $this->resourceDestination->saveRecords($resourceName, $records);
+    }
+
+    public function testClearDocument()
+    {
+        $docName = 'somename';
+        $this->adapter->expects($this->once())->method('deleteAllRecords')->with($docName);
+        $this->resourceDestination->clearDocument($docName);
     }
 }

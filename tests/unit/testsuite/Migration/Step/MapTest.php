@@ -65,7 +65,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         );
         $this->destination = $this->getMock(
             'Migration\Resource\Destination',
-            ['getDocument', 'saveRecords'],
+            ['getDocument', 'saveRecords', 'clearDocument'],
             [],
             '',
             false
@@ -146,6 +146,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
+        $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->mapStep->run();
     }
 }
