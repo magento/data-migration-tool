@@ -11,7 +11,7 @@ namespace Migration\Resource;
  */
 class Destination extends AbstractResource
 {
-    const DOCUMENT_PREFIX = 'dest_prefix';
+    const CONFIG_DOCUMENT_PREFIX = 'dest_prefix';
 
     /**
      * Save data into destination resource
@@ -42,7 +42,7 @@ class Destination extends AbstractResource
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     protected function getResourceConfig()
     {
@@ -57,10 +57,10 @@ class Destination extends AbstractResource
     }
 
     /**
-     * @return null|string
+     * {@inheritdoc}
      */
     protected function getDocumentPrefix()
     {
-        return $this->configReader->getOption(self::DOCUMENT_PREFIX);
+        return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
     }
 }

@@ -605,6 +605,9 @@
             <ignore>
                 <document>catalog_category_flat_*</document>
             </ignore>
+            <ignore>
+                <document>catalog_category_flat_store_*</document>
+            </ignore>
             <rename>
                 <document>admin_role</document>
                 <to>authorization_role</to>
