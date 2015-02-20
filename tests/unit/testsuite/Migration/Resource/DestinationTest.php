@@ -68,7 +68,13 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->once())
             ->method('getDestination')
             ->will($this->returnValue($config));
-        $this->adapter = $this->getMock('\Migration\Resource\Adapter\Mysql', ['insertRecords'], [], '', false);
+        $this->adapter = $this->getMock(
+            '\Migration\Resource\Adapter\Mysql',
+            ['insertRecords', 'deleteAllRecords'],
+            [],
+            '',
+            false
+        );
         $this->adapterFactory = $this->getMock('\Migration\Resource\AdapterFactory', ['create'], [], '', false);
         $this->adapterFactory->expects($this->once())
             ->method('create')
@@ -93,6 +99,11 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSaveRecords($prefix)
     {
+        $this->config->expects($this->once())
+            ->method('getOption')
+            ->with('bulk_size')
+            ->will($this->returnValue(3));
+
         $resourceName = 'core_config_data';
         $this->config->expects($this->at(1))
             ->method('getOption')
@@ -106,13 +117,17 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->method('insertRecords')
             ->with($prefix . $resourceName, [['data' => 'value4']])
             ->will($this->returnSelf());
+
         $records = $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $records->expects($this->any())
             ->method('current')
             ->willReturnCallback(function () {
                 static $count = 0;
                 $count++;
-                return ['data' => "value$count"];
+                $data = ['data' => "value$count"];
+                $record = $this->getMock('\Migration\Resource\Record', ['getData'], [], '', false);
+                $record->expects($this->once())->method('getData')->will($this->returnValue($data));
+                return $record;
             });
         $records->expects($this->any())
             ->method('valid')
@@ -138,5 +153,12 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ['prefix_'],
             [null]
         ];
+    }
+
+    public function testClearDocument()
+    {
+        $docName = 'somename';
+        $this->adapter->expects($this->once())->method('deleteAllRecords')->with($docName);
+        $this->resourceDestination->clearDocument($docName);
     }
 }

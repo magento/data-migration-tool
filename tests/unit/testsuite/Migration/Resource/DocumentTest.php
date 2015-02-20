@@ -57,6 +57,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         $this->recordCollectionFactory->expects($this->atLeastOnce())
             ->method('create')
             ->with($this->equalTo([
+                'structure' => $this->structure,
                 'documentName' => 'test_document',
             ]))
             ->will($this->returnValue($recordCollection));

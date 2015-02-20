@@ -26,9 +26,10 @@ class Destination extends AbstractResource
         $i = 0;
         $data = [];
         $documentName = $this->addDocumentPrefix($documentName);
+        /** @var \Migration\Resource\Record $row */
         foreach ($records as $row) {
             $i++;
-            $data[] = $row;
+            $data[] = $row->getData();
             if ($i == $pageSize) {
                 $this->adapter->insertRecords($documentName, $data);
                 $data = [];
@@ -54,6 +55,15 @@ class Destination extends AbstractResource
             ? $destination['database']['password']
             : '';
         return $config;
+    }
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function clearDocument($documentName)
+    {
+        $this->adapter->deleteAllRecords($documentName);
     }
 
     /**

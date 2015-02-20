@@ -32,7 +32,23 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             'username' => 'uname',
             'password' => 'upass',
         ]];
-        $this->pdoMysql = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\Mysql', [], [], '', false);
+        $this->pdoMysql = $this->getMock(
+            '\Magento\Framework\DB\Adapter\Pdo\Mysql',
+            [
+                'truncateTable',
+                'query',
+                'describeTable',
+                'listTables',
+                'fetchOne',
+                'fetchAll',
+                'insertMultiple',
+                'select'
+            ],
+            [],
+            '',
+            false
+        );
+        $this->pdoMysql->expects($this->any())->method('query');
         $mysqlFactory = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\MysqlFactory', ['create'], [], '', false);
         $mysqlFactory->expects($this->any())
             ->method('create')
@@ -61,7 +77,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
 
     public function testGetRecordsCount()
     {
-        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $select = $this->getMock('\Magento\Framework\DB\Select', ['from'], [], '', false);
         $select->expects($this->any())
             ->method('from')
             ->with($this->equalTo('some_table'), $this->equalTo('COUNT(*)'));
@@ -110,5 +126,12 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             ->willReturn(2);
 
         $this->assertEquals(2, $this->adapterMysql->insertRecords('some_table', $data));
+    }
+
+    public function testDeleteAllRecords()
+    {
+        $docName = 'some_name';
+        $this->pdoMysql->expects($this->once())->method('truncateTable')->with($docName);
+        $this->adapterMysql->deleteAllRecords($docName);
     }
 }

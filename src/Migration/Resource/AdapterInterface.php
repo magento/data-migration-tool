@@ -55,4 +55,12 @@ interface AdapterInterface
      * @return int
      */
     public function insertRecords($documentName, $records);
+
+    /**
+     * Delete all record from the document
+     *
+     * @param string $documentName
+     * @return void
+     */
+    public function deleteAllRecords($documentName);
 }

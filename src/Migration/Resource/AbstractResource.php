@@ -12,6 +12,11 @@ namespace Migration\Resource;
 abstract class AbstractResource
 {
     /**
+     * Default bulk size if not set in config
+     */
+    const DEFAULT_BULK_SIZE = 100;
+
+    /**
      * @var AdapterInterface
      */
     protected $adapter;
@@ -145,6 +150,29 @@ abstract class AbstractResource
             $documentName = $prefix . $documentName;
         }
         return $documentName;
+    }
+
+    /**
+     * Retrieving bulk size
+     *
+     * @return int
+     */
+    protected function getBulkSize()
+    {
+        $pageSize = (int)$this->configReader->getOption('bulk_size');
+        return empty($pageSize) ? self::DEFAULT_BULK_SIZE : $pageSize;
+    }
+
+    /**
+     * Return records from the document, paging is included
+     *
+     * @param string $documentName
+     * @param int $pageNumber
+     * @return array
+     */
+    public function getRecords($documentName, $pageNumber)
+    {
+        return $this->adapter->loadPage($documentName, $pageNumber, $this->getBulkSize());
     }
 
     /**

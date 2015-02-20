@@ -77,7 +77,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList'],
+            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
             [],
             '',
             false
@@ -195,5 +195,14 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->willReturn(10);
 
         $this->assertEquals(10, $this->resourceDestination->getRecordsCount($resourceName));
+    }
+
+    public function testGetRecords()
+    {
+        $resourceName = 'core_config_data';
+        $pageNumber = 2;
+        $this->config->expects($this->once())->method('getOption')->with('bulk_size')->will($this->returnValue(100));
+        $this->adapter->expects($this->once())->method('loadPage');
+        $this->resourceDestination->getRecords($resourceName, $pageNumber);
     }
 }
