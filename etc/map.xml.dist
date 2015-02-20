@@ -168,108 +168,6 @@
                 <document>catalog_product_index_website</document>
             </ignore>
             <ignore>
-                <document>catalogindex_aggregation</document>
-            </ignore>
-            <ignore>
-                <document>catalogindex_aggregation_tag</document>
-            </ignore>
-            <ignore>
-                <document>catalogindex_aggregation_to_tag</document>
-            </ignore>
-            <ignore>
-                <document>catalogindex_eav</document>
-            </ignore>
-            <ignore>
-                <document>catalogindex_minimal_price</document>
-            </ignore>
-            <ignore>
-                <document>catalogindex_price</document>
-            </ignore>
-            <ignore>
-                <document>core_layout_update</document>
-            </ignore>
-            <ignore>
-                <document>core_layout_link</document>
-            </ignore>
-            <ignore>
-                <document>widget_instance_page_layout</document>
-            </ignore>
-            <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_items</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_types</document>
-            </ignore>
-            <ignore>
-                <document>googlecheckout_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>ogone_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>paygate_authorizenet_debug</document>
-            </ignore>
-            <ignore>
-                <document>paypal_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>paypaluk_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>amazonpayments_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>chronopay_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>cybermut_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>cybersource_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>eway_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>flo2cash_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>ideal_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>paybox_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>protx_api_debug</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_application</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_config_data</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_history</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_images</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_notification_template</document>
-            </ignore>
-            <ignore>
-                <document>xmlconnect_queue</document>
-            </ignore>
-            <ignore>
-                <document>googlecheckout_notification</document>
-            </ignore>
-            <ignore>
                 <document>index_event</document>
             </ignore>
             <ignore>
@@ -291,16 +189,7 @@
                 <document>enterprise_catalogpermissions_index_product</document>
             </ignore>
             <ignore>
-                <document>core_cache_tag</document>
-            </ignore>
-            <ignore>
                 <document>core_cache_option</document>
-            </ignore>
-            <ignore>
-                <document>core_cache</document>
-            </ignore>
-            <ignore>
-                <document>core_flag</document>
             </ignore>
             <ignore>
                 <document>core_email_queue</document>
@@ -696,6 +585,9 @@
                 <document>paypal_cert</document>
             </ignore>
             <ignore>
+                <document>core_layout_link</document>
+            </ignore>
+            <ignore>
                 <document>log_visitor</document>
             </ignore>
             <ignore>
@@ -715,9 +607,6 @@
             </ignore>
             <ignore>
                 <document>catalog_category_flat_store_*</document>
-            </ignore>
-            <ignore>
-                <document>googleoptimizer_code</document>
             </ignore>
             <rename>
                 <document>admin_role</document>
@@ -1183,51 +1072,6 @@
             <ignore>
                 <field>enterprise_cms_page_revision::custom_root_template</field>
             </ignore>
-            <ignore>
-                <field>sales_flat_creditmemo::cybersource_token</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice::cybersource_token</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::ideal_transaction_checked</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::cybersource_token</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::ideal_issuer_title</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::paybox_question_number</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::ideal_issuer_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment::flo2cash_account_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment::cybersource_token</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment::ideal_issuer_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_quote_payment::ideal_issuer_list</field>
-            </ignore>
-            <ignore>
-                <field>cms_page::layout_update_xml</field>
-            </ignore>
-            <ignore>
-                <field>cms_page::custom_layout_update_xml</field>
-            </ignore>
-            <ignore>
-                <field>enterprise_cms_page_revision::layout_update_xml</field>
-            </ignore>
-            <ignore>
-                <field>enterprise_cms_page_revision::custom_layout_update_xml</field>
-            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1359,10 +1203,7 @@
                 <document>url_rewrite</document>
             </ignore>
             <ignore>
-                <document>layout_update</document>
-            </ignore>
-            <ignore>
-                <document>layout_link</document>
+                <document>core_layout_link</document>
             </ignore>
             <ignore>
                 <document>eav_attribute_group</document>
@@ -1452,6 +1293,9 @@
             </ignore>
             <ignore>
                 <field>admin_user::interface_locale</field>
+            </ignore>
+            <ignore>
+                <field>core_layout_update::updated_at</field>
             </ignore>
             <ignore>
                 <field>rating::is_active</field>
