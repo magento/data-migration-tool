@@ -40,10 +40,25 @@ class StepManager
     public function runSteps()
     {
         $steps = $this->factory->getSteps();
+        $intergitySuccess = true;
+        /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
-            $this->logger->info(sprintf('Step %s of %s', $index + 1, count($steps)));
-            /** @var StepInterface $step */
+            $result = $step->integrity();
+            if (!$result) {
+                $intergitySuccess = false;
+            }
+        }
+        if (!$intergitySuccess) {
+            return $this;
+        }
+
+        /** @var StepInterface $step */
+        foreach ($steps as $index => $step) {
             $step->run();
+            $result = $step->volumeCheck();
+            if (!$result) {
+                return $this;
+            }
         }
         $this->logger->info(PHP_EOL . "Migration completed");
         return $this;

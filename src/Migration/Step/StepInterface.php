@@ -12,6 +12,13 @@ namespace Migration\Step;
 interface StepInterface
 {
     /**
+     * Integrity check
+     *
+     * @return bool
+     */
+    public function integrity();
+
+    /**
      * Run step
      *
      * @return void
@@ -19,7 +26,9 @@ interface StepInterface
     public function run();
 
     /**
-     * @return int
+     * Volume check
+     *
+     * @return bool
      */
-    public function getMaxSteps();
+    public function volumeCheck();
 }
