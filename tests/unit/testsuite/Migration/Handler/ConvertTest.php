@@ -18,7 +18,8 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
                 'map' => '[one_column:1column;two_columns_left:2columns-left]',
                 'initialValue' => 'one_column',
                 'processedValue' => '1column'
-            ], [
+            ],
+            [
                 'map' => '[one_column:1column;two_columns_left:2columns-left]',
                 'initialValue' => 'dummy_value',
                 'processedValue' => 'dummy_value'

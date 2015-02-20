@@ -43,7 +43,7 @@ class Convert extends AbstractHandler implements HandlerInterface
      */
     public function handle(Record $record)
     {
-        parent::handle($record);
+        $this->validate($record);
         $value = $record->getValue($this->field);
         if (isset($this->map[$value])) {
             $value = $this->map[$value];
