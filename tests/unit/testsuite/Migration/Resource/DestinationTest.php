@@ -61,11 +61,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             'password' => 'upass',
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination'], [], '', false);
-        $this->config->expects($this->at(1))
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue(3));
-        $this->config->expects($this->once())
+        $this->config->expects($this->any())
             ->method('getDestination')
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
@@ -99,16 +95,15 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
      */
     public function testSaveRecords($prefix)
     {
-        $this->config->expects($this->once())
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue(3));
-
         $resourceName = 'core_config_data';
-        $this->config->expects($this->at(1))
+
+        $this->config->expects($this->any())
             ->method('getOption')
-            ->with('dest_prefix')
-            ->will($this->returnValue($prefix));
+            ->willReturnMap([
+                ['bulk_size', 3],
+                ['dest_prefix', $prefix]
+            ]);
+
         $this->adapter->expects($this->at(0))
             ->method('insertRecords')
             ->with($prefix . $resourceName, [['data' => 'value1'], ['data' => 'value2'], ['data' => 'value3']])
