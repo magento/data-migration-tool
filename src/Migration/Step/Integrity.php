@@ -8,6 +8,7 @@ namespace Migration\Step;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -55,17 +56,20 @@ class Integrity extends AbstractStep
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param Config $config
+     * @throws \Exception
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
-        $this->map = $mapReader;
+        $this->map = $mapReader->init($config->getOption('map_file'));
         parent::__construct($progress, $logger);
     }
 

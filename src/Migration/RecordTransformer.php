@@ -64,9 +64,9 @@ class RecordTransformer
      */
     public function transform(Record $from, Record $to)
     {
-        $this->applyHandlers($this->sourceHandlerManager, $from);
+        $this->applyHandlers($this->sourceHandlerManager, $from, $to);
         $this->copy($from, $to);
-        $this->applyHandlers($this->destHandlerManager, $to);
+        $this->applyHandlers($this->destHandlerManager, $to, $to);
     }
 
     /**
@@ -76,6 +76,7 @@ class RecordTransformer
     {
         $this->sourceHandlerManager = $this->initHandlerManager(MapReader::TYPE_SOURCE);
         $this->destHandlerManager = $this->initHandlerManager(MapReader::TYPE_DEST);
+        return $this;
     }
 
     /**
@@ -100,19 +101,19 @@ class RecordTransformer
 
     /**
      * @param Handler\Manager $handlerManager
-     * @param Record $record
-     * @return Record
+     * @param Record $recordToHandle
+     * @param Record $oppositeRecord
+     * @return void
      * @throws \Exception
      */
-    protected function applyHandlers(Handler\Manager $handlerManager, Record $record)
+    public function applyHandlers(Handler\Manager $handlerManager, Record $recordToHandle, Record $oppositeRecord)
     {
-        foreach ($record->getFields() as $field) {
+        foreach ($recordToHandle->getFields() as $field) {
             $handler = $handlerManager->getHandler($field);
             if (!empty($handler)) {
-                $handler->handle($record);
+                $handler->handle($recordToHandle, $oppositeRecord);
             }
         }
-        return $record;
     }
 
     /**

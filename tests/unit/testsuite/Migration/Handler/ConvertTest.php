@@ -42,9 +42,11 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->once())->method('setValue')->with($fieldName, $processedValue);
         $record->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
 
+        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+
         $handler = new Convert($map);
         $handler->setField($fieldName);
-        $handler->handle($record);
+        $handler->handle($record, $record2);
     }
 
     public function testInvalidMap()
@@ -52,6 +54,7 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Exception');
         $handler = new Convert('[dummy]');
         $record = $this->getMock('Migration\Resource\Record', [], [], '', false);
-        $handler->handle($record, 'dummy');
+        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $handler->handle($record, $record2, 'dummy');
     }
 }

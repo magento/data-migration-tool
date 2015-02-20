@@ -39,7 +39,10 @@ class Manager
         if (empty($handlerConfig) || empty($handlerConfig['class'])) {
             return;
         }
-        $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
+        $handler = $this->objectManager->create(
+            $handlerConfig['class'],
+            empty($handlerConfig['params']) ? [] : $handlerConfig['params']
+        );
         if (!($handler instanceof HandlerInterface)) {
             throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
         }

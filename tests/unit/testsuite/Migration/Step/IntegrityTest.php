@@ -55,10 +55,21 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
+
+        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
+        $config->expects($this->once())->method('getOption')->with('map_file')
+            ->will($this->returnValue('tests/unit/testsuite/Migration/_files/map.xml'));
         $this->map = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap'])
             ->getMock();
-        $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination, $this->map);
+        $this->integrity = new Integrity(
+            $this->progress,
+            $this->logger,
+            $this->source,
+            $this->destination,
+            $this->map,
+            $config
+        );
     }
 
     public function testRunMainFlow()

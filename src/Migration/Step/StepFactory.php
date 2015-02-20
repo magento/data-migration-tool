@@ -38,22 +38,6 @@ class StepFactory
     }
 
     /**
-     * @return array
-     * @throws \Exception
-     */
-    public function getSteps()
-    {
-        if (is_null($this->steps)) {
-            $this->steps = [];
-            foreach ($this->config->getSteps() as $stepClass) {
-                $this->steps[] = $this->create($stepClass);
-            }
-        }
-
-        return $this->steps;
-    }
-
-    /**
      * @param string $stepClass
      * @return StepInterface
      * @throws \Exception

@@ -97,7 +97,7 @@
 
     <xs:complexType name="handlerType">
         <xs:sequence>
-            <xs:element name="param" type="handlerParamType" maxOccurs="unbounded" />
+            <xs:element name="param" type="handlerParamType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
         <xs:attribute name="class" use="required">
             <xs:simpleType>
@@ -113,10 +113,10 @@
     </xs:complexType>
     <xs:simpleType name="fieldFormatType">
         <xs:annotation>
-            <xs:documentation>Field format: "document_name::field_name"</xs:documentation>
+            <xs:documentation>Field format: "document_name.field_name"</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[^:]+::[^:]+"/>
+            <xs:pattern value="[^.]+\.[^.]+"/>
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="notEmptyString">

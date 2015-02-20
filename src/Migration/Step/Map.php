@@ -49,6 +49,7 @@ class Map extends AbstractStep
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapReader $mapReader
+     * @param \Migration\Config $config
      * @throws \Exception
      */
     public function __construct(
@@ -58,14 +59,15 @@ class Map extends AbstractStep
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReader $mapReader
+        MapReader $mapReader,
+        \Migration\Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
-        $this->mapReader->init();
+        $this->mapReader->init($config->getOption('map_file'));
         parent::__construct($progress, $logger);
     }
 

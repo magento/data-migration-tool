@@ -39,9 +39,4 @@ abstract class AbstractStep implements StepInterface
     {
         $this->progress->setStep($this);
     }
-
-    /**
-     * {@inheritdoc}
-     */
-    abstract public function getMaxSteps();
 }

@@ -6,6 +6,7 @@
 namespace Migration\Step;
 
 use Migration\Logger\Logger;
+use Migration\Config;
 
 /**
  * Class StepManager
@@ -23,13 +24,20 @@ class StepManager
     protected $logger;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Logger $logger
      * @param StepFactory $factory
+     * @param Config $config
      */
-    public function __construct(Logger $logger, StepFactory $factory)
+    public function __construct(Logger $logger, StepFactory $factory, Config $config)
     {
         $this->factory = $factory;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
@@ -39,8 +47,9 @@ class StepManager
      */
     public function runSteps()
     {
-        $steps = $this->factory->getSteps();
-        foreach ($steps as $index => $step) {
+        $steps = $this->config->getSteps();
+        foreach ($steps as $index => $stepClass) {
+            $step = $this->factory->create($stepClass);
             $this->logger->info(sprintf('Step %s of %s', $index + 1, count($steps)));
             /** @var StepInterface $step */
             $step->run();

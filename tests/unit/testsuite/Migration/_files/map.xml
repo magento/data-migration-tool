@@ -16,26 +16,26 @@
 
         <field_rules>
             <ignore>
-                <field>source-document::field1</field>
+                <field>source-document.field1</field>
             </ignore>
             <move>
-                <field>source-document::field2</field>
-                <to>dest-document::field2</to>
+                <field>source-document.field2</field>
+                <to>dest-document.field2</to>
             </move>
             <move>
-                <field>source-document-ignored::field3</field>
-                <to>dest-document-ignored::field3</to>
+                <field>source-document-ignored.field3</field>
+                <to>dest-document-ignored.field3</to>
             </move>
             <move>
-                <field>source-document5::field3</field>
-                <to>dest-document-ignored::field3</to>
+                <field>source-document5.field3</field>
+                <to>dest-document-ignored.field3</to>
             </move>
             <move>
-                <field>source-document5::field4</field>
-                <to>dest-document5::field5</to>
+                <field>source-document5.field4</field>
+                <to>dest-document5.field5</to>
             </move>
             <transform>
-                <field>source-document::field-with-handler</field>
+                <field>source-document.field-with-handler</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="default_value" value="10"/>
                 </handler>
@@ -54,10 +54,10 @@
 
         <field_rules>
             <ignore>
-                <field>dest-document::field-new</field>
+                <field>dest-document.field-new</field>
             </ignore>
             <ignore>
-                <field>dest-document5::field5</field>
+                <field>dest-document5.field5</field>
             </ignore>
         </field_rules>
     </destination>

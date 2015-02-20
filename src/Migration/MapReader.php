@@ -21,11 +21,6 @@ class MapReader
     protected $xml;
 
     /**
-     * @var Config
-     */
-    protected $config;
-
-    /**
      * @var array
      */
     protected $ignoredDocuments = [];
@@ -36,27 +31,18 @@ class MapReader
     protected $wildcards;
 
     /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
-    {
-        $this->config = $config;
-        $this->init();
-    }
-
-    /**
      * Init configuration
      *
+     * @param string $mapFile
      * @return $this
      * @throws \Exception
      */
-    public function init()
+    public function init($mapFile)
     {
-        if (!is_null($this->xml)) {
-            return $this;
-        }
+        $this->ignoredDocuments = [];
+        $this->wildcards = null;
 
-        $configFile = $this->getRootDir() . $this->config->getOption('map_file');
+        $configFile = $this->getRootDir() . $mapFile;
         if (!is_file($configFile)) {
             throw new \Exception('Invalid map filename: ' . $configFile);
         }
@@ -90,7 +76,7 @@ class MapReader
     public function isFieldIgnored($document, $field, $type)
     {
         $this->validateType($type);
-        $map = $this->xml->query(sprintf('//%s/field_rules/ignore/field[text()="%s::%s"]', $type, $document, $field));
+        $map = $this->xml->query(sprintf('//%s/field_rules/ignore/field[text()="%s.%s"]', $type, $document, $field));
         return $map->length > 0;
     }
 
@@ -166,7 +152,7 @@ class MapReader
             return false;
         }
         /** @var \DOMNodeList $result */
-        $result = $this->xml->query(sprintf('//source/field_rules/move/*[text()="%s::%s"]', $document, $field));
+        $result = $this->xml->query(sprintf('//source/field_rules/move/*[text()="%s.%s"]', $document, $field));
         return $result->length > 0;
     }
 
@@ -215,28 +201,28 @@ class MapReader
 
         $documentMap = $this->getDocumentMap($document, $type);
         if ($documentMap !== false) {
-            $result =  $documentMap . '::' . $field;
+            $result =  $documentMap . '.' . $field;
         } else {
             throw new \Exception('Document has ambiguous configuration: ' . $document);
         }
 
         if (!$this->isFieldMapped($document, $field, $type)) {
-            return explode('::', $result)[1];
+            return explode('.', $result)[1];
         }
 
         $queryResult = $this->xml->query(
-            sprintf('//source/field_rules/move/*[text()="%s::%s"]', $document, $field)
+            sprintf('//source/field_rules/move/*[text()="%s.%s"]', $document, $field)
         );
         if ($queryResult->length > 0) {
             /** @var \DOMElement $node */
             foreach ($queryResult->item(0)->parentNode->childNodes as $node) {
-                if ($node->nodeType == XML_ELEMENT_NODE && $node->nodeValue != $document . '::' . $field) {
+                if ($node->nodeType == XML_ELEMENT_NODE && $node->nodeValue != $document . '.' . $field) {
                     $result = $node->nodeValue;
                 }
             }
         }
         $this->validateFieldMap($result, $this->getOppositeType($type));
-        return explode('::', $result)[1];
+        return explode('.', $result)[1];
     }
 
     /**
@@ -251,7 +237,7 @@ class MapReader
         $config = [];
 
         $nodes = $this->xml->query(
-            sprintf('//%s/field_rules/transform[field/text()="%s::%s"]/handler', $type, $document, $field)
+            sprintf('//%s/field_rules/transform[field/text()="%s.%s"]/handler', $type, $document, $field)
         );
         /** @var \DOMElement $node */
         foreach ($nodes as $node) {
@@ -299,7 +285,7 @@ class MapReader
      */
     protected function validateFieldMap($value, $type)
     {
-        $valueParts = explode('::', $value);
+        $valueParts = explode('.', $value);
         if ($this->getDocumentMap($valueParts[0], $type) === false) {
             throw new \Exception('Document has ambiguous configuration: ' . $valueParts[0]);
         }
