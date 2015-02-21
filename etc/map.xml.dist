@@ -560,6 +560,9 @@
             <ignore>
                 <document>googleoptimizer_code</document>
             </ignore>
+            <ignore>
+                <document>core_resource</document>
+            </ignore>
             <rename>
                 <document>admin_role</document>
                 <to>authorization_role</to>
