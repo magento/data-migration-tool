@@ -37,13 +37,35 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager = new StepManager($this->logger, $this->factory);
     }
 
-    public function testRunSteps()
+    public function testRunStepsIntegrityFail()
     {
         $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
-        $step->expects($this->once())->method('run');
+        $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
+        $step->expects($this->never())->method('run');
+        $step->expects($this->never())->method('volumeCheck');
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->assertSame($this->manager, $this->manager->runSteps());
+    }
+
+    public function testRunStepsVolumeFail()
+    {
+        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
+        $step->expects($this->once())->method('run');
+        $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
+        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
+        $this->logger->expects($this->never())->method('info');
+        $this->assertSame($this->manager, $this->manager->runSteps());
+    }
+
+    public function testRunStepsSuccess()
+    {
+        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
+        $step->expects($this->once())->method('run');
+        $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
+        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
+        $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }
