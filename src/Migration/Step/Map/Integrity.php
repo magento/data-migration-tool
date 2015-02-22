@@ -78,7 +78,7 @@ class Integrity
     {
         $this->check(MapReader::TYPE_SOURCE);
         $this->check(MapReader::TYPE_DEST);
-        return $this->displayErrors();
+        return $this->checkForErrors();
     }
 
     /**
@@ -117,11 +117,11 @@ class Integrity
     }
 
     /**
-     * Process missing entities
+     * Process missing entities and log them in to the file
      *
      * @return $this
      */
-    protected function displayErrors()
+    protected function checkForErrors()
     {
         $isSuccess = true;
         if (isset($this->missingDocuments['source'])) {

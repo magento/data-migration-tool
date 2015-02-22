@@ -44,8 +44,6 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck');
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        //$this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
-        //$this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
@@ -57,8 +55,6 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->never())->method('info');
-        //$this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
-        //$this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
