@@ -6,6 +6,7 @@
 namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
+use Migration\Step\ProgressBar;
 use Migration\MapReader;
 use Migration\Resource;
 
@@ -54,18 +55,28 @@ class Integrity
     protected $map;
 
     /**
+     * ProgressBar instance
+     *
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
+     * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
      */
     public function __construct(
+        ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         MapReader $mapReader
     ) {
         $this->logger = $logger;
+        $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
@@ -76,8 +87,10 @@ class Integrity
      */
     public function perform()
     {
+        $this->progress->start($this->getIterationsCount());
         $this->check(MapReader::TYPE_SOURCE);
         $this->check(MapReader::TYPE_DEST);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 
@@ -96,6 +109,7 @@ class Integrity
         $sourceDocuments = $source->getDocumentList();
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($sourceDocuments as $document) {
+            $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {
@@ -167,5 +181,12 @@ class Integrity
             );
         }
         return $isSuccess;
+    }
+
+    protected function getIterationsCount()
+    {
+        $sourceDocuments = $this->source->getDocumentList();
+        $destDocuments = $this->destination->getDocumentList();
+        return count($sourceDocuments) + count($destDocuments);
     }
 }

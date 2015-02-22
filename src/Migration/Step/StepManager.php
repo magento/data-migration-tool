@@ -23,11 +23,18 @@ class StepManager
     protected $logger;
 
     /**
+     * @var ProgressStep
+     */
+    protected $progress;
+
+    /**
+     * @param ProgressStep $progress
      * @param Logger $logger
      * @param StepFactory $factory
      */
-    public function __construct(Logger $logger, StepFactory $factory)
+    public function __construct(ProgressStep $progress, Logger $logger, StepFactory $factory)
     {
+        $this->progress = $progress;
         $this->factory = $factory;
         $this->logger = $logger;
     }
@@ -40,25 +47,35 @@ class StepManager
     public function runSteps()
     {
         $steps = $this->factory->getSteps();
-        $intergitySuccess = true;
+        $integritySuccess = true;
         /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
-            $result = $step->integrity();
-            if (!$result) {
-                $intergitySuccess = false;
+            if ($this->progress->getResult(get_class($step), 'integrity') != true) {
+                $this->logger->info(get_class($step) . ': Integrity');
+                $integritySuccess = $step->integrity();
+                $this->progress->saveResult(get_class($step), 'integrity', $integritySuccess);
             }
         }
-        if (!$intergitySuccess) {
+        if (!$integritySuccess) {
             return $this;
         }
 
         /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
-            $step->run();
-            $result = $step->volumeCheck();
-            if (!$result) {
-                return $this;
+            if ($this->progress->getResult(get_class($step), 'run') != true) {
+                $this->logger->info(get_class($step) . ': Run');
+                $runSuccess = $step->run();
+                $this->progress->saveResult(get_class($step), 'run', $runSuccess);
             }
+            $volumeCheckSuccess = true;
+            if ($this->progress->getResult(get_class($step), 'volume_check') != true) {
+                $this->logger->info(get_class($step) . ': Volume Check');
+                $volumeCheckSuccess = $step->volumeCheck();
+                $this->progress->saveResult(get_class($step), 'volume_check', $volumeCheckSuccess);
+            }
+        }
+        if (!$volumeCheckSuccess) {
+            return $this;
         }
         $this->logger->info(PHP_EOL . "Migration completed");
         return $this;

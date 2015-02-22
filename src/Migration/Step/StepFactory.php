@@ -28,11 +28,33 @@ class StepFactory
     protected $objectManager;
 
     /**
+     * @var \Symfony\Component\Console\Output\ConsoleOutput
+     */
+    protected $output;
+
+//    /**
+//     * @param \Migration\Config $config
+//     * @param \Symfony\Component\Console\Output\ConsoleOutput $output
+//     * @param ObjectManagerInterface $objectManager
+//     */
+//    public function __construct(
+//        \Migration\Config $config,
+//        \Symfony\Component\Console\Output\ConsoleOutput $output,
+//        ObjectManagerInterface $objectManager
+//    ) {
+//        $this->config = $config;
+//        $this->objectManager = $objectManager;
+//        $this->output = $output;
+//    }
+
+    /**
      * @param \Migration\Config $config
      * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(\Migration\Config $config, ObjectManagerInterface $objectManager)
-    {
+    public function __construct(
+        \Migration\Config $config,
+        ObjectManagerInterface $objectManager
+    ) {
         $this->config = $config;
         $this->objectManager = $objectManager;
     }

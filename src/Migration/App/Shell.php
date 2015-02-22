@@ -26,6 +26,11 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $stepManager;
 
     /**
+     * @var \Migration\Step\ProgressStep
+     */
+    protected $progressStep;
+
+    /**
      * @var \Migration\Config
      */
     protected $config;
@@ -36,6 +41,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
      * @param \Migration\Step\StepManager $stepManager
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Logger\Manager $logManager
+     * @param \Migration\Step\ProgressStep $progressStep
      * @param string $entryPoint
      * @throws \Exception
      */
@@ -45,11 +51,13 @@ class Shell extends \Magento\Framework\App\AbstractShell
         \Migration\Step\StepManager $stepManager,
         \Migration\Logger\Logger $logger,
         \Migration\Logger\Manager $logManager,
+        \Migration\Step\ProgressStep $progressStep,
         $entryPoint
     ) {
         $this->logger = $logger;
         $this->logManager = $logManager;
         $this->stepManager = $stepManager;
+        $this->progressStep = $progressStep;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
     }
@@ -82,6 +90,12 @@ class Shell extends \Magento\Framework\App\AbstractShell
             if ($this->getArg('type')) {
                 $this->logger->info($this->getArg('type'));
             }
+            $force = $this->getArg('force');
+            if ($force)
+            {
+                $this->logger->info('Current progress will be removed');
+                $this->progressStep->clearLockFile();
+            }
 
             $this->stepManager->runSteps();
         } catch (\Exception $e) {
@@ -102,6 +116,7 @@ Usage:  php -f {$this->_entryPoint} -- [options]
   --config <value>    Path to main configuration file
   --type <value>      Type of operation: migration or delta delivery
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
+  --force             Remove steps progress
   help              This help
 
 USAGE;

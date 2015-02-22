@@ -26,6 +26,11 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @var \Migration\Step\ProgressStep|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $process;
+
     public function setUp()
     {
         $this->factory = $this->getMockBuilder('\Migration\Step\StepFactory')->disableOriginalConstructor()
@@ -34,7 +39,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['info'])
             ->getMock();
-        $this->manager = new StepManager($this->logger, $this->factory);
+        $this->process = $this->getMockBuilder('\Migration\Step\ProgressStep')->disableOriginalConstructor()
+            ->setMethods(['getResult', 'saveResult'])
+            ->getMock();
+        $this->manager = new StepManager($this->process, $this->logger, $this->factory);
     }
 
     public function testRunStepsIntegrityFail()
@@ -43,6 +51,8 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck');
+        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
+        $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
@@ -53,6 +63,8 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
+        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
+        $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->never())->method('info');
         $this->assertSame($this->manager, $this->manager->runSteps());
@@ -64,6 +76,21 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
+        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
+        $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
+        $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
+        $this->assertSame($this->manager, $this->manager->runSteps());
+    }
+
+    public function testRunStepsWithSuccessProgress()
+    {
+        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step->expects($this->never())->method('integrity')->will($this->returnValue(true));
+        $step->expects($this->never())->method('run');
+        $step->expects($this->never())->method('volumeCheck')->will($this->returnValue(true));
+        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(true));
+        $this->process->expects($this->never())->method('saveResult');
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());

@@ -32,9 +32,14 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $logManager;
 
     /**
-     * @var \Migration\Step\StepFactory
+     * @var \Migration\Step\StepFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stepManager;
+
+    /**
+     * @var \Migration\Step\ProgressStep|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $progressStep;
 
     protected function setUp()
     {
@@ -49,12 +54,16 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->stepManager = $this->getMockBuilder('\Migration\Step\StepManager')->setMethods(['runSteps'])
             ->disableOriginalConstructor()
             ->getMock();
+        $this->progressStep = $this->getMockBuilder('\Migration\Step\ProgressStep')->setMethods(['clearLockFile'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->shell = new Shell(
             $this->filesystem,
             $config,
             $this->stepManager,
             $this->logger,
             $this->logManager,
+            $this->progressStep,
             ''
         );
     }
@@ -75,6 +84,14 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell->setRawArgs(['--verbose', $level]);
         $this->stepManager->expects($this->once())->method('runSteps');
         $this->logManager->expects($this->once())->method('process')->with($level);
+        $this->shell->run();
+    }
+
+    public function testRunClearProgress()
+    {
+        $this->shell->setRawArgs(['--force']);
+        $this->stepManager->expects($this->once())->method('runSteps');
+        $this->progressStep->expects($this->once())->method('clearLockFile');
         $this->shell->run();
     }
 

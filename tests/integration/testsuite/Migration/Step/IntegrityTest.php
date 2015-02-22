@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step\Integrity;
+namespace Migration\Step\Map\Integrity;
 
 /**
  * Integrity step test class
@@ -22,15 +22,15 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMockBuilder('\Migration\Step\Progress')->disableOriginalConstructor()->getMock();
+        $progressBar = $this->getMockBuilder('\Migration\Step\ProgressBar')->disableOriginalConstructor()->getMock();
         $mapReader = $objectManager->create('\Migration\MapReader');
 
         $integrity = $objectManager->create(
-            '\Migration\Step\Integrity',
+            '\Migration\Step\Map\Integrity',
             ['progress' => $progressBar, 'mapReader' => $mapReader]
         );
         ob_start();
-        $integrity->run();
+        $integrity->perform();
         ob_end_clean();
 
         $logOutput = \Migration\Logger\Logger::getMessages();
@@ -47,14 +47,14 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMockBuilder('\Migration\Step\Progress')->disableOriginalConstructor()->getMock();
+        $progressBar = $this->getMockBuilder('\Migration\Step\ProgressBar')->disableOriginalConstructor()->getMock();
         $mapReader = $objectManager->create('\Migration\MapReader');
         $integrity = $objectManager->create(
-            '\Migration\Step\Integrity',
+            '\Migration\Step\Map\Integrity',
             ['progress' => $progressBar, 'mapReader' => $mapReader]
         );
         ob_start();
-        $integrity->run();
+        $integrity->perform();
         ob_end_clean();
 
         $messages = [];

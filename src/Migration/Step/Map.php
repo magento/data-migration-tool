@@ -5,6 +5,9 @@
  */
 namespace Migration\Step;
 
+use Migration\Logger\Logger;
+
+
 class Map implements StepInterface
 {
     /**
@@ -23,18 +26,29 @@ class Map implements StepInterface
     protected $volume;
 
     /**
+     * Logger instance
+     *
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Map\Integrity $integrity
      * @param Map\Run $run
      * @param Map\Volume $volume
+     * @param Logger $logger
      */
     public function __construct(
         Map\Integrity $integrity,
         Map\Run $run,
-        Map\Volume $volume
+        Map\Volume $volume,
+        Logger $logger
+
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
+        $this->logger = $logger;
     }
 
     /**
@@ -42,7 +56,12 @@ class Map implements StepInterface
      */
     public function integrity()
     {
-        return $this->integrity->perform();
+        try {
+            return $this->integrity->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Integrity check failed with exception: ' . $e->getMessage());
+        }
+        return false;
     }
 
     /**
@@ -50,7 +69,11 @@ class Map implements StepInterface
      */
     public function run()
     {
-        $this->run->perform();
+        try {
+            $this->run->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Run failed with exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -58,6 +81,10 @@ class Map implements StepInterface
      */
     public function volumeCheck()
     {
-        return $this->volume->perform();
+        try {
+            return $this->volume->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
+        }
     }
 }
