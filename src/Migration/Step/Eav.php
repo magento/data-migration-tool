@@ -132,42 +132,37 @@ class Eav extends AbstractStep
      */
     public function integrity()
     {
-        $missingDocuments = [];
+        $result = $this->checkMap(array_keys($this->getDocumentsMap()), MapReader::TYPE_SOURCE);
+        $result = $result & $this->checkMap(array_values($this->getDocumentsMap()), MapReader::TYPE_DEST);
+        return $result;
+    }
+
+    /**
+     * @param $documents
+     * @param $type
+     * @return bool
+     * @throws \Exception
+     */
+    protected function checkMap($documents, $type)
+    {
+        $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->dest;
+        $destination = $type == MapReader::TYPE_SOURCE ? $this->dest : $this->source;
+
         $missingFields = [];
-        $sourceDocuments = array_keys($this->getDocumentsList());
-        $destDocuments = array_flip($this->dest->getDocumentList());
-        $destEavDocuments = [];
-        foreach ($sourceDocuments as $document) {
-            $mappedDocument = $this->map->getDocumentMap($document, MapReader::TYPE_SOURCE);
+        $missingDocuments = [];
+        $destDocuments = array_flip($destination->getDocumentList());
+        foreach ($documents as $document) {
+            $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
-                $destEavDocuments[] = $mappedDocument;
                 if (!isset($destDocuments[$mappedDocument])) {
-                    $missingDocuments[MapReader::TYPE_SOURCE][$document] = true;
+                    $missingDocuments[$type][$document] = true;
                 } else {
-                    $fields = array_keys($this->source->getDocument($document)->getStructure()->getFields());
-                    $destFields = $this->dest->getDocument($mappedDocument)->getStructure()->getFields();
+                    $fields = array_keys($source->getDocument($document)->getStructure()->getFields());
+                    $destFields = $destination->getDocument($mappedDocument)->getStructure()->getFields();
                     foreach ($fields as $field) {
-                        $mappedField = $this->map->getFieldMap($document, $field, MapReader::TYPE_SOURCE);
+                        $mappedField = $this->map->getFieldMap($document, $field, $type);
                         if ($mappedField && !isset($destFields[$mappedField])) {
-                            $missingFields[MapReader::TYPE_SOURCE][$document][] = $mappedField;
-                        }
-                    }
-                }
-            }
-        }
-        $sourceDocuments = array_flip($sourceDocuments);
-        foreach ($destEavDocuments as $document) {
-            $mappedDocument = $this->map->getDocumentMap($document, MapReader::TYPE_DEST);
-            if ($mappedDocument !== false) {
-                if (!isset($sourceDocuments[$mappedDocument])) {
-                    $missingDocuments[MapReader::TYPE_DEST][$document] = true;
-                } else {
-                    $fields = array_keys($this->dest->getDocument($document)->getStructure()->getFields());
-                    $destFields = $this->source->getDocument($mappedDocument)->getStructure()->getFields();
-                    foreach ($fields as $field) {
-                        $mappedField = $this->map->getFieldMap($document, $field, MapReader::TYPE_DEST);
-                        if ($mappedField && !isset($destFields[$mappedField])) {
-                            $missingFields[MapReader::TYPE_DEST][$document][] = $mappedField;
+                            $missingFields[$type][$document][] = $mappedField;
                         }
                     }
                 }
@@ -175,8 +170,26 @@ class Eav extends AbstractStep
         }
 
         if (!empty($missingFields) || !empty($missingDocuments)) {
-            var_dump($missingFields);
-            var_dump($missingDocuments);
+            foreach ($missingDocuments as $data) {
+                foreach (array_keys($data) as $document) {
+                    $this->logger->log(
+                        Logger::ERROR,
+                        ucfirst($type) . ' document not mapped: ' . $document);
+                }
+            }
+
+            foreach ($missingFields as $data) {
+                foreach ($data as $document => $fields) {
+                    array_walk($fields, function(&$field) use ($document) {
+                        $field = "$document.$field";
+                    });
+                    $this->logger->log(
+                        Logger::ERROR,
+                        ucfirst($type) . ' fields not mapped: ' . implode(', ', $fields)
+                    );
+                }
+            }
+
             return false;
         }
 
@@ -193,7 +206,7 @@ class Eav extends AbstractStep
         if (!$this->integrity()) {
             return;
         }
-        $this->progress->start(count($this->getDocumentsList()));
+        $this->progress->start(count($this->getDocumentsMap()));
         $this->loadInitialAttributeSets();
         $this->loadInitialAttributeGroups();
         $this->loadInitialAttributes();
@@ -291,6 +304,7 @@ class Eav extends AbstractStep
         }
 
         foreach ($destinationRecords as $record) {
+            /** @var Record $destRecord */
             $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $record]);
             $destRecord->setValue('attribute_id', null);
             $recordsToSave->addRecord($destRecord);
@@ -351,12 +365,30 @@ class Eav extends AbstractStep
      */
     protected function migrateOtherTables()
     {
-        $tables = array_diff_key($this->getDocumentsList(), array_flip([
-            'eav_attribute_set',
-            'eav_attribute_group',
-            'eav_attribute',
-            'eav_entity_attribute'
-        ]));
+        $tables = [
+            'catalog_eav_attribute' => ['attribute_id'],
+            'customer_eav_attribute' => ['attribute_id'],
+            'eav_entity_type' => ['entity_type_id'],
+            'customer_eav_attribute_website' => [],
+            'eav_attribute_label' => [],
+            'eav_attribute_option' => [],
+            'eav_attribute_option_value' => [],
+            'eav_entity' => [],
+            'eav_entity_datetime' => [],
+            'eav_entity_decimal' => [],
+            'eav_entity_int' => [],
+            'eav_entity_store' => [],
+            'eav_entity_text' => [],
+            'eav_entity_varchar' => [],
+            'eav_form_element' => [],
+            'eav_form_fieldset' => [],
+            'eav_form_fieldset_label' => [],
+            'eav_form_type' => [],
+            'eav_form_type_entity' => [],
+            'enterprise_rma_item_eav_attribute' => [],
+            'enterprise_rma_item_eav_attribute_website' => []
+        ];
+
         foreach ($tables as $documentName => $mappingFields) {
             $sourceDocument = $this->source->getDocument($documentName);
             $destDocument = $this->dest->getDocument(
@@ -589,34 +621,34 @@ class Eav extends AbstractStep
     /**
      * @return array
      */
-    protected function getDocumentsList()
+    protected function getDocumentsMap()
     {
         return [
-            'eav_attribute_group' => [],
-            'eav_attribute_set' => [],
-            'eav_attribute' => [],
-            'eav_entity_attribute' => [],
-            'catalog_eav_attribute' => ['attribute_id'],
-            'customer_eav_attribute' => ['attribute_id'],
-            'eav_entity_type' => ['entity_type_id'],
-            'customer_eav_attribute_website' => [],
-            'eav_attribute_label' => [],
-            'eav_attribute_option' => [],
-            'eav_attribute_option_value' => [],
-            'eav_entity' => [],
-            'eav_entity_datetime' => [],
-            'eav_entity_decimal' => [],
-            'eav_entity_int' => [],
-            'eav_entity_store' => [],
-            'eav_entity_text' => [],
-            'eav_entity_varchar' => [],
-            'eav_form_element' => [],
-            'eav_form_fieldset' => [],
-            'eav_form_fieldset_label' => [],
-            'eav_form_type' => [],
-            'eav_form_type_entity' => [],
-            'enterprise_rma_item_eav_attribute' => [],
-            'enterprise_rma_item_eav_attribute_website' => []
+            'eav_attribute_group' => 'eav_attribute_group',
+            'eav_attribute_set' => 'eav_attribute_set',
+            'eav_attribute' => 'eav_attribute',
+            'eav_entity_attribute' => 'eav_entity_attribute',
+            'catalog_eav_attribute' => 'catalog_eav_attribute',
+            'customer_eav_attribute' => 'customer_eav_attribute',
+            'eav_entity_type' => 'eav_entity_type',
+            'customer_eav_attribute_website' => 'customer_eav_attribute_website',
+            'eav_attribute_label' => 'eav_attribute_label',
+            'eav_attribute_option' => 'eav_attribute_option',
+            'eav_attribute_option_value' => 'eav_attribute_option_value',
+            'eav_entity' => 'eav_entity',
+            'eav_entity_datetime' => 'eav_entity_datetime',
+            'eav_entity_decimal' => 'eav_entity_decimal',
+            'eav_entity_int' => 'eav_entity_int',
+            'eav_entity_store' => 'eav_entity_store',
+            'eav_entity_text' => 'eav_entity_text',
+            'eav_entity_varchar' => 'eav_entity_varchar',
+            'eav_form_element' => 'eav_form_element',
+            'eav_form_fieldset' => 'eav_form_fieldset',
+            'eav_form_fieldset_label' => 'eav_form_fieldset_label',
+            'eav_form_type' => 'eav_form_type',
+            'eav_form_type_entity' => 'eav_form_type_entity',
+            'enterprise_rma_item_eav_attribute' => 'magento_rma_item_eav_attribute',
+            'enterprise_rma_item_eav_attribute_website' => 'magento_rma_item_eav_attribute_website'
         ];
     }
 
