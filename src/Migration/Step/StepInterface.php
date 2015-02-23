@@ -19,7 +19,9 @@ interface StepInterface
     public function run();
 
     /**
-     * @return int
+     * Check Step can start
+     *
+     * @return bool
      */
-    public function getMaxSteps();
+    public function canStart();
 }

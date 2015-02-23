@@ -59,22 +59,30 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSource()
     {
-        $source = ['database' => [
-            'host' => 'localhost',
-            'user' => 'root',
-            'name' => 'magento1'
-        ]];
+        $source = [
+            'version' => '1.14.1.0',
+            'type' => 'database',
+            'database' => [
+                'host' => 'localhost',
+                'user' => 'root',
+                'name' => 'magento1'
+            ]
+        ];
         $this->assertEquals($source, $this->config->getSource());
     }
 
     public function testGetDestination()
     {
-        $destination = ['database' => [
-            'host' => 'localhost',
-            'user' => 'root',
-            'name' => 'magento2',
-            'password' => '123123q'
-        ]];
+        $destination = [
+            'version' => '2.0.0.0',
+            'type' => 'database',
+            'database' => [
+                'host' => 'localhost',
+                'user' => 'root',
+                'name' => 'magento2',
+                'password' => '123123q'
+            ]
+        ];
         $this->assertEquals($destination, $this->config->getDestination());
     }
 

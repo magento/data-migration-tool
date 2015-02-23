@@ -39,11 +39,16 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRunSteps()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
-        $step->expects($this->once())->method('run');
-        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->at(0))->method('info')->with("Step 1 of 1");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Migration completed");
+        $step1 = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step1->expects($this->any())->method('canStart')->willReturn(false);
+        $step2 = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step2->expects($this->any())->method('canStart')->willReturn(true);
+        $step2->expects($this->once())->method('run');
+        $this->factory->expects($this->any())->method('getSteps')->will($this->returnValue([$step1, $step2]));
+        $this->logger->expects($this->at(0))->method('info')->with("Step 1 of 2");
+        $this->logger->expects($this->at(1))->method('info')->with("Can not execute step 1");
+        $this->logger->expects($this->at(2))->method('info')->with("Step 2 of 2");
+        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }

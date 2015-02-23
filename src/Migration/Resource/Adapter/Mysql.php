@@ -85,4 +85,25 @@ class Mysql implements \Migration\Resource\AdapterInterface
     {
         $this->resourceAdapter->truncateTable($documentName);
     }
+
+    /**
+     * Load data from DB Select
+     *
+     * @param \Magento\Framework\DB\Select $select
+     * @return array
+     */
+    public function loadDataFromSelect($select)
+    {
+        return $this->resourceAdapter->fetchAll($select);
+    }
+
+    /**
+     * Get DB Select
+     *
+     * @return \Magento\Framework\DB\Select
+     */
+    public function getSelect()
+    {
+        return $this->resourceAdapter->select();
+    }
 }

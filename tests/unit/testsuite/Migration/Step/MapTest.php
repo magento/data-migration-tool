@@ -7,7 +7,6 @@ namespace Migration\Step;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
-use Migration\MapReader;
 use Migration\Resource;
 
 class MapTest extends \PHPUnit_Framework_TestCase
@@ -38,7 +37,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReader
+     * @var \Migration\MapReader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -148,5 +147,10 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->mapStep->run();
+    }
+
+    public function testCanStart()
+    {
+        $this->assertTrue($this->mapStep->canStart());
     }
 }

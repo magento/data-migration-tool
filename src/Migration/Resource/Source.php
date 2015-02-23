@@ -19,11 +19,12 @@ class Source extends AbstractResource
     protected function getResourceConfig()
     {
         $source = $this->configReader->getSource();
-        $config['host'] = $source['database']['host'];
-        $config['dbname'] = $source['database']['name'];
-        $config['username'] = $source['database']['user'];
-        $config['password'] = !empty($source['database']['password'])
-            ? $source['database']['password']
+        $sourceType = $source['type'];
+        $config['host'] = $source[$sourceType]['host'];
+        $config['dbname'] = $source[$sourceType]['name'];
+        $config['username'] = $source[$sourceType]['user'];
+        $config['password'] = !empty($source[$sourceType]['password'])
+            ? $source[$sourceType]['password']
             : '';
         return $config;
     }
@@ -34,5 +35,17 @@ class Source extends AbstractResource
     protected function getDocumentPrefix()
     {
         return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+    }
+
+    /**
+     * Load page
+     *
+     * @param string $documentName
+     * @param int $pageNumber
+     * @return array
+     */
+    public function loadPage($documentName, $pageNumber)
+    {
+        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
     }
 }

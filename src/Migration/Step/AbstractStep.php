@@ -41,7 +41,12 @@ abstract class AbstractStep implements StepInterface
     }
 
     /**
-     * {@inheritdoc}
+     * Check Step can be started
+     *
+     * @return bool
      */
-    abstract public function getMaxSteps();
+    public function canStart()
+    {
+        return true;
+    }
 }

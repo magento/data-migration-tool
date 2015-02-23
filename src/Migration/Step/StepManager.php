@@ -40,8 +40,13 @@ class StepManager
     public function runSteps()
     {
         $steps = $this->factory->getSteps();
+        /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
             $this->logger->info(sprintf('Step %s of %s', $index + 1, count($steps)));
+            if (!$step->canStart()) {
+                $this->logger->info(sprintf('Can not execute step %s', $index + 1));
+                continue;
+            }
             /** @var StepInterface $step */
             $step->run();
         }

@@ -48,11 +48,12 @@ class Destination extends AbstractResource
     protected function getResourceConfig()
     {
         $destination = $this->configReader->getDestination();
-        $config['host'] = $destination['database']['host'];
-        $config['dbname'] = $destination['database']['name'];
-        $config['username'] = $destination['database']['user'];
-        $config['password'] = !empty($destination['database']['password'])
-            ? $destination['database']['password']
+        $destinationType = $destination['type'];
+        $config['host'] = $destination[$destinationType]['host'];
+        $config['dbname'] = $destination[$destinationType]['name'];
+        $config['username'] = $destination[$destinationType]['user'];
+        $config['password'] = !empty($destination[$destinationType]['password'])
+            ? $destination[$destinationType]['password']
             : '';
         return $config;
     }

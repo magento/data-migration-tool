@@ -59,10 +59,12 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     public function validateStructureDataProvider()
     {
         $structureValid = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
+        $structureValid->expects($this->any())->method('getFields')->willReturn(['id', 'name']);
         $structureValid->expects($this->any())->method('hasField')->willReturnCallback(function ($fieldName) {
             return in_array($fieldName, ['id', 'name']);
         });
         $structureNotValid = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
+        $structureNotValid->expects($this->any())->method('getFields')->willReturn(['id', 'name']);
         $structureNotValid->expects($this->any())->method('hasField')->willReturn(false);
         return [
             [false, null],
@@ -107,6 +109,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function testSetDataWithException()
     {
+        $this->structure->expects($this->any())->method('getFields')->willReturn(['id', 'name']);
         $this->record->setStructure($this->structure);
         $this->record->setData(['id' => 11, 'wrongName' => 'item2']);
     }
