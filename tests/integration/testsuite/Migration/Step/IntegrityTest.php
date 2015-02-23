@@ -22,7 +22,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMockBuilder('\Migration\Step\ProgressBar')->disableOriginalConstructor()->getMock();
+        $progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'advance', 'finish'], [], '');
         $mapReader = $objectManager->create('\Migration\MapReader');
 
         $integrity = $objectManager->create(
@@ -47,7 +47,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMockBuilder('\Migration\Step\ProgressBar')->disableOriginalConstructor()->getMock();
+        $progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'advance', 'finish'], [], '');
         $mapReader = $objectManager->create('\Migration\MapReader');
         $integrity = $objectManager->create(
             '\Migration\Step\Map\Integrity',

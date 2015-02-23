@@ -7,7 +7,6 @@ namespace Migration\Step;
 
 use Migration\Logger\Logger;
 
-
 class Map implements StepInterface
 {
     /**
@@ -43,7 +42,6 @@ class Map implements StepInterface
         Map\Run $run,
         Map\Volume $volume,
         Logger $logger
-
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
@@ -93,6 +91,6 @@ class Map implements StepInterface
      */
     public function getTitle()
     {
-        return "Map step: ";
+        return "Map step";
     }
 }

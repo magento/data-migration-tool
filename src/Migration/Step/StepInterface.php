@@ -33,7 +33,7 @@ interface StepInterface
     public function volumeCheck();
 
     /**
-     * Get class title
+     * Get step title
      *
      * @return string
      */

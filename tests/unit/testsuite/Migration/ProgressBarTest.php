@@ -6,6 +6,8 @@
 
 namespace Migration\Step;
 
+use Migration\ProgressBar;
+
 /**
  * Class ProgressBarTest
  */
@@ -17,7 +19,7 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
     protected $output;
 
     /**
-     * @var \Migration\Step\ProgressBar
+     * @var \Migration\ProgressBar
      */
     protected $progressBar;
 
@@ -29,6 +31,6 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $this->progressBar = new ProgressBar($this->output);
-        $this->assertInstanceOf('\Migration\Step\ProgressBar', $this->progressBar);
+        $this->assertInstanceOf('\Migration\ProgressBar', $this->progressBar);
     }
 }

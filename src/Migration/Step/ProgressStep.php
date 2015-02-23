@@ -50,31 +50,31 @@ class ProgressStep
     }
 
     /**
-     * @param object $step
-     * @param string $type
+     * @param \Migration\Step\StepInterface $step
+     * @param string $stage
      * @param bool $result
      * @return $this
      */
-    public function saveResult($step, $type, $result)
+    public function saveResult(StepInterface $step, $stage, $result)
     {
         $stepName = $this->getStepName($step);
         if ($this->filesystem->isExists($this->getLockFile())) {
-            $this->data[$stepName][$type] = $result;
+            $this->data[$stepName][$stage] = $result;
             $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         }
         return $this;
     }
 
     /**
-     * @param object $step
-     * @param string $type
+     * @param \Migration\Step\StepInterface $step
+     * @param string $stage
      * @return bool
      */
-    public function getResult($step, $type)
+    public function isCompleted(StepInterface $step, $stage)
     {
         $this->loadData();
         $stepName = $this->getStepName($step);
-        return !empty($this->data[$stepName][$type]);
+        return !empty($this->data[$stepName][$stage]);
     }
 
     /**
@@ -93,22 +93,19 @@ class ProgressStep
     /**
      * @return $this
      */
-    public  function clearLockFile()
+    public function clearLockFile()
     {
         $this->filesystem->filePutContents($this->getLockFile(), 0);
         return $this;
     }
 
     /**
-     * @param object $step
+     * @param \Migration\Step\StepInterface $step
      * @return null|string
      */
-    protected function getStepName($step)
+    protected function getStepName(StepInterface $step)
     {
-        $stepName = null;
-        if (is_object($step)) {
-            $stepName = get_class($step);
-        }
+        $stepName = get_class($step);
         return $stepName;
     }
 }

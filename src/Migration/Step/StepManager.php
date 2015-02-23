@@ -49,9 +49,9 @@ class StepManager
         $steps = $this->factory->getSteps();
         $integritySuccess = true;
         /** @var StepInterface $step */
-        foreach ($steps as $index => $step) {
-            $this->logger->info(PHP_EOL . $step->getTitle() . 'Integrity');
-            if ($this->progress->getResult($step, 'integrity') != true) {
+        foreach ($steps as $step) {
+            $this->logger->info(PHP_EOL . $step->getTitle() . ': integrity check');
+            if ($this->progress->isCompleted($step, 'integrity') != true) {
                 $integritySuccess = $step->integrity();
                 $this->progress->saveResult($step, 'integrity', $integritySuccess);
             } else {
@@ -63,17 +63,17 @@ class StepManager
         }
 
         /** @var StepInterface $step */
-        foreach ($steps as $index => $step) {
-            $this->logger->info(PHP_EOL . $step->getTitle() . 'Run');
-            if ($this->progress->getResult($step, 'run') != true) {
+        foreach ($steps as $step) {
+            $this->logger->info(PHP_EOL . $step->getTitle() . ': run');
+            if ($this->progress->isCompleted($step, 'run') != true) {
                 $runSuccess = $step->run();
                 $this->progress->saveResult($step, 'run', $runSuccess);
             } else {
                 $this->logger->info('Migration step completed');
             }
             $volumeCheckSuccess = true;
-            $this->logger->info(PHP_EOL . $step->getTitle() . 'Volume Check');
-            if ($this->progress->getResult($step, 'volume_check') != true) {
+            $this->logger->info(PHP_EOL . $step->getTitle() . ': volume check');
+            if ($this->progress->isCompleted($step, 'volume_check') != true) {
                 $volumeCheckSuccess = $step->volumeCheck();
                 $this->progress->saveResult($step, 'volume_check', $volumeCheckSuccess);
             } else {

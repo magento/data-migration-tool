@@ -139,13 +139,4 @@ class Run
         $destDocuments = $this->destination->getDocumentList();
         return count($sourceDocuments) + count($destDocuments);
     }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return get_class($this);
-    }
 }

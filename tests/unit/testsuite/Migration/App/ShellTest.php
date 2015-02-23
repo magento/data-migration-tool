@@ -89,7 +89,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunClearProgress()
     {
-        $this->shell->setRawArgs(['--force']);
+        $this->shell->setRawArgs(['--reset']);
         $this->stepManager->expects($this->once())->method('runSteps');
         $this->progressStep->expects($this->once())->method('clearLockFile');
         $this->shell->run();

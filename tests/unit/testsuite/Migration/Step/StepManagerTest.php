@@ -40,59 +40,100 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['info'])
             ->getMock();
         $this->process = $this->getMockBuilder('\Migration\Step\ProgressStep')->disableOriginalConstructor()
-            ->setMethods(['getResult', 'saveResult'])
+            ->setMethods(['getResult', 'saveResult', 'isCompleted'])
             ->getMock();
         $this->manager = new StepManager($this->process, $this->logger, $this->factory);
     }
 
     public function testRunStepsIntegrityFail()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck');
         $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
     public function testRunStepsVolumeFail()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->never())->method('info');
+        $this->logger->expects($this->any())->method('info');
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
     public function testRunStepsSuccess()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
         $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: run");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
     public function testRunStepsWithSuccessProgress()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface', [], [], '', false);
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->never())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck')->will($this->returnValue(true));
         $this->process->expects($this->any())->method('getResult')->will($this->returnValue(true));
         $this->process->expects($this->never())->method('saveResult');
+        $this->process->expects($this->any())->method('isCompleted')->willReturn(true);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
-        $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
+        $this->logger->expects($this->at(1))->method('info')->with("Integrity check completed");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: run");
+        $this->logger->expects($this->at(3))->method('info')->with("Migration step completed");
+        $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(5))->method('info')->with("Volume check completed");
+        $this->logger->expects($this->at(6))->method('info')->with(PHP_EOL . "Migration completed");
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }

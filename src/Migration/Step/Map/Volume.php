@@ -88,13 +88,4 @@ class Volume
         $this->progress->finish();
         return $isSuccess;
     }
-
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return get_class($this);
-    }
 }

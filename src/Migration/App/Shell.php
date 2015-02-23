@@ -91,8 +91,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
                 $this->logger->info($this->getArg('type'));
             }
             $reset = $this->getArg('reset');
-            if ($reset)
-            {
+            if ($reset) {
                 $this->logger->info('Current progress will be removed');
                 $this->progressStep->clearLockFile();
             }

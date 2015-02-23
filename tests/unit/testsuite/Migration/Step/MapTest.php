@@ -82,4 +82,9 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->once())->method('error');
         $this->map->volumeCheck();
     }
+
+    public function testGetTitle()
+    {
+        $this->assertEquals('Map step', $this->map->getTitle());
+    }
 }
