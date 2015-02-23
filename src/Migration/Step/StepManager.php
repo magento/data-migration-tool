@@ -50,10 +50,12 @@ class StepManager
         $integritySuccess = true;
         /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
-            if ($this->progress->getResult(get_class($step), 'integrity') != true) {
-                $this->logger->info(get_class($step) . ': Integrity');
+            $this->logger->info(PHP_EOL . $step->getTitle() . 'Integrity');
+            if ($this->progress->getResult($step, 'integrity') != true) {
                 $integritySuccess = $step->integrity();
-                $this->progress->saveResult(get_class($step), 'integrity', $integritySuccess);
+                $this->progress->saveResult($step, 'integrity', $integritySuccess);
+            } else {
+                $this->logger->info('Integrity check completed');
             }
         }
         if (!$integritySuccess) {
@@ -62,16 +64,20 @@ class StepManager
 
         /** @var StepInterface $step */
         foreach ($steps as $index => $step) {
-            if ($this->progress->getResult(get_class($step), 'run') != true) {
-                $this->logger->info(get_class($step) . ': Run');
+            $this->logger->info(PHP_EOL . $step->getTitle() . 'Run');
+            if ($this->progress->getResult($step, 'run') != true) {
                 $runSuccess = $step->run();
-                $this->progress->saveResult(get_class($step), 'run', $runSuccess);
+                $this->progress->saveResult($step, 'run', $runSuccess);
+            } else {
+                $this->logger->info('Migration step completed');
             }
             $volumeCheckSuccess = true;
-            if ($this->progress->getResult(get_class($step), 'volume_check') != true) {
-                $this->logger->info(get_class($step) . ': Volume Check');
+            $this->logger->info(PHP_EOL . $step->getTitle() . 'Volume Check');
+            if ($this->progress->getResult($step, 'volume_check') != true) {
                 $volumeCheckSuccess = $step->volumeCheck();
-                $this->progress->saveResult(get_class($step), 'volume_check', $volumeCheckSuccess);
+                $this->progress->saveResult($step, 'volume_check', $volumeCheckSuccess);
+            } else {
+                $this->logger->info('Volume check completed');
             }
         }
         if (!$volumeCheckSuccess) {

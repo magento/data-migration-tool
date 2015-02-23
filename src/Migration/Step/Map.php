@@ -87,4 +87,12 @@ class Map implements StepInterface
             $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
         }
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return "Map step: ";
+    }
 }

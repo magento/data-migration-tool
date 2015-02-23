@@ -31,4 +31,11 @@ interface StepInterface
      * @return bool
      */
     public function volumeCheck();
+
+    /**
+     * Get class title
+     *
+     * @return string
+     */
+    public function getTitle();
 }

@@ -18,7 +18,7 @@ class ProgressStep
     /**
      * @var array
      */
-    protected $data;
+    protected $data = [];
 
     /**
      * @var \Magento\Framework\Filesystem\DriverInterface
@@ -41,7 +41,7 @@ class ProgressStep
     protected function loadData()
     {
         if ($this->filesystem->isExists($this->getLockFile())) {
-            $data = unserialize($this->filesystem->fileGetContents($this->getLockFile()));
+            $data = @unserialize($this->filesystem->fileGetContents($this->getLockFile()));
             if (is_array($data)) {
                 $this->data = $data;
             }
@@ -50,13 +50,14 @@ class ProgressStep
     }
 
     /**
-     * @param string $stepName
+     * @param object $step
      * @param string $type
      * @param bool $result
      * @return $this
      */
-    public function saveResult($stepName, $type, $result)
+    public function saveResult($step, $type, $result)
     {
+        $stepName = $this->getStepName($step);
         if ($this->filesystem->isExists($this->getLockFile())) {
             $this->data[$stepName][$type] = $result;
             $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
@@ -65,18 +66,15 @@ class ProgressStep
     }
 
     /**
-     * @param string $stepName
+     * @param object $step
      * @param string $type
      * @return bool
      */
-    public function getResult($stepName, $type)
+    public function getResult($step, $type)
     {
         $this->loadData();
-        $result = false;
-        if (!empty($this->data[$stepName][$type])) {
-            $result = $this->data[$stepName][$type] ? true : false;
-        }
-        return $result;
+        $stepName = $this->getStepName($step);
+        return !empty($this->data[$stepName][$type]);
     }
 
     /**
@@ -84,7 +82,12 @@ class ProgressStep
      */
     protected function getLockFile()
     {
-        return $this->lockFileName;
+        $lockFileDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR .'var';
+        $lockFile = $lockFileDir . DIRECTORY_SEPARATOR . $this->lockFileName;
+        if (!$this->filesystem->isExists($lockFile)) {
+            $this->filesystem->filePutContents($lockFile, 0);
+        }
+        return $lockFile;
     }
 
     /**
@@ -92,9 +95,20 @@ class ProgressStep
      */
     public  function clearLockFile()
     {
-        if ($this->filesystem->isExists($this->getLockFile())) {
-            $this->filesystem->filePutContents($this->getLockFile(), '');
-        }
+        $this->filesystem->filePutContents($this->getLockFile(), 0);
         return $this;
+    }
+
+    /**
+     * @param object $step
+     * @return null|string
+     */
+    protected function getStepName($step)
+    {
+        $stepName = null;
+        if (is_object($step)) {
+            $stepName = get_class($step);
+        }
+        return $stepName;
     }
 }

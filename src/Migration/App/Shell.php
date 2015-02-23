@@ -90,8 +90,8 @@ class Shell extends \Magento\Framework\App\AbstractShell
             if ($this->getArg('type')) {
                 $this->logger->info($this->getArg('type'));
             }
-            $force = $this->getArg('force');
-            if ($force)
+            $reset = $this->getArg('reset');
+            if ($reset)
             {
                 $this->logger->info('Current progress will be removed');
                 $this->progressStep->clearLockFile();

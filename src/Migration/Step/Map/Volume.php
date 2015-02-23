@@ -8,6 +8,7 @@ namespace Migration\Step\Map;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
+use Migration\ProgressBar;
 
 class Volume
 {
@@ -32,22 +33,32 @@ class Volume
     protected $logger;
 
     /**
+     * ProgressBar instance
+     *
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param ProgressBar $progress
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        ProgressBar $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->mapReader = $mapReader;
         $this->mapReader->init();
         $this->logger =  $logger;
+        $this->progress = $progress;
     }
 
     /**
@@ -57,7 +68,9 @@ class Volume
     {
         $isSuccess = true;
         $sourceDocuments = $this->source->getDocumentList();
+        $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
+            $this->progress->advance();
             $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -72,6 +85,16 @@ class Volume
                 ));
             }
         }
+        $this->progress->finish();
         return $isSuccess;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return get_class($this);
     }
 }

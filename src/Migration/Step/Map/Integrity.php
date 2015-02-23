@@ -6,7 +6,7 @@
 namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
-use Migration\Step\ProgressBar;
+use Migration\ProgressBar;
 use Migration\MapReader;
 use Migration\Resource;
 
@@ -183,6 +183,11 @@ class Integrity
         return $isSuccess;
     }
 
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
     protected function getIterationsCount()
     {
         $sourceDocuments = $this->source->getDocumentList();
