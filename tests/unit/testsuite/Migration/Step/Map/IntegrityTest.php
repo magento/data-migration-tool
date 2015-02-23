@@ -35,6 +35,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
     public function setUp()
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
@@ -47,9 +52,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->map = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
-            ->setMethods(['getFieldMap', 'getDocumentMap'])
+            ->setMethods(['getFieldMap', 'getDocumentMap', 'init'])
             ->getMock();
-        $this->integrity = new Integrity($this->logger, $this->source, $this->destination, $this->map);
+
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods([])->getMock();
+        $this->integrity = new Integrity($this->logger, $this->source, $this->destination, $this->map, $this->config);
     }
 
     public function testPerformMainFlow()

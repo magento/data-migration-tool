@@ -12,10 +12,10 @@
 
         <field_rules>
             <ignore>
-                <field>source-document::field1</field>
+                <field>source-document.field1</field>
             </ignore>
             <transform>
-                <field>source-document::field-with-handler</field>
+                <field>source-document.field-with-handler</field>
             </transform>
         </field_rules>
     </source>

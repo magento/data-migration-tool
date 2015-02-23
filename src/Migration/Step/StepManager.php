@@ -6,6 +6,7 @@
 namespace Migration\Step;
 
 use Migration\Logger\Logger;
+use Migration\Config;
 
 /**
  * Class StepManager
@@ -23,13 +24,20 @@ class StepManager
     protected $logger;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param Logger $logger
      * @param StepFactory $factory
+     * @param Config $config
      */
-    public function __construct(Logger $logger, StepFactory $factory)
+    public function __construct(Logger $logger, StepFactory $factory, Config $config)
     {
         $this->factory = $factory;
         $this->logger = $logger;
+        $this->config = $config;
     }
 
     /**
@@ -39,21 +47,24 @@ class StepManager
      */
     public function runSteps()
     {
-        $steps = $this->factory->getSteps();
-        $intergitySuccess = true;
-        /** @var StepInterface $step */
-        foreach ($steps as $index => $step) {
+        $steps = $this->config->getSteps();
+        $integritySuccess = true;
+        $stepInstances = [];
+        foreach ($steps as $stepClass) {
+            /** @var StepInterface $step */
+            $step = $this->factory->create($stepClass);
+            $stepInstances[] = $step;
             $result = $step->integrity();
             if (!$result) {
-                $intergitySuccess = false;
+                $integritySuccess = false;
             }
         }
-        if (!$intergitySuccess) {
+        if (!$integritySuccess) {
             return $this;
         }
 
         /** @var StepInterface $step */
-        foreach ($steps as $index => $step) {
+        foreach ($stepInstances as $step) {
             $step->run();
             $result = $step->volumeCheck();
             if (!$result) {

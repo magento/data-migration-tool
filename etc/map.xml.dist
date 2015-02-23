@@ -1005,229 +1005,229 @@
         </document_rules>
         <field_rules>
             <move>
-                <field>cms_page::root_template</field>
-                <to>cms_page::page_layout</to>
+                <field>cms_page.root_template</field>
+                <to>cms_page.page_layout</to>
             </move>
             <move>
-                <field>sales_flat_order_payment::cc_last4</field>
-                <to>sales_order_payment::cc_last_4</to>
+                <field>sales_flat_order_payment.cc_last4</field>
+                <to>sales_order_payment.cc_last_4</to>
             </move>
             <move>
-                <field>sales_flat_quote_payment::cc_last4</field>
-                <to>quote_payment::cc_last_4</to>
+                <field>sales_flat_quote_payment.cc_last4</field>
+                <to>quote_payment.cc_last_4</to>
             </move>
             <transform>
-                <field>cms_page::root_template</field>
+                <field>cms_page.root_template</field>
                 <handler class="\Migration\Handler\Convert">
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
                 </handler>
             </transform>
             <transform>
-                <field>enterprise_cms_page_revision::root_template</field>
+                <field>enterprise_cms_page_revision.root_template</field>
                 <handler class="\Migration\Handler\Convert">
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
                 </handler>
             </transform>
             <transform>
-                <field>enterprise_cms_page_revision::custom_root_template</field>
+                <field>enterprise_cms_page_revision.custom_root_template</field>
                 <handler class="\Migration\Handler\Convert">
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
                 </handler>
             </transform>
             <ignore>
-                <field>admin_rule::role_type</field>
+                <field>admin_rule.role_type</field>
             </ignore>
             <ignore>
-                <field>admin_rule::assert_id</field>
+                <field>admin_rule.assert_id</field>
             </ignore>
             <ignore>
-                <field>core_website::is_staging</field>
+                <field>core_website.is_staging</field>
             </ignore>
             <ignore>
-                <field>core_website::master_login</field>
+                <field>core_website.master_login</field>
             </ignore>
             <ignore>
-                <field>core_website::master_password</field>
+                <field>core_website.master_password</field>
             </ignore>
             <ignore>
-                <field>core_website::visibility</field>
+                <field>core_website.visibility</field>
             </ignore>
             <ignore>
-                <field>enterprise_giftcard_amount::entity_type_id</field>
+                <field>enterprise_giftcard_amount.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_targetrule::use_customer_segment</field>
+                <field>enterprise_targetrule.use_customer_segment</field>
             </ignore>
             <ignore>
-                <field>enterprise_targetrule_product::store_id</field>
+                <field>enterprise_targetrule_product.store_id</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order::reward_points_balance_refunded</field>
+                <field>sales_flat_order.reward_points_balance_refunded</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order::reward_salesrule_points</field>
+                <field>sales_flat_order.reward_salesrule_points</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_item::is_nominal</field>
+                <field>sales_flat_order_item.is_nominal</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::paybox_request_number</field>
+                <field>sales_flat_order_payment.paybox_request_number</field>
             </ignore>
             <ignore>
-                <field>weee_tax::entity_type_id</field>
+                <field>weee_tax.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_cms_page_revision::root_template</field>
+                <field>enterprise_cms_page_revision.root_template</field>
             </ignore>
             <ignore>
-                <field>enterprise_cms_page_revision::custom_root_template</field>
+                <field>enterprise_cms_page_revision.custom_root_template</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity::entity_type_id</field>
+                <field>catalog_category_entity.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity_datetime::entity_type_id</field>
+                <field>catalog_category_entity_datetime.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity_decimal::entity_type_id</field>
+                <field>catalog_category_entity_decimal.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity_int::entity_type_id</field>
+                <field>catalog_category_entity_int.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity_text::entity_type_id</field>
+                <field>catalog_category_entity_text.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_category_entity_varchar::entity_type_id</field>
+                <field>catalog_category_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity::entity_type_id</field>
+                <field>catalog_product_entity.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_datetime::entity_type_id</field>
+                <field>catalog_product_entity_datetime.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_decimal::entity_type_id</field>
+                <field>catalog_product_entity_decimal.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_gallery::entity_type_id</field>
+                <field>catalog_product_entity_gallery.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_int::entity_type_id</field>
+                <field>catalog_product_entity_int.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_text::entity_type_id</field>
+                <field>catalog_product_entity_text.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_varchar::entity_type_id</field>
+                <field>catalog_product_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity::entity_type_id</field>
+                <field>customer_address_entity.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity::attribute_set_id</field>
+                <field>customer_address_entity.attribute_set_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity_datetime::entity_type_id</field>
+                <field>customer_address_entity_datetime.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity_decimal::entity_type_id</field>
+                <field>customer_address_entity_decimal.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity_int::entity_type_id</field>
+                <field>customer_address_entity_int.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity_text::entity_type_id</field>
+                <field>customer_address_entity_text.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity_varchar::entity_type_id</field>
+                <field>customer_address_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity::entity_type_id</field>
+                <field>customer_entity.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity::attribute_set_id</field>
+                <field>customer_entity.attribute_set_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity_datetime::entity_type_id</field>
+                <field>customer_entity_datetime.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity_decimal::entity_type_id</field>
+                <field>customer_entity_decimal.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity_int::entity_type_id</field>
+                <field>customer_entity_int.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity_text::entity_type_id</field>
+                <field>customer_entity_text.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_entity_varchar::entity_type_id</field>
+                <field>customer_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity::entity_type_id</field>
+                <field>enterprise_rma_item_entity.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity::attribute_set_id</field>
+                <field>enterprise_rma_item_entity.attribute_set_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity_datetime::entity_type_id</field>
+                <field>enterprise_rma_item_entity_datetime.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity_decimal::entity_type_id</field>
+                <field>enterprise_rma_item_entity_decimal.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity_int::entity_type_id</field>
+                <field>enterprise_rma_item_entity_int.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity_text::entity_type_id</field>
+                <field>enterprise_rma_item_entity_text.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>enterprise_rma_item_entity_varchar::entity_type_id</field>
+                <field>enterprise_rma_item_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>sales_flat_creditmemo::cybersource_token</field>
+                <field>sales_flat_creditmemo.cybersource_token</field>
             </ignore>
             <ignore>
-                <field>sales_flat_invoice::cybersource_token</field>
+                <field>sales_flat_invoice.cybersource_token</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::ideal_transaction_checked</field>
+                <field>sales_flat_order_payment.ideal_transaction_checked</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::cybersource_token</field>
+                <field>sales_flat_order_payment.cybersource_token</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::ideal_issuer_title</field>
+                <field>sales_flat_order_payment.ideal_issuer_title</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::paybox_question_number</field>
+                <field>sales_flat_order_payment.paybox_question_number</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::ideal_issuer_id</field>
+                <field>sales_flat_order_payment.ideal_issuer_id</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order_payment::flo2cash_account_id</field>
+                <field>sales_flat_order_payment.flo2cash_account_id</field>
             </ignore>
             <ignore>
-                <field>sales_flat_quote_payment::cybersource_token</field>
+                <field>sales_flat_quote_payment.cybersource_token</field>
             </ignore>
             <ignore>
-                <field>sales_flat_quote_payment::ideal_issuer_id</field>
+                <field>sales_flat_quote_payment.ideal_issuer_id</field>
             </ignore>
             <ignore>
-                <field>sales_flat_quote_payment::ideal_issuer_list</field>
+                <field>sales_flat_quote_payment.ideal_issuer_list</field>
             </ignore>
             <ignore>
-                <field>cms_page::layout_update_xml</field>
+                <field>cms_page.layout_update_xml</field>
             </ignore>
             <ignore>
-                <field>cms_page::custom_layout_update_xml</field>
+                <field>cms_page.custom_layout_update_xml</field>
             </ignore>
             <ignore>
-                <field>enterprise_cms_page_revision::layout_update_xml</field>
+                <field>enterprise_cms_page_revision.layout_update_xml</field>
             </ignore>
             <ignore>
-                <field>enterprise_cms_page_revision::custom_layout_update_xml</field>
+                <field>enterprise_cms_page_revision.custom_layout_update_xml</field>
             </ignore>
         </field_rules>
     </source>
@@ -1338,139 +1338,139 @@
         </document_rules>
         <field_rules>
             <transform>
-                <field>admin_user::interface_locale</field>
+                <field>admin_user.interface_locale</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="en_US" />
                 </handler>
             </transform>
             <transform>
-                <field>catalog_eav_attribute::is_required_in_admin_store</field>
+                <field>catalog_eav_attribute.is_required_in_admin_store</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
-                <field>cataloginventory_stock::website_id</field>
+                <field>cataloginventory_stock.website_id</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
-                <field>cataloginventory_stock_item::website_id</field>
+                <field>cataloginventory_stock_item.website_id</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
-                <field>rating::is_active</field>
+                <field>rating.is_active</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
                 </handler>
             </transform>
             <transform>
-                <field>authorization_role::user_type</field>
+                <field>authorization_role.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="2" />
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item::amount</field>
+                <field>sales_order_tax_item.amount</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item::base_amount</field>
+                <field>sales_order_tax_item.base_amount</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item::real_amount</field>
+                <field>sales_order_tax_item.real_amount</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item::real_base_amount</field>
+                <field>sales_order_tax_item.real_base_amount</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item::taxable_item_type</field>
+                <field>sales_order_tax_item.taxable_item_type</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="product" />
                 </handler>
             </transform>
             <transform>
-                <field>oauth_token::user_type</field>
+                <field>oauth_token.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
                 </handler>
             </transform>
             <ignore>
-                <field>catalog_product_entity_media_gallery_value::entity_id</field>
+                <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
             <ignore>
-                <field>admin_user::interface_locale</field>
+                <field>admin_user.interface_locale</field>
             </ignore>
             <ignore>
-                <field>rating::is_active</field>
+                <field>rating.is_active</field>
             </ignore>
             <ignore>
-                <field>sales_creditmemo_item::tax_ratio</field>
+                <field>sales_creditmemo_item.tax_ratio</field>
             </ignore>
             <ignore>
-                <field>sales_invoice_item::tax_ratio</field>
+                <field>sales_invoice_item.tax_ratio</field>
             </ignore>
             <ignore>
-                <field>authorization_role::user_type</field>
+                <field>authorization_role.user_type</field>
             </ignore>
             <ignore>
-                <field>catalog_eav_attribute::is_required_in_admin_store</field>
+                <field>catalog_eav_attribute.is_required_in_admin_store</field>
             </ignore>
             <ignore>
-                <field>cataloginventory_stock::website_id</field>
+                <field>cataloginventory_stock.website_id</field>
             </ignore>
             <ignore>
-                <field>cataloginventory_stock_item::website_id</field>
+                <field>cataloginventory_stock_item.website_id</field>
             </ignore>
             <ignore>
-                <field>magento_versionscms_page_revision::page_layout</field>
+                <field>magento_versionscms_page_revision.page_layout</field>
             </ignore>
             <ignore>
-                <field>magento_versionscms_page_revision::custom_page_layout</field>
+                <field>magento_versionscms_page_revision.custom_page_layout</field>
             </ignore>
             <ignore>
-                <field>oauth_nonce::consumer_id</field>
+                <field>oauth_nonce.consumer_id</field>
             </ignore>
             <ignore>
-                <field>oauth_token::user_type</field>
+                <field>oauth_token.user_type</field>
             </ignore>
             <ignore>
-                <field>sales_order_status_state::visible_on_front</field>
+                <field>sales_order_status_state.visible_on_front</field>
             </ignore>
             <ignore>
-                <field>widget_instance::theme_id</field>
+                <field>widget_instance.theme_id</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::amount</field>
+                <field>sales_order_tax_item.amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::base_amount</field>
+                <field>sales_order_tax_item.base_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::real_amount</field>
+                <field>sales_order_tax_item.real_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::real_base_amount</field>
+                <field>sales_order_tax_item.real_base_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::associated_item_id</field>
+                <field>sales_order_tax_item.associated_item_id</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item::taxable_item_type</field>
+                <field>sales_order_tax_item.taxable_item_type</field>
             </ignore>
         </field_rules>
     </destination>

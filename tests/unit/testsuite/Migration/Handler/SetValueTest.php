@@ -16,9 +16,11 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->once())->method('setValue')->with($fieldName, $value);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
+        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+
         $handler = new SetValue($value);
         $handler->setField($fieldName);
-        $handler->handle($record);
+        $handler->handle($record, $record2);
     }
 
     public function testHandleException()
@@ -27,7 +29,8 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
         $record = $this->getMock('Migration\Resource\Record', ['getFields'], [], '', false);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([]));
         $handler = new SetValue($value);
+        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
         $this->setExpectedException('Exception');
-        $handler->handle($record);
+        $handler->handle($record, $record2);
     }
 }

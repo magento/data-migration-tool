@@ -7,6 +7,7 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
     <steps>
+        <step>Migration\Step\Eav</step>
         <step>Migration\Step\Map</step>
     </steps>
     <source>
@@ -17,6 +18,7 @@
     </destination>
     <options>
         <map_file>etc/map.xml</map_file>
+        <eav_map_file>etc/map-eav.xml</eav_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix />

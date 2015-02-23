@@ -23,14 +23,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testDefaultConfigFile()
     {
-        $defaultConfigFile = realpath(__DIR__ . '/../../../..') . '/etc/config.xml';
-        if (!file_exists($defaultConfigFile)) {
-            $this->setExpectedException('Exception', 'Invalid config filename: ' . $defaultConfigFile);
-        }
-
-        $config = new Config();
-        $config->init();
-        $this->assertNotEmpty($config->getOption('map_file'));
+        $this->assertNotEmpty($this->config->getOption('map_file'));
     }
 
     public function testInvalidConfigFile()

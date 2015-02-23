@@ -36,18 +36,20 @@ class Volume
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param \Migration\Config $config
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        \Migration\Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->mapReader = $mapReader;
-        $this->mapReader->init();
-        $this->logger =  $logger;
+        $this->mapReader->init($config->getOption('map_file'));
+        $this->logger = $logger;
     }
 
     /**

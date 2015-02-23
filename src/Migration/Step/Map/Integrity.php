@@ -58,17 +58,20 @@ class Integrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param \Migration\Config $config
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        \Migration\Config $config
     ) {
         $this->logger = $logger;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
+        $this->map->init($config->getOption('map_file'));
     }
 
     /**

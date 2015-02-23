@@ -10,12 +10,11 @@ use Migration\Resource\Record;
 interface HandlerInterface
 {
     /**
-     * Handling record
-     *
-     * @param Record $record
-     * @return Record
+     * @param Record $recordToHandle
+     * @param Record $oppositeRecord
+     * @return mixed
      */
-    public function handle(Record $record);
+    public function handle(Record $recordToHandle, Record $oppositeRecord);
 
     /**
      * Setting field, which should be processed in the handler

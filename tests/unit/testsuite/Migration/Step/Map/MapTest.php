@@ -47,6 +47,11 @@ class RunTest extends \PHPUnit_Framework_TestCase
      */
     protected $run;
 
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', [], [], '', false);
@@ -72,6 +77,8 @@ class RunTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods([])->getMock();
         $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
         $this->mapReader->expects($this->once())->method('init');
         $this->run = new Run(
@@ -80,7 +87,8 @@ class RunTest extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
-            $this->mapReader
+            $this->mapReader,
+            $this->config
         );
     }
 

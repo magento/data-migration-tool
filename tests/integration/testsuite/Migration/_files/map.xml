@@ -19,18 +19,18 @@
         </document_rules>
         <field_rules>
             <ignore>
-                <field>source_table::ignored_field</field>
+                <field>source_table.ignored_field</field>
             </ignore>
             <ignore>
-                <field>common_table::source_field_ignored</field>
+                <field>common_table.source_field_ignored</field>
             </ignore>
             <move>
-                <field>common_table::field1</field>
-                <to>common_table::field1_moved</to>
+                <field>common_table.field1</field>
+                <to>common_table.field1_moved</to>
             </move>
             <move>
-                <field>source_table_renamed::moved_field</field>
-                <to>dest_table_renamed::moved_field</to>
+                <field>source_table_renamed.moved_field</field>
+                <to>dest_table_renamed.moved_field</to>
             </move>
         </field_rules>
     </source>
@@ -46,7 +46,7 @@
 
         <field_rules>
             <ignore>
-                <field>common_table::dest_field_ignored</field>
+                <field>common_table.dest_field_ignored</field>
             </ignore>
         </field_rules>
     </destination>

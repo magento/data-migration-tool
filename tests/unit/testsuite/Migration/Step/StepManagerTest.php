@@ -26,15 +26,23 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
     public function setUp()
     {
         $this->factory = $this->getMockBuilder('\Migration\Step\StepFactory')->disableOriginalConstructor()
-            ->setMethods(['getSteps'])
+            ->setMethods(['create'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['info'])
             ->getMock();
-        $this->manager = new StepManager($this->logger, $this->factory);
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods(['getSteps'])
+            ->getMock();
+        $this->manager = new StepManager($this->logger, $this->factory, $this->config);
     }
 
     public function testRunStepsIntegrityFail()
@@ -43,7 +51,9 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck');
-        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
+        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->factory->expects($this->once())->method('create')->with(get_class($step))
+            ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
@@ -53,8 +63,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
-        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->never())->method('info');
+        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->factory->expects($this->once())->method('create')->with(get_class($step))
+            ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 
@@ -64,8 +76,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
-        $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
         $this->logger->expects($this->once())->method('info')->with(PHP_EOL . "Migration completed");
+        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->factory->expects($this->once())->method('create')->with(get_class($step))
+            ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
     }
 }

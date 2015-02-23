@@ -10,19 +10,19 @@ use Migration\Resource\Record;
 /**
  * Handler to set constant value to the field
  */
-class SetValue extends AbstractHandler implements HandlerInterface
+class AddPrefix extends AbstractHandler implements HandlerInterface
 {
     /**
      * @var string
      */
-    protected $value;
+    protected $prefix;
 
     /**
-     * @param string $value
+     * @param string $prefix
      */
-    public function __construct($value)
+    public function __construct($prefix)
     {
-        $this->value = $value;
+        $this->prefix = $prefix;
     }
 
     /**
@@ -31,6 +31,6 @@ class SetValue extends AbstractHandler implements HandlerInterface
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        $recordToHandle->setValue($this->field, $this->value);
+        $recordToHandle->setValue($this->field, $this->prefix . $recordToHandle->getValue($this->field));
     }
 }
