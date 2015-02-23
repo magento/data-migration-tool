@@ -28,7 +28,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var MapReader
+     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -72,6 +72,15 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->assertTrue($this->volume->perform());
+    }
+
+    public function testPerformIgnored()
+    {
+        $sourceDocName = 'core_config_data';
+        $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
+        $dstDocName = false;
+        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->assertTrue($this->volume->perform());
     }
 
