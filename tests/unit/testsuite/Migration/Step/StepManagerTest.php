@@ -40,7 +40,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['info'])
             ->getMock();
         $this->process = $this->getMockBuilder('\Migration\Step\ProgressStep')->disableOriginalConstructor()
-            ->setMethods(['getResult', 'saveResult', 'isCompleted'])
+            ->setMethods(['saveResult', 'isCompleted'])
             ->getMock();
         $this->manager = new StepManager($this->process, $this->logger, $this->factory);
     }
@@ -58,7 +58,6 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck');
-        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
@@ -78,7 +77,6 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
-        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
@@ -99,7 +97,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run');
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
-        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(false));
+        $this->process->expects($this->any())->method('isCompleted')->will($this->returnValue(false));
         $this->process->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->process->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
@@ -123,7 +121,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->never())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->never())->method('run');
         $step->expects($this->never())->method('volumeCheck')->will($this->returnValue(true));
-        $this->process->expects($this->any())->method('getResult')->will($this->returnValue(true));
+        $this->process->expects($this->any())->method('isCompleted')->will($this->returnValue(true));
         $this->process->expects($this->never())->method('saveResult');
         $this->process->expects($this->any())->method('isCompleted')->willReturn(true);
         $this->factory->expects($this->once())->method('getSteps')->will($this->returnValue([$step]));
