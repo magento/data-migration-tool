@@ -5,7 +5,6 @@
  */
 namespace Migration\Step\Map;
 
-use Migration\Handler;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
