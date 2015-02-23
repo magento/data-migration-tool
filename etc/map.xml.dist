@@ -563,6 +563,9 @@
             <ignore>
                 <document>core_resource</document>
             </ignore>
+            <ignore>
+                <document>cron_schedule</document>
+            </ignore>
             <rename>
                 <document>admin_role</document>
                 <to>authorization_role</to>
