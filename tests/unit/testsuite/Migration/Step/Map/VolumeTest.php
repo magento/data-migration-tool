@@ -81,6 +81,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $dstDocName = false;
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->source->expects($this->never())->method('getRecordsCount');
+        $this->destination->expects($this->never())->method('getRecordsCount');
         $this->assertTrue($this->volume->perform());
     }
 
