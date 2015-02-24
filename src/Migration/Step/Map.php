@@ -5,36 +5,58 @@
  */
 namespace Migration\Step;
 
+use Migration\MapReader;
+use Migration\Config;
+
+/**
+ * Class Map
+ */
 class Map implements StepInterface
 {
     /**
-     * @var Map\Integrity
+     * @var Integrity\Map
      */
     protected $integrity;
 
     /**
-     * @var Map\Run
+     * @var Run\Map
      */
     protected $run;
 
     /**
-     * @var Map\Volume
+     * @var Volume\Map
      */
     protected $volume;
 
     /**
-     * @param Map\Integrity $integrity
-     * @param Map\Run $run
-     * @param Map\Volume $volume
+     * @var MapReader
+     */
+    protected $map;
+
+    /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @param Integrity\Map $integrity
+     * @param Run\Map $run
+     * @param Volume\Map $volume
+     * @param MapReader $mapReader
+     * @param Config $config
      */
     public function __construct(
-        Map\Integrity $integrity,
-        Map\Run $run,
-        Map\Volume $volume
+        Integrity\Map $integrity,
+        Run\Map $run,
+        Volume\Map $volume,
+        MapReader $mapReader,
+        Config $config
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
+        $this->map = $mapReader;
+        $this->config = $config;
     }
 
     /**
@@ -42,6 +64,7 @@ class Map implements StepInterface
      */
     public function integrity()
     {
+        $this->map->init($this->config->getOption('map_file'));
         return $this->integrity->perform();
     }
 
@@ -50,6 +73,7 @@ class Map implements StepInterface
      */
     public function run()
     {
+        $this->map->init($this->config->getOption('map_file'));
         $this->run->perform();
     }
 
@@ -58,6 +82,7 @@ class Map implements StepInterface
      */
     public function volumeCheck()
     {
+        $this->map->init($this->config->getOption('map_file'));
         return $this->volume->perform();
     }
 }

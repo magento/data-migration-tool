@@ -3,13 +3,16 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 
-class Integrity
+/**
+ * Class AbstractIntegrity
+ */
+abstract class AbstractIntegrity
 {
     /**
      * Resource of source
@@ -58,47 +61,44 @@ class Integrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
-     * @param \Migration\Config $config
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader,
-        \Migration\Config $config
+        MapReader $mapReader
     ) {
         $this->logger = $logger;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
-        $this->map->init($config->getOption('map_file'));
     }
 
     /**
-     * {@inheritdoc}
+     * Peform Integrity Check
+     *
+     * @return mixed
      */
-    public function perform()
-    {
-        $this->check(MapReader::TYPE_SOURCE);
-        $this->check(MapReader::TYPE_DEST);
-        return $this->checkForErrors();
-    }
+    abstract public function perform();
 
     /**
      * Check if source and destination resources have equal document names and fields
      *
+     * @param array $documents
      * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
      * @return $this
      * @throws \Exception
      */
-    protected function check($type)
+    protected function check($documents, $type)
     {
         $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->destination;
         $destination = $type == MapReader::TYPE_SOURCE ? $this->destination : $this->source;
 
-        $sourceDocuments = $source->getDocumentList();
         $destDocuments = array_flip($destination->getDocumentList());
-        foreach ($sourceDocuments as $document) {
+        foreach ($documents as $document) {
+            if ($document === 'catalog_eav_attribute') {
+                $a = 1;
+            }
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {
