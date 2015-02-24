@@ -50,12 +50,19 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $config = ['database' => [
-            'host' => 'localhost',
-            'name' => 'dbname',
-            'user' => 'uname',
-            'password' => 'upass',
-        ]];
+        $config = [
+            'type' => 'database',
+            'version' => '1.14.1.0',
+            'database' => [
+                'host' => 'localhost',
+                'name' => 'dbname',
+                'user' => 'uname',
+                'password' => 'upass',
+            ]
+        ];
+        $destinationConfig = $config;
+        $destinationConfig['version'] = '2.0.0.0';
+
         $adapterConfigs = ['config' => [
             'host' => 'localhost',
             'dbname' => 'dbname',
@@ -71,7 +78,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         );
         $this->config->expects($this->once())
             ->method('getDestination')
-            ->will($this->returnValue($config));
+            ->will($this->returnValue($destinationConfig));
         $this->config->expects($this->once())
             ->method('getSource')
             ->will($this->returnValue($config));
@@ -204,5 +211,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->once())->method('getOption')->with('bulk_size')->will($this->returnValue(100));
         $this->adapter->expects($this->once())->method('loadPage');
         $this->resourceDestination->getRecords($resourceName, $pageNumber);
+    }
+
+    public function testGetAdapter()
+    {
+        $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }

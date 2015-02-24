@@ -7,11 +7,11 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps />
-    <source>
-        <database host="localhost" name="migration_source" user="root"/>
+    <source version="1.14.1.0">
+        <database host="localhost" name="magento1_integration" user="root"/>
     </source>
-    <destination>
-        <database host="localhost" name="migration_destination" user="root"/>
+    <destination version="2.0.0.0">
+        <database host="localhost" name="magento2_integration" user="root"/>
     </destination>
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/empty-map.xml</map_file>

@@ -47,6 +47,7 @@
         <xs:choice>
             <xs:element name="database" type="resourceTypeDatabase"/>
         </xs:choice>
+        <xs:attribute name="version" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="destinationType">
@@ -56,6 +57,7 @@
         <xs:choice>
             <xs:element name="database" type="resourceTypeDatabase"/>
         </xs:choice>
+        <xs:attribute name="version" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="resourceTypeDatabase">

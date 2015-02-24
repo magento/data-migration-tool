@@ -6,6 +6,9 @@
                 <document>source_table_ignored</document>
             </ignore>
             <ignore>
+                <document>table_ignored</document>
+            </ignore>
+            <ignore>
                 <document>source_table_*</document>
             </ignore>
             <rename>
@@ -43,11 +46,16 @@
                 <document>dest_table_*</document>
             </ignore>
         </document_rules>
-
         <field_rules>
             <ignore>
                 <field>common_table.dest_field_ignored</field>
             </ignore>
+            <transform>
+                <field>common_table.common_field</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="123" />
+                </handler>
+            </transform>
         </field_rules>
     </destination>
 </map>

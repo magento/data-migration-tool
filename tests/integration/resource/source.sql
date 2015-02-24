@@ -36,6 +36,7 @@ CREATE TABLE `common_table` (
 
 LOCK TABLES `common_table` WRITE;
 /*!40000 ALTER TABLE `common_table` DISABLE KEYS */;
+INSERT INTO `common_table` VALUES (1,2,3),(2,3,4),(3,4,5),(4,5,6),(5,5,5),(6,6,7),(7,7,7);
 /*!40000 ALTER TABLE `common_table` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -59,7 +60,32 @@ CREATE TABLE `source_table_ignored` (
 
 LOCK TABLES `source_table_ignored` WRITE;
 /*!40000 ALTER TABLE `source_table_ignored` DISABLE KEYS */;
+INSERT INTO `source_table_ignored` VALUES (1,2),(2,3),(3,4),(4,5),(5,5),(6,6),(7,7);
 /*!40000 ALTER TABLE `source_table_ignored` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `table_ignored`
+--
+
+DROP TABLE IF EXISTS `table_ignored`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `table_ignored` (
+  `field1` int(11) NOT NULL AUTO_INCREMENT,
+  `field2` int(11) DEFAULT NULL,
+  PRIMARY KEY (`field1`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `source_table_ignored`
+--
+
+LOCK TABLES `table_ignored` WRITE;
+/*!40000 ALTER TABLE `table_ignored` DISABLE KEYS */;
+INSERT INTO `table_ignored` VALUES (1,2),(2,3),(3,4),(4,5),(5,5),(6,6),(7,7);
+/*!40000 ALTER TABLE `table_ignored` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

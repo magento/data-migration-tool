@@ -10,6 +10,9 @@ use \Migration\MapReader;
 
 /**
  * Class Eav
+ *
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Eav implements StepInterface
 {
@@ -96,4 +99,6 @@ class Eav implements StepInterface
         $this->map->init($this->config->getOption('eav_map_file'));
         return $this->volumeCheck->perform();
     }
+
+
 }

@@ -7,6 +7,7 @@ namespace Migration\Step;
 
 use Migration\MapReader;
 use Migration\Config;
+use Migration\Logger\Logger;
 
 /**
  * Class Map
@@ -34,6 +35,13 @@ class Map implements StepInterface
     protected $map;
 
     /**
+     * Logger instance
+     *
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @var Config
      */
     protected $config;
@@ -46,15 +54,17 @@ class Map implements StepInterface
      * @param Config $config
      */
     public function __construct(
-        Integrity\Map $integrity,
-        Run\Map $run,
-        Volume\Map $volume,
+        Map\Integrity $integrity,
+        Map\Run $run,
+        Map\Volume $volume,
+        Logger $logger,
         MapReader $mapReader,
         Config $config
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
+        $this->logger = $logger;
         $this->map = $mapReader;
         $this->config = $config;
     }
@@ -64,8 +74,13 @@ class Map implements StepInterface
      */
     public function integrity()
     {
-        $this->map->init($this->config->getOption('map_file'));
-        return $this->integrity->perform();
+        try {
+            $this->map->init($this->config->getOption('map_file'));
+            return $this->integrity->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Integrity check failed with exception: ' . $e->getMessage());
+        }
+        return false;
     }
 
     /**
@@ -73,8 +88,12 @@ class Map implements StepInterface
      */
     public function run()
     {
-        $this->map->init($this->config->getOption('map_file'));
-        $this->run->perform();
+        try {
+            $this->map->init($this->config->getOption('map_file'));
+            $this->run->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Run failed with exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -82,7 +101,19 @@ class Map implements StepInterface
      */
     public function volumeCheck()
     {
-        $this->map->init($this->config->getOption('map_file'));
-        return $this->volume->perform();
+        try {
+            $this->map->init($this->config->getOption('map_file'));
+            return $this->volume->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return "Map step";
     }
 }

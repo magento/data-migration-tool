@@ -6,6 +6,7 @@
 namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
+use Migration\ProgressBar;
 use Migration\MapReader;
 use Migration\Resource;
 
@@ -57,18 +58,28 @@ abstract class AbstractIntegrity
     protected $map;
 
     /**
+     * ProgressBar instance
+     *
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
+     * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
      */
     public function __construct(
+        ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         MapReader $mapReader
     ) {
         $this->logger = $logger;
+        $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
@@ -96,9 +107,7 @@ abstract class AbstractIntegrity
 
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($documents as $document) {
-            if ($document === 'catalog_eav_attribute') {
-                $a = 1;
-            }
+            $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {
@@ -170,5 +179,17 @@ abstract class AbstractIntegrity
             );
         }
         return $isSuccess;
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $sourceDocuments = $this->source->getDocumentList();
+        $destDocuments = $this->destination->getDocumentList();
+        return count($sourceDocuments) + count($destDocuments);
     }
 }

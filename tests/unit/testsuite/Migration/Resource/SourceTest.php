@@ -53,12 +53,16 @@ class SourceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $config = ['database' => [
-            'host' => 'localhost',
-            'name' => 'dbname',
-            'user' => 'uname',
-            'password' => 'upass',
-        ]];
+        $config = [
+            'type' => 'database',
+            'version' => '1.14.1.0',
+            'database' => [
+                'host' => 'localhost',
+                'name' => 'dbname',
+                'user' => 'uname',
+                'password' => 'upass',
+            ]
+        ];
         $adapterConfigs = ['config' => [
             'host' => 'localhost',
             'dbname' => 'dbname',
@@ -75,7 +79,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['select', 'fetchAll', 'query'],
+            ['select', 'fetchAll', 'query', 'loadPage'],
             [],
             '',
             false
@@ -88,10 +92,6 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->documentFactory = $this->getMock('\Migration\Resource\DocumentFactory', [], [], '', false);
         $this->structureFactory = $this->getMock('\Migration\Resource\StructureFactory', [], [], '', false);
         $this->documentCollection = $this->getMock('\Migration\Resource\Document\Collection', [], [], '', false);
-    }
-
-    public function testCreate()
-    {
         $this->resourceSource = new \Migration\Resource\Source(
             $this->adapterFactory,
             $this->config,
@@ -99,6 +99,11 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             $this->structureFactory,
             $this->documentCollection
         );
-        $this->assertInstanceOf('\Migration\Resource\Source', $this->resourceSource);
+    }
+
+    public function testLoadPage()
+    {
+        $this->adapter->expects($this->any())->method('loadPage')->with('table', 2)->willReturn(['1', '2']);
+        $this->assertEquals(['1', '2'], $this->resourceSource->loadPage('table', 2));
     }
 }

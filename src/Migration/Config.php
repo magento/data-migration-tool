@@ -83,10 +83,15 @@ class Config
      */
     public function getSource()
     {
-        $source = $this->config->query('//source/*[1]');
         $params = [];
+        $sourceNode = $this->config->query('//source');
+        if ($sourceNode->item(0)->attributes->getNamedItem('version')) {
+            $params['version'] = $sourceNode->item(0)->attributes->getNamedItem('version')->nodeValue;
+        }
+        $source = $this->config->query('//source/*[1]');
         /** @var \DOMElement $item */
         foreach ($source as $item) {
+            $params['type'] = $item->nodeName;
             $params[$item->nodeName] = [];
             /** @var \DOMNamedNodeMap $attribute */
             if ($item->hasAttributes()) {
@@ -106,10 +111,15 @@ class Config
      */
     public function getDestination()
     {
-        $source = $this->config->query('//destination/*[1]');
         $params = [];
+        $sourceNode = $this->config->query('//destination');
+        if ($sourceNode->item(0)->attributes->getNamedItem('version')) {
+            $params['version'] = $sourceNode->item(0)->attributes->getNamedItem('version')->nodeValue;
+        }
+        $source = $this->config->query('//destination/*[1]');
         /** @var \DOMElement $item */
         foreach ($source as $item) {
+            $params['type'] = $item->nodeName;
             $params[$item->nodeName] = [];
             /** @var \DOMNamedNodeMap $attribute */
             if ($item->hasAttributes()) {

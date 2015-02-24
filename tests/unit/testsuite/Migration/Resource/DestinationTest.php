@@ -48,12 +48,16 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $config = ['database' => [
-            'host' => 'localhost',
-            'name' => 'dbname',
-            'user' => 'uname',
-            'password' => 'upass',
-        ]];
+        $config = [
+            'type' => 'database',
+            'version' => '2.0.0.0',
+            'database' => [
+                'host' => 'localhost',
+                'name' => 'dbname',
+                'user' => 'uname',
+                'password' => 'upass',
+            ]
+        ];
         $adapterConfigs = ['config' => [
             'host' => 'localhost',
             'dbname' => 'dbname',

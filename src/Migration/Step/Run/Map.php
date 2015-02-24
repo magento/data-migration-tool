@@ -10,6 +10,7 @@ use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 use Migration\Resource\Record;
+use Migration\ProgressBar;
 
 class Map
 {
@@ -46,6 +47,14 @@ class Map
     protected $recordTransformerFactory;
 
     /**
+     * ProgressBar instance
+     *
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
+     * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -56,6 +65,7 @@ class Map
      * @throws \Exception
      */
     public function __construct(
+        ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -71,6 +81,7 @@ class Map
         $this->mapReader = $mapReader;
         $this->mapReader->init($config->getOption('map_file'));
         $this->logger = $logger;
+        $this->progress = $progress;
     }
 
     /**
@@ -79,8 +90,10 @@ class Map
      */
     public function perform()
     {
+        $this->progress->start($this->getIterationsCount());
         $sourceDocuments = $this->source->getDocumentList();
         foreach ($sourceDocuments as $sourceDocName) {
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
             if (!$destinationName) {
@@ -114,5 +127,18 @@ class Map
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
         }
+        $this->progress->finish();
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $sourceDocuments = $this->source->getDocumentList();
+        $destDocuments = $this->destination->getDocumentList();
+        return count($sourceDocuments) + count($destDocuments);
     }
 }
