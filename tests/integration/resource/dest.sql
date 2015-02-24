@@ -107,6 +107,29 @@ LOCK TABLES `table_without_data` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `table_ignored`
+--
+
+DROP TABLE IF EXISTS `table_ignored`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `table_ignored` (
+  `field1` int(11) NOT NULL AUTO_INCREMENT,
+  `field2` int(11) DEFAULT NULL,
+  PRIMARY KEY (`field1`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `source_table_ignored`
+--
+
+LOCK TABLES `table_ignored` WRITE;
+/*!40000 ALTER TABLE `table_ignored` DISABLE KEYS */;
+/*!40000 ALTER TABLE `table_ignored` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `dest_table_1`
 --
 

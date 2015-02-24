@@ -46,4 +46,12 @@ class Logger extends \Monolog\Logger
     {
         return self::$messages;
     }
+
+    /**
+     * Clear all log messages
+     */
+    public static function clearMessages()
+    {
+        self::$messages = [];
+    }
 }
