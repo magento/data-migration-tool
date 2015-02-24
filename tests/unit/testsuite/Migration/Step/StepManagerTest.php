@@ -128,7 +128,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
         $this->logger->expects($this->at(1))->method('info')->with("Integrity check completed");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: run");
-        $this->logger->expects($this->at(3))->method('info')->with("Migration step completed");
+        $this->logger->expects($this->at(3))->method('info')->with("Migration stage completed");
         $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Title: volume check");
         $this->logger->expects($this->at(5))->method('info')->with("Volume check completed");
         $this->logger->expects($this->at(6))->method('info')->with(PHP_EOL . "Migration completed");

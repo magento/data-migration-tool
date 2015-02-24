@@ -50,7 +50,7 @@ class ProgressStep
     }
 
     /**
-     * @param \Migration\Step\StepInterface $step
+     * @param StepInterface $step
      * @param string $stage
      * @param bool $result
      * @return $this
@@ -66,7 +66,7 @@ class ProgressStep
     }
 
     /**
-     * @param \Migration\Step\StepInterface $step
+     * @param StepInterface $step
      * @param string $stage
      * @return bool
      */
@@ -100,7 +100,7 @@ class ProgressStep
     }
 
     /**
-     * @param \Migration\Step\StepInterface $step
+     * @param StepInterface $step
      * @return null|string
      */
     protected function getStepName(StepInterface $step)

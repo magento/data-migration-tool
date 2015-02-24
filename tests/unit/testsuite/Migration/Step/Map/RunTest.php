@@ -10,7 +10,7 @@ use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 
-class MapTest extends \PHPUnit_Framework_TestCase
+class RunTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
@@ -65,7 +65,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         );
         $this->destination = $this->getMock(
             'Migration\Resource\Destination',
-            ['getDocument', 'getDocumentList','saveRecords', 'clearDocument'],
+            ['getDocument', 'getDocumentList', 'saveRecords', 'clearDocument'],
             [],
             '',
             false

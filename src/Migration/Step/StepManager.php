@@ -69,7 +69,7 @@ class StepManager
                 $runSuccess = $step->run();
                 $this->progress->saveResult($step, 'run', $runSuccess);
             } else {
-                $this->logger->info('Migration step completed');
+                $this->logger->info('Migration stage completed');
             }
             $volumeCheckSuccess = true;
             $this->logger->info(PHP_EOL . $step->getTitle() . ': volume check');

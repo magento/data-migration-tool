@@ -115,7 +115,7 @@ Usage:  php -f {$this->_entryPoint} -- [options]
   --config <value>    Path to main configuration file
   --type <value>      Type of operation: migration or delta delivery
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
-  --force             Remove steps progress
+  --reset             Remove steps progress
   help              This help
 
 USAGE;
