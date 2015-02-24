@@ -54,4 +54,12 @@ class UrlRewrite extends DatabaseStep
     {
         return $this->rewriteVersion->volumeCheck();
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return $this->rewriteVersion->getTitle();
+    }
 }

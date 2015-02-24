@@ -9,6 +9,7 @@
     <steps>
         <step>Migration\Step\Eav</step>
         <step>Migration\Step\Map</step>
+        <step>Migration\Step\UrlRewrite</step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>

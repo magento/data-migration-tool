@@ -226,4 +226,12 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     {
         return false;
     }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTitle()
+    {
+        return "Url Rewrite step";
+    }
 }
