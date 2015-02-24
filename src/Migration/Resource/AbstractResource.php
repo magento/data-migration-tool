@@ -143,7 +143,7 @@ abstract class AbstractResource
      * @param string $documentName
      * @return string
      */
-    protected function addDocumentPrefix($documentName)
+    public function addDocumentPrefix($documentName)
     {
         $prefix = $this->getDocumentPrefix();
         if (!empty($prefix) && (strpos($documentName, $prefix) !== 0)) {
@@ -157,7 +157,7 @@ abstract class AbstractResource
      *
      * @return int
      */
-    protected function getBulkSize()
+    public function getPageSize()
     {
         $pageSize = (int)$this->configReader->getOption('bulk_size');
         return empty($pageSize) ? self::DEFAULT_BULK_SIZE : $pageSize;
@@ -173,8 +173,18 @@ abstract class AbstractResource
      */
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
-        $pageSize = $pageSize ?: $this->getBulkSize() ;
+        $pageSize = $pageSize ?: $this->getPageSize() ;
         return $this->adapter->loadPage($documentName, $pageNumber, $pageSize);
+    }
+
+    /**
+     * Get Resource Adapter
+     *
+     * @return AdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
     }
 
     /**

@@ -22,7 +22,7 @@ use Migration\Resource\Structure;
  * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Eav
+class Eav implements StepInterface
 {
     /**
      * @var Logger
@@ -681,8 +681,10 @@ class Eav
     /**
      * @inheritdoc
      */
-    public function getMaxSteps()
+    public function volumeCheck()
     {
-        return 3;
+        return true;
     }
+
+
 }

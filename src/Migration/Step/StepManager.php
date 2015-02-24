@@ -51,6 +51,7 @@ class StepManager
      * Run steps
      *
      * @return $this
+     * @throws \Exception
      */
     public function runSteps()
     {

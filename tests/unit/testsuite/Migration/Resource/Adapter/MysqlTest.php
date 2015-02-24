@@ -134,4 +134,19 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->pdoMysql->expects($this->once())->method('truncateTable')->with($docName);
         $this->adapterMysql->deleteAllRecords($docName);
     }
+
+    public function testGetSelect()
+    {
+        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $this->pdoMysql->expects($this->any())->method('select')->willReturn($select);
+        $this->assertSame($select, $this->adapterMysql->getSelect());
+    }
+
+    public function testLoadDataFromSelect()
+    {
+        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $data = [['id' => 1], ['id' => 2]];
+        $this->pdoMysql->expects($this->any())->method('fetchAll')->with($select)->willReturn($data);
+        $this->assertSame($data, $this->adapterMysql->loadDataFromSelect($select));
+    }
 }

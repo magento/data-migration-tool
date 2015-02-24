@@ -61,6 +61,9 @@ class Record
         if (!$structure) {
             return false;
         }
+        if (!$structure->getFields()) {
+            return true;
+        }
 
         foreach (array_keys($this->data) as $field) {
             if (!$structure->hasField($field)) {
