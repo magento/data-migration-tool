@@ -31,8 +31,10 @@ class StepFactory
      * @param \Migration\Config $config
      * @param ObjectManagerInterface $objectManager
      */
-    public function __construct(\Migration\Config $config, ObjectManagerInterface $objectManager)
-    {
+    public function __construct(
+        \Migration\Config $config,
+        ObjectManagerInterface $objectManager
+    ) {
         $this->config = $config;
         $this->objectManager = $objectManager;
     }
