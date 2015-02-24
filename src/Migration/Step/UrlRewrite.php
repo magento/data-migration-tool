@@ -16,14 +16,10 @@ class UrlRewrite extends DatabaseStep
     protected $rewriteVersion;
 
     /**
-     * @param Progress $progress
-     * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
      * @param \Migration\Step\UrlRewrite\VersionFactory $versionFactory
      */
     public function __construct(
-        Progress $progress,
-        \Migration\Logger\Logger $logger,
         \Migration\Config $config,
         \Migration\Step\UrlRewrite\VersionFactory $versionFactory
     ) {
@@ -32,7 +28,7 @@ class UrlRewrite extends DatabaseStep
             $config->getSource()['version'],
             $config->getDestination()['version']
         );
-        parent::__construct($progress, $logger, $config);
+        parent::__construct($config);
     }
 
     /**
@@ -48,6 +44,14 @@ class UrlRewrite extends DatabaseStep
      */
     public function integrity()
     {
-        $this->rewriteVersion->integrity();
+        return $this->rewriteVersion->integrity();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function volumeCheck()
+    {
+        return $this->rewriteVersion->volumeCheck();
     }
 }

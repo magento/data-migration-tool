@@ -3,18 +3,13 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Map;
 
 /**
  * Class IntegrityTest
  */
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var \Migration\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $progress;
-
     /**
      * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -31,7 +26,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var \Migration\Step\Integrity
+     * @var Integrity
      */
     protected $integrity;
 
@@ -40,12 +35,13 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('\Migration\Step\Progress')
-            ->setMethods(['getProgress', 'getMaxSteps', 'advance', 'finish', 'setStep', 'reset', 'start'])
-            ->disableOriginalConstructor()
-            ->getMock();
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
         $this->destination = $this->getMock(
@@ -56,12 +52,15 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->map = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
-            ->setMethods(['getFieldMap', 'getDocumentMap'])
+            ->setMethods(['getFieldMap', 'getDocumentMap', 'init'])
             ->getMock();
-        $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination, $this->map);
+
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods([])->getMock();
+        $this->integrity = new Integrity($this->logger, $this->source, $this->destination, $this->map, $this->config);
     }
 
-    public function testRunMainFlow()
+    public function testPerformMainFlow()
     {
         $fields = ['field1' => []];
 
@@ -72,10 +71,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
-        $this->progress->expects($this->once())->method('setStep')->with($this->integrity);
-
-        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(3))->method('getDocumentList')
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
             ->will($this->returnValue(['document']));
 
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
@@ -87,43 +84,43 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->logger->expects($this->never())->method('error');
 
-        $this->integrity->run();
+        $this->integrity->perform();
     }
 
-    public function testRunDocumentIgnored()
+    public function testPerformDocumentIgnored()
     {
-        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(3))->method('getDocumentList')
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
             ->will($this->returnValue(['document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnValue(false));
         $this->logger->expects($this->never())->method('error');
-        $this->integrity->run();
+        $this->integrity->perform();
     }
 
-    public function testRunWithDestinationDocMissed()
+    public function testPerformWithDestinationDocMissed()
     {
-        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue([]));
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->exactly(1))->method('error')
             ->with(PHP_EOL . 'Next documents from source are not mapped:' . PHP_EOL . 'document');
 
-        $this->integrity->run();
+        $this->integrity->perform();
     }
 
-    public function testRunWithSourceDocMissed()
+    public function testPerformWithSourceDocMissed()
     {
-        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue([]));
-        $this->destination->expects($this->exactly(3))->method('getDocumentList')
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue([]));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
             ->will($this->returnValue(['document']));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->once())->method('error')
             ->with(PHP_EOL . 'Next documents from destination are not mapped:' . PHP_EOL . 'document');
 
-        $this->integrity->run();
+        $this->integrity->perform();
     }
 
-    public function testRunWithSourceFieldErrors()
+    public function testPerformWithSourceFieldErrors()
     {
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
             ->disableOriginalConstructor()
@@ -137,8 +134,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
-        $this->source->expects($this->exactly(3))->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->exactly(3))->method('getDocumentList')
+        $this->source->expects($this->exactly(2))->method('getDocumentList')->will($this->returnValue(['document']));
+        $this->destination->expects($this->exactly(2))->method('getDocumentList')
             ->will($this->returnValue(['document']));
 
         $this->source->expects($this->exactly(2))->method('getDocument')->will($this->returnValue($document));
@@ -161,13 +158,6 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             PHP_EOL . 'Document name: document; Fields: field2'
         );
 
-        $this->integrity->run();
-    }
-
-    public function testGetMaxSteps()
-    {
-        $this->source->expects($this->once())->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->destination->expects($this->once())->method('getDocumentList')->will($this->returnValue(['document']));
-        $this->assertEquals(2, $this->integrity->getMaxSteps());
+        $this->integrity->perform();
     }
 }

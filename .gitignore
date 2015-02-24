@@ -10,6 +10,7 @@ atlassian*
 /.gitattributes
 /node_modules
 /etc/config.xml
+/etc/map-eav.xml
 /etc/map.xml
 /tests/unit/tmp
 /tests/unit/phpunit.xml

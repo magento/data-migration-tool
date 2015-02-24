@@ -38,8 +38,6 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     protected $recordCollectionFactory;
 
     /**
-     * @param \Migration\Step\Progress $progress
-     * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
      * @param \Migration\Resource\Source $source
      * @param \Migration\Resource\Destination $destination
@@ -47,8 +45,6 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      * @param \Migration\Resource\RecordFactory $recordFactory
      */
     public function __construct(
-        \Migration\Step\Progress $progress,
-        \Migration\Logger\Logger $logger,
         \Migration\Config $config,
         \Migration\Resource\Source $source,
         \Migration\Resource\Destination $destination,
@@ -59,7 +55,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->destination = $destination;
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
-        parent::__construct($progress, $logger, $config);
+        parent::__construct($config);
     }
 
     /**
@@ -210,14 +206,6 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     /**
      * {@inheritdoc}
      */
-    public function getMaxSteps()
-    {
-        return 100;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function integrity()
     {
         $result = $this->source->getDocument('enterprise_url_rewrite') !== false;
@@ -229,5 +217,13 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $result = $result && $this->destination->getDocument('catalog_category_entity_varchar') !== false;
         $result = $result && $this->destination->getDocument('catalog_product_entity_varchar') !== false;
         return $result;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function volumeCheck()
+    {
+        return false;
     }
 }

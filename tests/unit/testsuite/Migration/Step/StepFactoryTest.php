@@ -46,13 +46,4 @@ class StepFactoryTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('\Exception', 'Class: \Migration\Step\Integrity must implement StepInterface.');
         $this->factory->create('\Migration\Step\Integrity');
     }
-
-    public function testGetSteps()
-    {
-        $step = $this->getMock('\Migration\Step\StepInterface');
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue(['\Migration\Step\Test']));
-        $this->objectManager->expects($this->once())->method('create')->with('\Migration\Step\Test')
-            ->will($this->returnValue($step));
-        $this->assertEquals([$step], $this->factory->getSteps());
-    }
 }

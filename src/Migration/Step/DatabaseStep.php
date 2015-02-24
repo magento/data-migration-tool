@@ -8,7 +8,7 @@ namespace Migration\Step;
 /**
  * Class DatabaseStep
  */
-abstract class DatabaseStep extends AbstractStep
+abstract class DatabaseStep implements StepInterface
 {
     const SOURCE_TYPE = 'database';
     /**
@@ -17,17 +17,16 @@ abstract class DatabaseStep extends AbstractStep
     protected $configReader;
 
     /**
-     * @param Progress $progress
-     * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
+     * @throws \Exception
      */
     public function __construct(
-        Progress $progress,
-        \Migration\Logger\Logger $logger,
         \Migration\Config $config
     ) {
         $this->configReader = $config;
-        parent::__construct($progress, $logger);
+        if (!$this->canStart()) {
+            throw new \Exception('Can not execute step');
+        }
     }
 
     /**
@@ -35,7 +34,7 @@ abstract class DatabaseStep extends AbstractStep
      *
      * @return bool
      */
-    public function canStart()
+    protected function canStart()
     {
         return $this->configReader->getSource()['type'] == self::SOURCE_TYPE;
     }

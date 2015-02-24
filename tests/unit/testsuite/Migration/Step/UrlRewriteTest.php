@@ -52,7 +52,11 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
         $this->versionFactory = $this->getMock('\Migration\Step\UrlRewrite\VersionFactory', [], [], '', false);
         $this->version = $this->getMock('\Migration\Step\UrlRewrite\Version11410to2000', [], [], '', false);
         $this->versionFactory->expects($this->any())->method('create')->willReturn($this->version);
-        $this->urlRewrite = new UrlRewrite($this->progress, $this->logger, $this->config, $this->versionFactory);
+        $this->config->expects($this->any())->method('getSource')->willReturn([
+            'type' => 'database',
+            'version' => '1.14.1.0'
+        ]);
+        $this->urlRewrite = new UrlRewrite($this->config, $this->versionFactory);
     }
 
     public function testRun()
@@ -74,15 +78,22 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
      */
     public function testCanStart($sourceType, $expected)
     {
-        $this->config->expects($this->any())->method('getSource')->willReturn(['type' => $sourceType]);
-        $this->assertEquals($expected, $this->urlRewrite->canStart());
+        $this->config = $this->getMock('\Migration\Config', [], [], '', false);
+        $this->config->expects($this->any())->method('getSource')->willReturn([
+            'type' => $sourceType,
+            'version' => '1.14.1.0'
+        ]);
+        if ($expected) {
+            $this->setExpectedException('\Exception', 'Can not execute step');
+        }
+        $this->urlRewrite = new UrlRewrite($this->config, $this->versionFactory);
     }
 
     public function canStartDataProvider()
     {
         return [
-            ['database', true],
-            ['file', false]
+            ['database', false],
+            ['file', true]
         ];
     }
 }

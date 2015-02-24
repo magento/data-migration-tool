@@ -58,6 +58,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->config = $this->getMock('\Migration\Config', [], [], '', false);
+        $this->config->expects($this->any())->method('getSource')->willReturn([
+            'type' => 'database',
+            'version' => '1.14.1.0'
+        ]);
         $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
         $this->destination = $this->getMock('\Migration\Resource\Destination', [], [], '', false);
         $this->recordCollectionFactory = $this->getMock(
@@ -70,8 +74,6 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
 
         $this->version = new \Migration\Step\UrlRewrite\Version11410to2000(
-            $this->progress,
-            $this->logger,
             $this->config,
             $this->source,
             $this->destination,

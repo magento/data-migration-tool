@@ -3,16 +3,13 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 
-/**
- * Class Integrity
- */
-class Integrity extends AbstractStep
+class Integrity
 {
     /**
      * Resource of source
@@ -27,6 +24,13 @@ class Integrity extends AbstractStep
      * @var Resource\Destination
      */
     protected $destination;
+
+    /**
+     * Logger instance
+     *
+     * @var Logger
+     */
+    protected $logger;
 
     /**
      * Missing documents
@@ -50,39 +54,34 @@ class Integrity extends AbstractStep
     protected $map;
 
     /**
-     * @param Progress $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
+     * @param \Migration\Config $config
      */
     public function __construct(
-        Progress $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReader $mapReader,
+        \Migration\Config $config
     ) {
+        $this->logger = $logger;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
-        parent::__construct($progress, $logger);
+        $this->map->init($config->getOption('map_file'));
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run()
+    public function perform()
     {
-        parent::run();
-        $this->progress->reset();
-        $this->progress->start($this->getMaxSteps());
-
         $this->check(MapReader::TYPE_SOURCE);
         $this->check(MapReader::TYPE_DEST);
-
-        $this->progress->finish();
-        $this->displayErrors();
+        return $this->checkForErrors();
     }
 
     /**
@@ -100,7 +99,6 @@ class Integrity extends AbstractStep
         $sourceDocuments = $source->getDocumentList();
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($sourceDocuments as $document) {
-            $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {
@@ -122,19 +120,22 @@ class Integrity extends AbstractStep
     }
 
     /**
-     * Process missing entities
+     * Process missing entities and log them in to the file
      *
      * @return $this
      */
-    protected function displayErrors()
+    protected function checkForErrors()
     {
+        $isSuccess = true;
         if (isset($this->missingDocuments['source'])) {
+            $isSuccess = false;
             $this->logger->error(sprintf(
                 PHP_EOL . 'Next documents from source are not mapped:%s',
                 PHP_EOL . implode(',', array_keys($this->missingDocuments['source']))
             ));
         }
         if (isset($this->missingDocuments['destination'])) {
+            $isSuccess = false;
             $this->logger->error(sprintf(
                 PHP_EOL . 'Next documents from destination are not mapped:%s',
                 PHP_EOL . implode(',', array_keys($this->missingDocuments['destination']))
@@ -142,6 +143,7 @@ class Integrity extends AbstractStep
         }
         $errorMsgFields = '';
         if (isset($this->missingDocumentFields['source'])) {
+            $isSuccess = false;
             foreach ($this->missingDocumentFields['source'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     PHP_EOL . 'Document name: %s; Fields: %s',
@@ -155,6 +157,7 @@ class Integrity extends AbstractStep
         }
         $errorMsgFields = '';
         if (isset($this->missingDocumentFields['destination'])) {
+            $isSuccess = false;
             foreach ($this->missingDocumentFields['destination'] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     PHP_EOL . 'Document name: %s; Fields: %s',
@@ -166,14 +169,6 @@ class Integrity extends AbstractStep
                 PHP_EOL . 'Next fields from destination are not mapped:' . $errorMsgFields
             );
         }
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getMaxSteps()
-    {
-        return count($this->source->getDocumentList()) + count($this->destination->getDocumentList());
+        return $isSuccess;
     }
 }

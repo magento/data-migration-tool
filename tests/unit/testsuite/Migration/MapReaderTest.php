@@ -23,45 +23,30 @@ class MapReaderTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->rootDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR;
-        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods(['getOption'])
-            ->getMock();
-        $config->expects($this->once())->method('getOption')
-            ->with('map_file')->will($this->returnValue('tests/unit/testsuite/Migration/_files/map.xml'));
-        $this->map = new MapReader($config);
+        $this->map = new MapReader();
+        $this->map->init('tests/unit/testsuite/Migration/_files/map.xml');
+
     }
 
     public function testReinnitConfig()
     {
-        $this->assertSame($this->map, $this->map->init());
+        $this->assertSame($this->map, $this->map->init('tests/unit/testsuite/Migration/_files/map.xml'));
     }
 
     public function testInitBadFile()
     {
         $badFileName = 'tests/unit/testsuite/Migration/_files/map-bad.xml';
-        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods(['getOption'])
-            ->getMock();
-        $config->expects($this->once())->method('getOption')
-            ->with('map_file')->will($this->returnValue($badFileName));
-
-        $this->setExpectedException('Exception', 'Invalid map filename: ' . $this->rootDir .$badFileName);
-        $map = new MapReader($config);
-        $map->init();
+        $this->setExpectedException('Exception', 'Invalid map filename: ' . $this->rootDir . $badFileName);
+        $map = new MapReader();
+        $map->init($badFileName);
     }
 
     public function testInitNotValidFile()
     {
         $invalidFileName = 'tests/unit/testsuite/Migration/_files/map-invalid.xml';
-        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods(['getOption'])
-            ->getMock();
-        $config->expects($this->once())->method('getOption')
-            ->with('map_file')->will($this->returnValue($invalidFileName));
-
         $this->setExpectedException('Exception', 'XML file is invalid.');
-        $map = new MapReader($config);
-        $map->init();
+        $map = new MapReader();
+        $map->init($invalidFileName);
     }
 
     public function testHasDocument()
@@ -122,7 +107,7 @@ class MapReaderTest extends \PHPUnit_Framework_TestCase
 
     public function testGetFieldMapWithException3()
     {
-        $this->setExpectedException('Exception', 'Field has ambiguous configuration: dest-document5::field5');
+        $this->setExpectedException('Exception', 'Field has ambiguous configuration: dest-document5.field5');
         $this->map->getFieldMap('source-document5', 'field4', MapReader::TYPE_SOURCE);
     }
 

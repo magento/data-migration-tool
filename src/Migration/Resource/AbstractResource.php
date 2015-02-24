@@ -168,11 +168,13 @@ abstract class AbstractResource
      *
      * @param string $documentName
      * @param int $pageNumber
+     * @param int $pageSize
      * @return array
      */
-    public function getRecords($documentName, $pageNumber)
+    public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
-        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
+        $pageSize = $pageSize ?: $this->getPageSize() ;
+        return $this->adapter->loadPage($documentName, $pageNumber, $pageSize);
     }
 
     /**

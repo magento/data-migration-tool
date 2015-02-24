@@ -41,14 +41,13 @@ class Convert extends AbstractHandler implements HandlerInterface
     /**
      * {@inheritdoc}
      */
-    public function handle(Record $record)
+    public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
-        $this->validate($record);
-        $value = $record->getValue($this->field);
+        $this->validate($recordToHandle);
+        $value = $recordToHandle->getValue($this->field);
         if (isset($this->map[$value])) {
             $value = $this->map[$value];
         }
-        $record->setValue($this->field, $value);
-        return $record;
+        $recordToHandle->setValue($this->field, $value);
     }
 }
