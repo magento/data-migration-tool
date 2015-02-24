@@ -49,6 +49,8 @@ class Logger extends \Monolog\Logger
 
     /**
      * Clear all log messages
+     *
+     * @return void
      */
     public static function clearMessages()
     {

@@ -50,7 +50,6 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
         $progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
-        $mapReader = $objectManager->create('\Migration\MapReader');
         $integrity = $objectManager->create(
             '\Migration\Step\Map\Integrity',
             ['progress' => $progressBar, 'mapReader' => $mapReader]

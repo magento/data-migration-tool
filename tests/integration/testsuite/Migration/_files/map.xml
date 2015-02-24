@@ -51,7 +51,7 @@
                 <field>common_table.dest_field_ignored</field>
             </ignore>
             <transform>
-                <field>common_table::common_field</field>
+                <field>common_table.common_field</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="123" />
                 </handler>
