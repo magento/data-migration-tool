@@ -62,7 +62,14 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods([])->getMock();
-        $this->integrity = new Integrity($this->progress, $this->logger, $this->source, $this->destination, $this->map, $this->config);
+        $this->integrity = new Integrity(
+            $this->progress,
+            $this->logger,
+            $this->source,
+            $this->destination,
+            $this->map,
+            $this->config
+        );
     }
 
     public function testPerformMainFlow()

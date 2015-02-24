@@ -61,8 +61,8 @@ class StepManager
             /** @var StepInterface $step */
             $step = $this->factory->create($stepClass);
             $this->logger->info(PHP_EOL . $step->getTitle() . ': integrity check');
+            $stepInstances[] = $step;
             if ($this->progress->isCompleted($step, 'integrity') != true) {
-                $stepInstances[] = $step;
                 $integritySuccess = $step->integrity();
                 $this->progress->saveResult($step, 'integrity', $integritySuccess);
             } else {

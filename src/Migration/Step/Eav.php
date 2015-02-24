@@ -18,6 +18,9 @@ use Migration\Resource\Structure;
 
 /**
  * Class Eav
+ *
+ * @SuppressWarnings(PHPMD.TooManyFields)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Eav
 {
@@ -145,6 +148,8 @@ class Eav
      * @param string $type
      * @return bool
      * @throws \Exception
+     * @SuppressWarnings(PHPMD.NPathComplexity)
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     protected function checkMap($documents, $type)
     {
@@ -242,9 +247,11 @@ class Eav
             if ($documentName == 'eav_attribute_set') {
                 foreach ($this->initialAttributeSets['dest'] as $record) {
                     $record['attribute_set_id'] = null;
-                    $destinationRecord = $this->recordFactory->create([
-                        'document' => $destinationDocument,
-                        'data' => $record]
+                    $destinationRecord = $this->recordFactory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => $record
+                        ]
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }
@@ -259,9 +266,11 @@ class Eav
                     $record['attribute_set_id'] = $newAttributeSet['attribute_set_id'];
 
                     $record['attribute_group_id'] = null;
-                    $destinationRecord = $this->recordFactory->create([
-                        'document' => $destinationDocument,
-                        'data' => $record]
+                    $destinationRecord = $this->recordFactory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => $record
+                        ]
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }

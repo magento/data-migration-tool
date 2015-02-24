@@ -73,8 +73,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $this->mapReader,
-            $this->progress,
-            $this->config
+            $this->config,
+            $this->progress
         );
     }
 
