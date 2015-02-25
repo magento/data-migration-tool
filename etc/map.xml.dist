@@ -177,9 +177,6 @@
                 <document>catalogindex_aggregation_to_tag</document>
             </ignore>
             <ignore>
-                <document>catalogindex_eav</document>
-            </ignore>
-            <ignore>
                 <document>catalogindex_minimal_price</document>
             </ignore>
             <ignore>
@@ -369,6 +366,9 @@
                 <document>catalog_product_entity_url_key</document>
             </ignore>
             <ignore>
+                <document>catalogindex_eav</document>
+            </ignore>
+            <ignore>
                 <document>catalog_eav_attribute</document>
             </ignore>
             <ignore>
@@ -414,10 +414,52 @@
                 <document>eav_attribute_set</document>
             </ignore>
             <ignore>
+                <document>eav_entity</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_store</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_element</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_fieldset</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_fieldset_label</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_type</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_type_entity</document>
+            </ignore>
+            <ignore>
                 <document>eav_entity_attribute</document>
             </ignore>
             <ignore>
                 <document>eav_entity_type</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_rma_item_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_rma_item_eav_attribute_website</document>
             </ignore>
             <ignore>
                 <document>catalog_category_entity_url_key</document>
@@ -540,6 +582,12 @@
                 <document>log_visitor</document>
             </ignore>
             <ignore>
+                <document>log_visitor_info</document>
+            </ignore>
+            <ignore>
+                <document>log_visitor_online</document>
+            </ignore>
+            <ignore>
                 <document>widget_instance</document>
             </ignore>
             <ignore>
@@ -566,14 +614,23 @@
             <ignore>
                 <document>cron_schedule</document>
             </ignore>
-            <rename>
+            <ignore>
+                <document>admin_user</document>
+            </ignore>
+            <ignore>
                 <document>admin_role</document>
-                <to>authorization_role</to>
-            </rename>
-            <rename>
+            </ignore>
+            <ignore>
                 <document>admin_rule</document>
-                <to>authorization_rule</to>
-            </rename>
+            </ignore>
+            <!--<rename>-->
+                <!--<document>admin_role</document>-->
+                <!--<to>authorization_role</to>-->
+            <!--</rename>-->
+            <!--<rename>-->
+                <!--<document>admin_rule</document>-->
+                <!--<to>authorization_rule</to>-->
+            <!--</rename>-->
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -959,14 +1016,6 @@
                 <to>magento_rma_grid</to>
             </rename>
             <rename>
-                <document>enterprise_rma_item_eav_attribute</document>
-                <to>magento_rma_item_eav_attribute</to>
-            </rename>
-            <rename>
-                <document>enterprise_rma_item_eav_attribute_website</document>
-                <to>magento_rma_item_eav_attribute_website</to>
-            </rename>
-            <rename>
                 <document>enterprise_rma_item_entity</document>
                 <to>magento_rma_item_entity</to>
             </rename>
@@ -1327,13 +1376,112 @@
                 <document>layout_link</document>
             </ignore>
             <ignore>
-                <document>eav_attribute_group</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_flat_*</document>
             </ignore>
             <ignore>
                 <document>catalog_category_flat_*</document>
+            </ignore>
+            <ignore>
+                <document>catalogindex_eav</document>
+            </ignore>
+            <ignore>
+                <document>catalog_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>customer_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>customer_eav_attribute_website</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav_decimal</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav_decimal_idx</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav_decimal_tmp</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav_idx</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_index_eav_tmp</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_group</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_label</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_option</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_option_value</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_set</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_store</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_element</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_fieldset</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_fieldset_label</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_type</document>
+            </ignore>
+            <ignore>
+                <document>eav_form_type_entity</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_attribute</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_type</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_eav_attribute_website</document>
+            </ignore>
+            <ignore>
+                <document>authorization_role</document>
+            </ignore>
+            <ignore>
+                <document>authorization_rule</document>
             </ignore>
         </document_rules>
         <field_rules>
@@ -1341,12 +1489,6 @@
                 <field>admin_user.interface_locale</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="en_US" />
-                </handler>
-            </transform>
-            <transform>
-                <field>catalog_eav_attribute.is_required_in_admin_store</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
@@ -1426,9 +1568,6 @@
             </ignore>
             <ignore>
                 <field>authorization_role.user_type</field>
-            </ignore>
-            <ignore>
-                <field>catalog_eav_attribute.is_required_in_admin_store</field>
             </ignore>
             <ignore>
                 <field>cataloginventory_stock.website_id</field>

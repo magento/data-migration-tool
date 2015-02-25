@@ -21,7 +21,7 @@ interface StepInterface
     /**
      * Run step
      *
-     * @return void
+     * @return bool
      */
     public function run();
 

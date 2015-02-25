@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
@@ -12,7 +12,7 @@ use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
 
-class Run
+class Map
 {
     /**
      * @var Resource\Source
@@ -90,7 +90,7 @@ class Run
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start(count($this->source->getDocumentList()));
         $sourceDocuments = $this->source->getDocumentList();
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
@@ -128,17 +128,5 @@ class Run
             }
         }
         $this->progress->finish();
-    }
-
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $sourceDocuments = $this->source->getDocumentList();
-        $destDocuments = $this->destination->getDocumentList();
-        return count($sourceDocuments) + count($destDocuments);
     }
 }

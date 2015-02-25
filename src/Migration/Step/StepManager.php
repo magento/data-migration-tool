@@ -56,7 +56,6 @@ class StepManager
     public function runSteps()
     {
         $steps = $this->config->getSteps();
-        $integritySuccess = true;
         $stepInstances = [];
         foreach ($steps as $stepClass) {
             /** @var StepInterface $step */
@@ -66,20 +65,19 @@ class StepManager
             if ($this->progress->isCompleted($step, 'integrity') != true) {
                 $integritySuccess = $step->integrity();
                 $this->progress->saveResult($step, 'integrity', $integritySuccess);
+                if (!$integritySuccess) {
+                    return $this;
+                }
             } else {
                 $this->logger->info('Integrity check completed');
             }
-        }
-        if (!$integritySuccess) {
-            return $this;
         }
 
         /** @var StepInterface $step */
         foreach ($stepInstances as $step) {
             $this->logger->info(PHP_EOL . $step->getTitle() . ': run');
             if ($this->progress->isCompleted($step, 'run') != true) {
-                $runSuccess = $step->run();
-                $this->progress->saveResult($step, 'run', $runSuccess);
+                $this->progress->saveResult($step, 'run', $step->run());
             } else {
                 $this->logger->info('Migration stage completed');
             }
@@ -95,6 +93,7 @@ class StepManager
             }
         }
         $this->logger->info(PHP_EOL . "Migration completed");
+        $this->progress->clearLockFile();
         return $this;
     }
 }

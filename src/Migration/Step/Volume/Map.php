@@ -3,14 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 use Migration\ProgressBar;
 
-class Volume
+class Map
 {
     /**
      * @var Resource\Source
