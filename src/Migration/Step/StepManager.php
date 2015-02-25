@@ -93,6 +93,7 @@ class StepManager
             }
         }
         $this->logger->info(PHP_EOL . "Migration completed");
+        $this->progress->clearLockFile();
         return $this;
     }
 }
