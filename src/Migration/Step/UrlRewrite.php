@@ -23,7 +23,6 @@ class UrlRewrite extends DatabaseStep
         \Migration\Config $config,
         \Migration\Step\UrlRewrite\VersionFactory $versionFactory
     ) {
-
         $this->rewriteVersion = $versionFactory->create(
             $config->getSource()['version'],
             $config->getDestination()['version']

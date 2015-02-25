@@ -685,6 +685,4 @@ class Eav implements StepInterface
     {
         return true;
     }
-
-
 }
