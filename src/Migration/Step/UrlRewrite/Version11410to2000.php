@@ -316,7 +316,9 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     public function integrity()
     {
+        $this->progress->start(count($this->structure));
         foreach ($this->structure as $resourceName => $documentList) {
+            $this->progress->advance();
             $resource = $resourceName == 'source' ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
                 $document = $resource->getDocument($documentName);
@@ -331,7 +333,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 }
             }
         }
-
+        $this->progress->finish();
         return $this->destination->getRecordsCount('url_rewrite') == 0 && $this->checkDuplicates();
     }
 
@@ -340,7 +342,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     public function volumeCheck()
     {
-        return $this->source->getRecordsCount('enterprise_url_rewrite')
+        $this->progress->start(1);
+        $result = $this->source->getRecordsCount('enterprise_url_rewrite')
             == $this->destination->getRecordsCount('url_rewrite')
             && $this->source->getRecordsCount('catalog_category_entity_varchar')
             + $this->source->getRecordsCount('catalog_category_entity_url_key')
@@ -348,6 +351,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             && $this->source->getRecordsCount('catalog_product_entity_varchar')
             + $this->source->getRecordsCount('catalog_product_entity_url_key')
             == $this->destination->getRecordsCount('catalog_product_entity_varchar');
+        $this->progress->finish();
+        return $result;
     }
 
     /**

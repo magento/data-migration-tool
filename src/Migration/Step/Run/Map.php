@@ -90,7 +90,7 @@ class Map
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start(count($this->source->getDocumentList()));
         $sourceDocuments = $this->source->getDocumentList();
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
@@ -128,17 +128,5 @@ class Map
             }
         }
         $this->progress->finish();
-    }
-
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $sourceDocuments = $this->source->getDocumentList();
-        $destDocuments = $this->destination->getDocumentList();
-        return count($sourceDocuments) + count($destDocuments);
     }
 }
