@@ -51,7 +51,7 @@ class Helper
     }
 
     /**
-     * @param $sourceDocumentName
+     * @param string $sourceDocumentName
      * @return int
      */
     public function getSourceRecordsCount($sourceDocumentName)
@@ -60,7 +60,7 @@ class Helper
     }
 
     /**
-     * @param $sourceDocumentName
+     * @param string $sourceDocumentName
      * @return int
      */
     public function getDestinationRecordsCount($sourceDocumentName)

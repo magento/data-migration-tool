@@ -186,5 +186,4 @@ abstract class AbstractIntegrity
         }
         return $isSuccess;
     }
-
 }

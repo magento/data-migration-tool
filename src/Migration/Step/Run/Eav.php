@@ -114,6 +114,8 @@ class Eav
 
     /**
      * Entry point. Run migration of EAV structure.
+     *
+     * @return void
      */
     public function perform()
     {
@@ -152,9 +154,11 @@ class Eav
             if ($documentName == 'eav_attribute_set') {
                 foreach ($this->initialData->getAttributeSets('dest') as $record) {
                     $record['attribute_set_id'] = null;
-                    $destinationRecord = $this->factory->create([
-                        'document' => $destinationDocument,
-                        'data' => $record]
+                    $destinationRecord = $this->factory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => $record
+                        ]
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }
@@ -169,9 +173,11 @@ class Eav
                     $record['attribute_set_id'] = $newAttributeSet['attribute_set_id'];
 
                     $record['attribute_group_id'] = null;
-                    $destinationRecord = $this->factory->create([
-                        'document' => $destinationDocument,
-                        'data' => $record]
+                    $destinationRecord = $this->factory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => $record
+                        ]
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }
@@ -326,10 +332,12 @@ class Eav
 
             if ($mappingFields) {
                 foreach ($destinationRecords as $record) {
-                    $destinationRecord = $this->factory->create([
-                        'document' => $destinationDocument,
-                        'data' => $record
-                    ]);
+                    $destinationRecord = $this->factory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => $record
+                        ]
+                    );
                     if (isset($record['attribute_id'])
                         && isset($this->destAttributeOldNewMap[$record['attribute_id']])
                     ) {
@@ -348,28 +356,29 @@ class Eav
 
     /**
      * Migrate tables which does not require some custom migration logic
+     *
+     * @return void
      * @throws \Exception
      */
     protected function migrateJustCopyTables()
     {
         foreach ($this->helper->getJustCopyDocuments() as $documentName) {
             $this->progress->advance();
-             $sourceDocument = $this->source->getDocument($documentName);
-             $destinationDocument = $this->destination->getDocument(
-                 $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
-             );
-
-             $sourceRecords = $this->helper->getSourceRecords($documentName);
-             $recordsToSave = $destinationDocument->getRecords();
-             foreach ($sourceRecords as $recordData) {
-                 $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
-                 $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-                 $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                     ->transform($sourceRecord, $destinationRecord);
-                 $recordsToSave->addRecord($destinationRecord);
-             }
-             $this->saveRecords($destinationDocument, $recordsToSave);
-         }
+            $sourceDocument = $this->source->getDocument($documentName);
+            $destinationDocument = $this->destination->getDocument(
+                $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
+            );
+            $sourceRecords = $this->helper->getSourceRecords($documentName);
+            $recordsToSave = $destinationDocument->getRecords();
+            foreach ($sourceRecords as $recordData) {
+                $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
+                $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+                $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
+                    ->transform($sourceRecord, $destinationRecord);
+                $recordsToSave->addRecord($destinationRecord);
+            }
+            $this->saveRecords($destinationDocument, $recordsToSave);
+        }
     }
 
     /**
@@ -446,7 +455,10 @@ class Eav
      */
     protected function loadNewAttributes()
     {
-        $this->newAttributes = $this->helper->getDestinationRecords('eav_attribute', ['entity_type_id', 'attribute_code']);
+        $this->newAttributes = $this->helper->getDestinationRecords(
+            'eav_attribute',
+            ['entity_type_id', 'attribute_code']
+        );
         foreach ($this->initialData->getAttributes('dest') as $key => $attributeData) {
             $this->destAttributeOldNewMap[$attributeData['attribute_id']] = $this->newAttributes[$key]['attribute_id'];
         }

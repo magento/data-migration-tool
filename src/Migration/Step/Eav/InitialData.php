@@ -66,6 +66,8 @@ class InitialData
 
     /**
      * Load EAV data before migration
+     *
+     * @return void
      */
     public function init()
     {
@@ -76,6 +78,8 @@ class InitialData
 
     /**
      * Load all attributes from source and destination
+     *
+     * @return void
      */
     protected function initAttributes()
     {
@@ -121,7 +125,7 @@ class InitialData
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return mixed
      */
     public function getAttributes($type)
@@ -130,7 +134,7 @@ class InitialData
     }
 
     /**
-     * @param $type
+     * @param string $type
      * @return mixed
      */
     public function getAttributeSets($type)
@@ -139,7 +143,8 @@ class InitialData
     }
 
     /**
-     * @param $type
+     * @param string $type
+     * @return mixed
      */
     public function getAttributeGroups($type)
     {
