@@ -24,5 +24,6 @@
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>
