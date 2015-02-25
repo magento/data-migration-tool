@@ -4,58 +4,78 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step\Map;
+namespace Migration\Step;
 
 /**
  * Integrity step test class
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testRunWithMap()
+    public function testIntegrityWithMap()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
+        $integrityMap = $objectManager->create('\Migration\Step\Integrity\Map');
+        $runMap = $objectManager->create('\Migration\Step\Run\Map');
+        $volume = $objectManager->create('\Migration\Step\Volume\Map');
+        $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader');
-
+        $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
         
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
-        $integrity = $objectManager->create(
-            '\Migration\Step\Map\Integrity',
-            ['progress' => $progressBar, 'mapReader' => $mapReader]
+        $map = $objectManager->create(
+            '\Migration\Step\Map',
+            [
+                'integrity' => $integrityMap,
+                'run' => $runMap,
+                'volume' => $volume,
+                'logger' => $logger,
+                'map' => $mapReader,
+                'config' => $config
+            ]
         );
         ob_start();
-        $integrity->perform();
+        $map->integrity();
         ob_end_clean();
 
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertFalse(isset($logOutput[\Monolog\Logger::ERROR]));
     }
 
-    public function testRunWithoutMap()
+    public function testIntegrityWithoutMap()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config-with-empty-map.xml');
-        $mapReader = $objectManager->create('\Migration\MapReader');
-
-        /** @var \Migration\Logger\Manager $logManager */
         $logManager = $objectManager->create('\Migration\Logger\Manager');
+        $integrityMap = $objectManager->create('\Migration\Step\Integrity\Map');
+        $runMap = $objectManager->create('\Migration\Step\Run\Map');
+        $volume = $objectManager->create('\Migration\Step\Volume\Map');
+        $logger = $objectManager->create('\Migration\Logger\Logger');
+        $mapReader = $objectManager->create('\Migration\MapReader');
+        $config = $objectManager->get('\Migration\Config');
+        /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
-        $progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
-        $integrity = $objectManager->create(
-            '\Migration\Step\Map\Integrity',
-            ['progress' => $progressBar, 'mapReader' => $mapReader]
+        $map = $objectManager->create(
+            '\Migration\Step\Map',
+            [
+                'integrity' => $integrityMap,
+                'run' => $runMap,
+                'volume' => $volume,
+                'logger' => $logger,
+                'map' => $mapReader,
+                'config' => $config
+            ]
         );
         ob_start();
-        $integrity->perform();
+        $map->integrity();
         ob_end_clean();
 
         $messages = [];

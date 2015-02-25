@@ -8,10 +8,10 @@
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps />
     <source version="1.14.1.0">
-        <database host="localhost" name="magento1_integration" user="root" password="root"/>
+        <database host="localhost" name="magento1_integration" user="root" password=""/>
     </source>
     <destination version="2.0.0.0">
-        <database host="localhost" name="magento2_integration" user="root" password="root"/>
+        <database host="localhost" name="magento2_integration" user="root" password=""/>
     </destination>
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>

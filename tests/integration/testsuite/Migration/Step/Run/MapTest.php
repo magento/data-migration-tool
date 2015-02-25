@@ -4,28 +4,42 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step\Map;
+namespace Migration\Step\Run;
 
 /**
  * Migrate step test class
  */
-class RunTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit_Framework_TestCase
 {
     public function testPerform()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
+        $integrityMap = $objectManager->create('\Migration\Step\Integrity\Map');
+        $runMap = $objectManager->create('\Migration\Step\Run\Map');
+        $volume = $objectManager->create('\Migration\Step\Volume\Map');
+        $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader');
+        $config = $objectManager->get('\Migration\Config');
         $destination = $objectManager->get('\Migration\Resource\Destination');
-
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
 
-        $run = $objectManager->create('\Migration\Step\Map\Run', ['mapReader' => $mapReader]);
+        $map = $objectManager->create(
+            '\Migration\Step\Map',
+            [
+                'integrity' => $integrityMap,
+                'run' => $runMap,
+                'volume' => $volume,
+                'logger' => $logger,
+                'map' => $mapReader,
+                'config' => $config
+            ]
+        );
         ob_start();
-        $run->perform();
+        $map->run();
         ob_end_clean();
 
         $migratedData = $destination->getRecords('table_without_data', 0);
