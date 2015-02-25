@@ -7,6 +7,7 @@ namespace Migration\Step;
 
 use \Migration\Config;
 use \Migration\MapReader;
+use Migration\Logger\Logger;
 
 /**
  * Class Eav
@@ -47,6 +48,11 @@ class Eav implements StepInterface
     protected $config;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Eav\InitialData $initialData
      * @param Integrity\Eav $integrity
      * @param Run\Eav $dataMigration
@@ -60,7 +66,8 @@ class Eav implements StepInterface
         Run\Eav $dataMigration,
         Volume\Eav $volumeCheck,
         MapReader $mapReader,
-        Config $config
+        Config $config,
+        Logger $logger
     ) {
         $this->initialData = $initialData;
         $this->integrityCheck = $integrity;
@@ -68,6 +75,7 @@ class Eav implements StepInterface
         $this->volumeCheck = $volumeCheck;
         $this->config = $config;
         $this->map = $mapReader;
+        $this->logger = $logger;
     }
 
     /**
@@ -76,9 +84,14 @@ class Eav implements StepInterface
      */
     public function integrity()
     {
-        $this->map->init($this->config->getOption('eav_map_file'));
-        $this->initialData->init();
-        return $this->integrityCheck->perform();
+        try{
+            $this->map->init($this->config->getOption('eav_map_file'));
+            $this->initialData->init();
+            return $this->integrityCheck->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Integrity check failed with exception: ' . $e->getMessage());
+        }
+        return false;
     }
 
     /**
@@ -87,8 +100,12 @@ class Eav implements StepInterface
      */
     public function run()
     {
-        $this->map->init($this->config->getOption('eav_map_file'));
-        $this->dataMigration->perform();
+        try {
+            $this->map->init($this->config->getOption('eav_map_file'));
+            $this->dataMigration->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Run failed with exception: ' . $e->getMessage());
+        }
     }
 
     /**
@@ -96,9 +113,21 @@ class Eav implements StepInterface
      */
     public function volumeCheck()
     {
-        $this->map->init($this->config->getOption('eav_map_file'));
-        return $this->volumeCheck->perform();
+        try {
+            $this->map->init($this->config->getOption('eav_map_file'));
+            return $this->volumeCheck->perform();
+        } catch (\Exception $e) {
+            $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
+        }
     }
 
-
+    /**
+     * Get step title
+     *
+     * @return string
+     */
+    public function getTitle()
+    {
+        return 'EAV Step';
+    }
 }

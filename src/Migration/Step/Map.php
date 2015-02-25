@@ -50,13 +50,14 @@ class Map implements StepInterface
      * @param Integrity\Map $integrity
      * @param Run\Map $run
      * @param Volume\Map $volume
+     * @param Logger $logger
      * @param MapReader $mapReader
      * @param Config $config
      */
     public function __construct(
-        Map\Integrity $integrity,
-        Map\Run $run,
-        Map\Volume $volume,
+        Integrity\Map $integrity,
+        Run\Map $run,
+        Volume\Map $volume,
         Logger $logger,
         MapReader $mapReader,
         Config $config

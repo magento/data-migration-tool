@@ -16,8 +16,22 @@ class Map extends AbstractIntegrity
      */
     public function perform()
     {
+        $this->progress->start($this->getIterationsCount());
         $this->check($this->source->getDocumentList(), MapReader::TYPE_SOURCE);
         $this->check($this->destination->getDocumentList(), MapReader::TYPE_DEST);
+        $this->progress->finish();
         return $this->checkForErrors();
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $sourceDocuments = $this->source->getDocumentList();
+        $destDocuments = $this->destination->getDocumentList();
+        return count($sourceDocuments) + count($destDocuments);
     }
 }

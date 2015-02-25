@@ -6,6 +6,7 @@
 namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
+use Migration\ProgressBar;
 use Migration\Step\Eav\Helper;
 use Migration\Step\Eav\InitialData;
 
@@ -30,14 +31,20 @@ class Eav
     protected $logger;
 
     /**
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
      * @param Helper $helper
      * @param InitialData $initialData
      */
-    public function __construct(Helper $helper, InitialData $initialData, Logger $logger)
+    public function __construct(Helper $helper, InitialData $initialData, Logger $logger, ProgressBar $progress)
     {
         $this->initialData = $initialData;
         $this->helper = $helper;
         $this->logger = $logger;
+        $this->progress = $progress;
     }
 
     /**
@@ -45,9 +52,11 @@ class Eav
      */
     public function perform()
     {
+        $this->progress->start(count($this->helper->getDocumentsMap()));
         $result = $this->validateAttributes();
         $result = $result & $this->validateAttributeSetsAndGroups();
         $result = $result & $this->validateJustCopyTables();
+        $this->progress->finish();
         return (bool)$result;
     }
 

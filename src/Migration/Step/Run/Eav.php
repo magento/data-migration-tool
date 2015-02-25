@@ -6,6 +6,7 @@
 namespace Migration\Step\Run;
 
 use Migration\MapReader;
+use Migration\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Record;
 use Migration\Resource\Document;
@@ -80,12 +81,18 @@ class Eav
     protected $initialData;
 
     /**
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapReader $mapReader
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
+     * @param ProgressBar $progress
      */
     public function __construct(
         Source $source,
@@ -93,7 +100,8 @@ class Eav
         MapReader $mapReader,
         Helper $helper,
         RecordFactory $factory,
-        InitialData $initialData
+        InitialData $initialData,
+        ProgressBar $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -101,6 +109,7 @@ class Eav
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;
+        $this->progress = $progress;
     }
 
     /**
@@ -108,11 +117,13 @@ class Eav
      */
     public function perform()
     {
+        $this->progress->start($this->getIterationsCount());
         $this->migrateAttributeSetsAndGroups();
         $this->migrateAttributes();
         $this->migrateEntityAttributes();
         $this->migrateMappedTables();
         $this->migrateJustCopyTables();
+        $this->progress->finish();
     }
 
     /**
@@ -122,6 +133,7 @@ class Eav
     protected function migrateAttributeSetsAndGroups()
     {
         foreach (['eav_attribute_set', 'eav_attribute_group'] as $documentName) {
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
@@ -181,6 +193,7 @@ class Eav
      */
     protected function migrateAttributes()
     {
+        $this->progress->advance();
         $sourceDocName = 'eav_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -229,6 +242,7 @@ class Eav
      */
     protected function migrateEntityAttributes()
     {
+        $this->progress->advance();
         $sourceDocName = 'eav_entity_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -280,6 +294,7 @@ class Eav
         ];
 
         foreach ($documents as $documentName => $mappingFields) {
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
@@ -338,6 +353,7 @@ class Eav
     protected function migrateJustCopyTables()
     {
         foreach ($this->helper->getJustCopyDocuments() as $documentName) {
+            $this->progress->advance();
              $sourceDocument = $this->source->getDocument($documentName);
              $destinationDocument = $this->destination->getDocument(
                  $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
@@ -456,5 +472,13 @@ class Eav
         }
 
         return $id;
+    }
+
+    /**
+     * @return int
+     */
+    public function getIterationsCount()
+    {
+        return count($this->helper->getDocumentsMap());
     }
 }

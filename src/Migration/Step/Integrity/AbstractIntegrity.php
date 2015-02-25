@@ -93,6 +93,12 @@ abstract class AbstractIntegrity
     abstract public function perform();
 
     /**
+     * Returns number of iterations for integrity check
+     * @return mixed
+     */
+    abstract protected function getIterationsCount();
+
+    /**
      * Check if source and destination resources have equal document names and fields
      *
      * @param array $documents
@@ -181,15 +187,4 @@ abstract class AbstractIntegrity
         return $isSuccess;
     }
 
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $sourceDocuments = $this->source->getDocumentList();
-        $destDocuments = $this->destination->getDocumentList();
-        return count($sourceDocuments) + count($destDocuments);
-    }
 }
