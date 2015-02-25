@@ -16,3 +16,4 @@ atlassian*
 /tests/unit/phpunit.xml
 /tests/integration/etc/config.xml
 /tests/integration/etc/mysql.php
+/var
