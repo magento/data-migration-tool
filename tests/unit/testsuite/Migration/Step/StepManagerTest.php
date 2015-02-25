@@ -48,7 +48,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getSteps'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\Step\ProgressStep')->disableOriginalConstructor()
-            ->setMethods(['saveResult', 'isCompleted'])
+            ->setMethods(['saveResult', 'isCompleted', 'clearLockFile'])
             ->getMock();
         $this->manager = new StepManager($this->progress, $this->logger, $this->factory, $this->config);
     }
@@ -112,6 +112,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->will($this->returnValue(false));
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
+        $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: run");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
@@ -138,6 +139,7 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->will($this->returnValue(true));
         $this->progress->expects($this->never())->method('saveResult');
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(true);
+        $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
         $this->logger->expects($this->at(1))->method('info')->with("Integrity check completed");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: run");
