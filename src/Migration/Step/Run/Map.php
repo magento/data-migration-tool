@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
@@ -12,7 +12,7 @@ use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
 
-class Run
+class Map
 {
     /**
      * @var Resource\Source

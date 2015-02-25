@@ -42,7 +42,9 @@
             </transform>
             <transform>
                 <field>eav_attribute.is_required</field>
-                <handler class="\Migration\Handler\GetDestinationValue"/>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="allowNull" value="false"/>
+                </handler>
             </transform>
             <transform>
                 <field>eav_attribute.frontend_class</field>
@@ -75,11 +77,15 @@
             </transform>
             <transform>
                 <field>catalog_eav_attribute.apply_to</field>
-                <handler class="\Migration\Handler\GetDestinationValue"/>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="allowNull" value="false"/>
+                </handler>
             </transform>
             <transform>
                 <field>catalog_eav_attribute.is_configurable</field>
-                <handler class="\Migration\Handler\GetDestinationValue"/>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="allowNull" value="false"/>
+                </handler>
             </transform>
 
             <transform>
@@ -143,6 +149,13 @@
                 <field>eav_attribute_group.default_id</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0"/>
+                </handler>
+            </transform>
+
+            <transform>
+                <field>enterprise_rma_item_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="allowNull" value="false"/>
                 </handler>
             </transform>
         </field_rules>

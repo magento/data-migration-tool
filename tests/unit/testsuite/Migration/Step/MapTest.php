@@ -8,19 +8,29 @@ namespace Migration\Step;
 class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Map\Integrity|\PHPUnit_Framework_MockObject_MockObject
+     * @var Integrity\Map|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $integrity;
 
     /**
-     * @var Map\Run|\PHPUnit_Framework_MockObject_MockObject
+     * @var Run\Map|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $run;
 
     /**
-     * @var Map\Volume|\PHPUnit_Framework_MockObject_MockObject
+     * @var Volume\Map|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $volume;
+
+    /**
+     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $mapReader;
+
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
 
     /**
      * @var Map
@@ -34,11 +44,14 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->integrity = $this->getMock('Migration\Step\Map\Integrity', ['perform'], [], '', false);
-        $this->run = $this->getMock('Migration\Step\Map\Run', ['perform'], [], '', false);
-        $this->volume = $this->getMock('Migration\Step\Map\Volume', ['perform'], [], '', false);
+        $this->integrity = $this->getMock('Migration\Step\Integrity\Map', ['perform'], [], '', false);
+        $this->run = $this->getMock('Migration\Step\Run\Map', ['perform'], [], '', false);
+        $this->volume = $this->getMock('Migration\Step\Volume\Map', ['perform'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->map = new Map($this->integrity, $this->run, $this->volume, $this->logger);
+        $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods([])->getMock();
+        $this->map = new Map($this->integrity, $this->run, $this->volume, $this->logger, $this->mapReader, $this->config);
     }
 
     public function testIntegrity()
@@ -75,7 +88,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->map->run();
     }
 
-    public function testVolumeCheck()
+    public function testVolumeCheckException()
     {
         $exception = $this->getMock('\Exception', ['getMessage'], [], '', false);
         $this->volume->expects($this->once())->method('perform')->willThrowException($exception);

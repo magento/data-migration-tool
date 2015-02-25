@@ -3,14 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 
-class RunTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
@@ -48,9 +48,9 @@ class RunTest extends \PHPUnit_Framework_TestCase
     protected $recordTransformerFactory;
 
     /**
-     * @var Run|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $run;
+    protected $map;
 
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -87,7 +87,7 @@ class RunTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])->getMock();
         $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
         $this->mapReader->expects($this->once())->method('init');
-        $this->run = new Run(
+        $this->map = new Map(
             $this->progress,
             $this->logger,
             $this->source,
@@ -103,7 +103,7 @@ class RunTest extends \PHPUnit_Framework_TestCase
     {
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
-        $this->run->perform();
+        $this->map->perform();
     }
 
     public function testGetMap()
@@ -148,6 +148,6 @@ class RunTest extends \PHPUnit_Framework_TestCase
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
-        $this->run->perform();
+        $this->map->perform();
     }
 }

@@ -3,13 +3,13 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
 use Migration\MapReader;
 use Migration\Resource;
 
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
@@ -37,9 +37,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $mapReader;
 
     /**
-     * @var Volume
+     * @var Map
      */
-    protected $volume;
+    protected $map;
 
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -68,7 +68,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])->getMock();
         $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
         $this->mapReader->expects($this->once())->method('init');
-        $this->volume = new Volume(
+        $this->map = new Map(
             $this->logger,
             $this->source,
             $this->destination,
@@ -86,7 +86,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
-        $this->assertTrue($this->volume->perform());
+        $this->assertTrue($this->map->perform());
     }
 
     public function testPerformIgnored()
@@ -97,7 +97,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('getRecordsCount');
-        $this->assertTrue($this->volume->perform());
+        $this->assertTrue($this->map->perform());
     }
 
     public function testPerformFailed()
@@ -112,6 +112,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             PHP_EOL . 'Volume check failed for the destination document ' .
             PHP_EOL . $dstDocName
         );
-        $this->assertFalse($this->volume->perform());
+        $this->assertFalse($this->map->perform());
     }
 }

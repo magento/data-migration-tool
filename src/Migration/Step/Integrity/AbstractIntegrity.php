@@ -3,14 +3,17 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Map;
+namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
 use Migration\MapReader;
 use Migration\Resource;
 
-class Integrity
+/**
+ * Class AbstractIntegrity
+ */
+abstract class AbstractIntegrity
 {
     /**
      * Resource of source
@@ -67,51 +70,49 @@ class Integrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReader $mapReader
-     * @param \Migration\Config $config
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader,
-        \Migration\Config $config
+        MapReader $mapReader
     ) {
         $this->logger = $logger;
         $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
-        $this->map->init($config->getOption('map_file'));
     }
 
     /**
-     * {@inheritdoc}
+     * Peform Integrity Check
+     *
+     * @return mixed
      */
-    public function perform()
-    {
-        $this->progress->start($this->getIterationsCount());
-        $this->check(MapReader::TYPE_SOURCE);
-        $this->check(MapReader::TYPE_DEST);
-        $this->progress->finish();
-        return $this->checkForErrors();
-    }
+    abstract public function perform();
+
+    /**
+     * Returns number of iterations for integrity check
+     * @return mixed
+     */
+    abstract protected function getIterationsCount();
 
     /**
      * Check if source and destination resources have equal document names and fields
      *
+     * @param array $documents
      * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
      * @return $this
      * @throws \Exception
      */
-    protected function check($type)
+    protected function check($documents, $type)
     {
         $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->destination;
         $destination = $type == MapReader::TYPE_SOURCE ? $this->destination : $this->source;
 
-        $sourceDocuments = $source->getDocumentList();
         $destDocuments = array_flip($destination->getDocumentList());
-        foreach ($sourceDocuments as $document) {
+        foreach ($documents as $document) {
             $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
@@ -186,15 +187,4 @@ class Integrity
         return $isSuccess;
     }
 
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $sourceDocuments = $this->source->getDocumentList();
-        $destDocuments = $this->destination->getDocumentList();
-        return count($sourceDocuments) + count($destDocuments);
-    }
 }
