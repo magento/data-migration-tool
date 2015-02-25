@@ -92,9 +92,11 @@ class Map implements StepInterface
         try {
             $this->map->init($this->config->getOption('map_file'));
             $this->run->perform();
+            return true;
         } catch (\Exception $e) {
             $this->logger->error('Run failed with exception: ' . $e->getMessage());
         }
+        return false;
     }
 
     /**
@@ -108,6 +110,7 @@ class Map implements StepInterface
         } catch (\Exception $e) {
             $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
         }
+        return false;
     }
 
     /**

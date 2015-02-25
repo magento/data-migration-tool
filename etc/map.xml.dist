@@ -623,12 +623,6 @@
             <ignore>
                 <document>admin_rule</document>
             </ignore>
-            <ignore>
-                <document>authorization_role</document>
-            </ignore>
-            <ignore>
-                <document>authorization_rule</document>
-            </ignore>
             <!--<rename>-->
                 <!--<document>admin_role</document>-->
                 <!--<to>authorization_role</to>-->
@@ -1482,6 +1476,12 @@
             </ignore>
             <ignore>
                 <document>magento_rma_item_eav_attribute_website</document>
+            </ignore>
+            <ignore>
+                <document>authorization_role</document>
+            </ignore>
+            <ignore>
+                <document>authorization_rule</document>
             </ignore>
         </document_rules>
         <field_rules>

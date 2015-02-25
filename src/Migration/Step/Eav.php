@@ -103,9 +103,11 @@ class Eav implements StepInterface
         try {
             $this->map->init($this->config->getOption('eav_map_file'));
             $this->dataMigration->perform();
+            return true;
         } catch (\Exception $e) {
             $this->logger->error('Run failed with exception: ' . $e->getMessage());
         }
+        return false;
     }
 
     /**
@@ -119,6 +121,7 @@ class Eav implements StepInterface
         } catch (\Exception $e) {
             $this->logger->error('Volume check failed with exception: ' . $e->getMessage());
         }
+        return false;
     }
 
     /**
