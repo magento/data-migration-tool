@@ -59,6 +59,7 @@ class Eav implements StepInterface
      * @param Volume\Eav $volumeCheck
      * @param MapReader $mapReader
      * @param Config $config
+     * @param Logger $logger
      */
     public function __construct(
         Eav\InitialData $initialData,
@@ -84,7 +85,7 @@ class Eav implements StepInterface
      */
     public function integrity()
     {
-        try{
+        try {
             $this->map->init($this->config->getOption('eav_map_file'));
             $this->initialData->init();
             return $this->integrityCheck->perform();

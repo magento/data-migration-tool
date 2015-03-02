@@ -38,6 +38,8 @@ class Eav
     /**
      * @param Helper $helper
      * @param InitialData $initialData
+     * @param Logger $logger
+     * @param ProgressBar $progress
      */
     public function __construct(Helper $helper, InitialData $initialData, Logger $logger, ProgressBar $progress)
     {
@@ -66,12 +68,15 @@ class Eav
     public function validateAttributes()
     {
         $result = true;
+        $sourceAttrbutes = $this->initialData->getAttributes('source');
         foreach ($this->helper->getDestinationRecords('eav_attribute') as $attribute) {
-            if (isset($this->initialData->getAttributes('source')[$attribute['attribute_id']])
-                && $this->initialData->getAttributes('source')[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code']
+            if (isset($sourceAttrbutes[$attribute['attribute_id']])
+                && $sourceAttrbutes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code']
             ) {
                 $result = false;
-                $this->logError('Source and Destination attributes mismatch. Attribute id: ' . $attribute['attribute_id']);
+                $this->logError(
+                    'Source and Destination attributes mismatch. Attribute id: ' . $attribute['attribute_id']
+                );
             }
 
             foreach (['attribute_model', 'backend_model', 'frontend_model', 'source_model'] as $field) {
@@ -88,7 +93,7 @@ class Eav
                 if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
                     $result = false;
                     $this->logError(
-                        "Incorrect value in: customer_eav_attribute.$field for attribute_id={$attribute['attribute_id']}"
+                        "Incorrect value: customer_eav_attribute.$field for attribute_id={$attribute['attribute_id']}"
                     );
                 }
             }
@@ -149,9 +154,9 @@ class Eav
     }
 
     /**
-     * @param $expected
-     * @param $actual
-     * @param $message
+     * @param mixed $expected
+     * @param mixed $actual
+     * @param string $message
      * @return bool
      */
     public function assertEqual($expected, $actual, $message)
@@ -166,7 +171,8 @@ class Eav
     }
 
     /**
-     * @param $message
+     * @param string $message
+     * @return void
      */
     protected function logError($message)
     {

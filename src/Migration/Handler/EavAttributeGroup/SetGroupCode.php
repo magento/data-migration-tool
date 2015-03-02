@@ -3,14 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Handler\Eav;
+namespace Migration\Handler\EavAttributeGroup;
 
 use Migration\Resource\Record;
 
 /**
- * Class SetAttributeGroupCode
+ * Class SetGroupCode
  */
-class SetAttributeGroupCode extends \Migration\Handler\AbstractHandler implements \Migration\Handler\HandlerInterface
+class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migration\Handler\HandlerInterface
 {
     /**
      * {@inheritdoc}

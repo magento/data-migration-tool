@@ -15,14 +15,14 @@ class GetDestinationValue extends AbstractHandler implements HandlerInterface
     /**
      * @var bool
      */
-    protected $allowNull;
+    protected $setNullIfEmpty;
 
     /**
-     * @param bool $allowNull
+     * @param bool $setNullIfEmpty
      */
-    public function __construct($allowNull = true)
+    public function __construct($setNullIfEmpty = false)
     {
-        $this->allowNull = $allowNull === 'false' ? false : true;
+        $this->setNullIfEmpty = $setNullIfEmpty === 'true' ? true : false;
     }
 
     /**
@@ -31,7 +31,7 @@ class GetDestinationValue extends AbstractHandler implements HandlerInterface
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        if (!is_null($oppositeRecord->getValue($this->field)) || $this->allowNull) {
+        if (!is_null($oppositeRecord->getValue($this->field)) || $this->setNullIfEmpty) {
             $recordToHandle->setValue($this->field, $oppositeRecord->getValue($this->field));
         }
     }

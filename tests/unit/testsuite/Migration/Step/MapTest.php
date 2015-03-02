@@ -5,6 +5,11 @@
  */
 namespace Migration\Step;
 
+use Migration\MapReader;
+
+/**
+ * Class MapTest
+ */
 class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -51,7 +56,14 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods([])->getMock();
-        $this->map = new Map($this->integrity, $this->run, $this->volume, $this->logger, $this->mapReader, $this->config);
+        $this->map = new Map(
+            $this->integrity,
+            $this->run,
+            $this->volume,
+            $this->logger,
+            $this->mapReader,
+            $this->config
+        );
     }
 
     public function testIntegrity()
