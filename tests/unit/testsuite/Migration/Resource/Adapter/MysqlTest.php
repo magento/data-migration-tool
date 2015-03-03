@@ -42,7 +42,8 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'fetchOne',
                 'fetchAll',
                 'insertMultiple',
-                'select'
+                'select',
+                'update'
             ],
             [],
             '',
@@ -148,5 +149,13 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $data = [['id' => 1], ['id' => 2]];
         $this->pdoMysql->expects($this->any())->method('fetchAll')->with($select)->willReturn($data);
         $this->assertSame($data, $this->adapterMysql->loadDataFromSelect($select));
+    }
+
+    public function testUpdateDocument()
+    {
+        $docName = 'some_name';
+        $condition = 'field1 = 1';
+        $this->pdoMysql->expects($this->once())->method('update')->with($docName, [], $condition);
+        $this->adapterMysql->updateDocument($docName, [], $condition);
     }
 }

@@ -106,4 +106,17 @@ class Mysql implements \Migration\Resource\AdapterInterface
     {
         return $this->resourceAdapter->select();
     }
+
+    /**
+     * Updates document rows with specified data based on a WHERE clause.
+     *
+     * @param mixed $document
+     * @param array $bind
+     * @param mixed $where
+     * @return int
+     */
+    public function updateDocument($document, array $bind, $where = '')
+    {
+        return $this->resourceAdapter->update($document, $bind, $where);
+    }
 }

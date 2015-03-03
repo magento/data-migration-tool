@@ -1506,7 +1506,7 @@
             <transform>
                 <field>rating.is_active</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="1" />
+                    <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
