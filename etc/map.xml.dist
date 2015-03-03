@@ -636,6 +636,14 @@
                 <to>search_query</to>
             </rename>
             <rename>
+                <document>core_variable</document>
+                <to>variable</to>
+            </rename>
+            <rename>
+                <document>core_variable_value</document>
+                <to>variable_value</to>
+            </rename>
+            <rename>
                 <document>core_email_template</document>
                 <to>email_template</to>
             </rename>
@@ -1550,6 +1558,10 @@
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
                 </handler>
+            </transform>
+            <transform>
+                <field>sales_order_status_state.visible_on_front</field>
+                <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>

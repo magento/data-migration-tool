@@ -42,7 +42,11 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'fetchOne',
                 'fetchAll',
                 'insertMultiple',
-                'select'
+                'select',
+                'createTable',
+                'dropTable',
+                'resetDdlCache',
+                'createTableByDdl',
             ],
             [],
             '',
@@ -148,5 +152,29 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $data = [['id' => 1], ['id' => 2]];
         $this->pdoMysql->expects($this->any())->method('fetchAll')->with($select)->willReturn($data);
         $this->assertSame($data, $this->adapterMysql->loadDataFromSelect($select));
+    }
+
+    public function testGetTableDdlCopy()
+    {
+        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->pdoMysql->expects($this->once())->method('createTableByDdl')
+            ->with('source_table', 'destination_table')
+            ->will($this->returnValue($table));
+        $this->adapterMysql->getTableDdlCopy('source_table', 'destination_table');
+    }
+
+    public function testCreateTableByDdl()
+    {
+        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
+            ->setMethods(['getName'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $table->expects($this->exactly(2))->method('getName')->will($this->returnValue('some_name'));
+        $this->pdoMysql->expects($this->once())->method('dropTable')->with('some_name');
+        $this->pdoMysql->expects($this->once())->method('createTable')->with($table);
+        $this->pdoMysql->expects($this->once())->method('resetDdlCache')->with('some_name');
+        $this->adapterMysql->createTableByDdl($table);
     }
 }

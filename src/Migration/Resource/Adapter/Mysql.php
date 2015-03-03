@@ -5,6 +5,8 @@
  */
 namespace Migration\Resource\Adapter;
 
+use Magento\Framework\DB\Ddl\Table;
+
 /**
  * Mysql adapter
  */
@@ -105,5 +107,25 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function getSelect()
     {
         return $this->resourceAdapter->select();
+    }
+
+    /**
+     * @param string $table
+     * @param string $newTableName
+     * @return Table
+     */
+    public function getTableDdlCopy($table, $newTableName)
+    {
+        return $this->resourceAdapter->createTableByDdl($table, $newTableName);
+    }
+
+    /**
+     * @param Table $tableDdl
+     */
+    public function createTableByDdl($tableDdl)
+    {
+        $this->resourceAdapter->dropTable($tableDdl->getName());
+        $this->resourceAdapter->createTable($tableDdl);
+        $this->resourceAdapter->resetDdlCache($tableDdl->getName());
     }
 }
