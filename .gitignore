@@ -12,6 +12,7 @@ atlassian*
 /etc/config.xml
 /etc/map-eav.xml
 /etc/map.xml
+/etc/map-log.xml
 /tests/unit/tmp
 /tests/unit/phpunit.xml
 /tests/integration/etc/config.xml
