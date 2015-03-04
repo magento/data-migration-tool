@@ -109,9 +109,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
-        $this->helper->expects($this->any())->method('getDocumentList')->will($this->returnValue(
-            ['document1' => 'document2'])
-        );
+        $this->helper->expects($this->any())->method('getDocumentList')
+            ->will($this->returnValue(['document1' => 'document2']));
         $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
@@ -137,9 +136,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->at(1))->method('getRecords')->will($this->returnValue($bulk));
         $this->source->expects($this->at(2))->method('getRecords')->will($this->returnValue([]));
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
-        $destinationDocument->expects($this->once())->method('getRecords')->will(
-            $this->returnValue($destinationRecords)
-        );
+        $destinationDocument->expects($this->once())->method('getRecords')
+            ->will($this->returnValue($destinationRecords));
         $srcRecord = $this->getMock('\Migration\Resource\Record', [], [], '', false);
         $dstRecord = $this->getMock('\Migration\Resource\Record', [], [], '', false);
         $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($srcRecord));
@@ -152,9 +150,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMapEmptyDestinationDocumentName()
     {
-        $this->helper->expects($this->any())->method('getDocumentList')->will($this->returnValue(
-                ['document1' => 'document2'])
-        );
+        $this->helper->expects($this->any())->method('getDocumentList')
+            ->will($this->returnValue(['document1' => 'document2']));
         $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $recordTransformer = $this->getMock('Migration\RecordTransformer', ['transform'], [], '', false);
         $recordTransformer->expects($this->never())->method('transform');

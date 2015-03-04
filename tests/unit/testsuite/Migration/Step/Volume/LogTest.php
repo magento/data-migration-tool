@@ -138,7 +138,8 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', 3], ['document_to_clear', 1]]);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Destination log documents are not cleared');
+            PHP_EOL . 'Destination log documents are not cleared'
+        );
         $this->assertFalse($this->log->perform());
     }
 }

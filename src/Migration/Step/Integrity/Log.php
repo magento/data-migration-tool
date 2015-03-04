@@ -10,6 +10,7 @@ use Migration\MapReader;
 use Migration\ProgressBar;
 use Migration\Resource;
 use Migration\Step\Log\Helper;
+
 /**
  * Class Eav
  */
