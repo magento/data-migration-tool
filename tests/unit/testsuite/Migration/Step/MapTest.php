@@ -5,6 +5,11 @@
  */
 namespace Migration\Step;
 
+use Migration\MapReader;
+
+/**
+ * Class MapTest
+ */
 class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
