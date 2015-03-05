@@ -188,7 +188,7 @@
 
             <transform>
                 <field>eav_attribute_group.attribute_group_code</field>
-                <handler class="\Migration\Handler\Eav\SetGroupCode" />
+                <handler class="\Migration\Handler\EavAttributeGroup\SetGroupCode" />
             </transform>
             <transform>
                 <field>eav_attribute_group.tab_group_code</field>
