@@ -11,6 +11,7 @@
         <step>Migration\Step\CustomCustomerAttributes</step>
         <step>Migration\Step\Map</step>
         <step>Migration\Step\UrlRewrite</step>
+        <step>Migration\Step\Log</step>
         <step>Migration\Step\Ratings</step>
     </steps>
     <source version="1.14.1.0">
@@ -22,6 +23,7 @@
     <options>
         <map_file>etc/map.xml</map_file>
         <eav_map_file>etc/map-eav.xml</eav_map_file>
+        <log_map_file>etc/map-log.xml</log_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix />

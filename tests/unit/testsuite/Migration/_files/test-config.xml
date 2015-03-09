@@ -7,9 +7,10 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps>
-        <step>\Migration\Steps\Integrity</step>
-        <step>\Migration\Steps\Map</step>
-        <step>\Migration\Steps\CustomStep</step>
+        <step>Migration\Step\Eav</step>
+        <step>Migration\Step\Map</step>
+        <step>Migration\Step\UrlRewrite</step>
+        <step>Migration\Step\Log</step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>
@@ -20,8 +21,11 @@
     <options>
         <map_file>map-file.xml</map_file>
         <eav_map_file>eav-map-file.xml</eav_map_file>
+        <log_map_file>etc/map-log.xml</log_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
         <custom_option>custom_option_value</custom_option>
+        <source_prefix />
+        <dest_prefix />
     </options>
 </config>
