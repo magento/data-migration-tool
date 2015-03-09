@@ -588,9 +588,6 @@
                 <document>log_visitor_online</document>
             </ignore>
             <ignore>
-                <document>widget_instance</document>
-            </ignore>
-            <ignore>
                 <document>core_config_data</document>
             </ignore>
             <ignore>
@@ -1091,6 +1088,26 @@
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
                 </handler>
             </transform>
+            <transform>
+                <field>cms_block.content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>cms_page.content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>magento_versionscms_page_revision.content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>magento_banner_content.banner_content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>widget_instance.instance_type</field>
+                <handler class="\Migration\Handler\ClassMap" />
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -1285,6 +1302,9 @@
             </ignore>
             <ignore>
                 <field>enterprise_cms_page_revision.custom_layout_update_xml</field>
+            </ignore>
+            <ignore>
+                <field>widget_instance.package_theme</field>
             </ignore>
         </field_rules>
     </source>
@@ -1514,7 +1534,7 @@
             <transform>
                 <field>rating.is_active</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="1" />
+                    <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
@@ -1557,6 +1577,12 @@
                 <field>oauth_token.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
+                </handler>
+            </transform>
+            <transform>
+                <field>widget_instance.theme_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="3" />
                 </handler>
             </transform>
             <transform>

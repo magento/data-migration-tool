@@ -1,0 +1,38 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+namespace Migration;
+
+/**
+ * Class ClassMap test
+ */
+class ClassMapTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var ClassMap
+     */
+    protected $classMap;
+
+    public function setUp()
+    {
+        $this->classMap = new ClassMap();
+    }
+
+    public function testConvertClassName()
+    {
+        $this->assertEquals(
+            'Magento\\Catalog\\Block\\Product\\Widget\\NewWidget',
+            $this->classMap->convertClassName('catalog/product_widget_new')
+        );
+    }
+
+    public function testGetMap()
+    {
+        $this->assertEquals(
+            $this->classMap->getMap('catalog/product_widget_new')['catalog/product_widget_new'],
+            'Magento\\Catalog\\Block\\Product\\Widget\\NewWidget'
+        );
+    }
+}
