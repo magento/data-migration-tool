@@ -36,13 +36,15 @@ class Manager
      */
     public function initHandler($field, $handlerConfig = [])
     {
-        if (empty($handlerConfig) || empty($handlerConfig['class'])) {
+        if (empty($handlerConfig)) {
             return;
         }
-        $handler = $this->objectManager->create(
-            $handlerConfig['class'],
-            empty($handlerConfig['params']) ? [] : $handlerConfig['params']
-        );
+
+        if (empty($handlerConfig['class'])) {
+            throw new \Exception('Handler class name not specified.');
+        }
+
+        $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
         if (!($handler instanceof HandlerInterface)) {
             throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
         }

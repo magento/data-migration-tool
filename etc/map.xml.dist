@@ -1108,6 +1108,41 @@
                 <field>widget_instance.instance_type</field>
                 <handler class="\Migration\Handler\ClassMap" />
             </transform>
+
+            <transform>
+                <field>catalogrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>catalogrule.actions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>salesrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>salesrule.actions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>enterprise_targetrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>enterprise_targetrule.actions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+
+            <transform>
+                <field>enterprise_reminder_rule.conditions_serialized</field>
+                <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>enterprise_reminder_rule.condition_sql</field>
+                <handler class="Migration\Handler\Rule\ConditionSql"></handler>
+            </transform>
+
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -1510,6 +1545,9 @@
             </ignore>
             <ignore>
                 <document>authorization_rule</document>
+            </ignore>
+            <ignore>
+                <document>setup_module</document>
             </ignore>
         </document_rules>
         <field_rules>

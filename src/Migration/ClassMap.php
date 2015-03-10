@@ -21,7 +21,7 @@ class ClassMap
      */
     public function convertClassName($className)
     {
-        if (array_key_exists($className, $this->getMap())) {
+        if (is_string($className) && array_key_exists($className, $this->getMap())) {
             return $this->getMap()[$className];
         }
         return $className;
