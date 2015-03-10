@@ -16,12 +16,12 @@ class ClassMap
     protected $map;
 
     /**
-     * @param $className
+     * @param string $className
      * @return mixed
      */
     public function convertClassName($className)
     {
-        if (array_key_exists($className, $this->getMap())) {
+        if (is_string($className) && array_key_exists($className, $this->getMap())) {
             return $this->getMap()[$className];
         }
         return $className;

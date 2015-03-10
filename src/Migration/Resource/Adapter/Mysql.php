@@ -121,6 +121,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
 
     /**
      * @param Table $tableDdl
+     * @return void
      */
     public function createTableByDdl($tableDdl)
     {

@@ -242,6 +242,7 @@ class MapReader
         /** @var \DOMElement $node */
         foreach ($nodes as $node) {
             $config['class'] = $node->getAttribute('class');
+            $config['params'] = [];
             /** @var \DOMElement $param */
             foreach ($node->childNodes as $param) {
                 if ($param->nodeType == XML_ELEMENT_NODE) {

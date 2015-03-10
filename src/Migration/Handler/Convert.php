@@ -28,7 +28,7 @@ class Convert extends AbstractHandler implements HandlerInterface
         $map = explode(';', $map);
         $resultMap =[];
         foreach ($map as $mapRecord) {
-            $explodedRecord = explode(':', $mapRecord);
+            $explodedRecord = explode(':', trim($mapRecord));
             if (count($explodedRecord) != 2) {
                 throw new \Exception('Invalid map provided to convert handler');
             }

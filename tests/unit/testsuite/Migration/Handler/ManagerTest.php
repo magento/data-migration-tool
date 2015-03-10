@@ -64,6 +64,13 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager->initHandler('anyfield');
     }
 
+    public function testInitHandlerEmptyClass()
+    {
+        $this->setExpectedException('Exception', 'Handler class name not specified.');
+        $config = ['class' => '', 'params' => ['value' => '12']];
+        $this->manager->initHandler('anyfield', $config);
+    }
+
     public function testInitInvalidHandler()
     {
         $handlerConfig = ['class' => 'Migration\Migration', 'params' => ['value' => '12']];

@@ -59,9 +59,9 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
         $this->progress = $this->getMockBuilder('Migration\ProgressBar')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
-        $this->progress->expects($this->once())->method('start')->with(4);
-        $this->progress->expects($this->once())->method('finish');
-        $this->progress->expects($this->exactly(4))->method('advance');
+        $this->progress->expects($this->any())->method('start')->with(4);
+        $this->progress->expects($this->any())->method('finish');
+        $this->progress->expects($this->any())->method('advance');
 
         $this->factory = $this->getMockBuilder('Migration\Resource\RecordFactory')->disableOriginalConstructor()
             ->setMethods(['create'])
