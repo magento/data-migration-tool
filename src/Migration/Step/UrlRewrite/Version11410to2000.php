@@ -10,6 +10,18 @@ use Migration\Step\DatabaseStep;
 class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInterface
 {
     /**
+     * Temporary table name
+     *
+     * @var string
+     */
+    protected $tableName;
+
+    /**
+     * @var array
+     */
+    protected $duplicateIndex;
+
+    /**
      * Resource of source
      *
      * @var \Migration\Resource\Source
@@ -160,6 +172,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->destination = $destination;
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
+        $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         parent::__construct($config);
     }
 
@@ -171,7 +184,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->getRewritesSelect();
         $this->progress->start($this->getIterationsCount());
 
-        $sourceDocument = $this->source->getDocument('url_rewrite_m2', true);
+        $sourceDocument = $this->source->getDocument($this->tableName, true);
 
         $destinationDocument = $this->destination->getDocument('url_rewrite');
         $pageNumber = 0;
@@ -186,8 +199,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             $this->migrateRewrites($records, $destinationRecords);
             $this->destination->saveRecords($destinationDocument->getName(), $destinationRecords);
         }
-        $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
-        $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
+        //$this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
+        //$this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
         $this->progress->finish();
     }
 
@@ -202,7 +215,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->from(['r' => $this->source->addDocumentPrefix('url_rewrite_m2')]);
+        $select->from(['r' => $this->source->addDocumentPrefix($this->tableName)]);
         return $select;
     }
 
@@ -214,23 +227,18 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     protected function migrateRewrites($source, $destination)
     {
         $duplicates = $this->getDuplicatesList();
-        if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))) {
+        if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
+            && empty($this->duplicateIndex)
+        ) {
             foreach ($duplicates as $key => $row) {
-                $duplicateIndex[$row['request_path']][] = $key;
+                $this->duplicateIndex[$row['request_path']][] = $key;
             }
         }
         /** @var \Migration\Resource\Record $sourceRecord */
         foreach ($source as $sourceRecord) {
-            $recordDuplicate = false;
             /** @var \Migration\Resource\Record $destinationRecord */
             $destinationRecord = $this->recordFactory->create();
             $destinationRecord->setStructure($destination->getStructure());
-
-            if (!empty($duplicates) && !empty($duplicateIndex[$sourceRecord->getValue('request_path')])) {
-                $recordDuplicate = true;
-            } else {
-                $destinationRecord->setValue('request_path', $sourceRecord->getValue('request_path'));
-            }
 
             $destinationRecord->setValue('store_id', $sourceRecord->getValue('store_id'));
             $destinationRecord->setValue('description', $sourceRecord->getValue('description'));
@@ -262,10 +270,10 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 $destinationRecord->setValue('entity_id', 0);
             }
 
-            if ($recordDuplicate) {
-                $index = $duplicateIndex[$sourceRecord->getValue('request_path')];
+            if (!empty($duplicates) && !empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
+                $currentDuplicates = $this->duplicateIndex[$sourceRecord->getValue('request_path')];
                 $shouldResolve = false;
-                foreach($index as $key) {
+                foreach($currentDuplicates as $index=>$key) {
                     $onStore = $duplicates[$key]['store_id'] == $sourceRecord->getValue('store_id');
                     if ($onStore && empty($duplicates[$key]['used'])) {
                         $duplicates[$key]['used'] = true;
@@ -280,15 +288,15 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                         'request_path',
                         $sourceRecord->getValue('request_path') . '-' . md5(mt_rand())
                     );
+                    $message = sprintf(
+                        'Duplicate resolved. Request path was: %s Target path was: %s Store ID: %s New request path: %s',
+                        $sourceRecord->getValue('request_path'),
+                        $sourceRecord->getValue('target_path'),
+                        $sourceRecord->getValue('store_id'),
+                        $destinationRecord->getValue('request_path')
+                    );
+                    $this->logger->addInfo($message);
                 }
-                $message = sprintf(
-                    'Duplicate resolved. Request path was: %s Target path was: %s Store ID: %s New request path: %s',
-                    $sourceRecord->getValue('request_path'),
-                    $sourceRecord->getValue('target_path'),
-                    $sourceRecord->getValue('store_id'),
-                    $destinationRecord->getValue('request_path')
-                );
-                $this->logger->addInfo($message);
             }
 
             $destinationRecord->setValue(
@@ -326,25 +334,35 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     public function integrity()
     {
-        $this->progress->start(count($this->structure));
+        $errors = false;
+        $this->progress->start(count($this->structure['source']) + count($this->structure['destination']));
         foreach ($this->structure as $resourceName => $documentList) {
-            $this->progress->advance();
             $resource = $resourceName == 'source' ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
+                $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
-                    return false;
+                    $message = sprintf(
+                        '%s table does not exists: %s', ucfirst($resourceName), $documentName
+                    );
+                    $this->logger->error($message);
+                    $errors = true;
+                    continue;
                 }
                 $structure = array_keys($document->getStructure()->getFields());
                 if (!(empty(array_diff($structure, $documentFields))
                     && empty(array_diff($documentFields, $structure)))
                 ) {
-                    return false;
+                    $message = sprintf(
+                        '%s table structure does not meet expectation: %s', ucfirst($resourceName), $documentName
+                    );
+                    $this->logger->error($message);
+                    $errors = true;
                 }
             }
         }
-        $this->progress->finish();
         $data = $this->getDuplicatesList();
+        $this->progress->finish();
         if (!empty($data)) {
             $duplicates = [];
             foreach ($data as $row) {
@@ -365,10 +383,14 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 $this->logger->addInfo($message);
             } else {
                 $this->logger->error($message);
-                return false;
+                $errors = true;
             }
         }
-        return $this->destination->getRecordsCount('url_rewrite') == 0;
+        if ($this->destination->getRecordsCount('url_rewrite') != 0) {
+            $this->logger->error('Destination table is not empty: url_rewrite');
+            $errors = true;
+        }
+        return !$errors;
     }
 
     /**
@@ -378,8 +400,9 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     {
         $this->progress->start(1);
         $this->getRewritesSelect();
+        $this->progress->advance();
 
-        $result = $this->source->getRecordsCount('url_rewrite_m2')
+        $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite')
             && $this->source->getRecordsCount('catalog_category_entity_varchar')
             + $this->source->getRecordsCount('catalog_category_entity_url_key')
@@ -406,7 +429,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     protected function getIterationsCount()
     {
-        return $this->source->getRecordsCount('url_rewrite_m2')
+        return $this->source->getRecordsCount($this->tableName)
             + $this->source->getRecordsCount('catalog_category_entity_url_key')
             + $this->source->getRecordsCount('catalog_product_entity_url_key');
     }
@@ -422,7 +445,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
 
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->source->getAdapter()->getSelect();
-        $select->from(['t' => 'url_rewrite_m2'], ['t.*'])
+        $select->from(['t' => $this->source->addDocumentPrefix($this->tableName)], ['t.*'])
             ->join(
                 [ 't2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
                 't2.request_path = t.request_path AND t2.store_id = t.store_id',
@@ -507,9 +530,9 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->getAdapter()->query('DROP TABLE IF EXISTS ' . $this->source->addDocumentPrefix('url_rewrite_m2'));
+        $select->getAdapter()->query('DROP TABLE IF EXISTS ' . $this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query('
-            CREATE TABLE ' . $this->source->addDocumentPrefix('url_rewrite_m2') . ' (
+            CREATE TABLE ' . $this->source->addDocumentPrefix($this->tableName) . ' (
                 id INT NOT NULL AUTO_INCREMENT,
                 request_path VARCHAR(255) NOT NULL,
                 target_path VARCHAR(255) NOT NULL,
@@ -538,7 +561,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 'priority' => "trim('1')"
             ]
         );
-        $query = $select->insertFromSelect('url_rewrite_m2');
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $select = $adapter->getSelect();
@@ -556,7 +579,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 'priority' => "trim('2')"
             ]
         );
-        $query = $select->where('`r`.`entity_type` = 1')->insertFromSelect('url_rewrite_m2');
+        $query = $select->where('`r`.`entity_type` = 1')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $select = $adapter->getSelect();
@@ -579,7 +603,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             'r.value_id = c.value_id',
             []
         );
-        $query = $select->where('`r`.`entity_type` = 2')->insertFromSelect('url_rewrite_m2');
+        $query = $select->where('`r`.`entity_type` = 2')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $subSelect = $adapter->getSelect();
@@ -650,7 +675,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         );
         $query = $select->where('`r`.`entity_type` = 3')
             ->where('`r`.`store_id` = 0')
-            ->insertFromSelect('url_rewrite_m2');
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $subConcat = $select->getAdapter()->getConcatSql([
@@ -691,7 +716,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         );
         $query = $select->where('`r`.`entity_type` = 3')
             ->where('`r`.`store_id` = 0')
-            ->insertFromSelect('url_rewrite_m2');
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $select = $adapter->getSelect();
@@ -733,7 +758,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         );
         $query = $select->where('`s`.`entity_type` = 3')
             ->where('`s`.`store_id` > 0')
-            ->insertFromSelect('url_rewrite_m2');
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
         $select = $adapter->getSelect();
@@ -763,7 +788,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         );
         $query = $select->where('`s`.`entity_type` = 3')
             ->where('`s`.`store_id` > 0')
-            ->insertFromSelect('url_rewrite_m2');
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
         $this->dataInitialized = true;
     }
