@@ -12,6 +12,31 @@ use Migration\Resource\Record;
  */
 class ConvertModelTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @var ConvertModel
+     */
+    protected $handler;
+
+    /**
+     * @var string
+     */
+    protected $fieldName;
+
+    /**
+     * @var \Migration\ClassMap|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $classMap;
+
+    public function setUp()
+    {
+        $this->classMap = $this->getMockBuilder('Migration\ClassMap')->setMethods(['convertClassName'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $this->handler = new ConvertModel($this->classMap);
+        $this->handler->setField($this->fieldName);
+    }
+
     public function testHandleConvert()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
@@ -22,22 +47,16 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
         $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
 
-        $classMap = $this->getMockBuilder('\Migration\ClassMap')->disableOriginalConstructor()
-            ->setMethods(['convertClassName'])
-            ->getMock();
-        $classMap->expects($this->once())->method('convertClassName')
+        $this->classMap->expects($this->once())->method('convertClassName')
             ->with('some\class_name')
             ->will($this->returnValue('Some\Class\Name'));
 
-        $fieldName = 'fieldname';
-        $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)
+        $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
+        $recordToHandle->expects($this->once())->method('getValue')->with($this->fieldName)
             ->will($this->returnValue('some\class_name'));
-        $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, 'Some\Class\Name');
+        $recordToHandle->expects($this->once())->method('setValue')->with($this->fieldName, 'Some\Class\Name');
 
-        $handler = new ConvertModel($classMap);
-        $handler->setField($fieldName);
-        $handler->handle($recordToHandle, $oppositeRecord);
+        $this->handler->handle($recordToHandle, $oppositeRecord);
     }
 
     public function testHandleGetDestination()
@@ -53,16 +72,12 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('Some\Class\Name'));
 
-        $classMap = $this->getMockBuilder('\Migration\ClassMap')->disableOriginalConstructor()->getMock();
-        $classMap->expects($this->never())->method('convertClassName');
+        $this->classMap->expects($this->never())->method('convertClassName');
 
-        $fieldName = 'fieldname';
-        $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->will($this->returnValue(null));
-        $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, 'Some\Class\Name');
+        $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
+        $recordToHandle->expects($this->once())->method('getValue')->with($this->fieldName)->will($this->returnValue(null));
+        $recordToHandle->expects($this->once())->method('setValue')->with($this->fieldName, 'Some\Class\Name');
 
-        $handler = new ConvertModel($classMap);
-        $handler->setField($fieldName);
-        $handler->handle($recordToHandle, $oppositeRecord);
+        $this->handler->handle($recordToHandle, $oppositeRecord);
     }
 }

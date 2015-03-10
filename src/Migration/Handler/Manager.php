@@ -44,12 +44,7 @@ class Manager
             throw new \Exception('Handler class name not specified.');
         }
 
-        $arguments = [];
-        foreach ($handlerConfig['params'] as $name => $value) {
-            $arguments[$name] = $value;
-        }
-
-        $handler = $this->objectManager->create($handlerConfig['class'], $arguments);
+        $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
         if (!($handler instanceof HandlerInterface)) {
             throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
         }
