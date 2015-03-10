@@ -66,7 +66,7 @@ class Ratings extends DatabaseStep
         ) {
             $this->logger->error(
                 sprintf(
-                    'Integrity check failed due to "%s" or "%s" documents are not exist in the destination resource',
+                    'Integrity check failed due to "%s" or "%s" documents do not exist in the destination resource',
                     $this->getRatingDocument(),
                     $this->getRatingStoreDocument()
                 )
@@ -76,7 +76,11 @@ class Ratings extends DatabaseStep
         $structureRating = $this->destination->getDocument($this->getRatingDocument())->getStructure()->getFields();
         if (!array_key_exists('is_active', $structureRating)) {
             $this->logger->error(
-                'Integrity check failed due to is_active field is not exists in the destination resource'
+                sprintf(
+                    'Integrity check failed due to "is_active" field does not exist in "%s" document of'
+                    . ' the destination resource',
+                    $this->getRatingDocument()
+                )
             );
             return false;
         }
