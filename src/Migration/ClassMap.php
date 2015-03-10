@@ -16,7 +16,7 @@ class ClassMap
     protected $map;
 
     /**
-     * @param $className
+     * @param string $className
      * @return mixed
      */
     public function convertClassName($className)

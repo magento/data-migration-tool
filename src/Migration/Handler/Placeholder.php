@@ -42,7 +42,7 @@ class Placeholder extends AbstractHandler implements HandlerInterface
     /**
      * Whether widget content has placeholders
      *
-     * @param $content
+     * @param string $content
      * @return int
      */
     protected function hasPlaceholders($content)
@@ -53,7 +53,7 @@ class Placeholder extends AbstractHandler implements HandlerInterface
     /**
      * Process widget placeholders content
      *
-     * @param $content
+     * @param string $content
      * @return mixed
      */
     protected function processContent($content)

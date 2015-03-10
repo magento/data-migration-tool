@@ -9,7 +9,6 @@ use Migration\Logger\Logger;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
 
-
 /**
  * Class Ratings
  */

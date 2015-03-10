@@ -71,7 +71,11 @@ class Config
     {
         $steps = [];
         foreach ($this->config->query('//steps/step') as $item) {
-            $steps[] = $item->nodeValue;
+            $stepData = ['class' => $item->nodeValue, 'solid' => false];
+            if (!empty($item->attributes->getNamedItem('solid'))) {
+                $stepData['solid'] = (boolean)$item->attributes->getNamedItem('solid')->nodeValue;
+            }
+            $steps[] = $stepData;
         }
         return $steps;
     }

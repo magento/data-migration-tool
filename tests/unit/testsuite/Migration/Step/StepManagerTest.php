@@ -68,7 +68,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->never())->method('volumeCheck');
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => false
+        ]]);
         $this->factory->expects($this->once())->method('create')->with(get_class($step))
             ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
@@ -90,7 +93,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->logger->expects($this->any())->method('info');
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => false
+        ]]);
         $this->factory->expects($this->once())->method('create')->with(get_class($step))
             ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
@@ -117,7 +123,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: run");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
         $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => false
+        ]]);
         $this->factory->expects($this->once())->method('create')->with(get_class($step))
             ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
@@ -147,7 +156,68 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Title: volume check");
         $this->logger->expects($this->at(5))->method('info')->with("Volume check completed");
         $this->logger->expects($this->at(6))->method('info')->with(PHP_EOL . "Migration completed");
-        $this->config->expects($this->once())->method('getSteps')->will($this->returnValue([get_class($step)]));
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => false
+        ]]);
+        $this->factory->expects($this->once())->method('create')->with(get_class($step))
+            ->will($this->returnValue($step));
+        $this->assertSame($this->manager, $this->manager->runSteps());
+    }
+
+    public function testRunStepsWithSolidStep()
+    {
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
+        $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
+        $step->expects($this->once())->method('run');
+        $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
+        $this->progress->expects($this->any())->method('isCompleted')->will($this->returnValue(false));
+        $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
+        $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
+        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: run");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => true
+        ]]);
+        $this->factory->expects($this->once())->method('create')->with(get_class($step))
+            ->will($this->returnValue($step));
+        $this->assertSame($this->manager, $this->manager->runSteps());
+    }
+
+    public function testRunStepsWithSolidStepVolumeCheckFail()
+    {
+        $step = $this->getMock(
+            '\Migration\Step\StepInterface',
+            ['getTitle', 'integrity', 'run', 'volumeCheck'],
+            [],
+            '',
+            false
+        );
+        $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
+        $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
+        $step->expects($this->once())->method('run');
+        $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(false));
+        $this->progress->expects($this->any())->method('isCompleted')->will($this->returnValue(false));
+        $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
+        $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
+        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: run");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->config->expects($this->once())->method('getSteps')->willReturn([[
+            'class' => get_class($step),
+            'solid' => true
+        ]]);
         $this->factory->expects($this->once())->method('create')->with(get_class($step))
             ->will($this->returnValue($step));
         $this->assertSame($this->manager, $this->manager->runSteps());
