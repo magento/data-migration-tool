@@ -184,7 +184,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->getRewritesSelect();
         $this->progress->start($this->getIterationsCount());
 
-        $sourceDocument = $this->source->getDocument($this->tableName, true);
+        $sourceDocument = $this->source->getDocument($this->tableName);
 
         $destinationDocument = $this->destination->getDocument('url_rewrite');
         $pageNumber = 0;
@@ -273,7 +273,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             if (!empty($duplicates) && !empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
                 $currentDuplicates = $this->duplicateIndex[$sourceRecord->getValue('request_path')];
                 $shouldResolve = false;
-                foreach($currentDuplicates as $index=>$key) {
+                foreach ($currentDuplicates as $index => $key) {
                     $onStore = $duplicates[$key]['store_id'] == $sourceRecord->getValue('store_id');
                     if ($onStore && empty($duplicates[$key]['used'])) {
                         $duplicates[$key]['used'] = true;
@@ -288,8 +288,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                         'request_path',
                         $sourceRecord->getValue('request_path') . '-' . md5(mt_rand())
                     );
-                    $message = sprintf(
-                        'Duplicate resolved. Request path was: %s Target path was: %s Store ID: %s New request path: %s',
+                    $message = 'Duplicate resolved. ' . sprintf(
+                        'Request path was: %s Target path was: %s Store ID: %s New request path: %s',
                         $sourceRecord->getValue('request_path'),
                         $sourceRecord->getValue('target_path'),
                         $sourceRecord->getValue('store_id'),
@@ -342,9 +342,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
-                    $message = sprintf(
-                        '%s table does not exists: %s', ucfirst($resourceName), $documentName
-                    );
+                    $message = sprintf('%s table does not exists: %s', ucfirst($resourceName), $documentName);
                     $this->logger->error($message);
                     $errors = true;
                     continue;
@@ -354,7 +352,9 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                     && empty(array_diff($documentFields, $structure)))
                 ) {
                     $message = sprintf(
-                        '%s table structure does not meet expectation: %s', ucfirst($resourceName), $documentName
+                        '%s table structure does not meet expectation: %s',
+                        ucfirst($resourceName),
+                        $documentName
                     );
                     $this->logger->error($message);
                     $errors = true;
@@ -462,6 +462,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      *
      * @codeCoverageIgnore
      * @param string $suffixFor Can be 'product' or 'category'
+     * @param string $mainTable
      * @return string
      */
     protected function getSuffix($suffixFor, $mainTable = 's')
@@ -511,7 +512,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             $this->suffixData[$suffixFor] = $select->getAdapter()->fetchAll($select);
         }
 
-        $suffix = "CASE $mainTable.store_id";
+        $suffix = "CASE {$mainTable}.store_id";
         foreach ($this->suffixData[$suffixFor] as $row) {
             $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix']);
         }
@@ -524,6 +525,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      * Initialize temporary table and insert UrlRewrite data
      *
      * @codeCoverageIgnore
+     * @return void
      */
     protected function initTemporaryTable()
     {
@@ -531,8 +533,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
         $select->getAdapter()->query('DROP TABLE IF EXISTS ' . $this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query('
-            CREATE TABLE ' . $this->source->addDocumentPrefix($this->tableName) . ' (
+        $select->getAdapter()->query(
+            'CREATE TABLE ' . $this->source->addDocumentPrefix($this->tableName) . ' (
                 id INT NOT NULL AUTO_INCREMENT,
                 request_path VARCHAR(255) NOT NULL,
                 target_path VARCHAR(255) NOT NULL,
@@ -544,8 +546,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 priority INT NOT NULL DEFAULT 0,
                 PRIMARY KEY (id),
                 UNIQUE (request_path, target_path, store_id, entity_type)
-            )
-        ');
+            )'
+        );
 
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],

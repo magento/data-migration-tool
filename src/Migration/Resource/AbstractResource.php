@@ -71,13 +71,12 @@ abstract class AbstractResource
      * Returns document object
      *
      * @param string $documentName
-     * @param bool $force
      * @return \Migration\Resource\Document|false
      */
-    public function getDocument($documentName, $force = false)
+    public function getDocument($documentName)
     {
         $documentList = $this->getDocumentList();
-        if (!in_array($documentName, $documentList) && !$force) {
+        if (!in_array($documentName, $documentList)) {
             return false;
         }
         $structure = $this->getStructure($documentName);
