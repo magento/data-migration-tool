@@ -26,7 +26,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
-        
+
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
         $map = $objectManager->create(
             '\Migration\Step\Map',
