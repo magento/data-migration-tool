@@ -9,6 +9,9 @@
     <source>
         <document_rules>
             <ignore>
+                <document>url_rewrite_m2*</document>
+            </ignore>
+            <ignore>
                 <document>admin_assert</document>
             </ignore>
             <ignore>
