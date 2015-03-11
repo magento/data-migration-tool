@@ -199,8 +199,8 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             $this->migrateRewrites($records, $destinationRecords);
             $this->destination->saveRecords($destinationDocument->getName(), $destinationRecords);
         }
-        //$this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
-        //$this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
+        $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
+        $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
         $this->progress->finish();
     }
 
@@ -273,7 +273,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             if (!empty($duplicates) && !empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
                 $currentDuplicates = $this->duplicateIndex[$sourceRecord->getValue('request_path')];
                 $shouldResolve = false;
-                foreach ($currentDuplicates as $index => $key) {
+                foreach ($currentDuplicates as $key) {
                     $onStore = $duplicates[$key]['store_id'] == $sourceRecord->getValue('store_id');
                     if ($onStore && empty($duplicates[$key]['used'])) {
                         $duplicates[$key]['used'] = true;
@@ -386,7 +386,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 $errors = true;
             }
         }
-        if ($this->destination->getRecordsCount('url_rewrite') != 0) {
+        if ($this->destination->getDocument('url_rewrite') && $this->destination->getRecordsCount('url_rewrite') != 0) {
             $this->logger->error('Destination table is not empty: url_rewrite');
             $errors = true;
         }
@@ -447,7 +447,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $select = $this->source->getAdapter()->getSelect();
         $select->from(['t' => $this->source->addDocumentPrefix($this->tableName)], ['t.*'])
             ->join(
-                [ 't2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
+                ['t2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
                 't2.request_path = t.request_path AND t2.store_id = t.store_id',
                 []
             )
@@ -614,7 +614,9 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             ['cr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             ['request_path' => 'cr.request_path']
         );
-        $subSelect->where('`cr`.`value_id` = `cu`.`value_id` and `cr`.`store_id` = s.`store_id`');
+        $subSelect->where('`cr`.`value_id` = `cu`.`value_id`');
+        $subSelect->where('`cr`.`entity_type` = `cu`.`entity_type`');
+        $subSelect->where('`cr`.`store_id` = s.`store_id`');
         $subConcatCategories = $select->getAdapter()->getConcatSql([
             "($subSelect)",
             "'/'",

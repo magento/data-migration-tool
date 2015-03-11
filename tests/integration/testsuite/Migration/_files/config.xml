@@ -18,5 +18,6 @@
         <eav_map_file>tests/integration/testsuite/Migration/_files/eav-map.xml</eav_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <bulk_size>100</bulk_size>
+        <auto_resolve_urlrewrite_duplicates>true</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>
