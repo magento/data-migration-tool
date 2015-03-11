@@ -30,7 +30,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     {
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         $this->objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $this->objectManager->get('\Migration\Config')->init(__DIR__ . '/../_files/config.xml');
+        $this->objectManager->get('\Migration\Config')->init(__DIR__ . '/../../_files/config.xml');
         $logManager = $this->objectManager->create('\Migration\Logger\Manager');
         $logger = $this->objectManager->create('\Migration\Logger\Logger');
         $config = $this->objectManager->get('\Migration\Config');

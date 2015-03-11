@@ -615,7 +615,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
             ['request_path' => 'cr.request_path']
         );
         $subSelect->where('`cr`.`value_id` = `cu`.`value_id`');
-        $subSelect->where('`cr`.`entity_type` = `cu`.`entity_type`');
+        $subSelect->where('`cr`.`entity_type` = 2');
         $subSelect->where('`cr`.`store_id` = s.`store_id`');
         $subConcatCategories = $select->getAdapter()->getConcatSql([
             "($subSelect)",
