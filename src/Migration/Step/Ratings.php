@@ -98,7 +98,7 @@ class Ratings extends DatabaseStep
         $ratingsIsActive = [];
         $adapter = $this->destination->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
-        $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id']);
+        $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id'])->where('store_id > 0');
         $ratingsStore = $adapter->loadDataFromSelect($select);
         foreach ($ratingsStore as $rating) {
             $ratingsIsActive[] = $rating['rating_id'];
@@ -125,7 +125,7 @@ class Ratings extends DatabaseStep
         $ratingsIsActive = [];
         $adapter = $this->destination->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
-        $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id']);
+        $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id'])->where('store_id > 0');
         $ratingsStore = $adapter->loadDataFromSelect($select);
         foreach ($ratingsStore as $rating) {
             $ratingsShouldBeActive[] = $rating['rating_id'];
