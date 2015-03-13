@@ -82,6 +82,7 @@
             <xs:element name="eav_map_file" type="xmlFile"/>
             <xs:element name="log_map_file" type="xmlFile"/>
             <xs:element name="settings_map_file" type="xmlFile" />
+            <xs:element name="sales_order_map_file" type="xmlFile" />
             <xs:element name="bulk_size" type="xs:int"/>
             <xs:element name="resource_adapter_class_name" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>

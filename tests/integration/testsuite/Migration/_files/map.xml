@@ -38,6 +38,9 @@
             <ignore>
                 <document>source_table_*</document>
             </ignore>
+            <ignore>
+                <document>sales_flat_order</document>
+            </ignore>
             <rename>
                 <document>source_table_renamed</document>
                 <to>dest_table_renamed</to>
@@ -80,6 +83,15 @@
             </ignore>
             <ignore>
                 <document>url_rewrite</document>
+            </ignore>
+            <ignore>
+                <document>sales_order</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute</document>
             </ignore>
         </document_rules>
         <field_rules>

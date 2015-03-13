@@ -497,6 +497,29 @@ UNLOCK TABLES;
 
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
+--
+-- Table structure for table `sales_flat_order`
+--
+
+DROP TABLE IF EXISTS `sales_flat_order`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sales_flat_order` (
+  `entity_id` int(11) DEFAULT NULL,
+  `store_id` int(11) DEFAULT NULL,
+  `reward_points_balance_refunded` int(11) DEFAULT NULL,
+  `reward_salesrule_points` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sales_flat_order`
+--
+
+LOCK TABLES `sales_flat_order` WRITE;
+INSERT INTO `sales_flat_order` VALUES (1,1,1,2),(2,1,1,NULL),(3,1,NULL,2);
+UNLOCK TABLES;
+
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
 /*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;

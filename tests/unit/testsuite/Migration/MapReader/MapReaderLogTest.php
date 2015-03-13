@@ -10,11 +10,6 @@ namespace Migration\MapReader;
  */
 class MapReaderLogTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var MapReaderEav
-     */
-    protected $map;
-
     public function testCreate()
     {
         $config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()

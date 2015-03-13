@@ -42,7 +42,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testGetSteps()
     {
-        $steps = ['Migration\Step\Eav', 'Migration\Step\Map', 'Migration\Step\UrlRewrite', 'Migration\Step\Log'];
+        $steps = [
+            'Migration\Step\SalesOrder',
+            'Migration\Step\Eav',
+            'Migration\Step\CustomCustomerAttributes',
+            'Migration\Step\Map',
+            'Migration\Step\UrlRewrite',
+            'Migration\Step\Log'
+        ];
         $this->assertEquals($steps, $this->config->getSteps());
     }
 
@@ -81,5 +88,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('settings-map-file.xml', $this->config->getOption('settings_map_file'));
         $this->assertEquals('100', $this->config->getOption('bulk_size'));
         $this->assertEquals('custom_option_value', $this->config->getOption('custom_option'));
+        $this->assertEquals('map-sales.xml', $this->config->getOption('sales_order_map_file'));
     }
 }

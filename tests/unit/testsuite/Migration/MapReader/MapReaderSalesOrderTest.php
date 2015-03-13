@@ -8,15 +8,15 @@ namespace Migration\MapReader;
 /**
  * Class MapReaderTest
  */
-class MapReaderEavTest extends \PHPUnit_Framework_TestCase
+class MapReaderSalesOrderTest extends \PHPUnit_Framework_TestCase
 {
     public function testCreate()
     {
         $config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
             ->setMethods(['getOption'])->getMock();
-        $config->expects($this->once())->method('getOption')->with('eav_map_file')->will(
+        $config->expects($this->once())->method('getOption')->with('sales_order_map_file')->will(
             $this->returnValue('tests/unit/testsuite/Migration/_files/map.xml')
         );
-        $this->assertInstanceOf('Migration\MapReaderInterface', new MapReaderEav($config));
+        $this->assertInstanceOf('Migration\MapReaderInterface', new MapReaderSalesOrder($config));
     }
 }
