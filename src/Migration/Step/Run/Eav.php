@@ -5,7 +5,8 @@
  */
 namespace Migration\Step\Run;
 
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderEav;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Record;
@@ -15,8 +16,10 @@ use Migration\Resource\Source;
 use Migration\Step\Eav\Helper;
 use Migration\Step\Eav\InitialData;
 
+
 /**
  * Class Eav
+ * @codeCoverageIgnoreStart
  */
 class Eav
 {
@@ -66,7 +69,7 @@ class Eav
     protected $destination;
 
     /**
-     * @var MapReader
+     * @var MapReaderEav
      */
     protected $map;
 
@@ -88,7 +91,7 @@ class Eav
     /**
      * @param Source $source
      * @param Destination $destination
-     * @param MapReader $mapReader
+     * @param MapReaderEav $mapReader
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
@@ -97,7 +100,7 @@ class Eav
     public function __construct(
         Source $source,
         Destination $destination,
-        MapReader $mapReader,
+        MapReaderEav $mapReader,
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
@@ -114,7 +117,7 @@ class Eav
 
     /**
      * Entry point. Run migration of EAV structure.
-     * @return void
+     * @return bool
      */
     public function perform()
     {
@@ -125,6 +128,7 @@ class Eav
         $this->migrateMappedTables();
         $this->migrateJustCopyTables();
         $this->progress->finish();
+        return true;
     }
 
     /**
@@ -137,8 +141,10 @@ class Eav
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
-                $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
+                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
+
+            $this->destination->backupDocument($destinationDocument->getName());
 
             $sourceRecords = $this->source->getRecords($documentName, 0, $this->source->getRecordsCount($documentName));
             $recordsToSave = $destinationDocument->getRecords();
@@ -202,9 +208,9 @@ class Eav
         $sourceDocName = 'eav_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
-            $this->map->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE)
+            $this->map->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE)
         );
-
+        $this->destination->backupDocument($destinationDocument->getName());
         $sourceRecords = $this->source->getRecords($sourceDocName, 0, $this->source->getRecordsCount($sourceDocName));
         $destinationRecords = $this->initialData->getAttributes('dest');
 
@@ -251,9 +257,9 @@ class Eav
         $sourceDocName = 'eav_entity_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
-            $this->map->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE)
+            $this->map->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE)
         );
-
+        $this->destination->backupDocument($destinationDocument->getName());
         $recordsToSave = $destinationDocument->getRecords();
         foreach ($this->helper->getSourceRecords($sourceDocName) as $sourceRecordData) {
             $sourceRecord = $this->factory->create([
@@ -302,9 +308,9 @@ class Eav
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
-                $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
+                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
-
+            $this->destination->backupDocument($destinationDocument->getName());
             $destinationRecords = $this->helper->getDestinationRecords($documentName, $mappingFields);
             $recordsToSave = $destinationDocument->getRecords();
             foreach ($this->helper->getSourceRecords($documentName) as $recordData) {
@@ -313,19 +319,26 @@ class Eav
                 /** @var Record $destinationRecord */
                 $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
 
-                if ($mappingFields) {
-                    $mappingValue = $this->getMappingValue($sourceRecord, $mappingFields);
-                    if (isset($destinationRecords[$mappingValue])) {
-                        $destinationRecordData = $destinationRecords[$mappingValue];
-                        unset($destinationRecords[$mappingValue]);
-                    } else {
-                        $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
-                    }
-                    $destinationRecord->setData($destinationRecordData);
+                $mappingValue = $this->getMappingValue($sourceRecord, $mappingFields);
+                if (isset($destinationRecords[$mappingValue])) {
+                    $destinationRecordData = $destinationRecords[$mappingValue];
+                    unset($destinationRecords[$mappingValue]);
+                } else {
+                    $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
                 }
+                $destinationRecord->setData($destinationRecordData);
 
                 $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
                     ->transform($sourceRecord, $destinationRecord);
+
+                if ($documentName == 'eav_entity_type') {
+                    $oldAttributeSetValue = $destinationRecord->getValue('default_attribute_set_id');
+                    $newAttributeSetValue = $oldAttributeSetValue > 0
+                        ? $this->destAttributeSetsOldNewMap[$oldAttributeSetValue]
+                        : 0;
+                    $destinationRecord->setValue('default_attribute_set_id', $newAttributeSetValue);
+                }
+
                 $recordsToSave->addRecord($destinationRecord);
             }
 
@@ -358,11 +371,11 @@ class Eav
      */
     protected function migrateJustCopyTables()
     {
-        foreach ($this->helper->getJustCopyDocuments() as $documentName) {
+        foreach ($this->map->getJustCopyDocuments() as $documentName) {
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
-                $this->map->getDocumentMap($documentName, MapReader::TYPE_SOURCE)
+                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
 
             $sourceRecords = $this->helper->getSourceRecords($documentName);
@@ -488,6 +501,35 @@ class Eav
      */
     public function getIterationsCount()
     {
-        return count($this->helper->getDocumentsMap());
+        return count($this->map->getDocumentsMap());
     }
+
+    /**
+     * Rollback backuped documents
+     * @return void
+     */
+    public function rollback()
+    {
+        foreach ($this->map->getBackupedTablesList() as $documentName) {
+            $destinationDocument = $this->destination->getDocument(
+                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
+            );
+            $this->destination->rollbackDocument($destinationDocument->getName());
+        }
+    }
+
+    /**
+     * Delete backuped tables
+     * @return void
+     */
+    public function deleteBackups()
+    {
+        foreach ($this->map->getBackupedTablesList() as $documentName) {
+            $documentName = $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+            if ($documentName) {
+                $this->destination->deleteDocumentBackup($documentName);
+            }
+        }
+    }
+    // @codeCoverageIgnoreEnd
 }

@@ -6,7 +6,8 @@
 namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderEav;
 use Migration\ProgressBar;
 use Migration\Resource;
 use Migration\Step\Eav\Helper;
@@ -22,11 +23,16 @@ class Eav extends AbstractIntegrity
     protected $helper;
 
     /**
+     * @var MapReaderEav
+     */
+    protected $map;
+
+    /**
      * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReader $mapReader
+     * @param MapReaderEav $mapReader
      * @param Helper $helper
      */
     public function __construct(
@@ -34,7 +40,7 @@ class Eav extends AbstractIntegrity
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader,
+        MapReaderEav $mapReader,
         Helper $helper
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapReader);
@@ -47,8 +53,8 @@ class Eav extends AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->helper->getDocumentsMap()), MapReader::TYPE_SOURCE);
-        $this->check(array_values($this->helper->getDocumentsMap()), MapReader::TYPE_DEST);
+        $this->check(array_keys($this->map->getDocumentsMap()), MapReaderInterface::TYPE_SOURCE);
+        $this->check(array_values($this->map->getDocumentsMap()), MapReaderInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }
@@ -60,6 +66,6 @@ class Eav extends AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getDocumentsMap()) * 2;
+        return count($this->map->getDocumentsMap()) * 2;
     }
 }

@@ -33,6 +33,11 @@ interface StepInterface
     public function volumeCheck();
 
     /**
+     * @return mixed
+     */
+    public function rollback();
+
+    /**
      * Get step title
      *
      * @return string

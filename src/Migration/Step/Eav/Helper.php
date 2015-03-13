@@ -5,7 +5,8 @@
  */
 namespace Migration\Step\Eav;
 
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderEav;
 use Migration\RecordTransformer;
 use Migration\RecordTransformerFactory;
 use Migration\Resource\Destination;
@@ -18,7 +19,7 @@ use Migration\Resource\Source;
 class Helper
 {
     /**
-     * @var MapReader
+     * @var MapReaderEav
      */
     protected $map;
 
@@ -33,13 +34,13 @@ class Helper
     protected $factory;
 
     /**
-     * @param MapReader $mapReader
+     * @param MapReaderEav $mapReader
      * @param Source $source
      * @param Destination $destination
      * @param RecordTransformerFactory $factory
      */
     public function __construct(
-        MapReader $mapReader,
+        MapReaderEav $mapReader,
         Source $source,
         Destination $destination,
         RecordTransformerFactory $factory
@@ -66,7 +67,7 @@ class Helper
     public function getDestinationRecordsCount($sourceDocumentName)
     {
         return $this->destination->getRecordsCount(
-            $this->map->getDocumentMap($sourceDocumentName, MapReader::TYPE_SOURCE)
+            $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE)
         );
     }
 
@@ -77,7 +78,7 @@ class Helper
      */
     public function getDestinationRecords($sourceDocName, $keyFields = [])
     {
-        $destinationDocumentName = $this->map->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
+        $destinationDocumentName = $this->map->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
         $data = [];
         $count = $this->destination->getRecordsCount($destinationDocumentName);
         foreach ($this->destination->getRecords($destinationDocumentName, 0, $count) as $row) {
@@ -131,69 +132,5 @@ class Helper
             'destDocument' => $destinationDocument,
             'mapReader' => $this->map
         ])->init();
-    }
-
-    /**
-     * EAV tables mapping
-     *
-     * @return array
-     */
-    public function getDocumentsMap()
-    {
-        return [
-            'eav_attribute_group' => 'eav_attribute_group',
-            'eav_attribute_set' => 'eav_attribute_set',
-            'eav_attribute' => 'eav_attribute',
-            'eav_entity_attribute' => 'eav_entity_attribute',
-            'catalog_eav_attribute' => 'catalog_eav_attribute',
-            'customer_eav_attribute' => 'customer_eav_attribute',
-            'eav_entity_type' => 'eav_entity_type',
-            'customer_eav_attribute_website' => 'customer_eav_attribute_website',
-            'eav_attribute_label' => 'eav_attribute_label',
-            'eav_attribute_option' => 'eav_attribute_option',
-            'eav_attribute_option_value' => 'eav_attribute_option_value',
-            'eav_entity' => 'eav_entity',
-            'eav_entity_datetime' => 'eav_entity_datetime',
-            'eav_entity_decimal' => 'eav_entity_decimal',
-            'eav_entity_int' => 'eav_entity_int',
-            'eav_entity_store' => 'eav_entity_store',
-            'eav_entity_text' => 'eav_entity_text',
-            'eav_entity_varchar' => 'eav_entity_varchar',
-            'eav_form_element' => 'eav_form_element',
-            'eav_form_fieldset' => 'eav_form_fieldset',
-            'eav_form_fieldset_label' => 'eav_form_fieldset_label',
-            'eav_form_type' => 'eav_form_type',
-            'eav_form_type_entity' => 'eav_form_type_entity',
-            'enterprise_rma_item_eav_attribute' => 'magento_rma_item_eav_attribute',
-            'enterprise_rma_item_eav_attribute_website' => 'magento_rma_item_eav_attribute_website'
-        ];
-    }
-
-    /**
-     * List of tables to be copied without data merge
-     *
-     * @return array
-     */
-    public function getJustCopyDocuments()
-    {
-        return [
-            'customer_eav_attribute_website',
-            'eav_attribute_label',
-            'eav_attribute_option',
-            'eav_attribute_option_value',
-            'eav_entity',
-            'eav_entity_datetime',
-            'eav_entity_decimal',
-            'eav_entity_int',
-            'eav_entity_store',
-            'eav_entity_text',
-            'eav_entity_varchar',
-            'eav_form_element',
-            'eav_form_fieldset',
-            'eav_form_fieldset_label',
-            'eav_form_type',
-            'eav_form_type_entity',
-            'enterprise_rma_item_eav_attribute_website'
-        ];
     }
 }

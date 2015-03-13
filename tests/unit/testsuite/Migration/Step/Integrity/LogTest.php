@@ -5,6 +5,8 @@
  */
 namespace Migration\Step\Integrity;
 
+use Migration\MapReader\MapReaderLog;
+
 /**
  * Class IntegrityTest
  */
@@ -36,14 +38,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
     protected $log;
 
     /**
-     * @var \Migration\MapReader|\PHPUnit_Framework_MockObject_MockObject
+     * @var MapReaderLog|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
-
-    /**
-     * @var \Migration\Step\Log\Helper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $helper;
 
     public function setUp()
     {
@@ -57,17 +54,16 @@ class LogTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
-            ->setMethods(['getFieldMap', 'getDocumentMap', 'init'])
+        $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderLog')->disableOriginalConstructor()
+            ->setMethods(['getFieldMap', 'getDocumentMap', 'init', 'getDocumentList', 'getDestDocumentsToClear'])
             ->getMock();
-        $this->helper = $this->getMock('\Migration\Step\Log\Helper', ['getDocumentList', 'getDestDocumentsToClear']);
+
         $this->log = new Log(
             $this->progress,
             $this->logger,
             $this->source,
             $this->destination,
-            $this->mapReader,
-            $this->helper
+            $this->mapReader
         );
     }
 
@@ -87,7 +83,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document1']));
         $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
         $this->mapReader->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));

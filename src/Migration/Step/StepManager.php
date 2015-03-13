@@ -7,6 +7,7 @@ namespace Migration\Step;
 
 use Migration\Logger\Logger;
 use Migration\Config;
+use Migration\Exception;
 
 /**
  * Class StepManager
@@ -51,52 +52,39 @@ class StepManager
      * Run steps
      *
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function runSteps()
     {
         $steps = $this->config->getSteps();
         $stepInstances = [];
-        foreach ($steps as $stepConfig) {
+        foreach ($steps as $stepClass) {
             /** @var StepInterface $step */
-            $step = $this->factory->create($stepConfig['class']);
-            $this->logger->info(PHP_EOL . $step->getTitle() . ': integrity check');
-            if ($this->progress->isCompleted($step, 'integrity') != true) {
-                $integritySuccess = $step->integrity();
-                $this->progress->saveResult($step, 'integrity', $integritySuccess);
-                if (!$integritySuccess) {
-                    return $this;
-                }
-                if ($stepConfig['solid']) {
-                    $this->runSolidStep($step);
-                }
-            } else {
-                $this->logger->info('Integrity check completed');
-            }
-            if (!$stepConfig['solid']) {
-                $stepInstances[] = $step;
+            $stepInstances[] = $this->factory->create($stepClass);
+        }
+
+        $result = true;
+        foreach ($stepInstances as $step) {
+            $result = $result && $this->runStep($step, 'integrity check');
+            if (!$result) {
+                throw new Exception('Integrity Check failed');
             }
         }
 
-        /** @var StepInterface $step */
         foreach ($stepInstances as $step) {
-            $this->logger->info(PHP_EOL . $step->getTitle() . ': run');
-            if ($this->progress->isCompleted($step, 'run') != true) {
-                $this->progress->saveResult($step, 'run', $step->run());
-            } else {
-                $this->logger->info('Migration stage completed');
+            if (!$this->runStep($step, 'data migration')) {
+                $this->logger->info(PHP_EOL . 'Error occured. Rollback.');
+                $this->runStep($step, 'rollback');
+                throw new Exception('Data Migration failed');
             }
-            $this->logger->info(PHP_EOL . $step->getTitle() . ': volume check');
-            if ($this->progress->isCompleted($step, 'volume_check') != true) {
-                $volumeCheckSuccess = $step->volumeCheck();
-                $this->progress->saveResult($step, 'volume_check', $volumeCheckSuccess);
-                if (!$volumeCheckSuccess) {
-                    return $this;
-                }
-            } else {
-                $this->logger->info('Volume check completed');
+
+            if (!$this->runStep($step, 'volume check')) {
+                $this->logger->info(PHP_EOL . 'Error occured. Rollback.');
+                $this->runStep($step, 'rollback');
+                throw new Exception('Volume Check failed');
             }
         }
+
         $this->logger->info(PHP_EOL . "Migration completed");
         $this->progress->clearLockFile();
         return $this;
@@ -104,18 +92,44 @@ class StepManager
 
     /**
      * @param StepInterface $step
+     * @param string $stepPart
      * @return bool
      */
-    protected function runSolidStep($step)
+    public function runStep(StepInterface $step, $stepPart)
     {
-        $this->logger->info(PHP_EOL . $step->getTitle() . ': run');
-        $this->progress->saveResult($step, 'run', $step->run());
-        $this->logger->info(PHP_EOL . $step->getTitle() . ': volume check');
-        $volumeCheckSuccess = $step->volumeCheck();
-        $this->progress->saveResult($step, 'volume_check', $volumeCheckSuccess);
-        if (!$volumeCheckSuccess) {
+        $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), $stepPart));
+
+        if ($this->progress->isCompleted($step, $stepPart)) {
+            return true;
+        }
+
+        $result = false;
+        try {
+            switch ($stepPart) {
+                case 'integrity check':
+                    $result = $step->integrity();
+                    break;
+                case 'data migration':
+                    $result = $step->run();
+                    break;
+                case 'volume check':
+                    $result = $step->volumeCheck();
+                    break;
+                case 'rollback':
+                    $step->rollback();
+                    $this->progress->resetStep($step);
+                    $this->logger->info(PHP_EOL . 'Please fix errors and run Migration Tool again');
+                    break;
+            }
+        } catch (\Exception $e) {
+            $this->logger->error(PHP_EOL . $e->getMessage());
             return false;
         }
-        return true;
+
+        if ($result) {
+            $this->progress->saveResult($step, $stepPart, $result);
+        }
+
+        return $result;
     }
 }

@@ -75,7 +75,8 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         $this->classMap->expects($this->never())->method('convertClassName');
 
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
-        $recordToHandle->expects($this->once())->method('getValue')->with($this->fieldName)->will($this->returnValue(null));
+        $recordToHandle->expects($this->once())->method('getValue')->with($this->fieldName)
+            ->will($this->returnValue(null));
         $recordToHandle->expects($this->once())->method('setValue')->with($this->fieldName, 'Some\Class\Name');
 
         $this->handler->handle($recordToHandle, $oppositeRecord);

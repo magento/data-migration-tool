@@ -6,10 +6,10 @@
 namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReader\MapReaderLog;
+use Migration\MapReaderInterface;
 use Migration\ProgressBar;
 use Migration\Resource;
-use Migration\Step\Log\Helper;
 
 /**
  * Class Eav
@@ -17,28 +17,25 @@ use Migration\Step\Log\Helper;
 class Log extends AbstractIntegrity
 {
     /**
-     * @var Helper
+     * @var MapReaderLog
      */
-    protected $helper;
+    protected $map;
 
     /**
      * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReader $mapReader
-     * @param Helper $helper
+     * @param MapReaderLog $mapReader
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader,
-        Helper $helper
+        MapReaderLog $mapReader
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapReader);
-        $this->helper = $helper;
     }
 
     /**
@@ -47,8 +44,8 @@ class Log extends AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->helper->getDocumentList()), MapReader::TYPE_SOURCE);
-        $this->check(array_values($this->helper->getDocumentList()), MapReader::TYPE_DEST);
+        $this->check(array_keys($this->map->getDocumentList()), MapReaderInterface::TYPE_SOURCE);
+        $this->check(array_values($this->map->getDocumentList()), MapReaderInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }
@@ -60,6 +57,6 @@ class Log extends AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getDestDocumentsToClear()) + count($this->helper->getDocumentList());
+        return count($this->map->getDestDocumentsToClear()) + count($this->map->getDocumentList());
     }
 }

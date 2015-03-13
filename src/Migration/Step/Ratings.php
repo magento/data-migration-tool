@@ -61,25 +61,25 @@ class Ratings extends DatabaseStep
         $this->progress->start(1);
         $this->progress->advance();
         $documents = $this->destination->getDocumentList();
-        if (!in_array($this->getRatingDocument(), $documents)
-            || !in_array($this->getRatingStoreDocument(), $documents)
+        if (!in_array(self::RATING_TABLE_NAME, $documents)
+            || !in_array(self::RATING_STORE_TABLE_NAME, $documents)
         ) {
             $this->logger->error(
                 sprintf(
                     'Integrity check failed due to "%s" or "%s" documents do not exist in the destination resource',
-                    $this->getRatingDocument(),
-                    $this->getRatingStoreDocument()
+                    self::RATING_TABLE_NAME,
+                    self::RATING_STORE_TABLE_NAME
                 )
             );
             return false;
         }
-        $structureRating = $this->destination->getDocument($this->getRatingDocument())->getStructure()->getFields();
+        $structureRating = $this->destination->getDocument(self::RATING_TABLE_NAME)->getStructure()->getFields();
         if (!array_key_exists('is_active', $structureRating)) {
             $this->logger->error(
                 sprintf(
                     'Integrity check failed due to "is_active" field does not exist in "%s" document of'
                     . ' the destination resource',
-                    $this->getRatingDocument()
+                    self::RATING_TABLE_NAME
                 )
             );
             return false;
@@ -112,6 +112,7 @@ class Ratings extends DatabaseStep
             );
         }
         $this->progress->finish();
+        return true;
     }
 
     /**
@@ -144,8 +145,8 @@ class Ratings extends DatabaseStep
             $this->logger->error(
                 sprintf(
                     'Volume check failed due to discrepancy in "%s" and "%s" documents in the destination resource',
-                    $this->getRatingDocument(),
-                    $this->getRatingStoreDocument()
+                    self::RATING_TABLE_NAME,
+                    self::RATING_STORE_TABLE_NAME
                 )
             );
             return false;
@@ -180,5 +181,13 @@ class Ratings extends DatabaseStep
     protected function getRatingStoreDocument()
     {
         return $this->destination->addDocumentPrefix(self::RATING_STORE_TABLE_NAME);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        return true;
     }
 }

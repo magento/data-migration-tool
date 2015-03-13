@@ -41,5 +41,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
         $messages = \Migration\Logger\Logger::getMessages();
         $this->assertEquals($infoMessage, $messages[\Monolog\Logger::INFO][0]);
         $this->assertEquals($errorMessage, $messages[\Monolog\Logger::ERROR][0]);
+        $this->logger->clearMessages();
+        $this->assertEmpty(\Migration\Logger\Logger::getMessages());
     }
 }

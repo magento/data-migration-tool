@@ -5,6 +5,8 @@
  */
 namespace Migration\Resource;
 
+use Migration\Exception;
+
 /**
  * Record iterator class
  */
@@ -90,12 +92,12 @@ class Record
      * @param string $columnName
      * @param mixed $value
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function setValue($columnName, $value)
     {
         if ($this->structure && !$this->structure->hasField($columnName)) {
-            throw new \Exception("Record structure does not contain field $columnName");
+            throw new Exception("Record structure does not contain field $columnName");
         }
         $this->data[$columnName] = $value;
         return $this;
@@ -106,13 +108,13 @@ class Record
      *
      * @param array $data
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function setData($data)
     {
         $this->data = $data;
         if ($this->structure && !$this->validateStructure()) {
-            throw new \Exception("Record structure does not match provided Data");
+            throw new Exception("Record structure does not match provided Data");
         }
         return $this;
     }
@@ -129,12 +131,12 @@ class Record
 
     /**
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getFields()
     {
         if (empty($this->structure)) {
-            throw new \Exception("Structure not set");
+            throw new Exception("Structure not set");
         }
 
         return array_keys($this->structure->getFields());

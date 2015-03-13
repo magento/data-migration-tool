@@ -28,6 +28,14 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    public function testConvertClassNameNotInMap()
+    {
+        $this->assertEquals(
+            'catalog/product_widget_new_1',
+            $this->classMap->convertClassName('catalog/product_widget_new_1')
+        );
+    }
+
     public function testGetMap()
     {
         $this->assertEquals(

@@ -7,11 +7,15 @@ namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
 
+/**
+ * Class Map
+ */
 class Map
 {
     /**
@@ -30,7 +34,7 @@ class Map
     protected $recordFactory;
 
     /**
-     * @var MapReader
+     * @var MapReaderMain
      */
     protected $mapReader;
 
@@ -60,9 +64,7 @@ class Map
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReader $mapReader
-     * @param \Migration\Config $config
-     * @throws \Exception
+     * @param MapReaderMain $mapReader
      */
     public function __construct(
         ProgressBar $progress,
@@ -71,22 +73,18 @@ class Map
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReader $mapReader,
-        \Migration\Config $config
+        MapReaderMain $mapReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
-        $this->mapReader->init($config->getOption('map_file'));
-        $this->logger = $logger;
         $this->progress = $progress;
     }
 
     /**
-     * @return void
-     * @throws \Exception
+     * @return bool
      */
     public function perform()
     {
@@ -95,7 +93,7 @@ class Map
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
+            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -128,5 +126,6 @@ class Map
             }
         }
         $this->progress->finish();
+        return true;
     }
 }

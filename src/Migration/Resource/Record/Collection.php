@@ -5,6 +5,8 @@
  */
 namespace Migration\Resource\Record;
 
+use Migration\Exception;
+
 /**
  * Record iterator class
  */
@@ -43,7 +45,7 @@ class Collection extends \Migration\Resource\AbstractCollection
      *
      * @param \Migration\Resource\Record $record
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function addRecord($record)
     {
@@ -51,7 +53,7 @@ class Collection extends \Migration\Resource\AbstractCollection
             $record->setStructure($this->structure);
         }
         if (!$record->validateStructure($this->structure)) {
-            throw new \Exception("Record structure does not equal Collection structure");
+            throw new Exception("Record structure does not equal Collection structure");
         }
 
         $this->data[] = $record;
@@ -63,12 +65,12 @@ class Collection extends \Migration\Resource\AbstractCollection
      *
      * @param string $columnName
      * @return array
-     * @throws \Exception
+     * @throws Exception
      */
     public function getValue($columnName)
     {
         if ($this->structure && !$this->structure->hasField($columnName)) {
-            throw new \Exception("Collection Structure does not contain field $columnName");
+            throw new Exception("Collection Structure does not contain field $columnName");
         }
         $result = [];
         foreach ($this->data as $item) {
@@ -83,12 +85,12 @@ class Collection extends \Migration\Resource\AbstractCollection
      * @param string $columnName
      * @param mixed $value
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function setValue($columnName, $value)
     {
         if ($this->structure && !$this->structure->hasField($columnName)) {
-            throw new \Exception("Collection Structure does not contain field $columnName");
+            throw new Exception("Collection Structure does not contain field $columnName");
         }
         foreach ($this->data as $item) {
             $item->setValue($columnName, $value);

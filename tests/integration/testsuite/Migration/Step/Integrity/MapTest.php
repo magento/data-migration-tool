@@ -26,7 +26,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
-        
+
         /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
         $map = $objectManager->create(
             '\Migration\Step\Map',
@@ -80,10 +80,12 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
         $messages = [];
         $messages[] = 'Next documents from source are not mapped:';
-        $messages[] = 'source_table_1,source_table_2,source_table_ignored,source_table_renamed,table_with_data';
+        $messages[] = 'sales_flat_order,source_table_1,source_table_2,source_table_ignored,source_table_renamed'
+            .',table_with_data';
 
         $messages[] = 'Next documents from destination are not mapped:';
-        $messages[] = 'dest_table_1,dest_table_2,dest_table_ignored,dest_table_renamed,table_without_data';
+        $messages[] = 'dest_table_1,dest_table_2,dest_table_ignored,dest_table_renamed,eav_attribute'
+            . ',eav_entity_int,sales_order,table_without_data';
 
         $messages[] = 'Next fields from source are not mapped:';
         $messages[] = 'Document name: common_table; Fields: source_field_ignored';

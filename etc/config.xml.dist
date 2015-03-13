@@ -7,12 +7,13 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
     <steps>
-        <step solid="true">Migration\Step\Eav</step>
+        <step>Migration\Step\Eav</step>
         <step>Migration\Step\CustomCustomerAttributes</step>
         <step>Migration\Step\Map</step>
         <step>Migration\Step\UrlRewrite</step>
         <step>Migration\Step\Log</step>
         <step>Migration\Step\Ratings</step>
+        <step>Migration\Step\SalesOrder</step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>
@@ -25,8 +26,10 @@
         <eav_map_file>etc/map-eav.xml</eav_map_file>
         <log_map_file>etc/map-log.xml</log_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
+        <sales_order_map_file>etc/map-sales.xml</sales_order_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>

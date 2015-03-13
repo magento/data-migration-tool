@@ -7,6 +7,9 @@ namespace Migration;
 
 use Migration\Resource\Record;
 
+/**
+ * Class RecordTransformer
+ */
 class RecordTransformer
 {
     /**
@@ -35,7 +38,7 @@ class RecordTransformer
     protected $destHandlerManager;
 
     /**
-     * @var MapReader
+     * @var MapReaderInterface
      */
     protected $mapReader;
 
@@ -43,13 +46,13 @@ class RecordTransformer
      * @param Resource\Document $sourceDocument
      * @param Resource\Document $destDocument
      * @param Handler\ManagerFactory $handlerManagerFactory
-     * @param MapReader $mapReader
+     * @param MapReaderInterface $mapReader
      */
     public function __construct(
         Resource\Document $sourceDocument,
         Resource\Document $destDocument,
         Handler\ManagerFactory $handlerManagerFactory,
-        MapReader $mapReader
+        MapReaderInterface $mapReader
     ) {
         $this->sourceDocument = $sourceDocument;
         $this->destDocument = $destDocument;
@@ -70,12 +73,12 @@ class RecordTransformer
     }
 
     /**
-     * @return void
+     * @return $this
      */
     public function init()
     {
-        $this->sourceHandlerManager = $this->initHandlerManager(MapReader::TYPE_SOURCE);
-        $this->destHandlerManager = $this->initHandlerManager(MapReader::TYPE_DEST);
+        $this->sourceHandlerManager = $this->initHandlerManager(MapReaderInterface::TYPE_SOURCE);
+        $this->destHandlerManager = $this->initHandlerManager(MapReaderInterface::TYPE_DEST);
         return $this;
     }
 
@@ -83,10 +86,10 @@ class RecordTransformer
      * @param string $type
      * @return Handler\Manager
      */
-    protected function initHandlerManager($type = MapReader::TYPE_SOURCE)
+    protected function initHandlerManager($type = MapReaderInterface::TYPE_SOURCE)
     {
         /** @var Resource\Document $document */
-        $document = (MapReader::TYPE_SOURCE == $type) ? $this->sourceDocument : $this->destDocument;
+        $document = (MapReaderInterface::TYPE_SOURCE == $type) ? $this->sourceDocument : $this->destDocument;
         /** @var Handler\Manager $handlerManager */
         $handlerManager = $this->handlerManagerFactory->create();
         $fields = $document->getStructure()->getFields();
@@ -104,7 +107,6 @@ class RecordTransformer
      * @param Record $recordToHandle
      * @param Record $oppositeRecord
      * @return void
-     * @throws \Exception
      */
     public function applyHandlers(Handler\Manager $handlerManager, Record $recordToHandle, Record $oppositeRecord)
     {
@@ -120,16 +122,19 @@ class RecordTransformer
      * @param Record $from
      * @param Record $to
      * @return void
-     * @throws \Exception
      */
     protected function copy(Record $from, Record $to)
     {
         foreach ($from->getFields() as $field) {
-            if (!$this->mapReader->isFieldIgnored($this->sourceDocument->getName(), $field, MapReader::TYPE_SOURCE)) {
+            if (!$this->mapReader->isFieldIgnored(
+                $this->sourceDocument->getName(),
+                $field,
+                MapReaderInterface::TYPE_SOURCE
+            )) {
                 $fieldMap = $this->mapReader->getFieldMap(
                     $this->sourceDocument->getName(),
                     $field,
-                    MapReader::TYPE_SOURCE
+                    MapReaderInterface::TYPE_SOURCE
                 );
                 $to->setValue($fieldMap, $from->getValue($field));
             }

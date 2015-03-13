@@ -5,6 +5,8 @@
  */
 namespace Migration\Resource;
 
+use Migration\Resource\Document;
+
 /**
  * Adapter interface class
  */
@@ -63,4 +65,24 @@ interface AdapterInterface
      * @return void
      */
     public function deleteAllRecords($documentName);
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function backupDocument($documentName);
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function rollbackDocument($documentName);
+
+    /**
+     * Delete document backup
+     *
+     * @param string $documentName
+     * @return void
+     */
+    public function deleteBackup($documentName);
 }

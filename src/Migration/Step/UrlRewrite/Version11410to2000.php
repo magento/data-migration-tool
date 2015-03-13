@@ -10,6 +10,18 @@ use Migration\Step\DatabaseStep;
 class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInterface
 {
     /**
+     * Temporary table name
+     *
+     * @var string
+     */
+    protected $tableName;
+
+    /**
+     * @var array
+     */
+    protected $duplicateIndex;
+
+    /**
      * Resource of source
      *
      * @var \Migration\Resource\Source
@@ -50,6 +62,16 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      * @var \Migration\Logger\Logger
      */
     protected $logger;
+
+    /**
+     * @var bool
+     */
+    protected $dataInitialized = false;
+
+    /**
+     * @var array
+     */
+    protected $suffixData;
 
     /**
      * @var array
@@ -150,6 +172,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->destination = $destination;
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
+        $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         parent::__construct($config);
     }
 
@@ -158,17 +181,16 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     public function run()
     {
+        $this->getRewritesSelect();
         $this->progress->start($this->getIterationsCount());
-        $sourceDocument = $this->source->getDocument('enterprise_url_rewrite');
 
-        $select = $this->getRewritesSelect();
+        $sourceDocument = $this->source->getDocument($this->tableName);
 
         $destinationDocument = $this->destination->getDocument('url_rewrite');
-        $pageCount = $this->source->getRecordsCount($sourceDocument->getName()) / $this->source->getPageSize();
-        for ($i = 0; $i < $pageCount; $i++) {
+        $pageNumber = 0;
+        while (!empty($data = $this->source->getRecords($sourceDocument->getName(), $pageNumber))) {
+            $pageNumber++;
             $records = $this->recordCollectionFactory->create();
-            $select->limit($this->source->getPageSize(), $this->source->getPageSize() * $i);
-            $data = $this->source->getAdapter()->loadDataFromSelect($select);
             foreach ($data as $row) {
                 $this->progress->advance();
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
@@ -180,6 +202,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
         $this->progress->finish();
+        return true;
     }
 
     /**
@@ -187,25 +210,13 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     protected function getRewritesSelect()
     {
+        if (!$this->dataInitialized) {
+            $this->initTemporaryTable();
+        }
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->from(['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')])
-            ->joinLeft(
-                ['c' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-                'r.entity_type = 2 and r.value_id = c.value_id',
-                ['category_id' => 'entity_id']
-            )
-            ->joinLeft(
-                ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-                'r.entity_type = 3 and r.value_id = p.value_id',
-                ['product_id' => 'entity_id']
-            )
-            ->joinLeft(
-                ['t' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
-                'r.entity_type = 1 and r.value_id = t.redirect_id',
-                ['r_category_id' => 'category_id', 'r_product_id' => 'product_id', 'options']
-            );
+        $select->from(['r' => $this->source->addDocumentPrefix($this->tableName)]);
         return $select;
     }
 
@@ -216,6 +227,14 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     protected function migrateRewrites($source, $destination)
     {
+        $duplicates = $this->getDuplicatesList();
+        if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
+            && empty($this->duplicateIndex)
+        ) {
+            foreach ($duplicates as $key => $row) {
+                $this->duplicateIndex[$row['request_path']][] = $key;
+            }
+        }
         /** @var \Migration\Resource\Record $sourceRecord */
         foreach ($source as $sourceRecord) {
             /** @var \Migration\Resource\Record $destinationRecord */
@@ -224,50 +243,63 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
 
             $destinationRecord->setValue('store_id', $sourceRecord->getValue('store_id'));
             $destinationRecord->setValue('description', $sourceRecord->getValue('description'));
-            $destinationRecord->setValue('request_path', $sourceRecord->getValue('request_path'));
             $destinationRecord->setValue('redirect_type', 0);
             $destinationRecord->setValue('is_autogenerated', $sourceRecord->getValue('is_system'));
             $destinationRecord->setValue('metadata', '');
+            $destinationRecord->setValue('entity_type', $sourceRecord->getValue('entity_type'));
+            $destinationRecord->setValue('request_path', $sourceRecord->getValue('request_path'));
 
             $targetPath = $sourceRecord->getValue('target_path');
 
-            switch ($sourceRecord->getValue('entity_type')) {
-                case 1:
-                    if ($sourceRecord->getValue('r_product_id') !== null
-                        && $sourceRecord->getValue('r_category_id') !== null
-                    ) {
-                        $productId = $sourceRecord->getValue('r_product_id');
-                        $categoryId = $sourceRecord->getValue('r_category_id');
-                        $destinationRecord->setValue('entity_type', 'product');
-                        $destinationRecord->setValue('entity_id', $productId);
-                        $targetPath = "catalog/product/view/id/$productId/category/$categoryId";
-                        $length = strlen($categoryId);
-                        $metadata = sprintf('a:1:{s:11:"category_id";s:%s:"%s";}', $length, $categoryId);
-                        $destinationRecord->setValue('metadata', $metadata);
-                    } elseif ($sourceRecord->getValue('r_product_id')) {
-                        $destinationRecord->setValue('entity_type', 'product');
-                        $destinationRecord->setValue('entity_id', $sourceRecord->getValue('r_product_id'));
-                        $targetPath = 'catalog/product/view/id/' . $sourceRecord->getValue('r_product_id');
-                    } elseif ($sourceRecord->getValue('r_category_id')) {
-                        $destinationRecord->setValue('entity_type', 'category');
-                        $destinationRecord->setValue('entity_id', $sourceRecord->getValue('r_category_id'));
-                        $targetPath = 'catalog/category/view/id/' . $sourceRecord->getValue('r_category_id');
-                    } else {
-                        $destinationRecord->setValue('entity_type', 'custom');
-                        $destinationRecord->setValue('entity_id', 0);
-                    }
-                    break;
-                case 2:
-                    $destinationRecord->setValue('entity_type', 'category');
-                    $destinationRecord->setValue('entity_id', $sourceRecord->getValue('category_id'));
-                    $targetPath = 'catalog/category/view/id/' . $sourceRecord->getValue('category_id');
-                    break;
-                case 3:
-                    $destinationRecord->setValue('entity_type', 'product');
-                    $destinationRecord->setValue('entity_id', $sourceRecord->getValue('product_id'));
-                    $targetPath = 'catalog/product/view/id/' . $sourceRecord->getValue('product_id');
-                    break;
+            $productId = $sourceRecord->getValue('product_id');
+            $categoryId = $sourceRecord->getValue('category_id');
+            if (!empty($productId) && !empty($categoryId)) {
+                $length = strlen($categoryId);
+                $metadata = sprintf('a:1:{s:11:"category_id";s:%s:"%s";}', $length, $categoryId);
+                $destinationRecord->setValue('metadata', $metadata);
+                $destinationRecord->setValue('entity_type', 'product');
+                $destinationRecord->setValue('entity_id', $productId);
+                $targetPath = "catalog/product/view/id/$productId/category/$categoryId";
+            } elseif (!empty($productId) && empty($categoryId)) {
+                $destinationRecord->setValue('entity_type', 'category');
+                $destinationRecord->setValue('entity_id', $productId);
+                $targetPath = 'catalog/product/view/id/' . $productId;
+            } elseif (empty($productId) && !empty($categoryId)) {
+                $destinationRecord->setValue('entity_id', $categoryId);
+                $targetPath = 'catalog/category/view/id/' . $categoryId;
+            } else {
+                $destinationRecord->setValue('entity_id', 0);
             }
+
+            if (!empty($duplicates) && !empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
+                $currentDuplicates = $this->duplicateIndex[$sourceRecord->getValue('request_path')];
+                $shouldResolve = false;
+                foreach ($currentDuplicates as $key) {
+                    $onStore = $duplicates[$key]['store_id'] == $sourceRecord->getValue('store_id');
+                    if ($onStore && empty($duplicates[$key]['used'])) {
+                        $duplicates[$key]['used'] = true;
+                        break;
+                    }
+                    if ($onStore) {
+                        $shouldResolve = true;
+                    }
+                }
+                if ($shouldResolve) {
+                    $destinationRecord->setValue(
+                        'request_path',
+                        $sourceRecord->getValue('request_path') . '-' . md5(mt_rand())
+                    );
+                    $message = 'Duplicate resolved. ' . sprintf(
+                        'Request path was: %s Target path was: %s Store ID: %s New request path: %s',
+                        $sourceRecord->getValue('request_path'),
+                        $sourceRecord->getValue('target_path'),
+                        $sourceRecord->getValue('store_id'),
+                        $destinationRecord->getValue('request_path')
+                    );
+                    $this->logger->addInfo($message);
+                }
+            }
+
             $destinationRecord->setValue(
                 'target_path',
                 $targetPath
@@ -299,42 +331,67 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     }
 
     /**
-     * @param \Migration\Resource\Record $record
-     * @param array $data
-     * @return $this
-     */
-    protected function setRecordData($record, $data)
-    {
-        foreach ($data as $key => $value) {
-            $record->setValue($key, $value);
-        }
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function integrity()
     {
-        $this->progress->start(count($this->structure));
+        $errors = false;
+        $this->progress->start(count($this->structure['source']) + count($this->structure['destination']));
         foreach ($this->structure as $resourceName => $documentList) {
-            $this->progress->advance();
             $resource = $resourceName == 'source' ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
+                $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
-                    return false;
+                    $message = sprintf('%s table does not exists: %s', ucfirst($resourceName), $documentName);
+                    $this->logger->error($message);
+                    $errors = true;
+                    continue;
                 }
                 $structure = array_keys($document->getStructure()->getFields());
                 if (!(empty(array_diff($structure, $documentFields))
                     && empty(array_diff($documentFields, $structure)))
                 ) {
-                    return false;
+                    $message = sprintf(
+                        '%s table structure does not meet expectation: %s',
+                        ucfirst($resourceName),
+                        $documentName
+                    );
+                    $this->logger->error($message);
+                    $errors = true;
                 }
             }
         }
+        $data = $this->getDuplicatesList();
         $this->progress->finish();
-        return $this->destination->getRecordsCount('url_rewrite') == 0 && $this->checkDuplicates();
+        if (!empty($data)) {
+            $duplicates = [];
+            foreach ($data as $row) {
+                $duplicates[] = sprintf(
+                    'Request path: %s Store ID: %s Target path: %s',
+                    $row['request_path'],
+                    $row['store_id'],
+                    $row['target_path']
+                );
+            }
+
+            $message = sprintf(
+                PHP_EOL . 'There are duplicates in URL rewrites:%s',
+                PHP_EOL . implode(PHP_EOL, $duplicates)
+            );
+
+            if (!empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))) {
+                $this->logger->addInfo($message);
+            } else {
+                $this->logger->error($message);
+                $errors = true;
+            }
+        }
+        if ($this->destination->getDocument('url_rewrite') && $this->destination->getRecordsCount('url_rewrite') != 0) {
+            $this->logger->error('Destination table is not empty: url_rewrite');
+            $errors = true;
+        }
+        return !$errors;
     }
 
     /**
@@ -343,7 +400,10 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     public function volumeCheck()
     {
         $this->progress->start(1);
-        $result = $this->source->getRecordsCount('enterprise_url_rewrite')
+        $this->getRewritesSelect();
+        $this->progress->advance();
+
+        $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite')
             && $this->source->getRecordsCount('catalog_category_entity_varchar')
             + $this->source->getRecordsCount('catalog_category_entity_url_key')
@@ -370,53 +430,379 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
      */
     protected function getIterationsCount()
     {
-        return $this->source->getRecordsCount('enterprise_url_rewrite')
+        return $this->source->getRecordsCount($this->tableName)
             + $this->source->getRecordsCount('catalog_category_entity_url_key')
             + $this->source->getRecordsCount('catalog_product_entity_url_key');
     }
 
     /**
-     * Check that source database contains url rewrite duplicates
-     *
-     * @return bool
-     */
-    protected function checkDuplicates()
-    {
-        $select = $this->getRewritesSelect();
-        $select->columns(['request_path'])
-            ->group(['request_path', 'store_id'])
-            ->having('COUNT(*) > 1');
-
-        $data = $this->source->getAdapter()->loadDataFromSelect($select);
-        if (!empty($data)) {
-            $duplicates = [];
-            foreach ($this->getDuplicatesList($data) as $row) {
-                $duplicates[] = sprintf('Request path: %s Target path: %s', $row['request_path'], $row['target_path']);
-            }
-            $this->logger->error(sprintf(
-                PHP_EOL . 'There are duplicates in URL rewrites:%s',
-                PHP_EOL . implode(PHP_EOL, $duplicates)
-            ));
-
-        }
-        return empty($data);
-    }
-
-    /**
-     * @param array $data
      * @return array
      */
-    protected function getDuplicatesList($data)
+    protected function getDuplicatesList()
     {
-        $requestPath = [];
-        foreach ($data as $item) {
-            $requestPath = $item['request_path'];
-        }
+        $subSelect = $this->getRewritesSelect();
+        $subSelect->group(['request_path', 'store_id'])
+            ->having('COUNT(*) > 1');
+
+        /** @var \Magento\Framework\DB\Select $select */
         $select = $this->source->getAdapter()->getSelect();
-        $select->from('enterprise_url_rewrite', ['request_path', 'target_path'])
-            ->where('request_path IN (?)', $requestPath);
+        $select->from(['t' => $this->source->addDocumentPrefix($this->tableName)], ['t.*'])
+            ->join(
+                ['t2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
+                't2.request_path = t.request_path AND t2.store_id = t.store_id',
+                []
+            )
+            ->order(['store_id', 'request_path', 'priority']);
         $resultData = $this->source->getAdapter()->loadDataFromSelect($select);
 
         return $resultData;
+    }
+
+    /**
+     * Get product suffix query
+     *
+     * @codeCoverageIgnore
+     * @param string $suffixFor Can be 'product' or 'category'
+     * @param string $mainTable
+     * @return string
+     */
+    protected function getSuffix($suffixFor, $mainTable = 's')
+    {
+        if (empty($this->suffixData[$suffixFor])) {
+            /** @var \Migration\Resource\Adapter\Mysql $adapter */
+            $adapter = $this->source->getAdapter();
+            $select = $adapter->getSelect();
+
+            $storeSuffix = $adapter->getSelect()->from(
+                ['cd' => $this->source->addDocumentPrefix('core_config_data')],
+                ['suffix' => 'cd.value']
+            );
+            $storeSuffix->where("cd.path = 'catalog/seo/{$suffixFor}_url_suffix'")
+                ->where("cd.scope='stores'")
+                ->where("cd.scope_id=s.store_id");
+
+            $websiteSuffix = $adapter->getSelect()->from(
+                ['cd1' => $this->source->addDocumentPrefix('core_config_data')],
+                ['suffix' => 'cd1.value']
+            );
+            $websiteSuffix->where("cd1.path = 'catalog/seo/{$suffixFor}_url_suffix'")
+                ->where("cd1.scope='websites'")
+                ->where("cd1.scope_id=s.website_id");
+
+            $defaultSuffix = $adapter->getSelect()->from(
+                ['cd2' => $this->source->addDocumentPrefix('core_config_data')],
+                ['suffix' => 'cd2.value']
+            );
+            $defaultSuffix->where("cd2.path = 'catalog/seo/{$suffixFor}_url_suffix'")
+                ->where("cd2.scope='default'");
+
+            $select->from(
+                ['s' => $this->source->addDocumentPrefix('core_store')],
+                [
+                    'store_id' => 's.store_id',
+                    'suffix' => new \Zend_Db_Expr(
+                        sprintf(
+                            "(IFNULL((%s), IFNULL((%s), IFNULL((%s), 'html'))))",
+                            $storeSuffix,
+                            $websiteSuffix,
+                            $defaultSuffix
+                        )
+                    )
+                ]
+            );
+            $this->suffixData[$suffixFor] = $select->getAdapter()->fetchAll($select);
+        }
+
+        $suffix = "CASE {$mainTable}.store_id";
+        foreach ($this->suffixData[$suffixFor] as $row) {
+            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix']);
+        }
+        $suffix .= " ELSE 'html' END";
+
+        return $suffix;
+    }
+
+    /**
+     * Initialize temporary table and insert UrlRewrite data
+     *
+     * @codeCoverageIgnore
+     * @return void
+     */
+    protected function initTemporaryTable()
+    {
+        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $select = $adapter->getSelect();
+        $select->getAdapter()->query('DROP TABLE IF EXISTS ' . $this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query(
+            'CREATE TABLE ' . $this->source->addDocumentPrefix($this->tableName) . ' (
+                id INT NOT NULL AUTO_INCREMENT,
+                request_path VARCHAR(255) NOT NULL,
+                target_path VARCHAR(255) NOT NULL,
+                is_system SMALLINT NOT NULL DEFAULT 0,
+                store_id INT NOT NULL,
+                entity_type VARCHAR(32) NOT NULL,
+                product_id INT NOT NULL DEFAULT 0,
+                category_id INT NOT NULL DEFAULT 0,
+                priority INT NOT NULL DEFAULT 0,
+                PRIMARY KEY (id),
+                UNIQUE (request_path, target_path, store_id, entity_type)
+            )'
+        );
+
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => 'r.identifier',
+                'target_path' => 'r.target_path',
+                'is_system' => "trim('0')",
+                'store_id' => 'r.store_id',
+                'entity_type' => "trim('custom')",
+                'product_id' => "r.product_id",
+                'category_id' => "r.category_id",
+                'priority' => "trim('1')"
+            ]
+        );
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => 'r.request_path',
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 'r.store_id',
+                'entity_type' => "trim('custom')",
+                'product_id' => "trim('0')",
+                'category_id' => "trim('0')",
+                'priority' => "trim('2')"
+            ]
+        );
+        $query = $select->where('`r`.`entity_type` = 1')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => sprintf("CONCAT(`r`.`request_path`, '.', %s)", $this->getSuffix('category', 'r')),
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 'r.store_id',
+                'entity_type' => "trim('category')",
+                'product_id' => "trim('0')",
+                'category_id' => "c.entity_id",
+                'priority' => "trim('3')"
+            ]
+        );
+        $select->join(
+            ['c' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
+            'r.value_id = c.value_id',
+            []
+        );
+        $query = $select->where('`r`.`entity_type` = 2')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $subSelect = $adapter->getSelect();
+        $subSelect->from(
+            ['cr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            ['request_path' => 'cr.request_path']
+        );
+        $subSelect->where('`cr`.`value_id` = `cu`.`value_id`');
+        $subSelect->where('`cr`.`entity_type` = 2');
+        $subSelect->where('`cr`.`store_id` = s.`store_id`');
+        $subConcatCategories = $select->getAdapter()->getConcatSql([
+            "($subSelect)",
+            "'/'",
+            '`r`.`request_path`',
+            "'.'",
+            $this->getSuffix('product')
+        ]);
+        $storeSubSelect = $adapter->getSelect();
+        $storeSubSelect->from(
+            ['sr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            ['store_id' => 'sr.store_id']
+        );
+        $storeSubSelect->join(
+            ['srcu' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
+            'srcu.value_id = sr.value_id',
+            []
+        );
+        $storeSubSelect->where('sr.entity_type = 3')
+            ->where('srcu.entity_id = p.entity_id')
+            ->where('sr.store_id > 0');
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => $subConcatCategories,
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 's.store_id',
+                'entity_type' => "trim('product')",
+                'product_id' => "p.entity_id",
+                'category_id' => "c.category_id",
+                'priority' => "trim('4')"
+            ]
+        );
+        $select->join(
+            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
+            'r.value_id = p.value_id',
+            []
+        );
+        $select->join(
+            ['c' => $this->source->addDocumentPrefix('catalog_category_product')],
+            'p.entity_id = c.product_id',
+            []
+        );
+        $select->join(
+            ['cu' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
+            'cu.entity_id = c.category_id',
+            []
+        );
+        $select->join(
+            ['cpw' => $this->source->addDocumentPrefix('catalog_product_website')],
+            'c.product_id = cpw.product_id',
+            []
+        );
+        $select->join(
+            ['s' => $this->source->addDocumentPrefix('core_store')],
+            sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
+            []
+        );
+        $query = $select->where('`r`.`entity_type` = 3')
+            ->where('`r`.`store_id` = 0')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $subConcat = $select->getAdapter()->getConcatSql([
+            '`r`.`request_path`',
+            "'.'",
+            $this->getSuffix('product')
+        ]);
+
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => $subConcat,
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 's.store_id',
+                'entity_type' => "trim('product')",
+                'product_id' => "p.entity_id",
+                'category_id' => "trim('0')",
+                'priority' => "trim('4')"
+            ]
+        );
+        $select->join(
+            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
+            'r.value_id = p.value_id',
+            []
+        );
+        $select->join(
+            ['cpw' => $this->source->addDocumentPrefix('catalog_product_website')],
+            'p.entity_id = cpw.product_id',
+            []
+        );
+        $select->join(
+            ['s' => $this->source->addDocumentPrefix('core_store')],
+            sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
+            []
+        );
+        $query = $select->where('`r`.`entity_type` = 3')
+            ->where('`r`.`store_id` = 0')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $select = $adapter->getSelect();
+        $subConcatCategories = $select->getAdapter()->getConcatSql([
+            "($subSelect)",
+            "'/'",
+            '`s`.`request_path`',
+            "'.'",
+            $this->getSuffix('product')
+        ]);
+        $select->from(
+            ['s' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => $subConcatCategories,
+                'target_path' => 's.target_path',
+                'is_system' => 's.is_system',
+                'store_id' => 's.store_id',
+                'entity_type' => "trim('product')",
+                'product_id' => "p.entity_id",
+                'category_id' => "c.category_id",
+                'priority' => "trim('4')"
+            ]
+        );
+        $select->join(
+            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
+            's.value_id = p.value_id',
+            []
+        );
+        $select->join(
+            ['c' => $this->source->addDocumentPrefix('catalog_category_product')],
+            'p.entity_id = c.product_id',
+            []
+        );
+        $select->join(
+            ['cu' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
+            'cu.entity_id = c.category_id',
+            []
+        );
+        $query = $select->where('`s`.`entity_type` = 3')
+            ->where('`s`.`store_id` > 0')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $select = $adapter->getSelect();
+        $subConcat = $select->getAdapter()->getConcatSql([
+            '`s`.`request_path`',
+            "'.'",
+            $this->getSuffix('product')
+        ]);
+        $select->from(
+            ['s' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => $subConcat,
+                'target_path' => 's.target_path',
+                'is_system' => 's.is_system',
+                'store_id' => 's.store_id',
+                'entity_type' => "trim('product')",
+                'product_id' => "p.entity_id",
+                'category_id' => "trim('0')",
+                'priority' => "trim('4')"
+            ]
+        );
+        $select->join(
+            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
+            's.value_id = p.value_id',
+            []
+        );
+        $query = $select->where('`s`.`entity_type` = 3')
+            ->where('`s`.`store_id` > 0')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+        $this->dataInitialized = true;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function rollback()
+    {
+        // TODO: Implement rollback() method.
     }
 }

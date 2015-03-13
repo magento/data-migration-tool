@@ -61,4 +61,14 @@ class ProgressStepTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->expects($this->exactly(2))->method('filePutContents')->will($this->returnValue(0));
         $this->assertEquals($this->progressStep, $this->progressStep->clearLockFile());
     }
+
+    public function testResetStep()
+    {
+        $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $progress = sprintf('a:1:{s:%s:"%s";a:1:{s:9:"integrity";b:1;}}', strlen(get_class($step)), get_class($step));
+        $this->filesystem->expects($this->once())->method('fileGetContents')->will($this->returnValue($progress));
+        $this->filesystem->expects($this->once())->method('filePutContents');
+        $this->progressStep->resetStep($step);
+    }
 }

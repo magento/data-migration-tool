@@ -5,12 +5,15 @@
  */
 namespace Migration\Step;
 
+use Migration\Exception;
+
 /**
  * Class DatabaseStep
  */
 abstract class DatabaseStep implements StepInterface
 {
     const SOURCE_TYPE = 'database';
+
     /**
      * @var \Migration\Config
      */
@@ -18,14 +21,14 @@ abstract class DatabaseStep implements StepInterface
 
     /**
      * @param \Migration\Config $config
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct(
         \Migration\Config $config
     ) {
         $this->configReader = $config;
         if (!$this->canStart()) {
-            throw new \Exception('Can not execute step');
+            throw new Exception('Can not execute step');
         }
     }
 

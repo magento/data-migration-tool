@@ -5,6 +5,8 @@
  */
 namespace Migration\App;
 
+use Migration\Exception;
+
 /**
  * Class Shell
  */
@@ -43,7 +45,6 @@ class Shell extends \Magento\Framework\App\AbstractShell
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\Step\ProgressStep $progressStep
      * @param string $entryPoint
-     * @throws \Exception
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
@@ -97,6 +98,8 @@ class Shell extends \Magento\Framework\App\AbstractShell
             }
 
             $this->stepManager->runSteps();
+        } catch (Exception $e) {
+            $this->logger->error('Migration tool exception: ' . $e->getMessage());
         } catch (\Exception $e) {
             $this->logger->error('Application failed with exception: ' . $e->getMessage());
         }

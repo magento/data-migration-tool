@@ -6,7 +6,7 @@
 namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
 
 class MapTest extends \PHPUnit_Framework_TestCase
@@ -32,7 +32,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
+     * @var MapReaderMain|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -40,11 +40,6 @@ class MapTest extends \PHPUnit_Framework_TestCase
      * @var Map
      */
     protected $map;
-
-    /**
-     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
 
     public function setUp()
     {
@@ -64,16 +59,15 @@ class MapTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods([])->getMock();
-        $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
-        $this->mapReader->expects($this->once())->method('init');
+
+        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
+            ->setMethods(['getDocumentMap'])
+            ->getMock();
         $this->map = new Map(
             $this->logger,
             $this->source,
             $this->destination,
             $this->mapReader,
-            $this->config,
             $this->progress
         );
     }
@@ -109,8 +103,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Volume check failed for the destination document ' .
-            PHP_EOL . $dstDocName
+            PHP_EOL . 'Volume check failed for the destination document: ' . $dstDocName
         );
         $this->assertFalse($this->map->perform());
     }

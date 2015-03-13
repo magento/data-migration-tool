@@ -5,7 +5,8 @@
  */
 namespace Migration\Step;
 
-use \Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Migration\Exception;
 
 /**
  * Class StepFactory
@@ -42,13 +43,13 @@ class StepFactory
     /**
      * @param string $stepClass
      * @return StepInterface
-     * @throws \Exception
+     * @throws Exception
      */
     public function create($stepClass)
     {
         $step = $this->objectManager->create($stepClass);
         if (!($step instanceof StepInterface)) {
-            throw new \Exception("Class: $stepClass must implement StepInterface.");
+            throw new Exception("Class: $stepClass must implement StepInterface.");
         }
 
         return $step;

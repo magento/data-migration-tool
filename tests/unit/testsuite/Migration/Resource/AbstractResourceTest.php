@@ -6,6 +6,9 @@
 
 namespace Migration\Resource;
 
+/**
+ * Class AbstractResourceTest
+ */
 class AbstractResourceTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -208,7 +211,8 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $pageNumber = 2;
-        $this->config->expects($this->once())->method('getOption')->with('bulk_size')->will($this->returnValue(100));
+        $this->config->expects($this->at(0))->method('getOption')->with('bulk_size')->will($this->returnValue(100));
+        $this->config->expects($this->at(1))->method('getOption')->with('dest_prefix')->will($this->returnValue(100));
         $this->adapter->expects($this->once())->method('loadPage');
         $this->resourceDestination->getRecords($resourceName, $pageNumber);
     }

@@ -6,9 +6,12 @@
 namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
 
+/**
+ * Class LogTest
+ */
 class LogTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -32,7 +35,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
+     * @var MapReaderLog|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -40,16 +43,6 @@ class LogTest extends \PHPUnit_Framework_TestCase
      * @var Log
      */
     protected $log;
-
-    /**
-     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
-
-    /**
-     * @var \Migration\Step\Log\Helper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $helper;
 
     public function setUp()
     {
@@ -69,19 +62,16 @@ class LogTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods([])->getMock();
-        $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
-        $this->mapReader->expects($this->once())->method('init');
-        $this->helper = $this->getMock('\Migration\Step\Log\Helper', ['getDocumentList', 'getDestDocumentsToClear']);
+
+        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderLog')->disableOriginalConstructor()
+            ->setMethods(['getDocumentMap', 'init', 'getDestDocumentsToClear', 'getDocumentList'])
+            ->getMock();
         $this->log = new Log(
             $this->logger,
             $this->source,
             $this->destination,
             $this->mapReader,
-            $this->config,
-            $this->progress,
-            $this->helper
+            $this->progress
         );
     }
 
@@ -92,9 +82,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', 3], ['document_to_clear', null]]);
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->assertTrue($this->log->perform());
     }
 
@@ -104,25 +94,24 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(null);
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->assertTrue($this->log->perform());
     }
 
     public function testPerformFailed()
     {
         $dstDocName = 'config_data';
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', 3], ['document_to_clear', null]]);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Volume check failed for the destination document ' .
-            PHP_EOL . $dstDocName
+            PHP_EOL . 'Volume check failed for the destination document: ' . $dstDocName
         );
         $this->assertFalse($this->log->perform());
     }
@@ -130,9 +119,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
     public function testPerformCheckLogsClearFailed()
     {
         $dstDocName = 'config_data';
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')

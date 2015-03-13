@@ -3,8 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Migration;
+
+use Migration\App\Shell;
 
 /**
  * Launches the application
@@ -55,8 +56,14 @@ class Migration implements \Magento\Framework\AppInterface
     public function launch()
     {
         $this->createDirectories();
+        /** @var Shell $shell */
         $shell = $this->shellFactory->create(['entryPoint' => $this->entryPoint]);
-        $shell->run();
+        try {
+            $shell->run();
+        } catch (\Exception $e) {
+            echo $e->getMessage();
+        }
+
         return $this->response;
     }
 

@@ -70,7 +70,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['insertRecords', 'deleteAllRecords'],
+            ['insertRecords', 'deleteAllRecords', 'backupDocument', 'rollbackDocument', 'deleteBackup'],
             [],
             '',
             false
@@ -157,7 +157,36 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
     public function testClearDocument()
     {
         $docName = 'somename';
-        $this->adapter->expects($this->once())->method('deleteAllRecords')->with($docName);
+        $this->adapter->expects($this->once())->method('deleteAllRecords')->with('pfx_' . $docName);
+        $this->config->expects($this->once())->method('getOption')->with('dest_prefix')
+            ->will($this->returnValue('pfx_'));
         $this->resourceDestination->clearDocument($docName);
+    }
+
+    public function testBackupDocument()
+    {
+        $docName = 'somename';
+        $this->adapter->expects($this->once())->method('backupDocument')->with('pfx_' . $docName);
+        $this->config->expects($this->once())->method('getOption')->with('dest_prefix')
+            ->will($this->returnValue('pfx_'));
+        $this->resourceDestination->backupDocument($docName);
+    }
+
+    public function testRollbackDocument()
+    {
+        $docName = 'somename';
+        $this->adapter->expects($this->once())->method('rollbackDocument')->with('pfx_' . $docName);
+        $this->config->expects($this->once())->method('getOption')->with('dest_prefix')
+            ->will($this->returnValue('pfx_'));
+        $this->resourceDestination->rollbackDocument($docName);
+    }
+
+    public function testDeleteDocumentBackup()
+    {
+        $docName = 'somename';
+        $this->adapter->expects($this->once())->method('deleteBackup')->with('pfx_' . $docName);
+        $this->config->expects($this->once())->method('getOption')->with('dest_prefix')
+            ->will($this->returnValue('pfx_'));
+        $this->resourceDestination->deleteDocumentBackup($docName);
     }
 }

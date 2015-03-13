@@ -6,12 +6,14 @@
 namespace Migration\Resource\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
+use Migration\Resource\Document;
 
 /**
  * Mysql adapter
  */
 class Mysql implements \Migration\Resource\AdapterInterface
 {
+    const BACKUP_DOCUMENT_PREFIX = 'migration_backup_';
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface
      */
@@ -141,5 +143,46 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function updateDocument($document, array $bind, $where = '')
     {
         return $this->resourceAdapter->update($document, $bind, $where);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function backupDocument($documentName)
+    {
+        $backupTableName = self::BACKUP_DOCUMENT_PREFIX . $documentName;
+        $tableCopy = $this->getTableDdlCopy($documentName, $backupTableName);
+        if (!$this->resourceAdapter->isTableExists($backupTableName)) {
+            $this->createTableByDdl($tableCopy);
+            $select = $this->resourceAdapter->select()->from($documentName);
+            $query = $this->resourceAdapter->insertFromSelect($select, $tableCopy->getName());
+            $this->resourceAdapter->query($query);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollbackDocument($documentName)
+    {
+        $backupTableName = self::BACKUP_DOCUMENT_PREFIX . $documentName;
+        if ($this->resourceAdapter->isTableExists($backupTableName)) {
+            $this->resourceAdapter->truncateTable($documentName);
+            $select = $this->resourceAdapter->select()->from($backupTableName);
+            $query = $this->resourceAdapter->insertFromSelect($select, $documentName);
+            $this->resourceAdapter->query($query);
+            $this->resourceAdapter->dropTable($backupTableName);
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteBackup($documentName)
+    {
+        $backupTableName = self::BACKUP_DOCUMENT_PREFIX . $documentName;
+        if ($this->resourceAdapter->isTableExists($backupTableName)) {
+            $this->resourceAdapter->dropTable($backupTableName);
+        }
     }
 }

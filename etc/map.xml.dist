@@ -9,6 +9,9 @@
     <source>
         <document_rules>
             <ignore>
+                <document>url_rewrite_m2*</document>
+            </ignore>
+            <ignore>
                 <document>admin_assert</document>
             </ignore>
             <ignore>
@@ -620,6 +623,9 @@
             <ignore>
                 <document>admin_rule</document>
             </ignore>
+            <ignore>
+                <document>sales_flat_order</document>
+            </ignore>
             <!--<rename>-->
                 <!--<document>admin_role</document>-->
                 <!--<to>authorization_role</to>-->
@@ -931,10 +937,6 @@
             <rename>
                 <document>sales_flat_invoice_item</document>
                 <to>sales_invoice_item</to>
-            </rename>
-            <rename>
-                <document>sales_flat_order</document>
-                <to>sales_order</to>
             </rename>
             <rename>
                 <document>sales_flat_order_address</document>
@@ -1548,6 +1550,9 @@
             </ignore>
             <ignore>
                 <document>setup_module</document>
+            </ignore>
+            <ignore>
+                <document>sales_order</document>
             </ignore>
         </document_rules>
         <field_rules>

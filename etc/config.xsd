@@ -34,19 +34,11 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="className">
+    <xs:simpleType name="stepType">
         <xs:restriction base="xs:string">
             <xs:pattern value="[a-zA-Z_\\\\]+"/>
         </xs:restriction>
     </xs:simpleType>
-
-    <xs:complexType name="stepType">
-        <xs:simpleContent>
-            <xs:extension base="className">
-                <xs:attribute name="solid" type="xs:boolean" use="optional"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
 
     <xs:complexType name="sourceType">
         <xs:annotation>
@@ -90,6 +82,7 @@
             <xs:element name="eav_map_file" type="xmlFile"/>
             <xs:element name="log_map_file" type="xmlFile"/>
             <xs:element name="settings_map_file" type="xmlFile" />
+            <xs:element name="sales_order_map_file" type="xmlFile" />
             <xs:element name="bulk_size" type="xs:int"/>
             <xs:element name="resource_adapter_class_name" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>

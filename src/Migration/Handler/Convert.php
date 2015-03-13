@@ -6,6 +6,7 @@
 namespace Migration\Handler;
 
 use Migration\Resource\Record;
+use Migration\Exception;
 
 /**
  * Handler to transform field according to the map
@@ -19,7 +20,7 @@ class Convert extends AbstractHandler implements HandlerInterface
 
     /**
      * @param string $map
-     * @throws \Exception
+     * @throws Exception
      */
     public function __construct($map)
     {
@@ -30,7 +31,7 @@ class Convert extends AbstractHandler implements HandlerInterface
         foreach ($map as $mapRecord) {
             $explodedRecord = explode(':', trim($mapRecord));
             if (count($explodedRecord) != 2) {
-                throw new \Exception('Invalid map provided to convert handler');
+                throw new Exception('Invalid map provided to convert handler');
             }
             list($key, $value) = $explodedRecord;
             $resultMap[$key] = $value;

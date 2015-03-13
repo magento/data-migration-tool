@@ -102,9 +102,7 @@ abstract class AbstractResource
      */
     public function getDocumentList()
     {
-        if (is_null($this->documentList)) {
-            $this->documentList = $this->adapter->getDocumentList();
-        }
+        $this->documentList = $this->adapter->getDocumentList();
         foreach ($this->documentList as &$documentName) {
             $documentName = $this->removeDocumentPrefix($documentName);
         }
@@ -174,7 +172,7 @@ abstract class AbstractResource
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize() ;
-        return $this->adapter->loadPage($documentName, $pageNumber, $pageSize);
+        return $this->adapter->loadPage($this->addDocumentPrefix($documentName), $pageNumber, $pageSize);
     }
 
     /**

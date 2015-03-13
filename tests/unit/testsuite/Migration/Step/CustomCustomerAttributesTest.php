@@ -92,16 +92,24 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getTableDdlCopy'])
             ->getMock();
         $destAdapter = $this->getMockBuilder('\Migration\Resource\Adapter\Mysql')->disableOriginalConstructor()
-            ->setMethods(['createTableByDdl'])
+            ->setMethods(['createTableByDdl', 'getTableDdlCopy'])
             ->getMock();
 
         $this->source->expects($this->once())->method('getAdapter')->will($this->returnValue($sourceAdapter));
         $this->destination->expects($this->once())->method('getAdapter')->will($this->returnValue($destAdapter));
 
-        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()->getMock();
+        $sourceTable = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+            ->setMethods(['getColumns'])->getMock();
+        $sourceTable->expects($this->any())->method('getColumns')->will($this->returnValue([['asdf']]));
 
-        $destAdapter->expects($this->any())->method('createTableByDdl')->with($table);
-        $sourceAdapter->expects($this->any())->method('getTableDdlCopy')->will($this->returnValue($table));
+        $destinationTable = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+            ->setMethods(['setColumn'])->getMock();
+        $destinationTable->expects($this->any())->method('setColumn')->with(['asdf']);
+
+        $destAdapter->expects($this->any())->method('getTableDdlCopy')->will($this->returnValue($destinationTable));
+        $destAdapter->expects($this->any())->method('createTableByDdl')->with($destinationTable);
+
+        $sourceAdapter->expects($this->any())->method('getTableDdlCopy')->will($this->returnValue($sourceTable));
 
         $destDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
             ->setMethods(['getRecords', 'getName'])
@@ -121,9 +129,11 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
         $destDocument->expects($this->any())->method('getRecords')->will($this->returnValue($recordsCollection));
 
         $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($destDocument));
-        $this->source->expects($this->any())->method('getRecords')->will($this->returnCallback(function ($name, $i) {
-            return $i == 1 ? [] : ['field_1' => 1, 'field_2' => 2];
-        }));
+        $this->source->expects($this->any())->method('getRecords')->will($this->returnValueMap(
+            [
+                [1, ['field_1' => 1, 'field_2' => 2]]
+            ]
+        ));
 
         $this->assertTrue($this->step->run());
     }
@@ -153,5 +163,10 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
     public function testGetTitle()
     {
         $this->assertEquals('Custom Customer Attributes Step', $this->step->getTitle());
+    }
+
+    public function testRollback()
+    {
+        $this->assertTrue($this->step->rollback());
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\Eav;
 
-use Migration\MapReader;
+use Migration\MapReader\MapReaderEav;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
 
@@ -41,7 +41,7 @@ class InitialData
     protected $destination;
 
     /**
-     * @var MapReader
+     * @var MapReaderEav
      */
     protected $map;
 
@@ -51,12 +51,12 @@ class InitialData
     protected $helper;
 
     /**
-     * @param MapReader $mapReader
+     * @param MapReaderEav $mapReader
      * @param Source $source
      * @param Destination $destination
      * @param Helper $helper
      */
-    public function __construct(MapReader $mapReader, Source $source, Destination $destination, Helper $helper)
+    public function __construct(MapReaderEav $mapReader, Source $source, Destination $destination, Helper $helper)
     {
         $this->map = $mapReader;
         $this->source = $source;
@@ -123,6 +123,7 @@ class InitialData
     }
 
     /**
+     * @codeCoverageIgnoreStart
      * @param string $type
      * @return mixed
      */
@@ -148,4 +149,5 @@ class InitialData
     {
         return $this->attributeGroups[$type];
     }
+    // @codeCoverageIgnoreEnd
 }

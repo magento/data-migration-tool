@@ -16,7 +16,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
-    
+
     /**
      * @var Logger|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -38,7 +38,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReader
+     * @var MapReader\MapReaderMain
      */
     protected $mapReader;
 
@@ -85,8 +85,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         );
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods([])->getMock();
-        $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
-        $this->mapReader->expects($this->once())->method('init');
+        $this->mapReader = $this->getMock('Migration\MapReader\MapReaderMain', ['getDocumentMap'], [], '', false);
         $this->map = new Map(
             $this->progress,
             $this->logger,
