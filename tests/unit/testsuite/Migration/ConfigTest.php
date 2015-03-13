@@ -28,26 +28,21 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
 
     public function testInvalidConfigFile()
     {
-        $this->setExpectedException('Exception', 'Invalid config filename: non-existent.xml');
+        $this->setExpectedException('Migration\Exception', 'Invalid config filename: non-existent.xml');
         $config = new Config();
         $config->init('non-existent.xml');
     }
 
     public function testInvalidXml()
     {
-        $this->setExpectedException('Exception', 'XML file is invalid');
+        $this->setExpectedException('Migration\Exception', 'XML file is invalid');
         $config = new Config();
         $config->init(__DIR__ . '/_files/invalid-config.xml');
     }
 
     public function testGetSteps()
     {
-        $steps = [
-            ['class' => 'Migration\Step\Eav', 'solid' => true],
-            ['class' => 'Migration\Step\Map', 'solid' => false],
-            ['class' => 'Migration\Step\UrlRewrite', 'solid' => false],
-            ['class' => 'Migration\Step\Log', 'solid' => false]
-        ];
+        $steps = ['Migration\Step\Eav', 'Migration\Step\Map', 'Migration\Step\UrlRewrite', 'Migration\Step\Log'];
         $this->assertEquals($steps, $this->config->getSteps());
     }
 

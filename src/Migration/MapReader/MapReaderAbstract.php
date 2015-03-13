@@ -3,17 +3,18 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration;
+namespace Migration\MapReader;
+
+use Migration\Config;
+use Migration\Exception;
+use Migration\MapReaderInterface;
 
 /**
- * Class MapReader
+ * Class MapReaderAbstract
  */
-class MapReader
+abstract class MapReaderAbstract implements MapReaderInterface
 {
     const CONFIGURATION_SCHEMA = 'map.xsd';
-
-    const TYPE_SOURCE = 'source';
-    const TYPE_DEST = 'destination';
 
     /**
      * @var \DOMXPath
@@ -31,27 +32,40 @@ class MapReader
     protected $wildcards;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * Init configuration
      *
      * @param string $mapFile
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
-    public function init($mapFile)
+    protected function init($mapFile)
     {
         $this->ignoredDocuments = [];
         $this->wildcards = null;
 
         $configFile = $this->getRootDir() . $mapFile;
         if (!is_file($configFile)) {
-            throw new \Exception('Invalid map filename: ' . $configFile);
+            throw new Exception('Invalid map filename: ' . $configFile);
         }
 
         $xml = file_get_contents($configFile);
         $document = new \Magento\Framework\Config\Dom($xml);
 
         if (!$document->validate($this->getRootDir() .'etc/' . self::CONFIGURATION_SCHEMA)) {
-            throw new \Exception('XML file is invalid.');
+            throw new Exception('XML file is invalid.');
         }
 
         $this->xml = new \DOMXPath($document->getDom());
@@ -64,14 +78,11 @@ class MapReader
      */
     protected function getRootDir()
     {
-        return dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
+        return dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR;
     }
 
     /**
-     * @param string $type
-     * @param string $document
-     * @param string $field
-     * @return bool
+     * @inheritdoc
      */
     public function isFieldIgnored($document, $field, $type)
     {
@@ -81,9 +92,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $type
-     * @return bool
+     * @inheritdoc
      */
     public function isDocumentIgnored($document, $type)
     {
@@ -126,9 +135,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $type
-     * @return bool
+     * @inheritdoc
      */
     public function isDocumentMaped($document, $type)
     {
@@ -141,10 +148,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $field
-     * @param string $type
-     * @return bool
+     * @inheritdoc
      */
     public function isFieldMapped($document, $field, $type)
     {
@@ -157,9 +161,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $type
-     * @return bool|string
+     * @inheritdoc
      */
     public function getDocumentMap($document, $type)
     {
@@ -185,11 +187,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $field
-     * @param string $type
-     * @return bool|string
-     * @throws \Exception
+     * @inheritdoc
      */
     public function getFieldMap($document, $field, $type)
     {
@@ -203,7 +201,7 @@ class MapReader
         if ($documentMap !== false) {
             $result =  $documentMap . '.' . $field;
         } else {
-            throw new \Exception('Document has ambiguous configuration: ' . $document);
+            throw new Exception('Document has ambiguous configuration: ' . $document);
         }
 
         if (!$this->isFieldMapped($document, $field, $type)) {
@@ -226,10 +224,7 @@ class MapReader
     }
 
     /**
-     * @param string $document
-     * @param string $field
-     * @param string $type
-     * @return array
+     * @inheritdoc
      */
     public function getHandlerConfig($document, $field, $type)
     {
@@ -257,12 +252,12 @@ class MapReader
     /**
      * @param string $type
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
-    public function validateType($type)
+    protected function validateType($type)
     {
-        if (!in_array($type, [self::TYPE_SOURCE, self::TYPE_DEST])) {
-            throw new \Exception('Unknown resource type: ' . $type);
+        if (!in_array($type, [MapReaderInterface::TYPE_SOURCE, MapReaderInterface::TYPE_DEST])) {
+            throw new Exception('Unknown resource type: ' . $type);
         }
         return true;
     }
@@ -270,28 +265,29 @@ class MapReader
     /**
      * @param string $type
      * @return string
-     * @throws \Exception
      */
-    public function getOppositeType($type)
+    protected function getOppositeType($type)
     {
         $this->validateType($type);
-        return $type == self::TYPE_SOURCE ? self::TYPE_DEST : self::TYPE_SOURCE;
+        return $type == MapReaderInterface::TYPE_SOURCE
+            ? MapReaderInterface::TYPE_DEST
+            : MapReaderInterface::TYPE_SOURCE;
     }
 
     /**
      * @param string $value
      * @param string $type
      * @return bool
-     * @throws \Exception
+     * @throws Exception
      */
     protected function validateFieldMap($value, $type)
     {
         $valueParts = explode('.', $value);
         if ($this->getDocumentMap($valueParts[0], $type) === false) {
-            throw new \Exception('Document has ambiguous configuration: ' . $valueParts[0]);
+            throw new Exception('Document has ambiguous configuration: ' . $valueParts[0]);
         }
         if ($this->isFieldIgnored($valueParts[0], $valueParts[1], $type)) {
-            throw new \Exception('Field has ambiguous configuration: ' . $value);
+            throw new Exception('Field has ambiguous configuration: ' . $value);
         }
         return true;
     }

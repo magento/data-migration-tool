@@ -6,8 +6,8 @@
 namespace Migration\Step\Integrity;
 
 use Migration\Logger\Logger;
+use Migration\MapReaderInterface;
 use Migration\ProgressBar;
-use Migration\MapReader;
 use Migration\Resource;
 
 /**
@@ -53,7 +53,7 @@ abstract class AbstractIntegrity
     /**
      * Map reader
      *
-     * @var MapReader
+     * @var MapReaderInterface
      */
     protected $map;
 
@@ -69,14 +69,14 @@ abstract class AbstractIntegrity
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReader $mapReader
+     * @param MapReaderInterface $mapReader
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader
+        MapReaderInterface $mapReader
     ) {
         $this->logger = $logger;
         $this->progress = $progress;
@@ -102,14 +102,14 @@ abstract class AbstractIntegrity
      * Check if source and destination resources have equal document names and fields
      *
      * @param array $documents
-     * @param string $type - allowed values: MapReader::TYPE_SOURCE, MapReader::TYPE_DEST
+     * @param string $type - allowed values: MapReaderInterface::TYPE_SOURCE, MapReaderInterface::TYPE_DEST
      * @return $this
      * @throws \Exception
      */
     protected function check($documents, $type)
     {
-        $source = $type == MapReader::TYPE_SOURCE ? $this->source : $this->destination;
-        $destination = $type == MapReader::TYPE_SOURCE ? $this->destination : $this->source;
+        $source = $type == MapReaderInterface::TYPE_SOURCE ? $this->source : $this->destination;
+        $destination = $type == MapReaderInterface::TYPE_SOURCE ? $this->destination : $this->source;
 
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($documents as $document) {

@@ -180,6 +180,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar');
         $this->progress->finish();
+        return true;
     }
 
     /**
@@ -418,5 +419,13 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
         $resultData = $this->source->getAdapter()->loadDataFromSelect($select);
 
         return $resultData;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function rollback()
+    {
+        // TODO: Implement rollback() method.
     }
 }

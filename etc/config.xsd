@@ -34,19 +34,11 @@
         </xs:sequence>
     </xs:complexType>
 
-    <xs:simpleType name="className">
+    <xs:simpleType name="stepType">
         <xs:restriction base="xs:string">
             <xs:pattern value="[a-zA-Z_\\\\]+"/>
         </xs:restriction>
     </xs:simpleType>
-
-    <xs:complexType name="stepType">
-        <xs:simpleContent>
-            <xs:extension base="className">
-                <xs:attribute name="solid" type="xs:boolean" use="optional"/>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
 
     <xs:complexType name="sourceType">
         <xs:annotation>

@@ -7,7 +7,7 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps>
-        <step solid="true">Migration\Step\Eav</step>
+        <step>Migration\Step\Eav</step>
         <step>Migration\Step\Map</step>
         <step>Migration\Step\UrlRewrite</step>
         <step>Migration\Step\Log</step>

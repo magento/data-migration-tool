@@ -6,7 +6,11 @@
 namespace Migration\Handler;
 
 use Magento\Framework\ObjectManagerInterface;
+use Migration\Exception;
 
+/**
+ * Class Manager
+ */
 class Manager
 {
     /**
@@ -32,7 +36,7 @@ class Manager
      * @param string $field
      * @param array $handlerConfig
      * @return void
-     * @throws \Exception
+     * @throws Exception
      */
     public function initHandler($field, $handlerConfig = [])
     {
@@ -46,7 +50,7 @@ class Manager
 
         $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
         if (!($handler instanceof HandlerInterface)) {
-            throw new \Exception("'{$handlerConfig['class']}' is not correct handler.");
+            throw new Exception("'{$handlerConfig['class']}' is not correct handler.");
         }
         $handler->setField($field);
         $this->handlers[$field] = $handler;

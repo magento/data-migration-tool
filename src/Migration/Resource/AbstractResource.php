@@ -174,7 +174,7 @@ abstract class AbstractResource
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize() ;
-        return $this->adapter->loadPage($documentName, $pageNumber, $pageSize);
+        return $this->adapter->loadPage($this->addDocumentPrefix($documentName), $pageNumber, $pageSize);
     }
 
     /**

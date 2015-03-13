@@ -7,12 +7,15 @@ namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
-use Migration\Step\Log\Helper;
 
+/**
+ * Class Log
+ */
 class Log
 {
     /**
@@ -31,16 +34,9 @@ class Log
     protected $recordFactory;
 
     /**
-     * @var MapReader
+     * @var MapReaderLog
      */
     protected $mapReader;
-
-    /**
-     * Logger instance
-     *
-     * @var Logger
-     */
-    protected $logger;
 
     /**
      * @var \Migration\RecordTransformerFactory
@@ -55,57 +51,40 @@ class Log
     protected $progress;
 
     /**
-     * @var Helper
-     */
-    protected $helper;
-
-
-    /**
      * @param ProgressBar $progress
-     * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReader $mapReader
-     * @param \Migration\Config $config
-     * @param Helper $helper
-     * @throws \Exception
+     * @param MapReaderLog $mapReader
      */
     public function __construct(
         ProgressBar $progress,
-        Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReader $mapReader,
-        \Migration\Config $config,
-        Helper $helper
+        MapReaderLog $mapReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
-        $this->mapReader->init($config->getOption('log_map_file'));
-        $this->logger = $logger;
         $this->progress = $progress;
-        $this->helper = $helper;
     }
 
     /**
-     * @return void
-     * @throws \Exception
+     * @return bool
      */
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $sourceDocuments = array_keys($this->helper->getDocumentList());
+        $sourceDocuments = array_keys($this->mapReader->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
+            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -137,8 +116,9 @@ class Log
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
         }
-        $this->clearLog($this->helper->getDestDocumentsToClear());
+        $this->clearLog($this->mapReader->getDestDocumentsToClear());
         $this->progress->finish();
+        return true;
     }
 
     /**
@@ -160,6 +140,6 @@ class Log
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getDestDocumentsToClear()) + count($this->helper->getDocumentList());
+        return count($this->mapReader->getDestDocumentsToClear()) + count($this->mapReader->getDocumentList());
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Migration;
 
-use \Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\ConsoleOutput;
 
 /**
  * Class ProgressBar

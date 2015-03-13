@@ -103,6 +103,7 @@ return [
     'eav/entity_attribute_backend_datetime' => 'Magento\Eav\Model\Entity\Attribute\Backend\Datetime',
     'eav/entity_attribute_backend_time_created' => 'Magento\Eav\Model\Entity\Attribute\Backend\Time\Created',
     'eav/entity_attribute_backend_time_updated' => 'Magento\Eav\Model\Entity\Attribute\Backend\Time\Updated',
+    'eav/entity_attribute_backend_array' => 'Magento\Eav\Model\Entity\Attribute\Backend\ArrayBackend',
     'enterprise_catalog/product_attribute_backend_urlkey' => null,
     'enterprise_giftcard/attribute_backend_giftcard_amount' =>
         'Magento\GiftCard\Model\Attribute\Backend\Giftcard\Amount',

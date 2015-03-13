@@ -5,6 +5,9 @@
  */
 namespace Migration;
 
+/**
+ * Class RecordTransformerTest
+ */
 class RecordTransformerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -18,7 +21,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
     protected $destDocument;
 
     /**
-     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
+     * @var MapReaderInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -36,7 +39,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $this->sourceDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
         $this->destDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
-        $this->mapReader = $this->getMock('Migration\MapReader', [], [], '', false);
+        $this->mapReader = $this->getMock('Migration\MapReaderInterface');
         $this->handlerManagerFactory = $this->getMock(
             'Migration\Handler\ManagerFactory',
             ['create'],

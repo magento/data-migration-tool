@@ -118,8 +118,10 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->logger
             ->expects($this->once())
             ->method('error')
-            ->with('Integrity check failed due to "is_active" field does not exist in "rating" document of '
-                .'the destination resource');
+            ->with(
+                'Integrity check failed due to "is_active" field does not exist in "rating" document of '
+                . 'the destination resource'
+            );
         $this->assertFalse($this->ratings->integrity());
     }
 
@@ -214,5 +216,10 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
     public function testGetTitle()
     {
         $this->assertEquals('Ratings step', $this->ratings->getTitle());
+    }
+
+    public function testRollback()
+    {
+        $this->assertTrue($this->ratings->rollback());
     }
 }

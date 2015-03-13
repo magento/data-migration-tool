@@ -64,7 +64,7 @@ class Destination extends AbstractResource
      */
     public function clearDocument($documentName)
     {
-        $this->adapter->deleteAllRecords($documentName);
+        $this->adapter->deleteAllRecords($this->addDocumentPrefix($documentName));
     }
 
     /**
@@ -73,5 +73,32 @@ class Destination extends AbstractResource
     protected function getDocumentPrefix()
     {
         return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+    }
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function backupDocument($documentName)
+    {
+        $this->getAdapter()->backupDocument($this->addDocumentPrefix($documentName));
+    }
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function rollbackDocument($documentName)
+    {
+        $this->getAdapter()->rollbackDocument($this->addDocumentPrefix($documentName));
+    }
+
+    /**
+     * @param string $documentName
+     * @return void
+     */
+    public function deleteDocumentBackup($documentName)
+    {
+        $this->getAdapter()->deleteBackup($this->addDocumentPrefix($documentName));
     }
 }

@@ -7,20 +7,18 @@ namespace Migration\Step\Run;
 
 use Migration\Handler;
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
 
+/**
+ * Class LogTest
+ */
 class LogTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
-    
-    /**
-     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $logger;
 
     /**
      * @var Resource\Source|\PHPUnit_Framework_MockObject_MockObject
@@ -38,7 +36,7 @@ class LogTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReader
+     * @var MapReaderLog
      */
     protected $mapReader;
 
@@ -52,21 +50,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
      */
     protected $log;
 
-    /**
-     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
-
-    /**
-     * @var \Migration\Step\Log\Helper|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $helper;
-
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', [], [], '', false);
         $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
-        $this->helper = $this->getMock('\Migration\Step\Log\Helper', ['getDocumentList', 'getDestDocumentsToClear']);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],
@@ -89,29 +75,25 @@ class LogTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods([])->getMock();
-        $this->mapReader = $this->getMock('Migration\MapReader', ['getDocumentMap', 'init'], [], '', false);
-        $this->mapReader->expects($this->once())->method('init');
+        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderLog')->disableOriginalConstructor()
+            ->setMethods(['getDocumentMap', 'init', 'getDocumentList', 'getDestDocumentsToClear'])
+            ->getMock();
         $this->log = new Log(
             $this->progress,
-            $this->logger,
             $this->source,
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
-            $this->mapReader,
-            $this->config,
-            $this->helper
+            $this->mapReader
         );
     }
 
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
@@ -150,9 +132,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
     public function testGetMapEmptyDestinationDocumentName()
     {
-        $this->helper->expects($this->any())->method('getDocumentList')
+        $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
-        $this->helper->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
+        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $recordTransformer = $this->getMock('Migration\RecordTransformer', ['transform'], [], '', false);
         $recordTransformer->expects($this->never())->method('transform');
         $this->log->perform();

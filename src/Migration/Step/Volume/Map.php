@@ -6,7 +6,8 @@
 namespace Migration\Step\Volume;
 
 use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReaderInterface;
+use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
 use Migration\ProgressBar;
 
@@ -23,7 +24,7 @@ class Map
     protected $destination;
 
     /**
-     * @var MapReader
+     * @var MapReaderMain
      */
     protected $mapReader;
 
@@ -40,25 +41,27 @@ class Map
     protected $progress;
 
     /**
+     * @var array
+     */
+    protected $errors = [];
+
+    /**
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReader $mapReader
-     * @param \Migration\Config $config
+     * @param MapReaderMain $mapReader
      * @param ProgressBar $progress
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReader $mapReader,
-        \Migration\Config $config,
+        MapReaderMain $mapReader,
         ProgressBar $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->mapReader = $mapReader;
-        $this->mapReader->init($config->getOption('map_file'));
         $this->logger = $logger;
         $this->progress = $progress;
     }
@@ -73,7 +76,7 @@ class Map
         $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReader::TYPE_SOURCE);
+            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -81,13 +84,22 @@ class Map
             $destinationCount = $this->destination->getRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
                 $isSuccess = false;
-                $this->logger->error(sprintf(
-                    PHP_EOL . 'Volume check failed for the destination document %s',
-                    PHP_EOL . $destinationName
-                ));
+                $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
         $this->progress->finish();
+        $this->printErrors();
         return $isSuccess;
+    }
+
+    /**
+     * Print Volume check errors
+     * @return void
+     */
+    protected function printErrors()
+    {
+        foreach ($this->errors as $error) {
+            $this->logger->error(PHP_EOL . $error);
+        }
     }
 }

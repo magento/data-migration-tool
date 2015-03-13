@@ -6,7 +6,11 @@
 namespace Migration\Handler;
 
 use Migration\Resource\Record;
+use Migration\Exception;
 
+/**
+ * Class AbstractHandler
+ */
 abstract class AbstractHandler implements HandlerInterface
 {
     /**
@@ -31,7 +35,7 @@ abstract class AbstractHandler implements HandlerInterface
     public function validate(Record $record)
     {
         if (!in_array($this->field, $record->getFields())) {
-            throw new \Exception("{$this->field} field not found in the record.");
+            throw new Exception("{$this->field} field not found in the record.");
         }
     }
 }

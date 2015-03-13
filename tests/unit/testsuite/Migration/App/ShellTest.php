@@ -95,7 +95,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell->run();
     }
 
-    public function testRunWithException()
+    public function testRunWithException1()
     {
         $this->logManager->expects($this->once())->method('process');
         $errorMessage = 'test error message';
@@ -103,6 +103,18 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->stepManager->expects($this->once())->method('runSteps')->will($this->throwException($exception));
         $this->logger->expects($this->once())->method('error')->with(
             'Application failed with exception: test error message'
+        );
+        $this->shell->run();
+    }
+
+    public function testRunWithException2()
+    {
+        $this->logManager->expects($this->once())->method('process');
+        $this->stepManager->expects($this->once())->method('runSteps')->will($this->throwException(
+            new \Migration\Exception('test error message')
+        ));
+        $this->logger->expects($this->once())->method('error')->with(
+            'Migration tool exception: test error message'
         );
         $this->shell->run();
     }

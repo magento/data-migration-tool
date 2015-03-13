@@ -29,7 +29,7 @@ class Config
      *
      * @param string $configFile
      * @return $this
-     * @throws \Exception
+     * @throws Exception
      */
     public function init($configFile = null)
     {
@@ -38,14 +38,14 @@ class Config
         }
 
         if (empty($configFile) || !file_exists($configFile)) {
-            throw new \Exception('Invalid config filename: '. $configFile);
+            throw new Exception('Invalid config filename: '. $configFile);
         }
 
         $xml = file_get_contents($configFile);
         $document = new \Magento\Framework\Config\Dom($xml);
 
         if (!$document->validate($this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA)) {
-            throw new \Exception('XML file is invalid.');
+            throw new Exception('XML file is invalid.');
         }
 
         $this->config = new \DOMXPath($document->getDom());
@@ -71,11 +71,7 @@ class Config
     {
         $steps = [];
         foreach ($this->config->query('//steps/step') as $item) {
-            $stepData = ['class' => $item->nodeValue, 'solid' => false];
-            if (!empty($item->attributes->getNamedItem('solid'))) {
-                $stepData['solid'] = (boolean)$item->attributes->getNamedItem('solid')->nodeValue;
-            }
-            $steps[] = $stepData;
+            $steps[] = $item->nodeValue;
         }
         return $steps;
     }

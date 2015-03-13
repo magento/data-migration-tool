@@ -5,6 +5,8 @@
  */
 namespace Migration\Step;
 
+use Migration\Exception;
+
 /**
  * Class UrlRewrite
  */
@@ -35,7 +37,7 @@ class UrlRewrite extends DatabaseStep
      */
     public function run()
     {
-        $this->rewriteVersion->run();
+        return $this->rewriteVersion->run();
     }
 
     /**
@@ -60,5 +62,13 @@ class UrlRewrite extends DatabaseStep
     public function getTitle()
     {
         return $this->rewriteVersion->getTitle();
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        throw new Exception('Rollback is impossible for ' . $this->getTitle());
     }
 }

@@ -43,7 +43,6 @@ class CustomCustomerAttributes extends DatabaseStep
      * @param Destination $destination
      * @param ProgressBar $progress
      * @param RecordFactory $factory
-     * @throws \Exception
      */
     public function __construct(
         \Migration\Config $config,
@@ -93,12 +92,18 @@ class CustomCustomerAttributes extends DatabaseStep
         foreach ($this->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
             $this->progress->advance();
 
-            $destinationAdapter->createTableByDdl(
-                $sourceAdapter->getTableDdlCopy(
-                    $this->source->addDocumentPrefix($sourceDocumentName),
-                    $this->destination->addDocumentPrefix($destinationDocumentName)
-                )
+            $sourceTable =  $sourceAdapter->getTableDdlCopy(
+                $this->source->addDocumentPrefix($sourceDocumentName),
+                $this->destination->addDocumentPrefix($destinationDocumentName)
             );
+            $destinationTable = $destinationAdapter->getTableDdlCopy(
+                $this->destination->addDocumentPrefix($destinationDocumentName),
+                $this->destination->addDocumentPrefix($destinationDocumentName)
+            );
+            foreach ($sourceTable->getColumns() as $columnData) {
+                $destinationTable->setColumn($columnData);
+            }
+            $destinationAdapter->createTableByDdl($destinationTable);
 
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
             $pageNumber = 0;
@@ -167,5 +172,13 @@ class CustomCustomerAttributes extends DatabaseStep
             'enterprise_customer_sales_flat_quote_address' =>
                 'magento_customercustomattributes_sales_flat_quote_address'
         ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        return true;
     }
 }

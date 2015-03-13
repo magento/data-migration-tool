@@ -3,13 +3,26 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\Log;
+namespace Migration\MapReader;
+
+use Migration\Config;
 
 /**
- * Class Helper
+ * Class MapReaderLog
  */
-class Helper
+class MapReaderLog extends MapReaderAbstract
 {
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        parent::__construct($config);
+        $this->init($this->config->getOption('log_map_file'));
+    }
+
+// @codeCoverageIgnoreStart
+
     /**
      * EAV tables mapping
      *
@@ -39,4 +52,5 @@ class Helper
     {
         return ['log_visitor' => 'customer_visitor'];
     }
+// @codeCoverageIgnoreEnd
 }

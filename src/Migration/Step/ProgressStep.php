@@ -78,6 +78,19 @@ class ProgressStep
     }
 
     /**
+     * @param StepInterface $step
+     * @return void
+     */
+    public function resetStep(StepInterface $step)
+    {
+        $this->loadData();
+        if (!empty($this->data[$this->getStepName($step)])) {
+            unset($this->data[$this->getStepName($step)]);
+            $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
+        }
+    }
+
+    /**
      * @return string
      */
     protected function getLockFile()
@@ -105,7 +118,6 @@ class ProgressStep
      */
     protected function getStepName(StepInterface $step)
     {
-        $stepName = get_class($step);
-        return $stepName;
+        return get_class($step);
     }
 }

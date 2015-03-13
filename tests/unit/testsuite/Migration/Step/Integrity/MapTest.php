@@ -57,7 +57,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMockBuilder('\Migration\MapReader')->disableOriginalConstructor()
+        $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap', 'init'])
             ->getMock();
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()

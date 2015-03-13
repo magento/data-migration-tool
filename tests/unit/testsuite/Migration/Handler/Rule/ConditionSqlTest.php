@@ -30,7 +30,7 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         /** @var MapReader|\PHPUnit_Framework_MockObject_MockObject $map */
-        $this->map = $this->getMockBuilder('Migration\MapReader')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
         /** @var Source|\PHPUnit_Framework_MockObject_MockObject $source */

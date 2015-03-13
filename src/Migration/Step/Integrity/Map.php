@@ -5,20 +5,42 @@
  */
 namespace Migration\Step\Integrity;
 
-use Migration\Logger\Logger;
-use Migration\MapReader;
+use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
+use Migration\MapReaderInterface;
+use Migration\Logger\Logger;
+use Migration\ProgressBar;
 
+/**
+ * Class Map
+ */
 class Map extends AbstractIntegrity
 {
+    /**
+     * @param ProgressBar $progress
+     * @param Logger $logger
+     * @param Resource\Source $source
+     * @param Resource\Destination $destination
+     * @param MapReaderMain $mapReader
+     */
+    public function __construct(
+        ProgressBar $progress,
+        Logger $logger,
+        Resource\Source $source,
+        Resource\Destination $destination,
+        MapReaderMain $mapReader
+    ) {
+        parent::__construct($progress, $logger, $source, $destination, $mapReader);
+    }
+
     /**
      * {@inheritdoc}
      */
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check($this->source->getDocumentList(), MapReader::TYPE_SOURCE);
-        $this->check($this->destination->getDocumentList(), MapReader::TYPE_DEST);
+        $this->check($this->source->getDocumentList(), MapReaderInterface::TYPE_SOURCE);
+        $this->check($this->destination->getDocumentList(), MapReaderInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }

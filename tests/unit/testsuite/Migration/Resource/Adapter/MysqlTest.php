@@ -47,7 +47,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'dropTable',
                 'resetDdlCache',
                 'createTableByDdl',
-                'update'
+                'update',
+                'isTableExists',
+                'insertFromSelect'
             ],
             [],
             '',
@@ -185,5 +187,60 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->pdoMysql->expects($this->once())->method('createTable')->with($table);
         $this->pdoMysql->expects($this->once())->method('resetDdlCache')->with('some_name');
         $this->adapterMysql->createTableByDdl($table);
+    }
+
+    public function testBackupDocument()
+    {
+        $documentName = 'document_name';
+        $backupDocumentName = 'migration_backup_document_name';
+
+        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+            ->setMethods(['getName'])
+            ->getMock();
+        $table->expects($this->any())->method('getName')->will($this->returnValue('migration_backup_document_name'));
+        $select = $this->getMockBuilder('\Magento\Framework\DB\Select')->disableOriginalConstructor()
+            ->setMethods(['from'])->getMock();
+        $select->expects($this->once())->method('from')->with($documentName)->willReturn($select);
+
+        $this->pdoMysql->expects($this->once())->method('createTableByDdl')
+            ->with($documentName, $backupDocumentName)
+            ->will($this->returnValue($table));
+        $this->pdoMysql->expects($this->once())->method('isTableExists')->willReturn(false);
+        $this->pdoMysql->expects($this->once())->method('dropTable')->with($backupDocumentName);
+        $this->pdoMysql->expects($this->once())->method('createTable')->with($table);
+        $this->pdoMysql->expects($this->once())->method('resetDdlCache')->with($backupDocumentName);
+        $this->pdoMysql->expects($this->once())->method('select')->willReturn($select);
+        $this->pdoMysql->expects($this->once())->method('insertFromSelect')->with($select, $backupDocumentName)
+            ->willReturn('select query');
+        $this->pdoMysql->expects($this->once())->method('query')->with('select query');
+
+        $this->adapterMysql->backupDocument($documentName);
+    }
+
+    public function testRollbackDocument()
+    {
+        $documentName = 'document_name';
+        $backupDocumentName = 'migration_backup_document_name';
+
+        $select = $this->getMockBuilder('\Magento\Framework\DB\Select')->disableOriginalConstructor()
+            ->setMethods(['from'])->getMock();
+        $select->expects($this->once())->method('from')->with($backupDocumentName)->willReturn($select);
+
+        $this->pdoMysql->expects($this->once())->method('isTableExists')->willReturn(true);
+        $this->pdoMysql->expects($this->once())->method('truncateTable')->with($documentName);
+        $this->pdoMysql->expects($this->once())->method('select')->willReturn($select);
+        $this->pdoMysql->expects($this->once())->method('insertFromSelect')->with($select, $documentName)
+            ->willReturn('select query');
+        $this->pdoMysql->expects($this->once())->method('query')->with('select query');
+        $this->pdoMysql->expects($this->once())->method('dropTable')->with($backupDocumentName);
+
+        $this->adapterMysql->rollbackDocument($documentName);
+    }
+
+    public function testDeleteBackup()
+    {
+        $this->pdoMysql->expects($this->once())->method('isTableExists')->willReturn(true);
+        $this->pdoMysql->expects($this->once())->method('dropTable')->with('migration_backup_document_name');
+        $this->adapterMysql->deleteBackup('document_name');
     }
 }

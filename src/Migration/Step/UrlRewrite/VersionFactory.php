@@ -5,7 +5,8 @@
  */
 namespace Migration\Step\UrlRewrite;
 
-use \Magento\Framework\ObjectManagerInterface;
+use Magento\Framework\ObjectManagerInterface;
+use Migration\Exception;
 
 /**
  * Class VersionFactory
@@ -29,7 +30,7 @@ class VersionFactory
      * @param string $sourceVersion
      * @param string $destinationVersion
      * @return \Migration\Step\StepInterface
-     * @throws \Exception
+     * @throws Exception
      */
     public function create($sourceVersion, $destinationVersion)
     {
@@ -38,7 +39,7 @@ class VersionFactory
         $className = "Migration\\Step\\UrlRewrite\\Version{$sourceVersion}to{$destinationVersion}";
         $version = $this->objectManager->create($className);
         if (!($version instanceof \Migration\Step\StepInterface)) {
-            throw new \Exception("Class: $className must implement StepInterface.");
+            throw new Exception("Class: $className must implement StepInterface.");
         }
 
         return $version;
