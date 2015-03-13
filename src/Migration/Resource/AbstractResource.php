@@ -102,9 +102,7 @@ abstract class AbstractResource
      */
     public function getDocumentList()
     {
-        if (is_null($this->documentList)) {
-            $this->documentList = $this->adapter->getDocumentList();
-        }
+        $this->documentList = $this->adapter->getDocumentList();
         foreach ($this->documentList as &$documentName) {
             $documentName = $this->removeDocumentPrefix($documentName);
         }
