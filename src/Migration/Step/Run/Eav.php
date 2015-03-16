@@ -333,10 +333,12 @@ class Eav
 
                 if ($documentName == 'eav_entity_type') {
                     $oldAttributeSetValue = $destinationRecord->getValue('default_attribute_set_id');
-                    $newAttributeSetValue = $oldAttributeSetValue > 0
-                        ? $this->destAttributeSetsOldNewMap[$oldAttributeSetValue]
-                        : 0;
-                    $destinationRecord->setValue('default_attribute_set_id', $newAttributeSetValue);
+                    if (isset($this->destAttributeSetsOldNewMap[$oldAttributeSetValue])) {
+                        $destinationRecord->setValue(
+                            'default_attribute_set_id',
+                            $this->destAttributeSetsOldNewMap[$oldAttributeSetValue]
+                        );
+                    }
                 }
 
                 $recordsToSave->addRecord($destinationRecord);

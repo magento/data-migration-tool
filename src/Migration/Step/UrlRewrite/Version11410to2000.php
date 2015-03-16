@@ -261,7 +261,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                 $destinationRecord->setValue('entity_id', $productId);
                 $targetPath = "catalog/product/view/id/$productId/category/$categoryId";
             } elseif (!empty($productId) && empty($categoryId)) {
-                $destinationRecord->setValue('entity_type', 'category');
+                $destinationRecord->setValue('entity_type', 'product');
                 $destinationRecord->setValue('entity_id', $productId);
                 $targetPath = 'catalog/product/view/id/' . $productId;
             } elseif (empty($productId) && !empty($categoryId)) {
