@@ -90,7 +90,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertTrue(empty($logOutput[\Monolog\Logger::ERROR]));
         $this->assertEquals(42, $destination->getRecordsCount('url_rewrite'));
-        $this->assertEquals(11, $destination->getRecordsCount('catalog_category_entity_varchar'));
+        $this->assertEquals(15, $destination->getRecordsCount('catalog_category_entity_varchar'));
         $this->assertEquals(4, $destination->getRecordsCount('catalog_product_entity_varchar'));
+
+        $result = $this->urlRewrite->volumeCheck();
+        $this->assertTrue($result);
     }
 }
