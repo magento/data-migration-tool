@@ -32,12 +32,12 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $logManager;
 
     /**
-     * @var \Migration\Step\StepFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\StepManagement\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $stepManager;
 
     /**
-     * @var \Migration\Step\ProgressStep|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\StepManagement\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progressStep;
 
@@ -51,10 +51,12 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
         $this->logManager = $this->getMock('\Migration\Logger\Manager', [], [], '', false);
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
-        $this->stepManager = $this->getMockBuilder('\Migration\Step\StepManager')->setMethods(['runSteps'])
+        $this->stepManager = $this->getMockBuilder('\Migration\StepManagement\Manager')
+            ->setMethods(['runSteps'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->progressStep = $this->getMockBuilder('\Migration\Step\ProgressStep')->setMethods(['clearLockFile'])
+        $this->progressStep = $this->getMockBuilder('\Migration\StepManagement\Progress')
+            ->setMethods(['clearLockFile'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->shell = new Shell(

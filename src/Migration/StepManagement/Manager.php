@@ -3,19 +3,20 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\StepManagement;
 
 use Migration\Logger\Logger;
 use Migration\Config;
 use Migration\Exception;
+use Migration\Step\StepInterface;
 
 /**
- * Class StepManager
+ * Class Manager
  */
-class StepManager
+class Manager
 {
     /**
-     * @var StepFactory
+     * @var Factory
      */
     protected $factory;
 
@@ -30,17 +31,17 @@ class StepManager
     protected $config;
 
     /**
-     * @var ProgressStep
+     * @var Progress
      */
     protected $progress;
 
     /**
-     * @param ProgressStep $progress
+     * @param Progress $progress
      * @param Logger $logger
-     * @param StepFactory $factory
+     * @param Factory $factory
      * @param Config $config
      */
-    public function __construct(ProgressStep $progress, Logger $logger, StepFactory $factory, Config $config)
+    public function __construct(Progress $progress, Logger $logger, Factory $factory, Config $config)
     {
         $this->progress = $progress;
         $this->factory = $factory;

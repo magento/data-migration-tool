@@ -4,20 +4,20 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step;
+namespace Migration\StepManagement;
 
 /**
- * Class StepManagerTest
+ * Class ManagerTest
  */
-class StepManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var StepManager
+     * @var Manager
      */
     protected $manager;
 
     /**
-     * @var \Migration\Step\StepFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\StepManagement\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $factory;
 
@@ -32,13 +32,13 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\Step\ProgressStep|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\StepManagement\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
     public function setUp()
     {
-        $this->factory = $this->getMockBuilder('\Migration\Step\StepFactory')->disableOriginalConstructor()
+        $this->factory = $this->getMockBuilder('\Migration\StepManagement\Factory')->disableOriginalConstructor()
             ->setMethods(['getSteps', 'create'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
@@ -47,10 +47,10 @@ class StepManagerTest extends \PHPUnit_Framework_TestCase
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods(['getSteps'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\Step\ProgressStep')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\StepManagement\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'resetStep'])
             ->getMock();
-        $this->manager = new StepManager($this->progress, $this->logger, $this->factory, $this->config);
+        $this->manager = new Manager($this->progress, $this->logger, $this->factory, $this->config);
     }
 
     public function testRunStepsIntegrityFail()

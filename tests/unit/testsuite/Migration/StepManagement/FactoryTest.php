@@ -3,15 +3,15 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\StepManagement;
 
 /**
  * Class StepFactoryTest
  */
-class StepFactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var StepFactory
+     * @var Factory
      */
     protected $factory;
 
@@ -31,7 +31,7 @@ class StepFactoryTest extends \PHPUnit_Framework_TestCase
         $this->objectManager = $this->getMockBuilder('\Magento\Framework\ObjectManager\ObjectManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->factory = new StepFactory($this->config, $this->objectManager);
+        $this->factory = new Factory($this->config, $this->objectManager);
     }
 
     public function testCreate()

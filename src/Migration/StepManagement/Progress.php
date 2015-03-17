@@ -3,12 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\StepManagement;
+
+use Migration\Step\StepInterface;
 
 /**
  * Class ProgressStep
  */
-class ProgressStep
+class Progress
 {
     /**
      * @var string
