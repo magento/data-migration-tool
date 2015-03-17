@@ -39,13 +39,6 @@ class Map
     protected $mapReader;
 
     /**
-     * Logger instance
-     *
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * @var \Migration\RecordTransformerFactory
      */
     protected $recordTransformerFactory;
@@ -59,7 +52,6 @@ class Map
 
     /**
      * @param ProgressBar $progress
-     * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -68,7 +60,6 @@ class Map
      */
     public function __construct(
         ProgressBar $progress,
-        Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
