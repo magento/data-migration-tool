@@ -4,12 +4,12 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step;
+namespace Migration\App\Step;
 
 /**
  * Class ProgressStepTest
  */
-class ProgressStepTest extends \PHPUnit_Framework_TestCase
+class ProgressTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
@@ -17,7 +17,7 @@ class ProgressStepTest extends \PHPUnit_Framework_TestCase
     protected $filesystem;
 
     /**
-     * @var \Migration\Step\ProgressStep
+     * @var \Migration\App\Step\Progress
      */
     protected $progressStep;
 
@@ -28,7 +28,7 @@ class ProgressStepTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->filesystem->expects($this->any())->method('filePutContents')->will($this->returnValue(true));
-        $this->progressStep = new ProgressStep($this->filesystem);
+        $this->progressStep = new Progress($this->filesystem);
     }
 
     public function testIsCompleted()

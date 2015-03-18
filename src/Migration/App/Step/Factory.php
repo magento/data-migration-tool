@@ -3,15 +3,15 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\App\Step;
 
 use Magento\Framework\ObjectManagerInterface;
 use Migration\Exception;
 
 /**
- * Class StepFactory
+ * Class Factory
  */
-class StepFactory
+class Factory
 {
     /**
      * @var \Migration\Config

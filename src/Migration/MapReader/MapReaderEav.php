@@ -21,7 +21,7 @@ class MapReaderEav extends MapReaderAbstract
         $this->init($this->config->getOption('eav_map_file'));
     }
 
-// @codeCoverageIgnoreStart
+    // @codeCoverageIgnoreStart
 
     /**
      * EAV tables mapping
@@ -103,5 +103,5 @@ class MapReaderEav extends MapReaderAbstract
             'enterprise_rma_item_eav_attribute'
         ];
     }
-// @codeCoverageIgnoreEnd
+    // @codeCoverageIgnoreEnd
 }

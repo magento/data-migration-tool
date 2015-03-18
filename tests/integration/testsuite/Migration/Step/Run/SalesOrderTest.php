@@ -7,6 +7,7 @@ namespace Migration\Step\Run;
 
 /**
  * SalesOrder step run test class
+ * @dbFixture sales_order
  */
 class SalesOrderTest extends \PHPUnit_Framework_TestCase
 {
@@ -68,7 +69,7 @@ class SalesOrderTest extends \PHPUnit_Framework_TestCase
         $runSalesOrder = $objectManager->create('\Migration\Step\Run\SalesOrder');
         $volumeSalesOrder = $objectManager->create('\Migration\Step\Volume\SalesOrder');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader');
+        $mapReader = $objectManager->create('\Migration\MapReader\MapReaderSalesOrder');
         $config = $objectManager->get('\Migration\Config');
         $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
         $destination = $objectManager->get('\Migration\Resource\Destination');

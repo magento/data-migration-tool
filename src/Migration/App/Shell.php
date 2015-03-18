@@ -23,12 +23,12 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $logManager;
 
     /**
-     * @var \Migration\Step\StepManager
+     * @var Step\Manager
      */
     protected $stepManager;
 
     /**
-     * @var \Migration\Step\ProgressStep
+     * @var Step\Progress
      */
     protected $progressStep;
 
@@ -40,19 +40,19 @@ class Shell extends \Magento\Framework\App\AbstractShell
     /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Config $config
-     * @param \Migration\Step\StepManager $stepManager
+     * @param Step\Manager $stepManager
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Logger\Manager $logManager
-     * @param \Migration\Step\ProgressStep $progressStep
+     * @param Step\Progress $progressStep
      * @param string $entryPoint
      */
     public function __construct(
         \Magento\Framework\Filesystem $filesystem,
         \Migration\Config $config,
-        \Migration\Step\StepManager $stepManager,
+        Step\Manager $stepManager,
         \Migration\Logger\Logger $logger,
         \Migration\Logger\Manager $logManager,
-        \Migration\Step\ProgressStep $progressStep,
+        Step\Progress $progressStep,
         $entryPoint
     ) {
         $this->logger = $logger;

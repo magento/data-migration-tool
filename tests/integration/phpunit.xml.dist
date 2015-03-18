@@ -13,9 +13,8 @@
     <testsuite name="Migration tool Integration Tests">
         <directory suffix="Test.php">testsuite</directory>
     </testsuite>
-    <php>
-        <const name="CLEANUP_DATABASE" value="true"/>
-        <const name="DB_DUMP_SOURCE" value="resource/source.sql"/>
-        <const name="DB_DUMP_DESTINATION" value="resource/dest.sql"/>
-    </php>
+    <!-- Test listeners -->
+    <listeners>
+        <listener class="Migration\TestFramework\Listener"/>
+    </listeners>
 </phpunit>
