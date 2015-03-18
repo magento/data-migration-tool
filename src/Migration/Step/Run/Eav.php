@@ -16,7 +16,6 @@ use Migration\Resource\Source;
 use Migration\Step\Eav\Helper;
 use Migration\Step\Eav\InitialData;
 
-
 /**
  * Class Eav
  * @codeCoverageIgnoreStart

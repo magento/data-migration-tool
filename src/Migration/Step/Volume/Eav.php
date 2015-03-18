@@ -86,6 +86,17 @@ class Eav
      */
     public function validateAttributes()
     {
+        $result = $this->validateEavAttributes();
+        $result &= $this->validateCatalogEavAttributes();
+        $result &= $this->validateCustomerEavAttributes();
+        return (bool)$result;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function validateEavAttributes()
+    {
         $result = true;
         $sourceAttrbutes = $this->initialData->getAttributes('source');
         foreach ($this->helper->getDestinationRecords('eav_attribute') as $attribute) {
@@ -106,6 +117,15 @@ class Eav
             }
         }
 
+        return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function validateCustomerEavAttributes()
+    {
+        $result = true;
         foreach ($this->helper->getDestinationRecords('customer_eav_attribute') as $attribute) {
             foreach (['data_model'] as $field) {
                 if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
@@ -115,7 +135,15 @@ class Eav
                 }
             }
         }
+        return $result;
+    }
 
+    /**
+     * @return bool
+     */
+    protected function validateCatalogEavAttributes()
+    {
+        $result = true;
         foreach ($this->helper->getDestinationRecords('catalog_eav_attribute') as $attribute) {
             foreach (['frontend_input_renderer'] as $field) {
                 if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
@@ -125,7 +153,6 @@ class Eav
                 }
             }
         }
-
         return $result;
     }
 

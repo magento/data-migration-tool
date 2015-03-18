@@ -626,14 +626,12 @@
             <ignore>
                 <document>sales_flat_order</document>
             </ignore>
-            <!--<rename>-->
-                <!--<document>admin_role</document>-->
-                <!--<to>authorization_role</to>-->
-            <!--</rename>-->
-            <!--<rename>-->
-                <!--<document>admin_rule</document>-->
-                <!--<to>authorization_rule</to>-->
-            <!--</rename>-->
+            <ignore>
+                <document>admin_role</document>
+            </ignore>
+            <ignore>
+                <document>admin_rule</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>

@@ -21,7 +21,7 @@ class MapReaderLog extends MapReaderAbstract
         $this->init($this->config->getOption('log_map_file'));
     }
 
-// @codeCoverageIgnoreStart
+    // @codeCoverageIgnoreStart
 
     /**
      * EAV tables mapping
@@ -52,5 +52,5 @@ class MapReaderLog extends MapReaderAbstract
     {
         return ['log_visitor' => 'customer_visitor'];
     }
-// @codeCoverageIgnoreEnd
+    // @codeCoverageIgnoreEnd
 }

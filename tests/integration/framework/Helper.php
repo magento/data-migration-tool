@@ -34,12 +34,7 @@ class Helper
     /**
      * @var string
      */
-    protected $dbDumpSourcePath;
-
-    /**
-     * @var string
-     */
-    protected $dbDumpDestinationPath;
+    protected $dbFixturePath;
 
     /**
      * @var string
@@ -47,29 +42,34 @@ class Helper
     public $configPath;
 
     /**
-     * @var bool
+     * @var string
      */
-    protected $doCleanup;
+    protected $testSuite;
+
+    /**
+     * @var array
+     */
+    protected $testFixtures;
+
+    /**
+     * @var string
+     */
+    protected $currentFixture;
 
     /**
      * @param \Magento\Framework\Shell $shell
      * @param $magentoDir
-     * @param $dbDumpSourcePath
-     * @param $dbDumpDestinationPath
+     * @param $dbFixturePath
      * @throws \Exception
      */
     public function __construct(
         \Magento\Framework\Shell $shell,
         $magentoDir,
-        $dbDumpSourcePath,
-        $dbDumpDestinationPath
+        $dbFixturePath
     ) {
         $this->shell = $shell;
         $this->magentoDir = $magentoDir;
-        $this->dbDumpSourcePath = $dbDumpSourcePath;
-        $this->dbDumpDestinationPath = $dbDumpDestinationPath;
-        $this->doCleanup = defined(CLEANUP_DATABASE) ? CLEANUP_DATABASE : true;
-        $this->reinstallDb();
+        $this->dbFixturePath = $dbFixturePath;
     }
 
     /**
@@ -82,13 +82,11 @@ class Helper
         if (!self::$instance) {
             $shell = new \Magento\Framework\Shell(new \Magento\Framework\Shell\CommandRenderer());
             $magentoDir = require __DIR__ . '/../../../etc/magento_path.php';
-            $dbDumpSourcePath = __DIR__ . '/../' . DB_DUMP_SOURCE;
-            $dbDumpDestinationPath = __DIR__ . '/../' . DB_DUMP_DESTINATION;
+            $dbFixturePath = __DIR__ . '/../resource/';
             self::$instance = new Helper(
                 $shell,
                 $magentoDir,
-                $dbDumpSourcePath,
-                $dbDumpDestinationPath
+                $dbFixturePath
             );
         }
         return self::$instance;
@@ -122,46 +120,53 @@ class Helper
     /**
      * Reinstall Db for source and destination
      *
+     * @param string $fixturePath
      * @throws \Exception
      * @throws \Magento\Framework\Exception
      */
-    protected function reinstallDb()
+    protected function reinstallDb($fixturePath)
     {
         $mysqlConfigPath = dirname(__DIR__) . '/etc/mysql.php';
         if (!is_file($mysqlConfigPath)) {
             throw new \Exception('Database configuration file does not exists: ' . $mysqlConfigPath);
         }
-        $config = include $mysqlConfigPath;
-        if ($this->doCleanup) {
-            $this->shell->execute(
-                'mysql --host=%s --user=%s --password=%s -e %s',
-                [
-                    $config['source_db_host'],
-                    $config['source_db_user'],
-                    $config['source_db_pass'],
-                    "DROP DATABASE IF EXISTS `{$config['source_db_name']}`"
-                ]
-            );
-            $this->shell->execute(
-                'mysql --host=%s --user=%s --password=%s -e %s',
-                [
-                    $config['source_db_host'],
-                    $config['source_db_user'],
-                    $config['source_db_pass'],
-                    "CREATE DATABASE IF NOT EXISTS `{$config['source_db_name']}`"
-                ]
-            );
-            $this->shell->execute(
-                'mysql --host=%s --user=%s --password=%s --database=%s < %s',
-                [
-                    $config['source_db_host'],
-                    $config['source_db_user'],
-                    $config['source_db_pass'],
-                    $config['source_db_name'],
-                    $this->dbDumpSourcePath
-                ]
-            );
+        $resourceSource = $fixturePath . '/source.sql';
+        $resourceDestination = $fixturePath . '/dest.sql';
+        if (file_exists($this->dbFixturePath . $fixturePath)) {
+            $resourceSource = $this->dbFixturePath . $fixturePath . '/source.sql';
+            $resourceDestination = $this->dbFixturePath . $fixturePath . '/dest.sql';
+        } elseif (!file_exists($fixturePath)) {
+            throw new \Exception('Database fixture not found: ' . $fixturePath);
         }
+        $config = include $mysqlConfigPath;
+        $this->shell->execute(
+            'mysql --host=%s --user=%s --password=%s -e %s',
+            [
+                $config['source_db_host'],
+                $config['source_db_user'],
+                $config['source_db_pass'],
+                "DROP DATABASE IF EXISTS `{$config['source_db_name']}`"
+            ]
+        );
+        $this->shell->execute(
+            'mysql --host=%s --user=%s --password=%s -e %s',
+            [
+                $config['source_db_host'],
+                $config['source_db_user'],
+                $config['source_db_pass'],
+                "CREATE DATABASE IF NOT EXISTS `{$config['source_db_name']}`"
+            ]
+        );
+        $this->shell->execute(
+            'mysql --host=%s --user=%s --password=%s --database=%s < %s',
+            [
+                $config['source_db_host'],
+                $config['source_db_user'],
+                $config['source_db_pass'],
+                $config['source_db_name'],
+                $resourceSource
+            ]
+        );
         $this->shell->execute(
             'mysql --host=%s --user=%s --password=%s -e %s',
             [
@@ -187,7 +192,7 @@ class Helper
                 $config['dest_db_user'],
                 $config['dest_db_pass'],
                 $config['dest_db_name'],
-                $this->dbDumpDestinationPath
+                $resourceDestination
             ]
         );
     }
@@ -200,5 +205,37 @@ class Helper
     public function getConfigPath()
     {
         return $this->configPath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTestSuite()
+    {
+        return $this->testSuite;
+    }
+
+    /**
+     * @param string $testSuite
+     * @return $this
+     */
+    public function setTestSuite($testSuite)
+    {
+        $this->testSuite = $testSuite;
+        return $this;
+    }
+
+    public function loadFixture($annotations)
+    {
+        $fixture = 'default';
+        $annotations = array_replace($annotations['class'], $annotations['method']);
+        if (!empty($annotations['dbFixture'])) {
+            $fixture = reset($annotations['dbFixture']);
+        }
+        if (!isset($this->testFixtures[$this->getTestSuite()]) || $this->currentFixture != $fixture) {
+            $this->reinstallDb($fixture);
+            $this->testFixtures[$this->getTestSuite()] = $fixture;
+            $this->currentFixture = $fixture;
+        }
     }
 }
