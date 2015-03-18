@@ -7,6 +7,7 @@ namespace Migration\Step;
 
 use Migration\Exception;
 use Migration\MapReader;
+use Migration\App\Step\StepInterface;
 
 /**
  * Class Map

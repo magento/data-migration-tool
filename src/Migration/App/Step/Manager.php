@@ -8,7 +8,6 @@ namespace Migration\App\Step;
 use Migration\Logger\Logger;
 use Migration\Config;
 use Migration\Exception;
-use Migration\Step\StepInterface;
 
 /**
  * Class Manager

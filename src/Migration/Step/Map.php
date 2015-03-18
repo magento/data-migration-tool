@@ -5,6 +5,8 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\StepInterface;
+
 /**
  * Class Map
  */

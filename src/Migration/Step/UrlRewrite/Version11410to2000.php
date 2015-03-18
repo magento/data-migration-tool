@@ -5,9 +5,10 @@
  */
 namespace Migration\Step\UrlRewrite;
 
+use Migration\App\Step\StepInterface;
 use Migration\Step\DatabaseStep;
 
-class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInterface
+class Version11410to2000 extends DatabaseStep implements StepInterface
 {
     /**
      * Temporary table name

@@ -36,7 +36,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface');
+        $step = $this->getMock('\Migration\App\Step\StepInterface');
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($step));
         $this->assertSame($step, $this->factory->create('\Migration\Steps\Integrity'));
     }

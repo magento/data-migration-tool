@@ -7,7 +7,6 @@ namespace Migration\App\Step;
 
 use Magento\Framework\ObjectManagerInterface;
 use Migration\Exception;
-use Migration\Step\StepInterface;
 
 /**
  * Class Factory

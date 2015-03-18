@@ -5,8 +5,6 @@
  */
 namespace Migration\App\Step;
 
-use Migration\Step\StepInterface;
-
 /**
  * Class ProgressStep
  */

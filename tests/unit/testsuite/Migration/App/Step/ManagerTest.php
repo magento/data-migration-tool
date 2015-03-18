@@ -56,7 +56,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testRunStepsIntegrityFail()
     {
         $this->setExpectedException('Migration\Exception', 'Integrity Check failed');
-        $step = $this->getMockBuilder('\Migration\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(false));
         $step->expects($this->never())->method('run');
@@ -72,7 +72,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testRunStepsVolumeFail()
     {
         $this->setExpectedException('Migration\Exception', 'Volume Check failed');
-        $step = $this->getMockBuilder('\Migration\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run')->will($this->returnValue(true));
@@ -91,7 +91,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testRunStepsDataMigrationFail()
     {
         $this->setExpectedException('Migration\Exception', 'Data Migration failed');
-        $step = $this->getMockBuilder('\Migration\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run')->will($this->returnValue(false));
@@ -109,7 +109,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRunStepsSuccess()
     {
-        $step = $this->getMockBuilder('\Migration\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run')->will($this->returnValue(true));
@@ -129,7 +129,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function testRunStepsWithSuccessProgress()
     {
-        $step = $this->getMockBuilder('\Migration\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->never())->method('integrity');
         $step->expects($this->never())->method('run');
