@@ -13,29 +13,29 @@ use Migration\App\Step\StepInterface;
 class Log implements StepInterface
 {
     /**
-     * @var Integrity\Log
+     * @var Log\Integrity
      */
     protected $integrityCheck;
 
     /**
-     * @var Run\Log
+     * @var Log\Migrate
      */
     protected $dataMigration;
 
     /**
-     * @var Volume\Log
+     * @var Log\Volume
      */
     protected $volumeCheck;
 
     /**
-     * @param Integrity\Log $integrity
-     * @param Run\Log $dataMigration
-     * @param Volume\Log $volumeCheck
+     * @param Log\Integrity $integrity
+     * @param Log\Migrate $dataMigration
+     * @param Log\Volume $volumeCheck
      */
     public function __construct(
-        Integrity\Log $integrity,
-        Run\Log $dataMigration,
-        Volume\Log $volumeCheck
+        Log\Integrity $integrity,
+        Log\Migrate $dataMigration,
+        Log\Volume $volumeCheck
     ) {
         $this->integrityCheck = $integrity;
         $this->dataMigration = $dataMigration;

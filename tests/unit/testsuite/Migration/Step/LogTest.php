@@ -13,17 +13,17 @@ use Migration\MapReader\MapReaderLog;
 class LogTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Integrity\Log|\PHPUnit_Framework_MockObject_MockObject
+     * @var Log\Integrity|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $integrity;
 
     /**
-     * @var Run\Log|\PHPUnit_Framework_MockObject_MockObject
+     * @var Log\Migrate|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $run;
 
     /**
-     * @var Volume\Log|\PHPUnit_Framework_MockObject_MockObject
+     * @var Log\Volume|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $volume;
 
@@ -39,9 +39,9 @@ class LogTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->integrity = $this->getMock('Migration\Step\Integrity\Log', ['perform'], [], '', false);
-        $this->run = $this->getMock('Migration\Step\Run\Log', ['perform'], [], '', false);
-        $this->volume = $this->getMock('Migration\Step\Volume\Log', ['perform'], [], '', false);
+        $this->integrity = $this->getMock('Migration\Step\Log\Integrity', ['perform'], [], '', false);
+        $this->run = $this->getMock('Migration\Step\Log\Migrate', ['perform'], [], '', false);
+        $this->volume = $this->getMock('Migration\Step\Log\Volume', ['perform'], [], '', false);
         $this->log = new Log(
             $this->integrity,
             $this->run,

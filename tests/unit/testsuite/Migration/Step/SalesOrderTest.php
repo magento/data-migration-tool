@@ -13,17 +13,17 @@ use Migration\MapReader;
 class SalesOrderTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Integrity\SalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var SalesOrder\Integrity|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $integrity;
 
     /**
-     * @var Run\SalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var SalesOrder\Migrate|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $run;
 
     /**
-     * @var Volume\SalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var SalesOrder\Volume|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $volume;
 
@@ -39,9 +39,9 @@ class SalesOrderTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->integrity = $this->getMock('Migration\Step\Integrity\SalesOrder', ['perform'], [], '', false);
-        $this->run = $this->getMock('Migration\Step\Run\SalesOrder', ['perform'], [], '', false);
-        $this->volume = $this->getMock('Migration\Step\Volume\SalesOrder', ['perform'], [], '', false);
+        $this->integrity = $this->getMock('Migration\Step\SalesOrder\Integrity', ['perform'], [], '', false);
+        $this->run = $this->getMock('Migration\Step\SalesOrder\Migrate', ['perform'], [], '', false);
+        $this->volume = $this->getMock('Migration\Step\SalesOrder\Volume', ['perform'], [], '', false);
         $this->initialData = $this->getMock('Migration\Step\SalesOrder\InitialData', ['init'], [], '', false);
         $this->salesOrder = new SalesOrder(
             $this->integrity,

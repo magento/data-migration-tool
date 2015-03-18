@@ -13,29 +13,29 @@ use Migration\App\Step\StepInterface;
 class Map implements StepInterface
 {
     /**
-     * @var Integrity\Map
+     * @var Map\Integrity
      */
     protected $integrity;
 
     /**
-     * @var Run\Map
+     * @var Map\Migrate
      */
     protected $run;
 
     /**
-     * @var Volume\Map
+     * @var Map\Volume
      */
     protected $volume;
 
     /**
-     * @param Integrity\Map $integrity
-     * @param Run\Map $run
-     * @param Volume\Map $volume
+     * @param Map\Integrity $integrity
+     * @param Map\Migrate $run
+     * @param Map\Volume $volume
      */
     public function __construct(
-        Integrity\Map $integrity,
-        Run\Map $run,
-        Volume\Map $volume
+        Map\Integrity $integrity,
+        Map\Migrate $run,
+        Map\Volume $volume
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
