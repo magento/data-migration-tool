@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\StepManagement;
+namespace Migration\App\Step;
 
 use Migration\Step\StepInterface;
 
@@ -97,7 +97,7 @@ class Progress
      */
     protected function getLockFile()
     {
-        $lockFileDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR .'var';
+        $lockFileDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR .'var';
         $lockFile = $lockFileDir . DIRECTORY_SEPARATOR . $this->lockFileName;
         if (!$this->filesystem->isExists($lockFile)) {
             $this->filesystem->filePutContents($lockFile, 0);

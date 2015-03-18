@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\StepManagement;
+namespace Migration\App\Step;
 
 /**
  * Class ProgressStepTest
@@ -17,7 +17,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     protected $filesystem;
 
     /**
-     * @var \Migration\StepManagement\Progress
+     * @var \Migration\App\Step\Progress
      */
     protected $progressStep;
 

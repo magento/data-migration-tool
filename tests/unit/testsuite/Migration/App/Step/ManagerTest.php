@@ -4,7 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\StepManagement;
+namespace Migration\App\Step;
 
 /**
  * Class ManagerTest
@@ -17,7 +17,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     protected $manager;
 
     /**
-     * @var \Migration\StepManagement\Factory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Step\Factory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $factory;
 
@@ -32,13 +32,13 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\StepManagement\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
     public function setUp()
     {
-        $this->factory = $this->getMockBuilder('\Migration\StepManagement\Factory')->disableOriginalConstructor()
+        $this->factory = $this->getMockBuilder('\Migration\App\Step\Factory')->disableOriginalConstructor()
             ->setMethods(['getSteps', 'create'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
@@ -47,7 +47,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods(['getSteps'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\StepManagement\Progress')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'resetStep'])
             ->getMock();
         $this->manager = new Manager($this->progress, $this->logger, $this->factory, $this->config);
