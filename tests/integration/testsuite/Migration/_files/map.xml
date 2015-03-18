@@ -9,33 +9,6 @@
     <source>
         <document_rules>
             <ignore>
-                <document>catalog_category_entity_url_key</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_url_key</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_website</document>
-            </ignore>
-            <ignore>
-                <document>core_config_data</document>
-            </ignore>
-            <ignore>
-                <document>core_store</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_url_rewrite</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_url_rewrite_redirect</document>
-            </ignore>
-            <ignore>
-                <document>url_rewrite_m2*</document>
-            </ignore>
-            <ignore>
                 <document>source_table_ignored</document>
             </ignore>
             <ignore>
@@ -80,15 +53,6 @@
             </ignore>
             <ignore>
                 <document>dest_table_*</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_varchar</document>
-            </ignore>
-            <ignore>
-                <document>url_rewrite</document>
             </ignore>
             <ignore>
                 <document>sales_order</document>

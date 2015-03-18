@@ -8,6 +8,7 @@ namespace Migration\Step;
 
 /**
  * Integrity step test class
+ * @dbFixture default
  */
 class MapTest extends \PHPUnit_Framework_TestCase
 {
@@ -21,7 +22,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $runMap = $objectManager->create('\Migration\Step\Run\Map');
         $volume = $objectManager->create('\Migration\Step\Volume\Map');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader');
+        $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
@@ -56,7 +57,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $runMap = $objectManager->create('\Migration\Step\Run\Map');
         $volume = $objectManager->create('\Migration\Step\Volume\Map');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader');
+        $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);

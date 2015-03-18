@@ -8,6 +8,7 @@ namespace Migration\Step\UrlRewrite;
 
 /**
  * Migrate step test class
+ * @dbFixture url_rewrite
  */
 class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 {
