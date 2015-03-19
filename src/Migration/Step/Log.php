@@ -14,31 +14,31 @@ use Migration\App\Step\DeltaInterface;
 class Log extends DatabaseStep implements DeltaInterface
 {
     /**
-     * @var Integrity\Log
+     * @var Log\Integrity
      */
     protected $integrityCheck;
 
     /**
-     * @var Run\Log
+     * @var Log\Migrate
      */
     protected $dataMigration;
 
     /**
-     * @var Volume\Log
+     * @var Log\Volume
      */
     protected $volumeCheck;
 
     /**
      * @param Config $config
-     * @param Integrity\Log $integrity
-     * @param Run\Log $dataMigration
-     * @param Volume\Log $volumeCheck
+     * @param Log\Integrity $integrity
+     * @param Log\Migrate $dataMigration
+     * @param Log\Volume $volumeCheck
      */
     public function __construct(
         Config $config,
-        Integrity\Log $integrity,
-        Run\Log $dataMigration,
-        Volume\Log $volumeCheck
+        Log\Integrity $integrity,
+        Log\Migrate $dataMigration,
+        Log\Volume $volumeCheck
     ) {
         parent::__construct($config);
         $this->integrityCheck = $integrity;

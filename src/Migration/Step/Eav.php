@@ -14,17 +14,17 @@ use Migration\Config;
 class Eav extends DatabaseStep implements RollbackInterface
 {
     /**
-     * @var Integrity\Eav
+     * @var Eav\Integrity
      */
     protected $integrityCheck;
 
     /**
-     * @var Run\Eav
+     * @var Eav\Migrate
      */
     protected $dataMigration;
 
     /**
-     * @var Volume\Eav
+     * @var Eav\Volume
      */
     protected $volumeCheck;
 
@@ -36,16 +36,16 @@ class Eav extends DatabaseStep implements RollbackInterface
     /**
      * @param Config $config
      * @param Eav\InitialData $initialData
-     * @param Integrity\Eav $integrity
-     * @param Run\Eav $dataMigration
-     * @param Volume\Eav $volumeCheck
+     * @param Eav\Integrity $integrity
+     * @param Eav\Migrate $dataMigration
+     * @param Eav\Volume $volumeCheck
      */
     public function __construct(
         Config $config,
         Eav\InitialData $initialData,
-        Integrity\Eav $integrity,
-        Run\Eav $dataMigration,
-        Volume\Eav $volumeCheck
+        Eav\Integrity $integrity,
+        Eav\Migrate $dataMigration,
+        Eav\Volume $volumeCheck
     ) {
         parent::__construct($config);
         $this->initialData = $initialData;

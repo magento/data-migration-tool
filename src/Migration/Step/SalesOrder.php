@@ -11,22 +11,22 @@ use Migration\Config;
 use Migration\App\Step\DeltaInterface;
 
 /**
- * Class Map
+ * Class SalesOrder
  */
 class SalesOrder extends DatabaseStep implements DeltaInterface
 {
     /**
-     * @var Integrity\SalesOrder
+     * @var SalesOrder\Integrity
      */
     protected $integrity;
 
     /**
-     * @var Run\SalesOrder
+     * @var SalesOrder\Migrate
      */
     protected $run;
 
     /**
-     * @var Volume\SalesOrder
+     * @var SalesOrder\Volume
      */
     protected $volume;
 
@@ -37,16 +37,16 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
 
     /**
      * @param Config $config
-     * @param Integrity\SalesOrder $integrity
-     * @param Run\SalesOrder $run
-     * @param Volume\SalesOrder $volume
+     * @param SalesOrder\Integrity $integrity
+     * @param SalesOrder\Migrate $run
+     * @param SalesOrder\Volume $volume
      * @param SalesOrder\InitialData $initialData
      */
     public function __construct(
         Config $config,
-        Integrity\SalesOrder $integrity,
-        Run\SalesOrder $run,
-        Volume\SalesOrder $volume,
+        SalesOrder\Integrity $integrity,
+        SalesOrder\Migrate $run,
+        SalesOrder\Volume $volume,
         SalesOrder\InitialData $initialData
     ) {
         parent::__construct($config);
