@@ -43,4 +43,11 @@ interface StepInterface
      * @return string
      */
     public function getTitle();
+
+    /**
+     * Setup delta
+     *
+     * @return bool
+     */
+    public function setUpDelta();
 }

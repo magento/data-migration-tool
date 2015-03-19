@@ -250,6 +250,24 @@ abstract class MapReaderAbstract implements MapReaderInterface
     }
 
     /**
+     * @param array $documents
+     * @return array
+     */
+    public function getDeltaDocuments($documents)
+    {
+        foreach ($documents as $document) {
+            if ($this->isDocumentMaped($document, MapReaderInterface::TYPE_SOURCE)) {
+                $queryResult = $this->xml->query(sprintf('//source/document_rules/log_changes/*[text()="%s"]', $document));
+                if ($queryResult->length > 0) {
+                    $result[] = $document;
+                }
+            }
+        }
+        return $result;
+
+    }
+
+    /**
      * @param string $type
      * @return bool
      * @throws Exception

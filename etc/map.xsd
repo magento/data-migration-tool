@@ -33,6 +33,8 @@
         <xs:choice minOccurs="1" maxOccurs="unbounded">
             <xs:element name="rename" type="renameDocumentType" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="log_changes" type="logChangesDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+
         </xs:choice>
     </xs:complexType>
 
@@ -52,6 +54,12 @@
         <xs:sequence>
             <xs:element name="document" type="notEmptyString" />
             <xs:element name="to" type="notEmptyString" />
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="logChangesDocumentType">
+        <xs:sequence>
+            <xs:element name="document" type="notEmptyString" />
         </xs:sequence>
     </xs:complexType>
 

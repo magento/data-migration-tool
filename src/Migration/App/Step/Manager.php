@@ -72,6 +72,9 @@ class Manager
         }
 
         foreach ($stepInstances as $step) {
+            $this->runStep($step, 'delta');
+        }
+        foreach ($stepInstances as $step) {
             if (!$this->runStep($step, 'data migration')) {
                 $this->logger->info(PHP_EOL . 'Error occured. Rollback.');
                 $this->runStep($step, 'rollback');
@@ -120,6 +123,9 @@ class Manager
                     $this->progress->resetStep($step);
                     $this->logger->info(PHP_EOL . 'Please fix errors and run Migration Tool again');
                     break;
+                case 'delta':
+                    $step->setUpDelta();
+
             }
         } catch (\Exception $e) {
             $this->logger->error(PHP_EOL . $e->getMessage());

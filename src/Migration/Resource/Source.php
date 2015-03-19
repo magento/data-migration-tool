@@ -48,4 +48,14 @@ class Source extends AbstractResource
     {
         return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
     }
+
+    /**
+     * Create delta for specified table
+     *
+     * @param string $documentName
+     */
+    public function createDelta($documentName)
+    {
+        return $this->adapter->createDelta($documentName);
+    }
 }

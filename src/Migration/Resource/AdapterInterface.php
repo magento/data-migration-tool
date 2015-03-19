@@ -85,4 +85,12 @@ interface AdapterInterface
      * @return void
      */
     public function deleteBackup($documentName);
+
+    /**
+     * Create delta for specified tables
+     *
+     * @param string $documentName
+     * @return void
+     */
+    public function createDelta($documentName);
 }

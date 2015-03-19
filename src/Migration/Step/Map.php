@@ -10,7 +10,7 @@ use Migration\App\Step\StepInterface;
 /**
  * Class Map
  */
-class Map implements StepInterface
+class Map implements StepInterface, ChangeLogInterface
 {
     /**
      * @var Map\Integrity
