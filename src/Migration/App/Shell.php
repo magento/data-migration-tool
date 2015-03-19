@@ -38,6 +38,11 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $config;
 
     /**
+     * @var array
+     */
+    public $modes = ['migration', 'delta', 'settings'];
+
+    /**
      * @param \Magento\Framework\Filesystem $filesystem
      * @param \Migration\Config $config
      * @param Step\Manager $stepManager
@@ -87,17 +92,18 @@ class Shell extends \Magento\Framework\App\AbstractShell
                 $this->logger->info('Loaded default config file');
                 $this->config->init();
             }
-
-            if ($this->getArg('type')) {
-                $this->logger->info($this->getArg('type'));
+            $mode = $this->getArg('mode');
+            if (!$mode || !in_array($mode, $this->modes)) {
+                throw new Exception('option "mode" is not specified or inappropriate. See help information');
             }
+            $this->logger->info('Running mode: ' . $mode);
             $reset = $this->getArg('reset');
             if ($reset) {
                 $this->logger->info('Current progress will be removed');
                 $this->progressStep->clearLockFile();
             }
 
-            $this->stepManager->runSteps();
+            $this->stepManager->runSteps($mode);
         } catch (Exception $e) {
             $this->logger->error('Migration tool exception: ' . $e->getMessage());
         } catch (\Exception $e) {
@@ -112,14 +118,15 @@ class Shell extends \Magento\Framework\App\AbstractShell
      */
     public function getUsageHelp()
     {
+        $modes = implode(', ', $this->modes);
         return <<<USAGE
 Usage:  php -f {$this->_entryPoint} -- [options]
 
+  --mode <value>      Required option. Type of operation: {$modes}
   --config <value>    Path to main configuration file
-  --type <value>      Type of operation: migration or delta delivery
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
   --reset             Remove steps progress
-  help              This help
+  --help              This help
 
 USAGE;
     }

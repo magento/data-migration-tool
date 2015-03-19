@@ -6,11 +6,12 @@
 namespace Migration\Step;
 
 use Migration\App\Step\StepInterface;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class Map
  */
-class Map implements StepInterface
+class Map implements StepInterface, DeltaInterface
 {
     /**
      * @var Integrity\Map
@@ -77,7 +78,15 @@ class Map implements StepInterface
     /**
      * @inheritdoc
      */
-    public function rollback()
+    public function delta()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setupTriggers()
     {
         return true;
     }

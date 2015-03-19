@@ -182,12 +182,4 @@ class Ratings extends DatabaseStep
     {
         return $this->destination->addDocumentPrefix(self::RATING_STORE_TABLE_NAME);
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback()
-    {
-        return true;
-    }
 }

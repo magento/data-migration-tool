@@ -63,12 +63,4 @@ class UrlRewrite extends DatabaseStep
     {
         return $this->rewriteVersion->getTitle();
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback()
-    {
-        throw new Exception('Rollback is impossible for ' . $this->getTitle());
-    }
 }

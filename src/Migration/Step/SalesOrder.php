@@ -7,12 +7,13 @@ namespace Migration\Step;
 
 use Migration\Exception;
 use Migration\MapReader;
-use Migration\App\Step\StepInterface;
+use Migration\Config;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class Map
  */
-class SalesOrder implements StepInterface
+class SalesOrder extends DatabaseStep implements DeltaInterface
 {
     /**
      * @var Integrity\SalesOrder
@@ -35,17 +36,20 @@ class SalesOrder implements StepInterface
     protected $initialData;
 
     /**
+     * @param Config $config
      * @param Integrity\SalesOrder $integrity
      * @param Run\SalesOrder $run
      * @param Volume\SalesOrder $volume
      * @param SalesOrder\InitialData $initialData
      */
     public function __construct(
+        Config $config,
         Integrity\SalesOrder $integrity,
         Run\SalesOrder $run,
         Volume\SalesOrder $volume,
         SalesOrder\InitialData $initialData
     ) {
+        parent::__construct($config);
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
@@ -88,8 +92,16 @@ class SalesOrder implements StepInterface
     /**
      * @inheritdoc
      */
-    public function rollback()
+    public function delta()
     {
-        throw new Exception('Rollback is impossible for ' . $this->getTitle());
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setupTriggers()
+    {
+        return true;
     }
 }

@@ -17,12 +17,12 @@
         <xs:annotation>
             <xs:documentation>Configuration root node</xs:documentation>
         </xs:annotation>
-        <xs:all>
-            <xs:element name="steps" type="stepsType" maxOccurs="1" minOccurs="1"/>
+        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="steps" type="stepsType" maxOccurs="3" minOccurs="1"/>
             <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1"/>
             <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1"/>
             <xs:element name="options" type="optionsType" maxOccurs="1" minOccurs="1"/>
-        </xs:all>
+        </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="stepsType">
@@ -32,6 +32,7 @@
         <xs:sequence maxOccurs="unbounded" minOccurs="0">
             <xs:element name="step" type="stepType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
+        <xs:attribute name="mode" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:simpleType name="stepType">

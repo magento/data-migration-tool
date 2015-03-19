@@ -5,12 +5,13 @@
  */
 namespace Migration\Step;
 
-use Migration\App\Step\StepInterface;
+use Migration\App\Step\RollbackInterface;
+use Migration\Config;
 
 /**
  * Class Eav
  */
-class Eav implements StepInterface
+class Eav extends DatabaseStep implements RollbackInterface
 {
     /**
      * @var Integrity\Eav
@@ -33,17 +34,20 @@ class Eav implements StepInterface
     protected $initialData;
 
     /**
+     * @param Config $config
      * @param Eav\InitialData $initialData
      * @param Integrity\Eav $integrity
      * @param Run\Eav $dataMigration
      * @param Volume\Eav $volumeCheck
      */
     public function __construct(
+        Config $config,
         Eav\InitialData $initialData,
         Integrity\Eav $integrity,
         Run\Eav $dataMigration,
         Volume\Eav $volumeCheck
     ) {
+        parent::__construct($config);
         $this->initialData = $initialData;
         $this->integrityCheck = $integrity;
         $this->dataMigration = $dataMigration;

@@ -65,12 +65,13 @@ class Config
     /**
      * Get list of steps
      *
+     * @param string $mode
      * @return array
      */
-    public function getSteps()
+    public function getSteps($mode)
     {
         $steps = [];
-        foreach ($this->config->query('//steps/step') as $item) {
+        foreach ($this->config->query("//steps[@mode='{$mode}']/step") as $item) {
             $steps[] = $item->nodeValue;
         }
         return $steps;

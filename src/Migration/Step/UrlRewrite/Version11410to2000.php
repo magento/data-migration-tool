@@ -886,12 +886,4 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $select->getAdapter()->query($query);
         $this->dataInitialized = true;
     }
-
-    /**
-     * @return mixed
-     */
-    public function rollback()
-    {
-        // TODO: Implement rollback() method.
-    }
 }

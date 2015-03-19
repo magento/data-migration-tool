@@ -11,11 +11,13 @@ use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
+use Migration\Config;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class CustomerAttributesSalesFlat
  */
-class CustomCustomerAttributes extends DatabaseStep
+class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface
 {
     /**
      * @var Source
@@ -38,14 +40,14 @@ class CustomCustomerAttributes extends DatabaseStep
     protected $factory;
 
     /**
-     * @param \Migration\Config $config
+     * @param Config $config
      * @param Source $source
      * @param Destination $destination
      * @param ProgressBar $progress
      * @param RecordFactory $factory
      */
     public function __construct(
-        \Migration\Config $config,
+        Config $config,
         Source $source,
         Destination $destination,
         ProgressBar $progress,
@@ -177,7 +179,15 @@ class CustomCustomerAttributes extends DatabaseStep
     /**
      * @inheritdoc
      */
-    public function rollback()
+    public function delta()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setupTriggers()
     {
         return true;
     }

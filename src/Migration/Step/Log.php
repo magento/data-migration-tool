@@ -5,12 +5,13 @@
  */
 namespace Migration\Step;
 
-use Migration\App\Step\StepInterface;
+use Migration\Config;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class Log
  */
-class Log implements StepInterface
+class Log extends DatabaseStep implements DeltaInterface
 {
     /**
      * @var Integrity\Log
@@ -28,15 +29,18 @@ class Log implements StepInterface
     protected $volumeCheck;
 
     /**
+     * @param Config $config
      * @param Integrity\Log $integrity
      * @param Run\Log $dataMigration
      * @param Volume\Log $volumeCheck
      */
     public function __construct(
+        Config $config,
         Integrity\Log $integrity,
         Run\Log $dataMigration,
         Volume\Log $volumeCheck
     ) {
+        parent::__construct($config);
         $this->integrityCheck = $integrity;
         $this->dataMigration = $dataMigration;
         $this->volumeCheck = $volumeCheck;
@@ -77,7 +81,15 @@ class Log implements StepInterface
     /**
      * @inheritdoc
      */
-    public function rollback()
+    public function delta()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function setupTriggers()
     {
         return true;
     }
