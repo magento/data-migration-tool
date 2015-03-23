@@ -72,7 +72,9 @@ class Manager
         }
 
         foreach ($stepInstances as $step) {
-            $this->runStep($step, 'delta');
+            if ($step instanceof DeltaInterface) {
+                $this->runStep($step, 'delta');
+            }
         }
         foreach ($stepInstances as $step) {
             if (!$this->runStep($step, 'data migration')) {

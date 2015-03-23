@@ -8,11 +8,11 @@
 
 namespace Migration\Step\SalesOrder;
 
-use Migration\Step\DeltaInterface;
 use Migration\Resource\Source;
 use Migration\MapReader\MapReaderSalesOrder;
+use Migration\ProgressBar;
 
-class Delta implements DeltaInterface
+class Delta
 {
     /**
      * @var Source
@@ -25,13 +25,20 @@ class Delta implements DeltaInterface
     protected $mapReader;
 
     /**
+     * @var ProgressBar
+     */
+    protected $progress;
+
+    /**
      * @param Source $source
      * @param MapReaderSalesOrder $mapReader
+     * @param ProgressBar $progress
      */
-    public function __construct(Source $source, MapReaderSalesOrder $mapReader)
+    public function __construct(Source $source, MapReaderSalesOrder $mapReader, ProgressBar $progress)
     {
         $this->source = $source;
         $this->mapReader = $mapReader;
+        $this->progress = $progress;
     }
 
     /**
@@ -40,8 +47,11 @@ class Delta implements DeltaInterface
     public function setUpDelta()
     {
         $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
-        foreach ($deltaDocuments as $document) {
-            $this->source->createDelta($document);
+        $this->progress->start(count($deltaDocuments));
+        foreach ($deltaDocuments as $documentName => $idKey) {
+            $this->progress->advance();
+            $this->source->createDelta($documentName, $this->source->getChangeLogName($documentName), $idKey);
         }
+        $this->progress->finish();
     }
 } 

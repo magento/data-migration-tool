@@ -90,7 +90,9 @@ interface AdapterInterface
      * Create delta for specified tables
      *
      * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
      * @return void
      */
-    public function createDelta($documentName);
+    public function createDelta($documentName, $changeLogName, $idKey);
 }

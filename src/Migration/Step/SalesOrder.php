@@ -8,11 +8,12 @@ namespace Migration\Step;
 use Migration\Exception;
 use Migration\MapReader;
 use Migration\App\Step\StepInterface;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class SalesOrder
  */
-class SalesOrder implements StepInterface
+class SalesOrder implements StepInterface, DeltaInterface
 {
     /**
      * @var SalesOrder\Integrity
@@ -102,8 +103,8 @@ class SalesOrder implements StepInterface
     }
 
     /**
-     * @inheritdoc
-     */
+ * @inheritdoc
+ */
     public function setupDelta()
     {
         if ($this->delta->setUpDelta()) {

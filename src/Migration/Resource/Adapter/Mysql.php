@@ -205,13 +205,16 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
-     * @inheritdoc
+     * Create delta for specified table
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
      */
-    public function createDelta($documentName)
+    public function createDelta($documentName, $changeLogName, $idKey)
     {
-        $triggerTableName = $documentName . '_' . md5('change_log') . '_cl';
-        if (!$this->resourceAdapter->isTableExists($triggerTableName)) {
-            $triggerTable = $this->resourceAdapter->newTable($triggerTableName)
+        if (!$this->resourceAdapter->isTableExists($changeLogName)) {
+            $triggerTable = $this->resourceAdapter->newTable($changeLogName)
                 ->addColumn(
                     'id',
                     \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
@@ -223,7 +226,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
         }
         foreach (\Magento\Framework\DB\Ddl\Trigger::getListOfEvents() as $event) {
             $triggerName = 'trg_' . $documentName . '_' . strtolower($event);
-            $statement = $this->buildStatement($event, $triggerTableName);
+            $statement = $this->buildStatement($event, $idKey, $changeLogName);
             $trigger = $this->triggerFactory->create()
                 ->setName($triggerName)
                 ->setTime(\Magento\Framework\DB\Ddl\Trigger::TIME_AFTER)
@@ -242,14 +245,15 @@ class Mysql implements \Migration\Resource\AdapterInterface
 
     /**
      * @param string $event
+     * @param string $idKey
      * @param string $triggerTableName
      * @return string
      */
-    protected function buildStatement($event, $triggerTableName)
+    protected function buildStatement($event, $idKey, $triggerTableName)
     {
         $entityTime = ($event == \Magento\Framework\DB\Ddl\Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
-        return "INSERT INTO $triggerTableName VALUES ($entityTime.entity_id, '$event')"
-            ."ON DUPLICATE KEY UPDATE operation = '$event'";
+        return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
+        ."ON DUPLICATE KEY UPDATE operation = '$event'";
     }
 
     /**
@@ -258,7 +262,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
      */
     protected function isTriggerExist($triggerName)
     {
-        if (!isset($this->triggers[$this->schemaName])) {
+        if (!isset($this->triggers[$triggerName])) {
             $this->getTriggers();
         }
 
@@ -323,7 +327,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
      * @param string $row
      * @return mixed
      */
-    public function convertStatement($row)
+    protected function convertStatement($row)
     {
         $regex = '/(BEGIN)([\s\S]*?)(END.?)/';
         return preg_replace($regex, '$2', $row);
@@ -344,7 +348,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
      *
      * @return string
      */
-    public function getSchemaName()
+    protected function getSchemaName()
     {
         if (!$this->schemaName) {
             $this->schemaName = $this->getCurrentSchema();

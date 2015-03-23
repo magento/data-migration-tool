@@ -4,15 +4,15 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step;
+namespace Migration\App\Step;
 
 /**
- * Interface StepInterface
+ * Interface DeltaInterface
  */
 interface DeltaInterface
 {
     /**
-     * Set Up triggers for step tables
+     * Setup delta
      *
      * @return bool
      */

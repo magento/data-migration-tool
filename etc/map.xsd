@@ -56,13 +56,18 @@
             <xs:element name="to" type="notEmptyString" />
         </xs:sequence>
     </xs:complexType>
-
     <xs:complexType name="logChangesDocumentType">
-        <xs:sequence>
-            <xs:element name="document" type="notEmptyString" />
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="document" type="attributeKeyType" />
         </xs:sequence>
     </xs:complexType>
-
+    <xs:complexType name="attributeKeyType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="xs:string" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
     <xs:complexType name="sourceFieldRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
             <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded"/>

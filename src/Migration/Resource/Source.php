@@ -53,9 +53,11 @@ class Source extends AbstractResource
      * Create delta for specified table
      *
      * @param string $documentName
+     * @param string $changeLogName
+     * @param strin $idKey
      */
-    public function createDelta($documentName)
+    public function createDelta($documentName, $changeLogName, $idKey)
     {
-        return $this->adapter->createDelta($documentName);
+        return $this->adapter->createDelta($documentName, $changeLogName, $idKey);
     }
 }
