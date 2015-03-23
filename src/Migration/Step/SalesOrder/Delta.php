@@ -55,4 +55,4 @@ class Delta
         $this->progress->finish();
         return true;
     }
-} 
+}

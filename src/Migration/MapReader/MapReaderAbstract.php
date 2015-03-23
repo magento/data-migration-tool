@@ -255,6 +255,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
      */
     public function getDeltaDocuments($documents)
     {
+        $result = [];
         foreach ($documents as $document) {
             if ($this->isDocumentMaped($document, MapReaderInterface::TYPE_SOURCE)) {
                 $queryResult = $this->xml

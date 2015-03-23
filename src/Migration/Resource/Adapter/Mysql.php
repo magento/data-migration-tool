@@ -210,6 +210,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
      * @param string $documentName
      * @param string $changeLogName
      * @param string $idKey
+     * @return void
      */
     public function createDelta($documentName, $changeLogName, $idKey)
     {
@@ -231,7 +232,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
                 ->setName($triggerName)
                 ->setTime(\Magento\Framework\DB\Ddl\Trigger::TIME_AFTER)
                 ->setEvent($event)
-                ->setTable($this->resourceAdapter->getTableName($documentName));;
+                ->setTable($this->resourceAdapter->getTableName($documentName));
             if ($this->isTriggerExist($triggerName)) {
                 $oldTriggerStatement = $this->triggers[$triggerName]['action_statement'];
                 $trigger->addStatement($oldTriggerStatement);
@@ -257,7 +258,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
-     * @param $triggerName
+     * @param string $triggerName
      * @return bool
      */
     protected function isTriggerExist($triggerName)
@@ -278,8 +279,9 @@ class Mysql implements \Migration\Resource\AdapterInterface
      *
      * @return void
      */
-    protected function getTriggers(){
-        $columns = array(
+    protected function getTriggers()
+    {
+        $columns = [
             'TRIGGER_NAME',
             'EVENT_MANIPULATION',
             'EVENT_OBJECT_CATALOG',
@@ -294,10 +296,10 @@ class Mysql implements \Migration\Resource\AdapterInterface
             'ACTION_REFERENCE_NEW_TABLE',
             'ACTION_REFERENCE_OLD_ROW',
             'ACTION_REFERENCE_NEW_ROW',
-            'CREATED',
-        );
+            'CREATED'
+        ];
         $sql = 'SELECT ' . implode(', ', $columns)
-            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(array('INFORMATION_SCHEMA','TRIGGERS'))
+            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA','TRIGGERS'])
             . ' WHERE ';
 
         $schema = $this->getSchemaName();
@@ -311,7 +313,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
 
         $results = $this->resourceAdapter->query($sql);
 
-        $data = array();
+        $data = [];
         foreach ($results as $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $row['action_statement'] = $this->convertStatement($row['action_statement']);
