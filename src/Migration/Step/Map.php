@@ -96,18 +96,6 @@ class Map implements StepInterface, DeltaInterface
      */
     public function setupTriggers()
     {
-        return true;
-    }
-
-
-    /**
-     * @inheritdoc
-     */
-    public function setupDelta()
-    {
-        if ($this->delta->setUpDelta()) {
-            return true;
-        }
-        return false;
+        return $this->delta->setUpTriggers();
     }
 }

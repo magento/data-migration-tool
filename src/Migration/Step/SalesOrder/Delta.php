@@ -44,7 +44,7 @@ class Delta
     /**
      * @return void
      */
-    public function setUpDelta()
+    public function setUpTriggers()
     {
         $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
         $this->progress->start(count($deltaDocuments));
@@ -53,5 +53,6 @@ class Delta
             $this->source->createDelta($documentName, $this->source->getChangeLogName($documentName), $idKey);
         }
         $this->progress->finish();
+        return true;
     }
 } 

@@ -118,8 +118,6 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
      */
     public function setupTriggers()
     {
-        if ($this->delta->setUpDelta()) {
-            return true;
-        }
-        return false;    }
+        return $this->delta->setUpTriggers();
+    }
 }
