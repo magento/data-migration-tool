@@ -260,7 +260,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
             if ($this->isDocumentMaped($document, MapReaderInterface::TYPE_SOURCE)) {
                 $queryResult = $this->xml
                     ->query(sprintf('//source/document_rules/log_changes/*[text()="%s"]', $document));
-                if ($queryResult->length > 0 ) {
+                if ($queryResult->length > 0) {
                     /** @var \DOMElement $document */
                     $document = $queryResult->item(0);
                     $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;

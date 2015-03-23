@@ -162,7 +162,7 @@ abstract class AbstractResource
         while ((strlen($documentName) + strlen($suffix)) > $maximumNameLength) {
             $suffix = substr($suffix, 0, -1);
         }
-        return $documentName . $suffix;;
+        return $documentName . $suffix;
     }
 
     /**

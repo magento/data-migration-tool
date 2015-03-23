@@ -299,7 +299,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
             'CREATED'
         ];
         $sql = 'SELECT ' . implode(', ', $columns)
-            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA','TRIGGERS'])
+            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA', 'TRIGGERS'])
             . ' WHERE ';
 
         $schema = $this->getSchemaName();
