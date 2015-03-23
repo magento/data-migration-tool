@@ -16,16 +16,16 @@ class Manager
     /**
      * @param ModeFactory $modeFactory
      * @param Config $config
-     * @param Factory $factory
+     * @param Factory $stepFactory
      */
     public function __construct(
         ModeFactory $modeFactory,
-        Config $config,
-        Factory $factory
+        Factory $stepFactory,
+        Config $config
     ) {
         $this->modeFactory = $modeFactory;
+        $this->stepFactory = $stepFactory;
         $this->config = $config;
-        $this->factory = $factory;
     }
 
     /**
@@ -41,7 +41,7 @@ class Manager
         $steps = [];
         foreach ($stepClasses as $stepClass) {
             /** @var StepInterface $step */
-            $steps[] = $this->factory->create($stepClass);
+            $steps[] = $this->stepFactory->create($stepClass);
         }
         $mode = $this->modeFactory->create($mode);
         $mode->run($steps);

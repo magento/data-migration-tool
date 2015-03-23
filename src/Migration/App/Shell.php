@@ -40,7 +40,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
     /**
      * @var array
      */
-    public $modes = ['migration', 'delta', 'settings'];
+    public $availableCommands = ['migration', 'delta', 'settings', 'reset', 'help'];
 
     /**
      * @param \Magento\Framework\Filesystem $filesystem
@@ -73,11 +73,14 @@ class Shell extends \Magento\Framework\App\AbstractShell
      */
     public function run()
     {
-        if ($this->_showHelp()) {
-            return $this;
-        }
-
         try {
+            $command = array_keys($this->_args);
+            $command = array_shift($command);
+            if (!$command || $command == 'help' || !in_array($command, $this->availableCommands)) {
+                echo $this->getUsageHelp();
+                return $this;
+            }
+
             $verbose = $this->getArg('verbose');
             if (!empty($verbose)) {
                 $this->logManager->process($verbose);
@@ -85,25 +88,28 @@ class Shell extends \Magento\Framework\App\AbstractShell
                 $this->logManager->process();
             }
 
-            if ($this->getArg('config')) {
-                $this->logger->info('Loaded custom config file: ' . $this->getArg('config'));
+            $config = $this->getArg('config');
+            if ($config) {
+                $this->logger->info('Loaded custom config file: ' . $config);
                 $this->config->init($this->getArg('config'));
             } else {
                 $this->logger->info('Loaded default config file');
                 $this->config->init();
             }
-            $mode = $this->getArg('mode');
-            if (!$mode || !in_array($mode, $this->modes)) {
-                throw new Exception('option "mode" is not specified or inappropriate. See help information');
-            }
-            $this->logger->info('Running mode: ' . $mode);
-            $reset = $this->getArg('reset');
-            if ($reset) {
-                $this->logger->info('Current progress will be removed');
-                $this->progressStep->clearLockFile();
-            }
 
-            $this->stepManager->runSteps($mode);
+            switch ($command) {
+                case 'reset':
+                    $this->logger->info('Current progress will be removed');
+                    $this->progressStep->clearLockFile();
+                    break;
+                case 'migration':
+                case 'delta':
+                case 'settings':
+                    $this->logger->info('Running mode: ' . $command);
+                    $this->stepManager->runSteps($command);
+                    break;
+
+            }
         } catch (Exception $e) {
             $this->logger->error('Migration tool exception: ' . $e->getMessage());
         } catch (\Exception $e) {
@@ -118,15 +124,19 @@ class Shell extends \Magento\Framework\App\AbstractShell
      */
     public function getUsageHelp()
     {
-        $modes = implode(', ', $this->modes);
         return <<<USAGE
-Usage:  php -f {$this->_entryPoint} -- [options]
+Usage: {$this->_entryPoint} <command> [options]
 
-  --mode <value>      Required option. Type of operation: {$modes}
+  Available commands:
+  migration           Main migration of data
+  delta               Migrate the data had been added into Magento after the base migration
+  settings            Migrate system configuration
+  reset               Reset the current position of migration to start from the beginning
+  help                Help information
+
+  Available options:
   --config <value>    Path to main configuration file
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
-  --reset             Remove steps progress
-  --help              This help
 
 USAGE;
     }

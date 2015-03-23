@@ -27,15 +27,23 @@ class Delta implements ModeInterface
     protected $progress;
 
     /**
+     * @var int
+     */
+    protected $autoRestartSec;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
+     * @param int $autoRestartSec
      */
     public function __construct(
         Progress $progress,
-        Logger $logger
+        Logger $logger,
+        $autoRestartSec = 5
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
+        $this->autoRestartSec = $autoRestartSec;
     }
 
     /**
@@ -43,23 +51,29 @@ class Delta implements ModeInterface
      */
     public function run(array $steps)
     {
-        foreach ($steps as $step) {
-            if ($step instanceof DeltaInterface) {
-                $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), 'delta'));
-                try {
-                    $result = $step->delta();
-                } catch (\Exception $e) {
-                    $this->logger->error(PHP_EOL . $e->getMessage());
-                    $result = false;
-                }
-                if ($result) {
-                    $this->progress->saveResult($step, 'delta', $result);
-                } else {
-                    throw new Exception('Delta delivering failed');
+        do {
+            foreach ($steps as $step) {
+                if ($step instanceof DeltaInterface) {
+                    $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), 'delta'));
+                    try {
+                        $result = $step->delta();
+                    } catch (\Exception $e) {
+                        $this->logger->error(PHP_EOL . $e->getMessage());
+                        $result = false;
+                    }
+                    if ($result) {
+                        $this->progress->saveResult($step, 'delta', $result);
+                    } else {
+                        throw new Exception('Delta delivering failed');
+                    }
                 }
             }
-        }
-        $this->logger->info(PHP_EOL . "Migration completed");
-        $this->progress->clearLockFile();
+            $this->logger->info(PHP_EOL . 'Migration completed successfully');
+            $this->progress->clearLockFile();
+            if ($this->autoRestartSec) {
+                $this->logger->info(PHP_EOL . "Automatic restart in {$this->autoRestartSec} sec. Use CTRL-C to abort");
+                sleep($this->autoRestartSec);
+            }
+        } while ($this->autoRestartSec);
     }
 }
