@@ -36,24 +36,32 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
     protected $initialData;
 
     /**
+     * @var SalesOrder\Delta
+     */
+    protected $delta;
+
+    /**
      * @param Config $config
      * @param SalesOrder\Integrity $integrity
      * @param SalesOrder\Migrate $run
      * @param SalesOrder\Volume $volume
      * @param SalesOrder\InitialData $initialData
+     * @param SalesOrder\Delta $delta
      */
     public function __construct(
         Config $config,
         SalesOrder\Integrity $integrity,
         SalesOrder\Migrate $run,
         SalesOrder\Volume $volume,
-        SalesOrder\InitialData $initialData
+        SalesOrder\InitialData $initialData,
+        SalesOrder\Delta $delta
     ) {
         parent::__construct($config);
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
         $this->initialData = $initialData;
+        $this->delta = $delta;
     }
 
     /**
@@ -92,6 +100,14 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
     /**
      * @inheritdoc
      */
+    public function rollback()
+    {
+        throw new Exception('Rollback is impossible for ' . $this->getTitle());
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function delta()
     {
         return true;
@@ -102,6 +118,8 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
      */
     public function setupTriggers()
     {
-        return true;
-    }
+        if ($this->delta->setUpDelta()) {
+            return true;
+        }
+        return false;    }
 }

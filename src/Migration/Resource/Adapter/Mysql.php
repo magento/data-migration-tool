@@ -20,16 +20,34 @@ class Mysql implements \Migration\Resource\AdapterInterface
     protected $resourceAdapter;
 
     /**
+     * @var \Magento\Framework\DB\Ddl\Trigger
+     */
+    protected $triggerFactory;
+
+    /**
+     * @var string
+     */
+    protected $schemaName  = null;
+
+    /**
+     * @var array
+     */
+    protected $triggers = [];
+
+    /**
      * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
      * @param array $config
      */
     public function __construct(
         \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
         array $config
     ) {
         $configData['config'] = $config;
         $this->resourceAdapter = $adapterFactory->create($configData);
         $this->resourceAdapter->query('SET FOREIGN_KEY_CHECKS=0;');
+        $this->triggerFactory = $triggerFactory;
     }
 
     /**
@@ -184,5 +202,158 @@ class Mysql implements \Migration\Resource\AdapterInterface
         if ($this->resourceAdapter->isTableExists($backupTableName)) {
             $this->resourceAdapter->dropTable($backupTableName);
         }
+    }
+
+    /**
+     * Create delta for specified table
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
+     */
+    public function createDelta($documentName, $changeLogName, $idKey)
+    {
+        if (!$this->resourceAdapter->isTableExists($changeLogName)) {
+            $triggerTable = $this->resourceAdapter->newTable($changeLogName)
+                ->addColumn(
+                    'id',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
+                )->addColumn(
+                    'operation',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT
+                );
+            $this->resourceAdapter->createTable($triggerTable);
+        }
+        foreach (\Magento\Framework\DB\Ddl\Trigger::getListOfEvents() as $event) {
+            $triggerName = 'trg_' . $documentName . '_' . strtolower($event);
+            $statement = $this->buildStatement($event, $idKey, $changeLogName);
+            $trigger = $this->triggerFactory->create()
+                ->setName($triggerName)
+                ->setTime(\Magento\Framework\DB\Ddl\Trigger::TIME_AFTER)
+                ->setEvent($event)
+                ->setTable($this->resourceAdapter->getTableName($documentName));;
+            if ($this->isTriggerExist($triggerName)) {
+                $oldTriggerStatement = $this->triggers[$triggerName]['action_statement'];
+                $trigger->addStatement($oldTriggerStatement);
+                $this->resourceAdapter->dropTrigger($triggerName);
+            }
+            $trigger->addStatement($statement);
+            $this->resourceAdapter->createTrigger($trigger);
+            unset($trigger);
+        }
+    }
+
+    /**
+     * @param string $event
+     * @param string $idKey
+     * @param string $triggerTableName
+     * @return string
+     */
+    protected function buildStatement($event, $idKey, $triggerTableName)
+    {
+        $entityTime = ($event == \Magento\Framework\DB\Ddl\Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
+        return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
+        ."ON DUPLICATE KEY UPDATE operation = '$event'";
+    }
+
+    /**
+     * @param $triggerName
+     * @return bool
+     */
+    protected function isTriggerExist($triggerName)
+    {
+        if (!isset($this->triggers[$triggerName])) {
+            $this->getTriggers();
+        }
+
+        if (isset($this->triggers[$triggerName])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get all database triggers
+     *
+     * @return void
+     */
+    protected function getTriggers(){
+        $columns = array(
+            'TRIGGER_NAME',
+            'EVENT_MANIPULATION',
+            'EVENT_OBJECT_CATALOG',
+            'EVENT_OBJECT_SCHEMA',
+            'EVENT_OBJECT_TABLE',
+            'ACTION_ORDER',
+            'ACTION_CONDITION',
+            'ACTION_STATEMENT',
+            'ACTION_ORIENTATION',
+            'ACTION_TIMING',
+            'ACTION_REFERENCE_OLD_TABLE',
+            'ACTION_REFERENCE_NEW_TABLE',
+            'ACTION_REFERENCE_OLD_ROW',
+            'ACTION_REFERENCE_NEW_ROW',
+            'CREATED',
+        );
+        $sql = 'SELECT ' . implode(', ', $columns)
+            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(array('INFORMATION_SCHEMA','TRIGGERS'))
+            . ' WHERE ';
+
+        $schema = $this->getSchemaName();
+        if ($schema) {
+            $sql .= $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+                . ' = ' . $this->resourceAdapter->quote($schema);
+        } else {
+            $sql .= $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+                . ' != ' . $this->resourceAdapter->quote('INFORMATION_SCHEMA');
+        }
+
+        $results = $this->resourceAdapter->query($sql);
+
+        $data = array();
+        foreach ($results as $row) {
+            $row = array_change_key_case($row, CASE_LOWER);
+            $row['action_statement'] = $this->convertStatement($row['action_statement']);
+            if (null !== $row['created']) {
+                $row['created'] = new DateTime($row['created']);
+            }
+            $data[$row['trigger_name']] = $row;
+        }
+        $this->triggers = $data;
+    }
+
+    /**
+     * @param string $row
+     * @return mixed
+     */
+    protected function convertStatement($row)
+    {
+        $regex = '/(BEGIN)([\s\S]*?)(END.?)/';
+        return preg_replace($regex, '$2', $row);
+    }
+
+    /**
+     * Returns current schema name
+     *
+     * @return string
+     */
+    protected function getCurrentSchema()
+    {
+        return $this->resourceAdapter->fetchOne('SELECT SCHEMA()');
+    }
+
+    /**
+     * Returns schema name
+     *
+     * @return string
+     */
+    protected function getSchemaName()
+    {
+        if (!$this->schemaName) {
+            $this->schemaName = $this->getCurrentSchema();
+        }
+
+        return $this->schemaName;
     }
 }

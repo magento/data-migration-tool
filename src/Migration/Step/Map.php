@@ -29,18 +29,26 @@ class Map implements StepInterface, DeltaInterface
     protected $volume;
 
     /**
+     * @var Map\Delta
+     */
+    protected $delta;
+
+    /**
      * @param Map\Integrity $integrity
      * @param Map\Migrate $run
      * @param Map\Volume $volume
+     * @param Map\Delta $delta
      */
     public function __construct(
         Map\Integrity $integrity,
         Map\Migrate $run,
-        Map\Volume $volume
+        Map\Volume $volume,
+        Map\Delta $delta
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
+        $this->delta = $delta;
     }
 
     /**
@@ -89,5 +97,17 @@ class Map implements StepInterface, DeltaInterface
     public function setupTriggers()
     {
         return true;
+    }
+
+
+    /**
+     * @inheritdoc
+     */
+    public function setupDelta()
+    {
+        if ($this->delta->setUpDelta()) {
+            return true;
+        }
+        return false;
     }
 }
