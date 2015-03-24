@@ -42,9 +42,9 @@ class Delta
     }
 
     /**
-     * @return void
+     * @return bool
      */
-    public function setUpTriggers()
+    public function setUpChangeLog()
     {
         $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
         $this->progress->start(count($deltaDocuments));
@@ -53,6 +53,18 @@ class Delta
             $this->source->createDelta($documentName, $this->source->getChangeLogName($documentName), $idKey);
         }
         $this->progress->finish();
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    public function delta()
+    {
+        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        foreach ($deltaDocuments as  $documentName => $idKey) {
+            $data = $this->source->getChangedRecords($documentName, $idKey);
+        }
         return true;
     }
 }

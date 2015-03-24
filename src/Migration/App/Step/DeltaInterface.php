@@ -23,5 +23,5 @@ interface DeltaInterface
      *
      * @return bool
      */
-    public function setupTriggers();
+    public function setUpChangeLog();
 }

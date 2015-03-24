@@ -116,8 +116,8 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
     /**
      * @inheritdoc
      */
-    public function setupTriggers()
+    public function setUpChangeLog()
     {
-        return $this->delta->setUpTriggers();
+        return $this->delta->setUpChangeLog();
     }
 }

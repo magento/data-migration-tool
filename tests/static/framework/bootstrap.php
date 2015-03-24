@@ -6,7 +6,7 @@
 
 require __DIR__ . '/autoload.php';
 
-\Magento\Framework\Test\Utility\Files::setInstance(new \Magento\Framework\Test\Utility\Files(realpath('../..')));
+\Magento\Framework\App\Utility\Files::setInstance(new \Magento\Framework\App\Utility\Files(realpath('../..')));
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);

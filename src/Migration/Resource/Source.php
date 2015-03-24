@@ -61,4 +61,15 @@ class Source extends AbstractResource
     {
         $this->adapter->createDelta($documentName, $changeLogName, $idKey);
     }
+
+    public function getChangedRecords($documentName, $idKey)
+    {
+        return $this->adapter->loadChanges(
+            $documentName,
+            $this->getChangeLogName($documentName),
+            $idKey,
+            0,
+            $this->getPageSize()
+        );
+    }
 }

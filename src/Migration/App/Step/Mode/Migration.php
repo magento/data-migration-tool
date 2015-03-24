@@ -112,7 +112,7 @@ class Migration implements ModeInterface
                     $result = $step->volumeCheck();
                     break;
                 case 'setup triggers':
-                    $result = $step->setupTriggers();
+                    $result = $step->setUpChangeLog();
                     break;
                 case 'rollback':
                     $step->rollback();

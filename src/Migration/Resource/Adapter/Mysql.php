@@ -109,6 +109,19 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
+     * @inheritdoc
+     */
+    public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
+    {
+        $select = $this->resourceAdapter->select();
+        $select->from($documentName, '*')
+            ->join($changeLogName, "$documentName.$idKey = $changeLogName.id", [])
+            ->limit($pageSize, $pageNumber * $pageSize);
+        $result = $this->resourceAdapter->fetchAll($select);
+        return $result;
+    }
+
+    /**
      * Load data from DB Select
      *
      * @param \Magento\Framework\DB\Select $select

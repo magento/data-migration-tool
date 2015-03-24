@@ -67,6 +67,18 @@ interface AdapterInterface
     public function deleteAllRecords($documentName);
 
     /**
+     * Load page with changed records from the document
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize);
+
+    /**
      * @param string $documentName
      * @return void
      */
