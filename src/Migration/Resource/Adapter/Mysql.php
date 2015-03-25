@@ -6,6 +6,7 @@
 namespace Migration\Resource\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\DB\Ddl\Trigger;
 use Migration\Resource\Document;
 
 /**
@@ -238,21 +239,31 @@ class Mysql implements \Migration\Resource\AdapterInterface
                 );
             $this->resourceAdapter->createTable($triggerTable);
         }
-        foreach (\Magento\Framework\DB\Ddl\Trigger::getListOfEvents() as $event) {
+        foreach (Trigger::getListOfEvents() as $event) {
             $triggerName = 'trg_' . $documentName . '_' . strtolower($event);
             $statement = $this->buildStatement($event, $idKey, $changeLogName);
             $trigger = $this->triggerFactory->create()
-                ->setName($triggerName)
-                ->setTime(\Magento\Framework\DB\Ddl\Trigger::TIME_AFTER)
+                ->setTime(Trigger::TIME_AFTER)
                 ->setEvent($event)
                 ->setTable($this->resourceAdapter->getTableName($documentName));
-            if ($this->isTriggerExist($triggerName)) {
-                $oldTriggerStatement = $this->triggers[$triggerName]['action_statement'];
+            $triggerKey = $documentName . $event . Trigger::TIME_AFTER;
+            $triggerExists = $this->isTriggerExist($triggerKey);
+            if ($triggerExists) {
+                $triggerName = $this->triggers[$triggerKey]['trigger_name'];
+                $oldTriggerStatement = $this->triggers[$triggerKey]['action_statement'];
+                if (strpos($oldTriggerStatement, $statement) !== false) {
+                    unset($trigger);
+                    continue;
+                }
                 $trigger->addStatement($oldTriggerStatement);
                 $this->resourceAdapter->dropTrigger($triggerName);
             }
-            $trigger->addStatement($statement);
+            $trigger->addStatement($statement)
+                ->setName($triggerName);
             $this->resourceAdapter->createTrigger($trigger);
+            if (!$triggerExists) {
+                $this->loadTriggers();
+            }
             unset($trigger);
         }
     }
@@ -265,22 +276,22 @@ class Mysql implements \Migration\Resource\AdapterInterface
      */
     protected function buildStatement($event, $idKey, $triggerTableName)
     {
-        $entityTime = ($event == \Magento\Framework\DB\Ddl\Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
+        $entityTime = ($event == Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
         return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
         ."ON DUPLICATE KEY UPDATE operation = '$event'";
     }
 
     /**
-     * @param string $triggerName
+     * @param string $triggerKey
      * @return bool
      */
-    protected function isTriggerExist($triggerName)
+    protected function isTriggerExist($triggerKey)
     {
-        if (!isset($this->triggers[$triggerName])) {
-            $this->getTriggers();
+        if (empty($this->triggers)) {
+            $this->loadTriggers();
         }
 
-        if (isset($this->triggers[$triggerName])) {
+        if (isset($this->triggers[$triggerKey])) {
             return true;
         }
 
@@ -292,7 +303,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
      *
      * @return void
      */
-    protected function getTriggers()
+    protected function loadTriggers()
     {
         $columns = [
             'TRIGGER_NAME',
@@ -330,10 +341,8 @@ class Mysql implements \Migration\Resource\AdapterInterface
         foreach ($results as $row) {
             $row = array_change_key_case($row, CASE_LOWER);
             $row['action_statement'] = $this->convertStatement($row['action_statement']);
-            if (null !== $row['created']) {
-                $row['created'] = new DateTime($row['created']);
-            }
-            $data[$row['trigger_name']] = $row;
+            $key = $row['event_object_table'] . $row['event_manipulation'] . $row['action_timing'];
+            $data[$key] = $row;
         }
         $this->triggers = $data;
     }
