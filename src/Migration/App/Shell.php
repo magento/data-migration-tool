@@ -78,7 +78,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
             if ($this->_showHelp()) {
                 if (!empty($modeName) && $modeName != 'help') {
                     $mode = $this->createMode($modeName);
-                    echo $mode->helpUsage();
+                    echo $mode->getUsageHelp();
                 }
                 return $this;
             }
@@ -151,6 +151,9 @@ USAGE;
         }
     }
 
+    /**
+     * @return void
+     */
     protected function processGeneralOptions()
     {
         foreach ($this->generalOptions as $option) {

@@ -20,7 +20,7 @@ class Delta
     protected $source;
 
     /**
-     * @var MapReaderSalesOrcer
+     * @var MapReaderSalesOrder
      */
     protected $mapReader;
 

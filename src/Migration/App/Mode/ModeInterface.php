@@ -22,5 +22,5 @@ interface ModeInterface
      *
      * @return string
      */
-    public function helpUsage();
+    public function getUsageHelp();
 }

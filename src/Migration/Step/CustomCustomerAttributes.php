@@ -13,11 +13,12 @@ use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
 use Migration\Config;
 use Migration\App\Step\DeltaInterface;
+use Migration\App\Step\RollbackInterface;
 
 /**
  * Class CustomerAttributesSalesFlat
  */
-class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface
+class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, RollbackInterface
 {
     /**
      * @var Source
@@ -188,6 +189,14 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface
      * @inheritdoc
      */
     public function setUpChangeLog()
+    {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
     {
         return true;
     }

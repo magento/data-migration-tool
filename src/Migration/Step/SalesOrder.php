@@ -13,7 +13,7 @@ use Migration\App\Step\DeltaInterface;
 /**
  * Class SalesOrder
  */
-class SalesOrder extends DatabaseStep implements DeltaInterface
+class SalesOrder implements DeltaInterface
 {
     /**
      * @var SalesOrder\Integrity
@@ -41,7 +41,6 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
     protected $delta;
 
     /**
-     * @param Config $config
      * @param SalesOrder\Integrity $integrity
      * @param SalesOrder\Migrate $run
      * @param SalesOrder\Volume $volume
@@ -49,14 +48,12 @@ class SalesOrder extends DatabaseStep implements DeltaInterface
      * @param SalesOrder\Delta $delta
      */
     public function __construct(
-        Config $config,
         SalesOrder\Integrity $integrity,
         SalesOrder\Migrate $run,
         SalesOrder\Volume $volume,
         SalesOrder\InitialData $initialData,
         SalesOrder\Delta $delta
     ) {
-        parent::__construct($config);
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;

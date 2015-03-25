@@ -4,22 +4,19 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\App\Step;
+namespace Migration\Mode;
 
-/**
- * Class ManagerTest
- */
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Manager
+     * @var Data
      */
-    protected $manager;
+    protected $data;
 
     /**
-     * @var \Migration\App\Step\Factory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Mode\StepList|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $factory;
+    protected $stepList;
 
     /**
      * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
@@ -38,19 +35,16 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->factory = $this->getMockBuilder('\Migration\App\Step\Factory')->disableOriginalConstructor()
-            ->setMethods(['getSteps', 'create'])
+        $this->stepList = $this->getMockBuilder('\Migration\App\Mode\StepList')->disableOriginalConstructor()
+            ->setMethods(['getSteps'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['info'])
             ->getMock();
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods(['getSteps'])
-            ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'resetStep'])
             ->getMock();
-        $this->manager = new Manager($this->progress, $this->logger, $this->factory, $this->config);
+        $this->data = new Data($this->progress, $this->logger, $this->stepList);
     }
 
     public function testRunStepsIntegrityFail()
@@ -63,16 +57,15 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->never())->method('volumeCheck');
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->config->expects($this->once())->method('getSteps')->willReturn([get_class($step)]);
-        $this->factory->expects($this->once())->method('create')->with(get_class($step))
-            ->will($this->returnValue($step));
-        $this->assertSame($this->manager, $this->manager->runSteps());
+        $this->stepList->expects($this->once())->method('getSteps')
+            ->willReturn([$step]);
+        $this->assertSame($this->data, $this->data->run());
     }
 
     public function testRunStepsVolumeFail()
     {
         $this->setExpectedException('Migration\Exception', 'Volume Check failed');
-        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\RollbackInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run')->will($this->returnValue(true));
@@ -82,16 +75,15 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->progress->expects($this->any())->method('resetStep')->with($step);
         $this->logger->expects($this->any())->method('info');
-        $this->config->expects($this->once())->method('getSteps')->willReturn([get_class($step)]);
-        $this->factory->expects($this->once())->method('create')->with(get_class($step))
-            ->will($this->returnValue($step));
-        $this->assertSame($this->manager, $this->manager->runSteps());
+        $this->stepList->expects($this->once())->method('getSteps')
+            ->willReturn([$step]);
+        $this->assertSame($this->data, $this->data->run());
     }
 
     public function testRunStepsDataMigrationFail()
     {
         $this->setExpectedException('Migration\Exception', 'Data Migration failed');
-        $step = $this->getMockBuilder('\Migration\App\Step\StepInterface')->getMock();
+        $step = $this->getMockBuilder('\Migration\App\Step\RollbackInterface')->getMock();
         $step->expects($this->any())->method('getTitle')->will($this->returnValue('Title'));
         $step->expects($this->once())->method('integrity')->will($this->returnValue(true));
         $step->expects($this->once())->method('run')->will($this->returnValue(false));
@@ -101,10 +93,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->progress->expects($this->any())->method('resetStep')->with($step);
         $this->logger->expects($this->any())->method('info');
-        $this->config->expects($this->once())->method('getSteps')->willReturn([get_class($step)]);
-        $this->factory->expects($this->once())->method('create')->with(get_class($step))
-            ->will($this->returnValue($step));
-        $this->assertSame($this->manager, $this->manager->runSteps());
+        $this->stepList->expects($this->once())->method('getSteps')
+            ->willReturn([$step]);
+        $this->assertSame($this->data, $this->data->run());
     }
 
     public function testRunStepsSuccess()
@@ -121,10 +112,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
         $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
-        $this->config->expects($this->once())->method('getSteps')->willReturn([get_class($step)]);
-        $this->factory->expects($this->once())->method('create')->with(get_class($step))
-            ->will($this->returnValue($step));
-        $this->assertSame($this->manager, $this->manager->runSteps());
+        $this->stepList->expects($this->once())->method('getSteps')
+            ->willReturn([$step]);
+        $this->assertTrue($this->data->run());
     }
 
     public function testRunStepsWithSuccessProgress()
@@ -141,9 +131,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
         $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
-        $this->config->expects($this->once())->method('getSteps')->willReturn([get_class($step)]);
-        $this->factory->expects($this->once())->method('create')->with(get_class($step))
-            ->will($this->returnValue($step));
-        $this->assertSame($this->manager, $this->manager->runSteps());
+        $this->stepList->expects($this->once())->method('getSteps')
+            ->willReturn([$step]);
+        $this->assertTrue($this->data->run());
     }
 }

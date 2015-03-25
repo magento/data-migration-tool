@@ -1,11 +1,8 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: lpoluyanov
- * Date: 18.03.2015
- * Time: 16:16
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
  */
-
 namespace Migration\Step\Map;
 
 use Migration\Resource\Source;

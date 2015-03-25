@@ -62,6 +62,13 @@ class Source extends AbstractResource
         $this->adapter->createDelta($documentName, $changeLogName, $idKey);
     }
 
+    /**
+     * Get delta records from document
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @return array
+     */
     public function getChangedRecords($documentName, $idKey)
     {
         return $this->adapter->loadChanges(

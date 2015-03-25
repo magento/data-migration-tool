@@ -50,7 +50,7 @@ class Data implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function helpUsage()
+    public function getUsageHelp()
     {
         return <<<USAGE
 
@@ -149,6 +149,7 @@ USAGE;
 
     /**
      * @param mixed $step
+     * @return void
      */
     protected function rollback($step)
     {

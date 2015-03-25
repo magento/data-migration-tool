@@ -56,7 +56,7 @@ class Delta implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function helpUsage()
+    public function getUsageHelp()
     {
         return <<<USAGE
 
