@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\App\Step;
+namespace Migration\App\Mode;
 
 use Magento\Framework\ObjectManagerInterface;
 use Migration\Exception;
@@ -33,8 +33,8 @@ class ModeFactory
      */
     public function create($mode)
     {
-        $mode = $this->objectManager->create(__NAMESPACE__ . '\\Mode\\' . ucfirst($mode));
-        if (!($mode instanceof ModeInterface)) {
+        $mode = $this->objectManager->create('\\Migration\\Mode\\' . ucfirst($mode));
+        if (!($mode instanceof \Migration\App\Mode\ModeInterface)) {
             throw new Exception("Mode class must implement ModeInterface.");
         }
         return $mode;

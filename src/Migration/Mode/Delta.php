@@ -3,19 +3,23 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\App\Step\Mode;
+namespace Migration\Mode;
 
 use Migration\App\Step\DeltaInterface;
 use Migration\App\Step\Progress;
-use Migration\App\Step\ModeInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
 /**
  * Class Delta
  */
-class Delta implements ModeInterface
+class Delta implements \Migration\App\Mode\ModeInterface
 {
+    /**
+     * @var \Migration\App\Mode\StepList
+     */
+    protected $stepList;
+
     /**
      * @var Logger
      */
@@ -29,29 +33,47 @@ class Delta implements ModeInterface
     /**
      * @var int
      */
-    protected $autoRestartSec;
+    protected $autoRestart;
 
     /**
      * @param Progress $progress
      * @param Logger $logger
-     * @param int $autoRestartSec
+     * @param \Migration\App\Mode\StepList $stepList
+     * @param int $autoRestart
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
-        $autoRestartSec = 5
+        \Migration\App\Mode\StepList $stepList,
+        $autoRestart = 5
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
-        $this->autoRestartSec = $autoRestartSec;
+        $this->stepList = $stepList;
+        $this->autoRestart = $autoRestart;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run(array $steps)
+    public function helpUsage()
+    {
+        return <<<USAGE
+
+Delta mode usage information:
+
+ Migrates delta data that appears after main data migration
+
+USAGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function run()
     {
         do {
+            $steps = $this->stepList->getSteps('delta');
             foreach ($steps as $step) {
                 if ($step instanceof DeltaInterface) {
                     $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), 'delta'));
@@ -70,10 +92,11 @@ class Delta implements ModeInterface
             }
             $this->logger->info(PHP_EOL . 'Migration completed successfully');
             $this->progress->clearLockFile();
-            if ($this->autoRestartSec) {
-                $this->logger->info(PHP_EOL . "Automatic restart in {$this->autoRestartSec} sec. Use CTRL-C to abort");
-                sleep($this->autoRestartSec);
+            if ($this->autoRestart) {
+                $this->logger->info(PHP_EOL . "Automatic restart in {$this->autoRestart} sec. Use CTRL-C to abort");
+                sleep($this->autoRestart);
             }
-        } while ($this->autoRestartSec);
+        } while ($this->autoRestart);
+        return true;
     }
 }
