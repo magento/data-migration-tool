@@ -29,21 +29,29 @@ class Log extends DatabaseStep implements DeltaInterface
     protected $volumeCheck;
 
     /**
+     * @var Log\Delta
+     */
+    protected $delta;
+
+    /**
      * @param Config $config
      * @param Log\Integrity $integrity
      * @param Log\Migrate $dataMigration
      * @param Log\Volume $volumeCheck
+     * @param Log\Delta $delta
      */
     public function __construct(
         Config $config,
         Log\Integrity $integrity,
         Log\Migrate $dataMigration,
-        Log\Volume $volumeCheck
+        Log\Volume $volumeCheck,
+        Log\Delta $delta
     ) {
         parent::__construct($config);
         $this->integrityCheck = $integrity;
         $this->dataMigration = $dataMigration;
         $this->volumeCheck = $volumeCheck;
+        $this->delta = $delta;
     }
 
     /**
@@ -89,8 +97,8 @@ class Log extends DatabaseStep implements DeltaInterface
     /**
      * @inheritdoc
      */
-    public function setupTriggers()
+    public function setUpChangeLog()
     {
-        return true;
+        return $this->delta->setUpChangeLog();
     }
 }

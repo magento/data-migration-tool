@@ -151,6 +151,21 @@ abstract class AbstractResource
     }
 
     /**
+     * @param string $documentName
+     * @return string
+     */
+    public function getChangeLogName($documentName)
+    {
+        $maximumNameLength = 64;
+        $hash = md5('change_log');
+        $suffix = '_cl_' . $hash;
+        while ((strlen($documentName) + strlen($suffix)) > $maximumNameLength) {
+            $suffix = substr($suffix, 0, -1);
+        }
+        return $documentName . $suffix;
+    }
+
+    /**
      * Retrieving bulk size
      *
      * @return int

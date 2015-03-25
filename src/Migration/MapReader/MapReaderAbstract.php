@@ -102,7 +102,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
-        $result = $map->length > 0;
+        $result = (($map->length > 0) || $this->isChangeLog($document)) ? true : false;
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
                 $regexp = '/' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
@@ -250,6 +250,25 @@ abstract class MapReaderAbstract implements MapReaderInterface
     }
 
     /**
+     * @param array $documents
+     * @return array
+     */
+    public function getDeltaDocuments($documents)
+    {
+        $result = [];
+        foreach ($documents as $document) {
+            $queryResult = $this->xml
+                ->query(sprintf('//source/document_rules/log_changes/*[text()="%s"]', $document));
+            if ($queryResult->length > 0) {
+                /** @var \DOMElement $document */
+                $document = $queryResult->item(0);
+                $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
+            }
+        }
+        return $result;
+    }
+
+    /**
      * @param string $type
      * @return bool
      * @throws Exception
@@ -290,5 +309,22 @@ abstract class MapReaderAbstract implements MapReaderInterface
             throw new Exception('Field has ambiguous configuration: ' . $value);
         }
         return true;
+    }
+
+    /**
+     * Check if document is a change log item
+     * @param string $document
+     * @return bool
+     */
+    protected function isChangeLog($document)
+    {
+        $ignore = false;
+        $clRegex = "/.+_cl_.+/";
+        $changeLogMatches = [];
+        preg_match($clRegex, $document, $changeLogMatches);
+        if ($changeLogMatches) {
+            $ignore = true;
+        }
+        return $ignore;
     }
 }

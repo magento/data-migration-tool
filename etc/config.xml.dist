@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
-    <steps>
+    <steps mode="migration">
         <step>Migration\Step\Eav</step>
         <step>Migration\Step\CustomCustomerAttributes</step>
         <step>Migration\Step\Map</step>

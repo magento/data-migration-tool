@@ -5,7 +5,6 @@
  */
 namespace Migration\Step\Map;
 
-use Migration\Handler;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
@@ -90,15 +89,15 @@ class Migrate
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
 
-            /** @var \Migration\RecordTransformer $recordTranformer */
-            $recordTranformer = $this->recordTransformerFactory->create(
+            /** @var \Migration\RecordTransformer $recordTransformer */
+            $recordTransformer = $this->recordTransformerFactory->create(
                 [
                     'sourceDocument' => $sourceDocument,
                     'destDocument' => $destDocument,
                     'mapReader' => $this->mapReader
                 ]
             );
-            $recordTranformer->init();
+            $recordTransformer->init();
 
             $pageNumber = 0;
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
@@ -109,7 +108,7 @@ class Migrate
                     $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
                     $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                    $recordTranformer->transform($record, $destRecord);
+                    $recordTransformer->transform($record, $destRecord);
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
