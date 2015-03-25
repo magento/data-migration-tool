@@ -75,6 +75,11 @@ class MapReaderMainTest extends \PHPUnit_Framework_TestCase
             'field2',
             $this->map->getFieldMap('source-document', 'field2', MapReaderInterface::TYPE_SOURCE)
         );
+        // Second run to check cached value
+        $this->assertEquals(
+            'field2',
+            $this->map->getFieldMap('source-document', 'field2', MapReaderInterface::TYPE_SOURCE)
+        );
     }
 
     public function testGetFieldMapWithException()
@@ -118,13 +123,17 @@ class MapReaderMainTest extends \PHPUnit_Framework_TestCase
 
     public function testIsDocumentIgnoredSource()
     {
-        $this->map->isDocumentIgnored('source-document-ignored1', MapReaderInterface::TYPE_SOURCE);
-        $this->map->isDocumentIgnored('source-document-ignored1', MapReaderInterface::TYPE_SOURCE);
+        $this->assertTrue($this->map->isDocumentIgnored('source-document-ignored', MapReaderInterface::TYPE_SOURCE));
+        $this->assertTrue($this->map->isDocumentIgnored('source-document-ignored-wc', MapReaderInterface::TYPE_SOURCE));
+        // Second run to check cached value
+        $this->assertTrue($this->map->isDocumentIgnored('source-document-ignored', MapReaderInterface::TYPE_SOURCE));
     }
 
     public function testIsDocumentIgnoredDest()
     {
-        $this->map->isDocumentIgnored('dest-document-ignored1', MapReaderInterface::TYPE_DEST);
-        $this->map->isDocumentIgnored('dest-document-ignored1', MapReaderInterface::TYPE_DEST);
+        $this->assertTrue($this->map->isDocumentIgnored('dest-document-ignored', MapReaderInterface::TYPE_DEST));
+        $this->assertTrue($this->map->isDocumentIgnored('dest-document-ignored1', MapReaderInterface::TYPE_DEST));
+        // Second run to check cached value
+        $this->assertTrue($this->map->isDocumentIgnored('dest-document-ignored', MapReaderInterface::TYPE_DEST));
     }
 }

@@ -57,7 +57,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
 
     protected function initHandler($document, $callNumber = 1)
     {
-        $handlerManager = $this->getMock('Migration\Handler\Manager', ['initHandler', 'getHandler'], [], '', false);
+        $handlerManager = $this->getMock('Migration\Handler\Manager', ['initHandler', 'getHandlers'], [], '', false);
         $this->handlerManagerFactory->expects($this->at($callNumber))->method('create')->will(
             $this->returnValue($handlerManager)
         );
@@ -79,7 +79,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
     public function testTransform()
     {
         $srcHandler = $this->initHandler($this->sourceDocument, 0);
-        $this->initHandler($this->destDocument, 1);
+        $destHandler = $this->initHandler($this->destDocument, 1);
         $this->recordTransformer->init();
 
         $recordFrom = $this->getMock('Migration\Resource\Record', [], [], '', false);
@@ -89,9 +89,8 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
 
         $field2Handler = $this->getMock('Migration\Handler\SetValue', ['handle'], [], '', false);
         $field2Handler->expects($this->once())->method('handle');
-        $srcHandler->expects($this->any())->method('getHandler')->will(
-            $this->returnValueMap([['field1', null], ['field2', $field2Handler]])
-        );
+        $srcHandler->expects($this->any())->method('getHandlers')->willReturn(['field2' => $field2Handler]);
+        $destHandler->expects($this->any())->method('getHandlers')->willReturn([]);
         $this->recordTransformer->transform($recordFrom, $recordTo);
     }
 }

@@ -42,6 +42,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
         $this->assertEquals($handler, $this->manager->getHandler($field));
+        $this->assertEquals([$field => $handler], $this->manager->getHandlers());
     }
     /**
      * @covers \Migration\Handler\Manager::initHandler

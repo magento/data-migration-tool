@@ -9,6 +9,9 @@ use Migration\Handler;
 use Migration\MapReader;
 use Migration\Resource;
 
+/**
+ * Class MigrateTest
+ */
 class MigrateTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -32,7 +35,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReader\MapReaderMain
+     * @var MapReader\MapReaderMain|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -78,7 +81,9 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         );
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods([])->getMock();
-        $this->mapReader = $this->getMock('Migration\MapReader\MapReaderMain', ['getDocumentMap'], [], '', false);
+        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
+            ->setMethods(['getDocumentMap', 'getHandlerConfig'])
+            ->getMock();
         $this->map = new Migrate(
             $this->progress,
             $this->source,
@@ -97,20 +102,32 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->map->perform();
     }
 
-    public function testGetMap()
+    public function testPerform()
     {
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords'], [], '', false);
+        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn([]);
+
+        $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->will(
             $this->returnValue($sourceDocument)
         );
-        $destinationDocument = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()
+            ->setMethods(['getStructure', 'getRecords'])
+            ->getMock();
         $this->destination->expects($this->once())->method('getDocument')->will(
             $this->returnValue($destinationDocument)
         );
+        $structure = $this->getMockBuilder('\Migration\Resource\Structure')->disableOriginalConstructor()
+            ->setMethods(['getFields'])
+            ->getMock();
+        $structure->expects($this->any())->method('getFields')->willReturn(['field' => []]);
+
+        $sourceDocument->expects($this->any())->method('getStructure')->willReturn($structure);
+        $destinationDocument->expects($this->any())->method('getStructure')->willReturn($structure);
+
         $recordTransformer = $this->getMock(
             'Migration\RecordTransformer',
             ['init', 'transform'],
@@ -136,6 +153,47 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($srcRecord));
         $this->recordFactory->expects($this->at(1))->method('create')->will($this->returnValue($dstRecord));
         $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
+
+        $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
+        $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
+        $this->map->perform();
+    }
+
+    public function testPerformJustCopy()
+    {
+        $sourceDocName = 'core_config_data';
+        $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
+        $dstDocName = 'config_data';
+        $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
+        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
+
+        $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
+        $bulk = [['id' => 4, 'name' => 'john']];
+        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue($bulk));
+        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
+
+        $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()
+            ->setMethods(['getStructure', 'getRecords'])
+            ->getMock();
+        $this->destination->expects($this->once())->method('getDocument')->will(
+            $this->returnValue($destinationDocument)
+        );
+        $structure = $this->getMockBuilder('\Migration\Resource\Structure')->disableOriginalConstructor()
+            ->setMethods(['getFields'])
+            ->getMock();
+        $structure->expects($this->any())->method('getFields')->willReturn(['field' => []]);
+
+        $sourceDocument->expects($this->any())->method('getStructure')->willReturn($structure);
+        $destinationDocument->expects($this->any())->method('getStructure')->willReturn($structure);
+
+        $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
+        $destinationDocument->expects($this->once())->method('getRecords')->will(
+            $this->returnValue($destinationRecords)
+        );
+
+        $dstRecord = $this->getMock('\Migration\Resource\Record', [], [], '', false);
+        $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($dstRecord));
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
