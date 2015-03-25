@@ -53,14 +53,12 @@ class Source extends AbstractResource
      * Create delta for specified table
      *
      * @param string $documentName
-     * @param string $changeLogName
      * @param string $idKey
      * @return void
      */
-    public function createDelta($documentName, $changeLogName, $idKey)
+    public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta($documentName, $changeLogName, $idKey);
-    }
+        $this->adapter->createDelta($documentName, $this->getChangeLogName($documentName), $idKey);    }
 
     public function getChangedRecords($documentName, $idKey)
     {
@@ -71,5 +69,20 @@ class Source extends AbstractResource
             0,
             $this->getPageSize()
         );
+    }
+
+    /**
+     * @param string $documentName
+     * @return string
+     */
+    public function getChangeLogName($documentName)
+    {
+        $maximumNameLength = 64;
+        $hash = md5('change_log');
+        $suffix = '_cl_' . $hash;
+        while ((strlen($documentName) + strlen($suffix)) > $maximumNameLength) {
+            $suffix = substr($suffix, 0, -1);
+        }
+        return $documentName . $suffix;
     }
 }

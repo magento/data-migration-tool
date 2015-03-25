@@ -1,9 +1,7 @@
 <?php
 /**
- * Created by PhpStorm.
- * User: lpoluyanov
- * Date: 18.03.2015
- * Time: 16:16
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
  */
 
 namespace Migration\Step\Map;
@@ -50,7 +48,7 @@ class Delta
         $this->progress->start(count($deltaDocuments));
         foreach ($deltaDocuments as $documentName => $idKey) {
             $this->progress->advance();
-            $this->source->createDelta($documentName, $this->source->getChangeLogName($documentName), $idKey);
+            $this->source->createDelta($documentName, $idKey);
         }
         $this->progress->finish();
         return true;

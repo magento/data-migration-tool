@@ -102,7 +102,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
-        $result = (($map->length > 0) || $this->isChangeLog($document)) ? true : false;
+        $result = ($map->length > 0) || $this->isChangeLog($document);
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
                 $regexp = '/' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';

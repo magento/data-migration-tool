@@ -238,9 +238,11 @@ class Mysql implements \Migration\Resource\AdapterInterface
                     \Magento\Framework\DB\Ddl\Table::TYPE_TEXT
                 );
             $this->resourceAdapter->createTable($triggerTable);
+        } else {
+            $this->deleteAllRecords($changeLogName);
         }
         foreach (Trigger::getListOfEvents() as $event) {
-            $triggerName = 'trg_' . $documentName . '_' . strtolower($event);
+            $triggerName = 'trg_' . $documentName . '_after_' . strtolower($event);
             $statement = $this->buildStatement($event, $idKey, $changeLogName);
             $trigger = $this->triggerFactory->create()
                 ->setTime(Trigger::TIME_AFTER)
@@ -258,8 +260,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
                 $trigger->addStatement($oldTriggerStatement);
                 $this->resourceAdapter->dropTrigger($triggerName);
             }
-            $trigger->addStatement($statement)
-                ->setName($triggerName);
+            $trigger->addStatement($statement)->setName($triggerName);
             $this->resourceAdapter->createTrigger($trigger);
             if (!$triggerExists) {
                 $this->loadTriggers();
@@ -305,38 +306,18 @@ class Mysql implements \Migration\Resource\AdapterInterface
      */
     protected function loadTriggers()
     {
-        $columns = [
-            'TRIGGER_NAME',
-            'EVENT_MANIPULATION',
-            'EVENT_OBJECT_CATALOG',
-            'EVENT_OBJECT_SCHEMA',
-            'EVENT_OBJECT_TABLE',
-            'ACTION_ORDER',
-            'ACTION_CONDITION',
-            'ACTION_STATEMENT',
-            'ACTION_ORIENTATION',
-            'ACTION_TIMING',
-            'ACTION_REFERENCE_OLD_TABLE',
-            'ACTION_REFERENCE_NEW_TABLE',
-            'ACTION_REFERENCE_OLD_ROW',
-            'ACTION_REFERENCE_NEW_ROW',
-            'CREATED'
-        ];
-        $sql = 'SELECT ' . implode(', ', $columns)
-            . ' FROM ' . $this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA', 'TRIGGERS'])
-            . ' WHERE ';
-
         $schema = $this->getSchemaName();
         if ($schema) {
-            $sql .= $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+            $sqlFilter = $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
                 . ' = ' . $this->resourceAdapter->quote($schema);
         } else {
-            $sql .= $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+            $sqlFilter = $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
                 . ' != ' . $this->resourceAdapter->quote('INFORMATION_SCHEMA');
         }
-
-        $results = $this->resourceAdapter->query($sql);
-
+        $select = $this->getSelect()
+            ->from(new \Zend_Db_Expr($this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA', 'TRIGGERS'])))
+            ->where($sqlFilter);
+        $results = $this->resourceAdapter->query($select);
         $data = [];
         foreach ($results as $row) {
             $row = array_change_key_case($row, CASE_LOWER);
