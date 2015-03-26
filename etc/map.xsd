@@ -34,7 +34,6 @@
             <xs:element name="rename" type="renameDocumentType" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="log_changes" type="logChangesDocumentType" maxOccurs="unbounded" minOccurs="0"/>
-
         </xs:choice>
     </xs:complexType>
 
