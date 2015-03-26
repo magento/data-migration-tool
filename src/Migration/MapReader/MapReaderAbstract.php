@@ -29,6 +29,21 @@ abstract class MapReaderAbstract implements MapReaderInterface
     /**
      * @var array
      */
+    protected $ignoredFields = [];
+
+    /**
+     * @var array
+     */
+    protected $documentsMap = [];
+
+    /**
+     * @var array
+     */
+    protected $fieldsMap = [];
+
+    /**
+     * @var array
+     */
     protected $wildcards;
 
     /**
@@ -86,9 +101,14 @@ abstract class MapReaderAbstract implements MapReaderInterface
      */
     public function isFieldIgnored($document, $field, $type)
     {
+        $key = $document . '-' . $field . '-' . $type;
+        if (isset($this->ignoredFields[$key])) {
+            return $this->ignoredFields[$key];
+        }
         $this->validateType($type);
         $map = $this->xml->query(sprintf('//%s/field_rules/ignore/field[text()="%s.%s"]', $type, $document, $field));
-        return $map->length > 0;
+        $this->ignoredFields[$key] = ($map->length > 0);
+        return $this->ignoredFields[$key];
     }
 
     /**
@@ -97,25 +117,24 @@ abstract class MapReaderAbstract implements MapReaderInterface
     public function isDocumentIgnored($document, $type)
     {
         $this->validateType($type);
-        if (isset($this->ignoredDocuments[$type][$document])) {
-            return true;
+        $key = $document . '-' . $type;
+        if (isset($this->ignoredDocuments[$key])) {
+            return $this->ignoredDocuments[$key];
         }
 
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
         $result = ($map->length > 0) || $this->isChangeLog($document);
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
-                $regexp = '/' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
+                $regexp = '/^' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
                 $result = preg_match($regexp, $document) > 0;
                 if ($result === true) {
                     break;
                 }
             }
         }
-        if ($result) {
-            $this->ignoredDocuments[$type][$document] = true;
-        }
-        return $result;
+        $this->ignoredDocuments[$key] = $result;
+        return $this->ignoredDocuments[$key];
     }
 
     /**
@@ -171,6 +190,10 @@ abstract class MapReaderAbstract implements MapReaderInterface
             return false;
         }
 
+        $key = $document . '-' . $type;
+        if (isset($this->documentsMap[$key])) {
+            return $this->documentsMap[$key];
+        }
         $result = $document;
         if ($this->isDocumentMaped($document, $type)) {
             $queryResult = $this->xml->query(sprintf('//source/document_rules/rename/*[text()="%s"]', $document));
@@ -183,7 +206,8 @@ abstract class MapReaderAbstract implements MapReaderInterface
                 }
             }
         }
-        return $result;
+        $this->documentsMap[$key] = $result;
+        return $this->documentsMap[$key];
     }
 
     /**
@@ -191,6 +215,11 @@ abstract class MapReaderAbstract implements MapReaderInterface
      */
     public function getFieldMap($document, $field, $type)
     {
+        $key = $document . '-' . $field . '-' . $type;
+        if (isset($this->fieldsMap[$key])) {
+            return $this->fieldsMap[$key];
+        }
+
         $this->validateType($type);
 
         if ($this->isFieldIgnored($document, $field, $type)) {
@@ -205,7 +234,8 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         if (!$this->isFieldMapped($document, $field, $type)) {
-            return explode('.', $result)[1];
+            $this->fieldsMap[$key] = explode('.', $result)[1];
+            return $this->fieldsMap[$key];
         }
 
         $queryResult = $this->xml->query(
@@ -220,7 +250,9 @@ abstract class MapReaderAbstract implements MapReaderInterface
             }
         }
         $this->validateFieldMap($result, $this->getOppositeType($type));
-        return explode('.', $result)[1];
+        $this->fieldsMap[$key] = explode('.', $result)[1];
+
+        return $this->fieldsMap[$key];
     }
 
     /**

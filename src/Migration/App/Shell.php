@@ -66,6 +66,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
         $this->progressStep = $progressStep;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
+        set_time_limit(0);
     }
 
     /**

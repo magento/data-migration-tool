@@ -8,6 +8,7 @@ namespace Migration\Step\Map;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
+use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
 
@@ -89,26 +90,21 @@ class Migrate
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
 
-            /** @var \Migration\RecordTransformer $recordTransformer */
-            $recordTransformer = $this->recordTransformerFactory->create(
-                [
-                    'sourceDocument' => $sourceDocument,
-                    'destDocument' => $destDocument,
-                    'mapReader' => $this->mapReader
-                ]
-            );
-            $recordTransformer->init();
-
+            $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
             $pageNumber = 0;
-            while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
+            while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
-                foreach ($bulk as $recordData) {
+                foreach ($items as $data) {
                     /** @var Record $record */
-                    $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                    $recordTransformer->transform($record, $destRecord);
+                    if ($recordTransformer) {
+                        $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
+                        $destRecord = $this->recordFactory->create(['document' => $destDocument]);
+                        $recordTransformer->transform($record, $destRecord);
+                    } else {
+                        $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $data]);
+                    }
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
@@ -116,5 +112,70 @@ class Migrate
         }
         $this->progress->finish();
         return true;
+    }
+
+    /**
+     * @param Document $sourceDocument
+     * @param Document $destDocument
+     * @return \Migration\RecordTransformer
+     */
+    public function getRecordTransformer(Document $sourceDocument, Document $destDocument)
+    {
+        if (!$this->canJustCopy($sourceDocument, $destDocument)) {
+            return null;
+        }
+        /** @var \Migration\RecordTransformer $recordTransformer */
+        $recordTransformer = $this->recordTransformerFactory->create(
+            [
+                'sourceDocument' => $sourceDocument,
+                'destDocument' => $destDocument,
+                'mapReader' => $this->mapReader
+            ]
+        );
+        $recordTransformer->init();
+        return $recordTransformer;
+    }
+
+    /**
+     * @param Document $sourceDocument
+     * @param Document $destDocument
+     * @return bool
+     */
+    public function canJustCopy(Document $sourceDocument, Document $destDocument)
+    {
+        return $this->haveEqualStructure($sourceDocument, $destDocument)
+            && !$this->hasHandlers($sourceDocument, MapReaderInterface::TYPE_SOURCE)
+            && !$this->hasHandlers($destDocument, MapReaderInterface::TYPE_DEST);
+    }
+
+    /**
+     * @param Document $sourceDocument
+     * @param Document $destDocument
+     * @return string bool
+     */
+    protected function haveEqualStructure(Document $sourceDocument, Document $destDocument)
+    {
+        $diff = array_diff_key(
+            $sourceDocument->getStructure()->getFields(),
+            $destDocument->getStructure()->getFields()
+        );
+        return empty($diff);
+    }
+
+    /**
+     * @param Document $document
+     * @param string $type
+     * @return bool
+     */
+    protected function hasHandlers(Document $document, $type)
+    {
+        $result = false;
+        foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
+            if ($this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type)) {
+                $result = true;
+                break;
+            }
+        }
+        return $result;
     }
 }
