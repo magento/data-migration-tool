@@ -247,7 +247,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $trigger = $this->triggerFactory->create()
                 ->setTime(Trigger::TIME_AFTER)
                 ->setEvent($event)
-                ->setTable($this->resourceAdapter->getTableName($documentName));
+                ->setTable($documentName);
             $triggerKey = $documentName . $event . Trigger::TIME_AFTER;
             $triggerExists = $this->isTriggerExist($triggerKey);
             if ($triggerExists) {
@@ -279,7 +279,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
     {
         $entityTime = ($event == Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
         return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
-        ."ON DUPLICATE KEY UPDATE operation = '$event'";
+            . "ON DUPLICATE KEY UPDATE operation = '$event'";
     }
 
     /**
