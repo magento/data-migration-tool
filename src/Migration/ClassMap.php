@@ -13,7 +13,7 @@ class ClassMap
     /**
      * @var array
      */
-    protected $map;
+    protected $map = null;
 
     /**
      * @param string $className
@@ -32,7 +32,7 @@ class ClassMap
      */
     public function getMap()
     {
-        if (is_null($this->map)) {
+        if ($this->map === null) {
             $this->map = include __DIR__ . '/../../etc/class_map.php';
         }
         return $this->map;

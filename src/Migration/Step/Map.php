@@ -5,13 +5,14 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StepInterface;
 use Migration\App\Step\DeltaInterface;
 
 /**
  * Class Map
  */
-class Map implements StepInterface, DeltaInterface
+class Map implements StepInterface, DeltaInterface, RollbackInterface
 {
     /**
      * @var Map\Integrity
@@ -81,6 +82,14 @@ class Map implements StepInterface, DeltaInterface
     public function getTitle()
     {
         return "Map step";
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        return true;
     }
 
     /**

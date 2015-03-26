@@ -28,6 +28,11 @@ class MapTest extends \PHPUnit_Framework_TestCase
     protected $volume;
 
     /**
+     * @var Map\Delta|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $delta;
+
+    /**
      * @var Map
      */
     protected $map;
@@ -37,10 +42,12 @@ class MapTest extends \PHPUnit_Framework_TestCase
         $this->integrity = $this->getMock('Migration\Step\Map\Integrity', ['perform'], [], '', false);
         $this->run = $this->getMock('Migration\Step\Map\Migrate', ['perform'], [], '', false);
         $this->volume = $this->getMock('Migration\Step\Map\Volume', ['perform'], [], '', false);
+        $this->delta = $this->getMock('Migration\Step\Map\Delta', ['perform'], [], '', false);
         $this->map = new Map(
             $this->integrity,
             $this->run,
-            $this->volume
+            $this->volume,
+            $this->delta
         );
     }
 

@@ -14,11 +14,6 @@ use Migration\Exception;
 class Factory
 {
     /**
-     * @var \Migration\Config
-     */
-    protected $config;
-
-    /**
      * @var array
      */
     protected $steps;
@@ -29,14 +24,11 @@ class Factory
     protected $objectManager;
 
     /**
-     * @param \Migration\Config $config
      * @param ObjectManagerInterface $objectManager
      */
     public function __construct(
-        \Migration\Config $config,
         ObjectManagerInterface $objectManager
     ) {
-        $this->config = $config;
         $this->objectManager = $objectManager;
     }
 
