@@ -50,7 +50,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
             'Migration\Step\UrlRewrite',
             'Migration\Step\Log'
         ];
-        $this->assertEquals($steps, $this->config->getSteps());
+        $this->assertEquals($steps, $this->config->getSteps('data'));
     }
 
     public function testGetSource()

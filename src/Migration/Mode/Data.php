@@ -3,21 +3,24 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\App\Step\Mode;
+namespace Migration\Mode;
 
 use Migration\App\Step\DeltaInterface;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StepInterface;
-use Migration\App\Step\ModeInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
 /**
  * Class Migration
  */
-class Migration implements ModeInterface
+class Data implements \Migration\App\Mode\ModeInterface
 {
+    /**
+     * @var \Migration\App\Mode\StepList
+     */
+    protected $stepList;
 
     /**
      * @var Logger
@@ -32,21 +35,38 @@ class Migration implements ModeInterface
     /**
      * @param Progress $progress
      * @param Logger $logger
+     * @param \Migration\App\Mode\StepList $stepList
      */
     public function __construct(
         Progress $progress,
-        Logger $logger
+        Logger $logger,
+        \Migration\App\Mode\StepList $stepList
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
+        $this->stepList = $stepList;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run(array $steps)
+    public function getUsageHelp()
+    {
+        return <<<USAGE
+
+Data mode usage information:
+
+Main data migration
+USAGE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function run()
     {
         $result = true;
+        $steps = $this->stepList->getSteps('data');
         foreach ($steps as $step) {
             $result = $result && $this->runStep($step, 'integrity check');
             if (!$result) {
@@ -66,24 +86,19 @@ class Migration implements ModeInterface
         foreach ($steps as $step) {
             $result = $this->runStep($step, 'data migration');
             if (!$result) {
-                if ($step instanceof RollbackInterface) {
-                    $this->logger->info(PHP_EOL . 'Error occurred. Rollback.');
-                    $this->runStep($step, 'rollback');
-                }
+                $this->rollback($step);
                 throw new Exception('Data Migration failed');
             }
             $result = $this->runStep($step, 'volume check');
             if (!$result) {
-                if ($step instanceof RollbackInterface) {
-                    $this->logger->info(PHP_EOL . 'Error occurred. Rollback.');
-                    $this->runStep($step, 'rollback');
-                }
+                $this->rollback($step);
                 throw new Exception('Volume Check failed');
             }
         }
 
         $this->logger->info(PHP_EOL . "Migration completed");
         $this->progress->clearLockFile();
+        return true;
     }
 
     /**
@@ -130,5 +145,17 @@ class Migration implements ModeInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @param mixed $step
+     * @return void
+     */
+    protected function rollback($step)
+    {
+        if ($step instanceof RollbackInterface) {
+            $this->logger->info(PHP_EOL . 'Error occurred. Rollback.');
+            $this->runStep($step, 'rollback');
+        }
     }
 }

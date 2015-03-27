@@ -28,6 +28,11 @@ class LogTest extends \PHPUnit_Framework_TestCase
     protected $volume;
 
     /**
+     * @var Log\Delta|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $delta;
+
+    /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
@@ -42,10 +47,12 @@ class LogTest extends \PHPUnit_Framework_TestCase
         $this->integrity = $this->getMock('Migration\Step\Log\Integrity', ['perform'], [], '', false);
         $this->run = $this->getMock('Migration\Step\Log\Migrate', ['perform'], [], '', false);
         $this->volume = $this->getMock('Migration\Step\Log\Volume', ['perform'], [], '', false);
+        $this->delta = $this->getMock('Migration\Step\Log\Delta', ['perform'], [], '', false);
         $this->log = new Log(
             $this->integrity,
             $this->run,
-            $this->volume
+            $this->volume,
+            $this->delta
         );
     }
 
