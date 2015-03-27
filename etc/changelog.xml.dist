@@ -18,6 +18,9 @@
                 <document key="log_id">log_customer</document>
             </log_changes>
             <log_changes>
+                <document key="visitor_id">log_visitor</document>
+            </log_changes>
+            <log_changes>
                 <document key="quote_id">log_quote</document>
             </log_changes>
             <log_changes>

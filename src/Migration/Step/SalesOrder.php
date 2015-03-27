@@ -7,13 +7,14 @@ namespace Migration\Step;
 
 use Migration\Exception;
 use Migration\MapReader;
-use Migration\Config;
 use Migration\App\Step\DeltaInterface;
+use Migration\App\Step\StepInterface;
+use Migration\App\Step\RollbackInterface;
 
 /**
  * Class SalesOrder
  */
-class SalesOrder implements DeltaInterface
+class SalesOrder implements StepInterface, DeltaInterface, RollbackInterface
 {
     /**
      * @var SalesOrder\Integrity
@@ -107,7 +108,7 @@ class SalesOrder implements DeltaInterface
      */
     public function delta()
     {
-        return true;
+        return $this->delta->delta();
     }
 
     /**

@@ -12,9 +12,6 @@
                 <document>log_visitor</document>
                 <to>customer_visitor</to>
             </rename>
-            <log_changes>
-                <document key="visitor_id">log_visitor</document>
-            </log_changes>
         </document_rules>
         <field_rules>
             <ignore>

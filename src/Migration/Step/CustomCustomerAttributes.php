@@ -41,6 +41,13 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     protected $factory;
 
     /**
+     * Documents for delta monitoring with id columns
+     *
+     * @var array
+     */
+    protected $deltaDocuments = [];
+
+    /**
      * @param Config $config
      * @param Source $source
      * @param Destination $destination
@@ -120,7 +127,7 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
                     $recordsToSave->addRecord($destinationRecord);
                 }
                 $this->destination->saveRecords($destinationDocument->getName(), $recordsToSave);
-            }
+            };
         }
         $this->progress->finish();
         return true;
@@ -178,10 +185,40 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     }
 
     /**
+     * @return array
+     */
+    protected function getDeltaDocuments()
+    {
+        if (empty($this->deltaDocuments)) {
+            foreach ($this->getDocumentList() as $sourceDocument => $destDocuments) {
+                $this->deltaDocuments[$sourceDocument] = 'entity_id';
+            }
+        }
+        return $this->deltaDocuments;
+    }
+
+    /**
      * @inheritdoc
      */
     public function delta()
     {
+        $this->progress->start(count($this->getDocumentList()));
+        foreach ($this->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
+            $this->progress->advance();
+            $destinationDocument = $this->destination->getDocument($destinationDocumentName);
+            while (!empty($sourceRecords = $this->source->getChangedRecords($sourceDocumentName, 'entity_id'))) {
+                $recordsToSave = $destinationDocument->getRecords();
+                foreach ($sourceRecords as $recordData) {
+                    /** @var Record $destinationRecord */
+                    $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+                    $destinationRecord->setData($recordData);
+                    $recordsToSave->addRecord($destinationRecord);
+                }
+                $this->destination->updateChangedRecords($destinationDocument->getName(), $recordsToSave);
+                // TODO: remove it when delta collecting tables will be cleared
+                break;
+            }
+        }
         return true;
     }
 
@@ -190,6 +227,13 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
      */
     public function setUpChangeLog()
     {
+        $deltaDocuments = $this->getDeltaDocuments();
+        $this->progress->start(count($deltaDocuments));
+        foreach ($deltaDocuments as $documentName => $idKey) {
+            $this->progress->advance();
+            $this->source->createDelta($documentName, $idKey);
+        }
+        $this->progress->finish();
         return true;
     }
 
