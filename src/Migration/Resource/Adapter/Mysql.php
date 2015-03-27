@@ -112,11 +112,20 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
+    public function deleteRecords($documentName, $idKey, $ids)
+    {
+        $ids = implode("','", $ids);
+        $this->resourceAdapter->delete($documentName, "$idKey IN ('$ids')");
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
     {
         $select = $this->resourceAdapter->select();
         $select->from($documentName, '*')
-            ->join($changeLogName, "$documentName.$idKey = $changeLogName.id", [])
+            ->join($changeLogName, "$documentName.$idKey = $changeLogName.$idKey", [])
             ->limit($pageSize, $pageNumber * $pageSize);
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
@@ -165,7 +174,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
-     * Updates document rows with specified data based on a WHERE clause.
+     * Updates document rows with specified data based on a WHERE clause
      *
      * @param mixed $document
      * @param array $bind
@@ -175,6 +184,14 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function updateDocument($document, array $bind, $where = '')
     {
         return $this->resourceAdapter->update($document, $bind, $where);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateChangedRecords($document, $data)
+    {
+        return $this->resourceAdapter->insertOnDuplicate($document, $data);
     }
 
     /**
@@ -231,7 +248,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
         if (!$this->resourceAdapter->isTableExists($changeLogName)) {
             $triggerTable = $this->resourceAdapter->newTable($changeLogName)
                 ->addColumn(
-                    'id',
+                    $idKey,
                     \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
                 )->addColumn(
                     'operation',

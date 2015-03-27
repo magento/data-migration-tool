@@ -92,4 +92,9 @@ class Source extends AbstractResource
         }
         return $documentName . $suffix;
     }
+
+    public function deleteRecords($documentName, $idKey, $ids)
+    {
+        $this->adapter->deleteRecords($documentName, $idKey, $ids);
+    }
 }
