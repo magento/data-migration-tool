@@ -36,7 +36,8 @@ class ConvertModel extends AbstractHandler
     {
         $this->validate($recordToHandle);
         $sourceModel = $recordToHandle->getValue($this->field);
-        if (empty($sourceModel) && !is_null($oppositeRecord->getValue($this->field))) {
+        $oppositeRecordValue = $oppositeRecord->getValue($this->field);
+        if (empty($sourceModel) && !empty($oppositeRecordValue)) {
             $recordToHandle->setValue($this->field, $oppositeRecord->getValue($this->field));
         } elseif (empty($sourceModel)) {
             $recordToHandle->setValue($this->field, null);
