@@ -6,6 +6,7 @@
 namespace Migration\Step\Map;
 
 use Migration\MapReader\MapReaderChangelog;
+use Migration\MapReader\MapReaderMain;
 use Migration\MapReaderInterface;
 use Migration\Resource\Source;
 use Migration\Resource;
@@ -17,6 +18,11 @@ class Delta
      * @var Source
      */
     protected $source;
+
+    /**
+     * @var MapReaderChangelog
+     */
+    protected $mapReaderChangelog;
 
     /**
      * @var MapReaderChangelog
@@ -50,16 +56,18 @@ class Delta
 
     /**
      * @param Source $source
-     * @param MapReaderChangelog $mapReader
+     * @param MapReaderChangelog $mapReaderChangelog
+     * @param MapReaderMain $mapReader
      * @param ProgressBar $progress
-     * @param Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param Migrate $migrate
      */
     public function __construct(
         Source $source,
-        MapReaderChangelog $mapReader,
+        MapReaderChangelog $mapReaderChangelog,
+        MapReaderMain $mapReader,
         ProgressBar $progress,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
@@ -67,6 +75,7 @@ class Delta
         Migrate $migrate
     ) {
         $this->source = $source;
+        $this->mapReaderChangelog = $mapReaderChangelog;
         $this->mapReader = $mapReader;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
@@ -80,7 +89,7 @@ class Delta
      */
     public function setUpChangeLog()
     {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        $deltaDocuments = $this->mapReaderChangelog->getDeltaDocuments($this->source->getDocumentList());
         $this->progress->start(count($deltaDocuments));
         foreach ($deltaDocuments as $documentName => $idKey) {
             $this->progress->advance();
@@ -95,13 +104,11 @@ class Delta
      */
     public function delta()
     {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        $deltaDocuments = $this->mapReaderChangelog->getDeltaDocuments($this->source->getDocumentList());
         foreach ($deltaDocuments as  $documentName => $idKey) {
 
             $items = $this->source->getChangedRecords($documentName, $idKey);
-            if (!empty($items)) {
-                echo "\n $documentName has changes";
-            } else {
+            if (empty($items)) {
                 continue;
             }
             $sourceDocument = $this->source->getDocument($documentName);
@@ -110,8 +117,10 @@ class Delta
             if (!$destinationName) {
                 continue;
             }
+
+            echo "\n $documentName have changes \n";
+
             $destDocument = $this->destination->getDocument($destinationName);
-            $this->destination->clearDocument($destinationName);
 
             $recordTransformer = $this->migrate->getRecordTransformer($sourceDocument, $destDocument);
             do {
