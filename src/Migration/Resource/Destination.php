@@ -101,4 +101,21 @@ class Destination extends AbstractResource
     {
         $this->getAdapter()->deleteBackup($this->addDocumentPrefix($documentName));
     }
+
+    /**
+     * @param $documentName
+     * @param \Migration\Resource\Record\Collection $records
+     */
+    public function updateChangedRecords($documentName, $records)
+    {
+        $documentName = $this->addDocumentPrefix($documentName);
+        $data = [];
+        /** @var \Migration\Resource\Record $row */
+        foreach ($records as $row) {
+            $data[] = $row->getData();
+        }
+        if (!empty($data)) {
+            $this->adapter->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
+        }
+    }
 }

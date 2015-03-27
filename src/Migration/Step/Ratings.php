@@ -74,6 +74,7 @@ class Ratings extends DatabaseStep implements RollbackInterface
             );
             return false;
         }
+
         $structureRating = $this->destination->getDocument(self::RATING_TABLE_NAME)->getStructure()->getFields();
         if (!array_key_exists('is_active', $structureRating)) {
             $this->logger->error(
