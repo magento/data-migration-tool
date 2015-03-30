@@ -42,9 +42,14 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['info'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
-            ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'resetStep'])
+            ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'reset'])
             ->getMock();
-        $this->data = new Data($this->progress, $this->logger, $this->stepList);
+        $setupChangeLog = $this->getMockBuilder('\Migration\App\SetupChangeLog')->disableOriginalConstructor()
+            ->setMethods(['setupChangeLog'])
+            ->getMock();
+        $setupChangeLog->expects($this->any())->method('setupChangeLog')->willReturn(true);
+
+        $this->data = new Data($this->progress, $this->logger, $this->stepList, $setupChangeLog);
     }
 
     public function testRunStepsIntegrityFail()
@@ -73,7 +78,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('rollback');
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->progress->expects($this->any())->method('resetStep')->with($step);
+        $this->progress->expects($this->any())->method('reset')->with($step);
         $this->logger->expects($this->any())->method('info');
         $this->stepList->expects($this->once())->method('getSteps')
             ->willReturn([$step]);
@@ -91,7 +96,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('rollback');
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->progress->expects($this->any())->method('resetStep')->with($step);
+        $this->progress->expects($this->any())->method('reset')->with($step);
         $this->logger->expects($this->any())->method('info');
         $this->stepList->expects($this->once())->method('getSteps')
             ->willReturn([$step]);
@@ -109,9 +114,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
-        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
-        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Stage: setup triggers");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: data migration");
+        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Migration completed");
         $this->stepList->expects($this->once())->method('getSteps')
             ->willReturn([$step]);
         $this->assertTrue($this->data->run());
@@ -128,9 +134,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(true);
         $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
-        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
-        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Stage: setup triggers");
+        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: data migration");
+        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Migration completed");
         $this->stepList->expects($this->once())->method('getSteps')
             ->willReturn([$step]);
         $this->assertTrue($this->data->run());

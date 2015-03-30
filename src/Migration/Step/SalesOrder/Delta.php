@@ -79,21 +79,6 @@ class Delta
     /**
      * @return bool
      */
-    public function setUpChangeLog()
-    {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
-        $this->progress->start(count($deltaDocuments));
-        foreach ($deltaDocuments as $documentName => $idKey) {
-            $this->progress->advance();
-            $this->source->createDelta($documentName, $idKey);
-        }
-        $this->progress->finish();
-        return true;
-    }
-
-    /**
-     * @return bool
-     */
     public function delta()
     {
         $this->progress->start(count($this->helper->getDocumentList()));

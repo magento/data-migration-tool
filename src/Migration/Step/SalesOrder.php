@@ -110,12 +110,4 @@ class SalesOrder implements StepInterface, DeltaInterface, RollbackInterface
     {
         return $this->delta->delta();
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUpChangeLog()
-    {
-        return $this->delta->setUpChangeLog();
-    }
 }

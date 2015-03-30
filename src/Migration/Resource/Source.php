@@ -58,7 +58,8 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta($documentName, $this->getChangeLogName($documentName), $idKey);    }
+        $this->adapter->createDelta($documentName, $this->getChangeLogName($documentName), $idKey);
+    }
 
     /**
      * Get delta records from document
@@ -85,16 +86,12 @@ class Source extends AbstractResource
     public function getChangeLogName($documentName)
     {
         $maximumNameLength = 64;
-        $hash = md5('change_log');
-        $suffix = '_cl_' . $hash;
-        while ((strlen($documentName) + strlen($suffix)) > $maximumNameLength) {
-            $suffix = substr($suffix, 0, -1);
-        }
-        return $documentName . $suffix;
-    }
+        $documentName = 'm2_cl_' . $documentName;
 
-    public function deleteRecords($documentName, $idKey, $ids)
-    {
-        $this->adapter->deleteRecords($documentName, $idKey, $ids);
+        if (strlen($documentName) > $maximumNameLength) {
+            $documentName = substr($documentName, 0, $maximumNameLength);
+        }
+
+        return $documentName;
     }
 }

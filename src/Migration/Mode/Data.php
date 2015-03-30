@@ -9,7 +9,6 @@ use Migration\App\SetupChangeLog;
 use Migration\App\Mode\StepList;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
-use Migration\App\Step\StepInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
@@ -83,7 +82,7 @@ USAGE;
             }
         }
 
-        $result = $this->runStage($this->setupChangeLog, 'setUpChangeLog', 'setup triggers');
+        $result = $this->runStage($this->setupChangeLog, 'setupChangeLog', 'setup triggers');
         if (!$result) {
             throw new Exception('Setup triggers failed');
         }

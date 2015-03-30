@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Map;
 
+use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderChangelog;
 use Migration\MapReader\MapReaderMain;
 use Migration\MapReaderInterface;
@@ -20,19 +21,14 @@ class Delta
     protected $source;
 
     /**
-     * @var MapReaderChangelog
-     */
-    protected $mapReaderChangelog;
-
-    /**
-     * @var MapReaderChangelog
+     * @var MapReaderMain
      */
     protected $mapReader;
 
     /**
-     * @var ProgressBar
+     * @var Logger
      */
-    protected $progress;
+    protected $logger;
 
     /**
      * @var Resource\Destination
@@ -56,9 +52,8 @@ class Delta
 
     /**
      * @param Source $source
-     * @param MapReaderChangelog $mapReaderChangelog
      * @param MapReaderMain $mapReader
-     * @param ProgressBar $progress
+     * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
@@ -66,47 +61,35 @@ class Delta
      */
     public function __construct(
         Source $source,
-        MapReaderChangelog $mapReaderChangelog,
         MapReaderMain $mapReader,
-        ProgressBar $progress,
+        Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Migrate $migrate
     ) {
         $this->source = $source;
-        $this->mapReaderChangelog = $mapReaderChangelog;
         $this->mapReader = $mapReader;
+        $this->logger = $logger;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
-        $this->progress = $progress;
         $this->migrate = $migrate;
     }
 
     /**
      * @return bool
-     */
-    public function setUpChangeLog()
-    {
-        $deltaDocuments = $this->mapReaderChangelog->getDeltaDocuments($this->source->getDocumentList());
-        $this->progress->start(count($deltaDocuments));
-        foreach ($deltaDocuments as $documentName => $idKey) {
-            $this->progress->advance();
-            $this->source->createDelta($documentName, $idKey);
-        }
-        $this->progress->finish();
-        return true;
-    }
-
-    /**
-     * @return bool
+     * @throws \Migration\Exception
      */
     public function delta()
     {
-        $deltaDocuments = $this->mapReaderChangelog->getDeltaDocuments($this->source->getDocumentList());
-        foreach ($deltaDocuments as  $documentName => $idKey) {
-
+        $sourceDocuments = array_flip($this->source->getDocumentList());
+        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        foreach ($deltaDocuments as $documentName => $idKey) {
+            $changeLogName = $this->source->getChangeLogName($documentName);
+            if (!isset($sourceDocuments[$changeLogName])) {
+                throw new \Migration\Exception(sprintf('Changelog table %s is not installed', $changeLogName));
+            }
             $items = $this->source->getChangedRecords($documentName, $idKey);
             if (empty($items)) {
                 continue;
@@ -118,7 +101,7 @@ class Delta
                 continue;
             }
 
-            echo "\n $documentName have changes \n";
+            $this->logger->debug(sprintf(PHP_EOL . '%s have changes', $documentName));
 
             $destDocument = $this->destination->getDocument($destinationName);
 
@@ -126,7 +109,19 @@ class Delta
             do {
                 $destinationRecords = $destDocument->getRecords();
                 $ids = [];
+                $deleteRecords = [];
                 foreach ($items as $data) {
+                    echo('.');
+                    $operation = strtoupper($data['operation']);
+                    if ($operation == 'DELETE') {
+                        $deleteRecords[] = $data["old_" . $idKey];
+                        $ids[] = $data["old_" . $idKey];
+                        continue;
+                    }
+                    unset($data['operation']);
+                    unset($data["old_" . $idKey]);
+                    $ids[] = $data[$idKey];
+
                     /** @var Resource\Record $record */
                     /** @var Resource\Record $destRecord */
                     if ($recordTransformer) {
@@ -136,12 +131,17 @@ class Delta
                     } else {
                         $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $data]);
                     }
-                    $ids[] = $data[$idKey];
                     $destinationRecords->addRecord($destRecord);
-                    echo '.';
                 }
                 $this->destination->updateChangedRecords($destinationName, $destinationRecords);
-                $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $ids);
+                if (!empty($deleteRecords)) {
+                    $this->destination->deleteRecords(
+                        $this->destination->addDocumentPrefix($documentName),
+                        $idKey,
+                        $deleteRecords
+                    );
+                }
+                $this->source->deleteRecords($changeLogName, $idKey, $ids);
             } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
         }
         return true;

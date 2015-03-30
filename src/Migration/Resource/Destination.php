@@ -103,8 +103,9 @@ class Destination extends AbstractResource
     }
 
     /**
-     * @param $documentName
+     * @param string $documentName
      * @param \Migration\Resource\Record\Collection $records
+     * @return void
      */
     public function updateChangedRecords($documentName, $records)
     {

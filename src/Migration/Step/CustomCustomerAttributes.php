@@ -225,21 +225,6 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     /**
      * @inheritdoc
      */
-    public function setUpChangeLog()
-    {
-        $deltaDocuments = $this->getDeltaDocuments();
-        $this->progress->start(count($deltaDocuments));
-        foreach ($deltaDocuments as $documentName => $idKey) {
-            $this->progress->advance();
-            $this->source->createDelta($documentName, $idKey);
-        }
-        $this->progress->finish();
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function rollback()
     {
         return true;

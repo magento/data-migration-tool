@@ -176,6 +176,19 @@ abstract class AbstractResource
     }
 
     /**
+     * Delete multiple records from document
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @param [] $ids
+     * @return void
+     */
+    public function deleteRecords($documentName, $idKey, $ids)
+    {
+        $this->adapter->deleteRecords($documentName, $idKey, $ids);
+    }
+
+    /**
      * Get Resource Adapter
      *
      * @return AdapterInterface

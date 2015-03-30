@@ -98,12 +98,4 @@ class Log implements DeltaInterface, RollbackInterface
     {
         return $this->delta->delta();
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUpChangeLog()
-    {
-        return $this->delta->setUpChangeLog();
-    }
 }

@@ -100,13 +100,4 @@ class Map implements StepInterface, DeltaInterface, RollbackInterface
         $this->delta->delta();
         return true;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUpChangeLog()
-    {
-        $this->delta->setUpChangeLog();
-        return true;
-    }
 }
