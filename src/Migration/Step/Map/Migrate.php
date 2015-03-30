@@ -122,7 +122,7 @@ class Migrate
      */
     public function getRecordTransformer(Document $sourceDocument, Document $destDocument)
     {
-        if (!$this->canJustCopy($sourceDocument, $destDocument)) {
+        if ($this->canJustCopy($sourceDocument, $destDocument)) {
             return null;
         }
         /** @var \Migration\RecordTransformer $recordTranformer */
