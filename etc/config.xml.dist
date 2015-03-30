@@ -15,6 +15,9 @@
         <step>Migration\Step\Ratings</step>
         <step>Migration\Step\SalesOrder</step>
     </steps>
+    <steps mode="delta">
+        <step>Migration\Step\Map</step>
+    </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>
     </source>

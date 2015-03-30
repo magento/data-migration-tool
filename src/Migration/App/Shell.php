@@ -145,11 +145,7 @@ USAGE;
      */
     protected function createMode($modeName)
     {
-        try {
-            return $this->modeFactory->create($modeName);
-        } catch (\Exception $e) {
-            throw new Exception("Mode '$modeName' does not exists");
-        }
+        return $this->modeFactory->create($modeName);
     }
 
     /**

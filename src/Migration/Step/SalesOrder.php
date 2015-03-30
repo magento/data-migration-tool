@@ -5,15 +5,15 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\StepInterface;
 use Migration\Exception;
 use Migration\MapReader;
-use Migration\Config;
 use Migration\App\Step\DeltaInterface;
 
 /**
  * Class SalesOrder
  */
-class SalesOrder implements DeltaInterface
+class SalesOrder implements StepInterface, DeltaInterface
 {
     /**
      * @var SalesOrder\Integrity
