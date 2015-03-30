@@ -145,6 +145,7 @@ class Migrate
      * @param array $data
      * @param Resource\Document $sourceDocument
      * @param Record\Collection $destEavCollection
+     * @return void
      */
     public function migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection)
     {

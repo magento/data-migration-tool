@@ -59,6 +59,8 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
      * @param Destination $destination
      * @param ProgressBar $progress
      * @param RecordFactory $factory
+     * @param Logger $logger
+     * @throws \Migration\Exception
      */
     public function __construct(
         Config $config,
@@ -198,7 +200,7 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     protected function getDeltaDocuments()
     {
         if (empty($this->deltaDocuments)) {
-            foreach ($this->getDocumentList() as $sourceDocument => $destDocuments) {
+            foreach (array_keys($this->getDocumentList()) as $sourceDocument) {
                 $this->deltaDocuments[$sourceDocument] = 'entity_id';
             }
         }
@@ -249,6 +251,7 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
      * @param string $documentName
      * @param string $idKey
      * @param string $destinationName
+     * @return void
      */
     protected function processDeletedRecords($documentName, $idKey, $destinationName)
     {

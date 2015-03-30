@@ -100,6 +100,7 @@ abstract class AbstractDelta
      * @param string $documentName
      * @param string $idKey
      * @param string $destinationName
+     * @return void
      */
     protected function processDeletedRecords($documentName, $idKey, $destinationName)
     {
@@ -116,6 +117,7 @@ abstract class AbstractDelta
     /**
      * @param string $documentName
      * @param string $idKey
+     * @return void
      */
     protected function processChangedRecords($documentName, $idKey)
     {
@@ -158,6 +160,7 @@ abstract class AbstractDelta
      * @param Resource\Document $destDocument
      * @param \Migration\RecordTransformer $recordTransformer
      * @param Resource\Record\Collection $destinationRecords
+     * @return void
      */
     protected function transformData($data, $sourceDocument, $destDocument, $recordTransformer, $destinationRecords)
     {

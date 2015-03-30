@@ -296,7 +296,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $trigger->addStatement($statement)->setName($triggerName);
             $this->resourceAdapter->createTrigger($trigger);
             if (!$triggerExists) {
-                $this->loadTriggers();
+                $this->triggers[$triggerKey] = 1;
             }
             unset($trigger);
         }

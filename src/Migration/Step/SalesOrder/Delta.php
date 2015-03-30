@@ -54,6 +54,7 @@ class Delta extends AbstractDelta
     /**
      * @param string $documentName
      * @param string $idKey
+     * @return void
      */
     protected function processChangedRecords($documentName, $idKey)
     {

@@ -81,7 +81,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
-            ->willReturnMap([['config_data', 3], ['document_to_clear', null]]);
+            ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, null]]);
         $this->mapReader->expects($this->any())->method('getDocumentList')
             ->will($this->returnValue(['document1' => 'document2']));
         $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
@@ -125,7 +125,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
-            ->willReturnMap([['config_data', 3], ['document_to_clear', 1]]);
+            ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, 1]]);
         $this->logger->expects($this->once())->method('error')->with(
             PHP_EOL . 'Destination log documents are not cleared'
         );
