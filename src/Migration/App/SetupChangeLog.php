@@ -42,7 +42,7 @@ class SetupChangeLog
     /**
      * @return bool
      */
-    public function setUpChangeLog()
+    public function setupChangeLog()
     {
         $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
         $this->progress->start(count($deltaDocuments));

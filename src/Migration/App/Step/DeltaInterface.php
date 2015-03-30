@@ -17,11 +17,4 @@ interface DeltaInterface
      * @return bool
      */
     public function delta();
-
-    /**
-     * Setup triggers
-     *
-     * @return bool
-     */
-    public function setUpChangeLog();
 }

@@ -188,14 +188,6 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     /**
      * @inheritdoc
      */
-    public function setUpChangeLog()
-    {
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
     public function rollback()
     {
         return true;

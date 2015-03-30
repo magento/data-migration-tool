@@ -124,8 +124,8 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($documentName, '*')
-            ->join($changeLogName, "$documentName.$idKey = $changeLogName.$idKey", [])
+        $select->from($changeLogName, ['operation', "old_$idKey" => $idKey])
+            ->joinLeft($documentName, "$documentName.$idKey = $changeLogName.$idKey", '*')
             ->limit($pageSize, $pageNumber * $pageSize);
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
@@ -249,7 +249,9 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $triggerTable = $this->resourceAdapter->newTable($changeLogName)
                 ->addColumn(
                     $idKey,
-                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['nullable' => false, 'primary' => true]
                 )->addColumn(
                     'operation',
                     \Magento\Framework\DB\Ddl\Table::TYPE_TEXT

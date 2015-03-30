@@ -171,7 +171,8 @@ class Migrate
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            if ($this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type)) {
+            $handlerConfig = $this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type);
+            if (!empty($handlerConfig)) {
                 $result = true;
                 break;
             }
