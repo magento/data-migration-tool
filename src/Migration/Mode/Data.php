@@ -5,10 +5,10 @@
  */
 namespace Migration\Mode;
 
-use Migration\App\Step\DeltaInterface;
+use Migration\App\SetupChangeLog;
+use Migration\App\Mode\StepList;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
-use Migration\App\Step\StepInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
@@ -33,18 +33,26 @@ class Data implements \Migration\App\Mode\ModeInterface
     protected $progress;
 
     /**
+     * @var SetupChangeLog
+     */
+    protected $setupChangeLog;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepList $stepList
+     * @param SetupChangeLog $setupChangeLog
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
-        \Migration\App\Mode\StepList $stepList
+        StepList $stepList,
+        SetupChangeLog $setupChangeLog
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
         $this->stepList = $stepList;
+        $this->setupChangeLog = $setupChangeLog;
     }
 
     /**
@@ -54,7 +62,7 @@ class Data implements \Migration\App\Mode\ModeInterface
     {
         return <<<USAGE
 
-Data mode usage information:
+Data migration mode usage information:
 
 Main data migration
 USAGE;
@@ -68,28 +76,24 @@ USAGE;
         $result = true;
         $steps = $this->stepList->getSteps('data');
         foreach ($steps as $step) {
-            $result = $result && $this->runStep($step, 'integrity check');
+            $result = $result && $this->runStage($step, 'integrity', 'integrity check');
             if (!$result) {
                 throw new Exception('Integrity Check failed');
             }
         }
 
-        foreach ($steps as $step) {
-            if ($step instanceof DeltaInterface) {
-                $result = $this->runStep($step, 'setup triggers');
-                if (!$result) {
-                    throw new Exception('Setup triggers failed');
-                }
-            }
+        $result = $this->runStage($this->setupChangeLog, 'setupChangeLog', 'setup triggers');
+        if (!$result) {
+            throw new Exception('Setup triggers failed');
         }
 
         foreach ($steps as $step) {
-            $result = $this->runStep($step, 'data migration');
+            $result = $this->runStage($step, 'run', 'data migration');
             if (!$result) {
                 $this->rollback($step);
                 throw new Exception('Data Migration failed');
             }
-            $result = $this->runStep($step, 'volume check');
+            $result = $this->runStage($step, 'volumeCheck', 'volume check');
             if (!$result) {
                 $this->rollback($step);
                 throw new Exception('Volume Check failed');
@@ -102,46 +106,30 @@ USAGE;
     }
 
     /**
-     * @param StepInterface $step
-     * @param string $stepPart
+     * @param mixed $object
+     * @param string $method
+     * @param string $stage
      * @return bool
      */
-    public function runStep(StepInterface $step, $stepPart)
+    protected function runStage($object, $method, $stage)
     {
-        $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), $stepPart));
+        $title = method_exists($object, 'getTitle') ? $object->getTitle() : 'Stage';
 
-        if ($this->progress->isCompleted($step, $stepPart)) {
+        $this->logger->info(sprintf('%s: %s', PHP_EOL . $title, $stage));
+
+        if ($this->progress->isCompleted($object, $stage)) {
             return true;
         }
 
-        $result = false;
         try {
-            switch ($stepPart) {
-                case 'integrity check':
-                    $result = $step->integrity();
-                    break;
-                case 'data migration':
-                    $result = $step->run();
-                    break;
-                case 'volume check':
-                    $result = $step->volumeCheck();
-                    break;
-                case 'setup triggers':
-                    $result = $step->setUpChangeLog();
-                    break;
-                case 'rollback':
-                    $step->rollback();
-                    $this->progress->resetStep($step);
-                    $this->logger->info(PHP_EOL . 'Please fix errors and run Migration Tool again');
-                    break;
-            }
+            $result = call_user_func([$object, $method]);
         } catch (\Exception $e) {
             $this->logger->error(PHP_EOL . $e->getMessage());
             return false;
         }
 
         if ($result) {
-            $this->progress->saveResult($step, $stepPart, $result);
+            $this->progress->saveResult($object, $stage, $result);
         }
 
         return $result;
@@ -155,7 +143,9 @@ USAGE;
     {
         if ($step instanceof RollbackInterface) {
             $this->logger->info(PHP_EOL . 'Error occurred. Rollback.');
-            $this->runStep($step, 'rollback');
+            $this->runStage($step, 'rollback', 'rollback');
+            $this->progress->reset($step);
+            $this->logger->info(PHP_EOL . 'Please fix errors and run Migration Tool again');
         }
     }
 }

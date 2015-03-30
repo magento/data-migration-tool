@@ -121,7 +121,7 @@ class Migrate
      */
     public function getRecordTransformer(Document $sourceDocument, Document $destDocument)
     {
-        if (!$this->canJustCopy($sourceDocument, $destDocument)) {
+        if ($this->canJustCopy($sourceDocument, $destDocument)) {
             return null;
         }
         /** @var \Migration\RecordTransformer $recordTransformer */
@@ -171,7 +171,8 @@ class Migrate
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            if ($this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type)) {
+            $handlerConfig = $this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type);
+            if (!empty($handlerConfig)) {
                 $result = true;
                 break;
             }

@@ -9,6 +9,9 @@
     <source>
         <document_rules>
             <ignore>
+                <document>m2_cl_*</document>
+            </ignore>
+            <ignore>
                 <document>url_rewrite_m2*</document>
             </ignore>
             <ignore>
@@ -1749,6 +1752,21 @@
             </ignore>
             <ignore>
                 <document>sales_order</document>
+            </ignore>
+            <ignore>
+                <document>cache</document>
+            </ignore>
+            <ignore>
+                <document>cache_tag</document>
+            </ignore>
+            <ignore>
+                <document>customer_log</document>
+            </ignore>
+            <ignore>
+                <document>flag</document>
+            </ignore>
+            <ignore>
+                <document>session</document>
             </ignore>
         </document_rules>
         <field_rules>

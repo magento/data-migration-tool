@@ -109,12 +109,4 @@ class SalesOrder implements DeltaInterface
     {
         return true;
     }
-
-    /**
-     * @inheritdoc
-     */
-    public function setUpChangeLog()
-    {
-        return $this->delta->setUpChangeLog();
-    }
 }

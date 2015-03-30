@@ -123,7 +123,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
-        $result = ($map->length > 0) || $this->isChangeLog($document);
+        $result = ($map->length > 0);
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
                 $regexp = '/^' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
@@ -341,22 +341,5 @@ abstract class MapReaderAbstract implements MapReaderInterface
             throw new Exception('Field has ambiguous configuration: ' . $value);
         }
         return true;
-    }
-
-    /**
-     * Check if document is a change log item
-     * @param string $document
-     * @return bool
-     */
-    protected function isChangeLog($document)
-    {
-        $ignore = false;
-        $clRegex = "/.+_cl_.+/";
-        $changeLogMatches = [];
-        preg_match($clRegex, $document, $changeLogMatches);
-        if ($changeLogMatches) {
-            $ignore = true;
-        }
-        return $ignore;
     }
 }

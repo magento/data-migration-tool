@@ -108,7 +108,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn([]);
+        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->will(
@@ -165,7 +165,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
+        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn([]);
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $bulk = [['id' => 4, 'name' => 'john']];
