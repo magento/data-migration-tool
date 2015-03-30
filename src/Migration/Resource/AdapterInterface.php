@@ -86,7 +86,18 @@ interface AdapterInterface
      * @param int $pageSize
      * @return array
      */
-    public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize);
+    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize);
+
+    /**
+     * Load page with changed records from the document
+     *
+     * @param string $changeLogName
+     * @param string $idKey
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize);
 
     /**
      * Updates document records with specified data or insert if this is a new record

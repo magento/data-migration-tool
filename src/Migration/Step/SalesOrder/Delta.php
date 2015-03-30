@@ -6,136 +6,93 @@
 
 namespace Migration\Step\SalesOrder;
 
+use Migration\App\Step\AbstractDelta;
+use Migration\Logger\Logger;
+use Migration\MapReaderInterface;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
 use Migration\MapReader\MapReaderSalesOrder;
-use Migration\ProgressBar;
+use Migration\Resource;
 
-class Delta
+class Delta extends AbstractDelta
 {
-    /**
-     * @var Source
-     */
-    protected $source;
-
-    /**
-     * @var Destination
-     */
-    protected $destination;
-
-    /**
-     * @var \Migration\Resource\RecordFactory
-     */
-    protected $recordFactory;
-
-    /**
-     * @var MapReaderSalesOrder
-     */
-    protected $mapReader;
-
-    /**
-     * @var ProgressBar
-     */
-    protected $progress;
-
     /**
      * @var Helper
      */
     protected $helper;
 
     /**
-     * @var \Migration\RecordTransformerFactory
+     * @var Migrate
      */
-    protected $recordTransformerFactory;
-
+    protected $migrate;
 
     /**
      * @param Source $source
-     * @param Destination $destination,
      * @param MapReaderSalesOrder $mapReader
-     * @param ProgressBar $progress
+     * @param Logger $logger
+     * @param Destination $destination
+     * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Helper $helper
-     * @param \Migration\Resource\RecordFactory $recordFactory
+     * @param Migrate $migrate
      */
     public function __construct(
         Source $source,
-        Destination $destination,
         MapReaderSalesOrder $mapReader,
-        ProgressBar $progress,
+        Logger $logger,
+        Resource\Destination $destination,
+        Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
-        \Migration\Resource\RecordFactory $recordFactory
+        Migrate $migrate
     ) {
-        $this->source = $source;
-        $this->destination = $destination;
-        $this->mapReader = $mapReader;
-        $this->progress = $progress;
-        $this->recordTransformerFactory = $recordTransformerFactory;
         $this->helper = $helper;
-        $this->recordFactory = $recordFactory;
+        $this->migrate = $migrate;
+        parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
     }
 
     /**
-     * @return bool
+     * @param string $documentName
+     * @param string $idKey
      */
-    public function delta()
+    protected function processChangedRecords($documentName, $idKey)
     {
-        $this->progress->start(count($this->helper->getDocumentList()));
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
-        foreach ($deltaDocuments as $sourceDocName => $idField) {
-            $this->progress->advance();
-            $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationDocumentName = $this->mapReader->getDocumentMap(
-                $sourceDocName,
-                MapReaderInterface::TYPE_SOURCE
-            );
-            if (!$destinationDocumentName) {
-                continue;
-            }
-            $destDocumentResource = $this->destination->getDocument($destinationDocumentName);
-            $eavDocumentName = $this->helper->getDestEavDocument();
-            $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
+        $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
 
-            $recordTransformer = $this->recordTransformerFactory->create(
-                [
-                    'sourceDocument' => $sourceDocument,
-                    'destDocument' => $destDocumentResource,
-                    'mapReader' => $this->mapReader
-                ]
-            );
-            $recordTransformer->init();
-            while (!empty($sourceRecords = $this->source->getChangedRecords($sourceDocument, $idField))) {
-                $destinationCollection = $destDocumentResource->getRecords();
-                $destEavCollection = $eavDocumentResource->getRecords();
-                foreach ($sourceRecords as $recordData) {
-                    /** @var Record $sourceRecord */
-                    $sourceRecord = $this->recordFactory->create(
-                        ['document' => $sourceDocument, 'data' => $recordData]
-                    );
-                    /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create(['document' => $destDocumentResource]);
-                    $recordTransformer->transform($sourceRecord, $destRecord);
-                    $destinationCollection->addRecord($destRecord);
-                    foreach ($this->helper->getEavAttributes() as $orderEavAttribute) {
-                        $eavAttributeData = $this->prepareEavEntityData($orderEavAttribute, $recordData);
-                        if ($eavAttributeData) {
-                            $attributeRecord = $this->recordFactory->create(
-                                [
-                                    'document' => $sourceDocument,
-                                    'data' => $eavAttributeData
-                                ]
-                            );
-                            $destEavCollection->addRecord($attributeRecord);
-                        }
-                    }
-                }
-                $this->destination->updateChangedRecords($destinationDocumentName, $destinationCollection);
-                $this->destination->updateChangedRecords($eavDocumentName, $destEavCollection);
+        $items = $this->source->getChangedRecords($documentName, $idKey);
+
+        $sourceDocument = $this->source->getDocument($documentName);
+        $destDocument = $this->destination->getDocument($destinationName);
+
+        $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
+
+        $eavDocumentName = $this->helper->getDestEavDocument();
+        $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
+
+        do {
+            $destinationRecords = $destDocument->getRecords();
+            $destEavCollection = $eavDocumentResource->getRecords();
+
+            $ids = [];
+
+            foreach ($items as $data) {
+                echo('.');
+                $ids[] = $data[$idKey];
+
+                $this->transformData(
+                    $data,
+                    $sourceDocument,
+                    $destDocument,
+                    $recordTransformer,
+                    $destinationRecords
+                );
+                $this->migrate->migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection);
             }
-            // TODO: remove it when delta collecting tables will be cleared
-            break;
-        }
-        return true;
+
+            $this->destination->updateChangedRecords($destinationName, $destinationRecords);
+            $this->destination->updateChangedRecords($eavDocumentName, $destEavCollection);
+
+            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $ids);
+        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 }

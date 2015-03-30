@@ -5,6 +5,7 @@
  */
 namespace Migration\Step;
 
+use Migration\Logger\Logger;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Document;
@@ -41,6 +42,11 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
     protected $factory;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * Documents for delta monitoring with id columns
      *
      * @var array
@@ -59,13 +65,15 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
         Source $source,
         Destination $destination,
         ProgressBar $progress,
-        RecordFactory $factory
+        RecordFactory $factory,
+        Logger $logger
     ) {
         parent::__construct($config);
         $this->source = $source;
         $this->destination = $destination;
         $this->progress = $progress;
         $this->factory = $factory;
+        $this->logger = $logger;
     }
 
     /**
@@ -202,24 +210,56 @@ class CustomCustomerAttributes extends DatabaseStep implements DeltaInterface, R
      */
     public function delta()
     {
-        $this->progress->start(count($this->getDocumentList()));
-        foreach ($this->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
-            $this->progress->advance();
+        $sourceDocuments = array_flip($this->source->getDocumentList());
+        $documentsMap = $this->getDocumentList();
+        foreach ($this->getDeltaDocuments() as $sourceDocumentName => $idKey) {
+            $changeLogName = $this->source->getChangeLogName($sourceDocumentName);
+            if (!isset($sourceDocuments[$changeLogName])) {
+                throw new \Migration\Exception(sprintf('Changelog for %s is not installed', $sourceDocumentName));
+            }
+            if ($this->source->getRecordsCount($changeLogName, false) == 0) {
+                continue;
+            }
+            $this->logger->debug(sprintf(PHP_EOL . '%s have changes', $sourceDocumentName));
+
+            $destinationDocumentName = $documentsMap[$sourceDocumentName];
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
+
+            $this->processDeletedRecords($sourceDocumentName, $idKey, $destinationDocumentName);
+
             while (!empty($sourceRecords = $this->source->getChangedRecords($sourceDocumentName, 'entity_id'))) {
                 $recordsToSave = $destinationDocument->getRecords();
+                $ids = [];
                 foreach ($sourceRecords as $recordData) {
+                    echo('.');
+                    $ids[] = $recordData[$idKey];
                     /** @var Record $destinationRecord */
                     $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
                     $destinationRecord->setData($recordData);
                     $recordsToSave->addRecord($destinationRecord);
                 }
-                $this->destination->updateChangedRecords($destinationDocument->getName(), $recordsToSave);
-                // TODO: remove it when delta collecting tables will be cleared
-                break;
+                $this->destination->updateChangedRecords($destinationDocumentName, $recordsToSave);
+                $this->source->deleteRecords($this->source->getChangeLogName($sourceDocumentName), $idKey, $ids);
             }
         }
         return true;
+    }
+
+    /**
+     * @param string $documentName
+     * @param string $idKey
+     * @param string $destinationName
+     */
+    protected function processDeletedRecords($documentName, $idKey, $destinationName)
+    {
+        while (!empty($items = $this->source->getDeletedRecords($documentName, $idKey))) {
+            $this->destination->deleteRecords(
+                $this->destination->addDocumentPrefix($destinationName),
+                $idKey,
+                $items
+            );
+            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $items);
+        }
     }
 
     /**
