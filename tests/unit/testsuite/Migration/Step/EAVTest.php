@@ -8,7 +8,7 @@ namespace Migration\Step;
 use Migration\Step\Eav\InitialData;
 
 /**
- * Class LogTest
+ * Class EavTest
  */
 class EavTest extends \PHPUnit_Framework_TestCase
 {
@@ -18,17 +18,17 @@ class EavTest extends \PHPUnit_Framework_TestCase
     protected $initialData;
 
     /**
-     * @var Integrity\Eav|\PHPUnit_Framework_MockObject_MockObject
+     * @var Eav\Integrity|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $integrity;
 
     /**
-     * @var Run\Eav|\PHPUnit_Framework_MockObject_MockObject
+     * @var Eav\Migrate|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $run;
 
     /**
-     * @var Volume\Eav|\PHPUnit_Framework_MockObject_MockObject
+     * @var Eav\Volume|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $volume;
 
@@ -42,9 +42,15 @@ class EavTest extends \PHPUnit_Framework_TestCase
         $this->initialData = $this->getMockBuilder('Migration\Step\Eav\InitialData')->disableOriginalConstructor()
             ->setMethods(['init'])
             ->getMock();
-        $this->integrity = $this->getMock('Migration\Step\Integrity\Eav', ['perform'], [], '', false);
-        $this->run = $this->getMock('Migration\Step\Run\Eav', ['perform', 'rollback', 'deleteBackups'], [], '', false);
-        $this->volume = $this->getMock('Migration\Step\Volume\Eav', ['perform'], [], '', false);
+        $this->integrity = $this->getMock('Migration\Step\Eav\Integrity', ['perform'], [], '', false);
+        $this->run = $this->getMock(
+            'Migration\Step\Eav\Migrate',
+            ['perform', 'rollback', 'deleteBackups'],
+            [],
+            '',
+            false
+        );
+        $this->volume = $this->getMock('Migration\Step\Eav\Volume', ['perform'], [], '', false);
         $this->step = new Eav(
             $this->initialData,
             $this->integrity,

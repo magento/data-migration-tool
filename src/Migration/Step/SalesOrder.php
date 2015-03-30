@@ -7,24 +7,25 @@ namespace Migration\Step;
 
 use Migration\Exception;
 use Migration\MapReader;
+use Migration\App\Step\StepInterface;
 
 /**
- * Class Map
+ * Class SalesOrder
  */
 class SalesOrder implements StepInterface
 {
     /**
-     * @var Integrity\SalesOrder
+     * @var SalesOrder\Integrity
      */
     protected $integrity;
 
     /**
-     * @var Run\SalesOrder
+     * @var SalesOrder\Migrate
      */
     protected $run;
 
     /**
-     * @var Volume\SalesOrder
+     * @var SalesOrder\Volume
      */
     protected $volume;
 
@@ -34,15 +35,15 @@ class SalesOrder implements StepInterface
     protected $initialData;
 
     /**
-     * @param Integrity\SalesOrder $integrity
-     * @param Run\SalesOrder $run
-     * @param Volume\SalesOrder $volume
+     * @param SalesOrder\Integrity $integrity
+     * @param SalesOrder\Migrate $run
+     * @param SalesOrder\Volume $volume
      * @param SalesOrder\InitialData $initialData
      */
     public function __construct(
-        Integrity\SalesOrder $integrity,
-        Run\SalesOrder $run,
-        Volume\SalesOrder $volume,
+        SalesOrder\Integrity $integrity,
+        SalesOrder\Migrate $run,
+        SalesOrder\Volume $volume,
         SalesOrder\InitialData $initialData
     ) {
         $this->integrity = $integrity;

@@ -6,6 +6,7 @@
 namespace Migration\Step;
 
 use Migration\Exception;
+use Migration\App\Step\StepInterface;
 
 /**
  * Class DatabaseStep

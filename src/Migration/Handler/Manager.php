@@ -45,7 +45,7 @@ class Manager
         }
 
         if (empty($handlerConfig['class'])) {
-            throw new \Exception('Handler class name not specified.');
+            throw new Exception('Handler class name not specified.');
         }
 
         $handler = $this->objectManager->create($handlerConfig['class'], $handlerConfig['params']);
@@ -68,5 +68,15 @@ class Manager
             return $this->handlers[$field];
         }
         return null;
+    }
+
+    /**
+     * Get all handlers
+     *
+     * @return array
+     */
+    public function getHandlers()
+    {
+        return $this->handlers;
     }
 }

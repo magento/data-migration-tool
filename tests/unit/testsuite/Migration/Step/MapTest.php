@@ -13,17 +13,17 @@ use Migration\MapReader\MapReaderMain;
 class MapTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Integrity\Map|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map\Integrity|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $integrity;
 
     /**
-     * @var Run\Map|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map\Migrate|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $run;
 
     /**
-     * @var Volume\Map|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map\Volume|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $volume;
 
@@ -34,9 +34,9 @@ class MapTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->integrity = $this->getMock('Migration\Step\Integrity\Map', ['perform'], [], '', false);
-        $this->run = $this->getMock('Migration\Step\Run\Map', ['perform'], [], '', false);
-        $this->volume = $this->getMock('Migration\Step\Volume\Map', ['perform'], [], '', false);
+        $this->integrity = $this->getMock('Migration\Step\Map\Integrity', ['perform'], [], '', false);
+        $this->run = $this->getMock('Migration\Step\Map\Migrate', ['perform'], [], '', false);
+        $this->volume = $this->getMock('Migration\Step\Map\Volume', ['perform'], [], '', false);
         $this->map = new Map(
             $this->integrity,
             $this->run,

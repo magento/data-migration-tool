@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright � 2015 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\SalesOrder;
@@ -30,7 +30,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->map = $this->getMock('\Migration\MapReader', [], [], '', false);
+        $this->map = $this->getMock('\Migration\MapReader\MapReaderSalesOrder', [], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getAdapter'], [], '', false);
         $this->helper = new Helper($this->map, $this->source);
     }

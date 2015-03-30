@@ -5,9 +5,10 @@
  */
 namespace Migration\Step\UrlRewrite;
 
+use Migration\App\Step\StepInterface;
 use Migration\Step\DatabaseStep;
 
-class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInterface
+class Version11410to2000 extends DatabaseStep implements StepInterface
 {
     /**
      * Temporary table name
@@ -325,6 +326,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
     /**
      * @param string $sourceName
      * @param string $destinationName
+     * @param string $type
      * @return void
      */
     protected function copyEavData($sourceName, $destinationName, $type)
@@ -350,7 +352,7 @@ class Version11410to2000 extends DatabaseStep implements \Migration\Step\StepInt
                         if (!isset($this->resolvedDuplicates[$destinationName])) {
                             $this->resolvedDuplicates[$destinationName] = 0;
                         }
-                        $this->resolvedDuplicates[$destinationName]++;;
+                        $this->resolvedDuplicates[$destinationName]++;
                     }
                 }
                 $records->addRecord($this->recordFactory->create(['data' => $row]));

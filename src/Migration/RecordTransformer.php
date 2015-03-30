@@ -5,6 +5,7 @@
  */
 namespace Migration;
 
+use Migration\Handler\AbstractHandler;
 use Migration\Resource\Record;
 
 /**
@@ -110,11 +111,9 @@ class RecordTransformer
      */
     public function applyHandlers(Handler\Manager $handlerManager, Record $recordToHandle, Record $oppositeRecord)
     {
-        foreach ($recordToHandle->getFields() as $field) {
-            $handler = $handlerManager->getHandler($field);
-            if (!empty($handler)) {
-                $handler->handle($recordToHandle, $oppositeRecord);
-            }
+        foreach ($handlerManager->getHandlers() as $handler) {
+            /** @var $handler AbstractHandler */
+            $handler->handle($recordToHandle, $oppositeRecord);
         }
     }
 

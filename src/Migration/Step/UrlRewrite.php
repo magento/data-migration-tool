@@ -13,7 +13,7 @@ use Migration\Exception;
 class UrlRewrite extends DatabaseStep
 {
     /**
-     * @var \Migration\Step\StepInterface
+     * @var \Migration\App\Step\StepInterface
      */
     protected $rewriteVersion;
 

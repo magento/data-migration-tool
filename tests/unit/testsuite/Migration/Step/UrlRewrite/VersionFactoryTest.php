@@ -30,7 +30,7 @@ class VersionFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreate()
     {
-        $step = $this->getMock('\Migration\Step\StepInterface');
+        $step = $this->getMock('\Migration\App\Step\StepInterface');
         $this->objectManager->expects($this->once())
             ->method('create')
             ->with('Migration\Step\UrlRewrite\Version11410to2000')
