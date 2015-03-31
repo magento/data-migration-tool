@@ -113,11 +113,12 @@ abstract class AbstractResource
      * Returns number of records of document
      *
      * @param string $documentName
+     * @param bool $usePrefix
      * @return int
      */
-    public function getRecordsCount($documentName)
+    public function getRecordsCount($documentName, $usePrefix = true)
     {
-        return $this->adapter->getRecordsCount($this->addDocumentPrefix($documentName));
+        return $this->adapter->getRecordsCount($usePrefix ? $this->addDocumentPrefix($documentName) : $documentName);
     }
 
     /**

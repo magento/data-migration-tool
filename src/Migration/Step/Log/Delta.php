@@ -3,39 +3,37 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Migration\Step\Log;
 
-use Migration\Resource\Source;
+use Migration\App\Step\AbstractDelta;
+use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderLog;
-use Migration\ProgressBar;
+use Migration\Resource\Source;
+use Migration\Resource;
 
-class Delta
+class Delta extends AbstractDelta
 {
     /**
-     * @var Source
+     * @var Migrate
      */
-    protected $source;
-
-    /**
-     * @var MapReaderLog
-     */
-    protected $mapReader;
-
-    /**
-     * @var ProgressBar
-     */
-    protected $progress;
+    protected $migrate;
 
     /**
      * @param Source $source
      * @param MapReaderLog $mapReader
-     * @param ProgressBar $progress
+     * @param Logger $logger
+     * @param Resource\Destination $destination
+     * @param Resource\RecordFactory $recordFactory
+     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      */
-    public function __construct(Source $source, MapReaderLog $mapReader, ProgressBar $progress)
-    {
-        $this->source = $source;
-        $this->mapReader = $mapReader;
-        $this->progress = $progress;
+    public function __construct(
+        Source $source,
+        MapReaderLog $mapReader,
+        Logger $logger,
+        Resource\Destination $destination,
+        Resource\RecordFactory $recordFactory,
+        \Migration\RecordTransformerFactory $recordTransformerFactory
+    ) {
+        parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
     }
 }

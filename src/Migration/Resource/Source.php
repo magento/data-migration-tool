@@ -62,7 +62,7 @@ class Source extends AbstractResource
     }
 
     /**
-     * Get delta records from document
+     * Get changed records for document
      *
      * @param string $documentName
      * @param string $idKey
@@ -70,8 +70,25 @@ class Source extends AbstractResource
      */
     public function getChangedRecords($documentName, $idKey)
     {
-        return $this->adapter->loadChanges(
+        return $this->adapter->loadChangedRecords(
             $documentName,
+            $this->getChangeLogName($documentName),
+            $idKey,
+            0,
+            $this->getPageSize()
+        );
+    }
+
+    /**
+     * Get deleted records for document
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @return array
+     */
+    public function getDeletedRecords($documentName, $idKey)
+    {
+        return $this->adapter->loadDeletedRecords(
             $this->getChangeLogName($documentName),
             $idKey,
             0,

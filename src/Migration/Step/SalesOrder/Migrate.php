@@ -100,15 +100,17 @@ class Migrate
             if (!$destinationDocumentName) {
                 continue;
             }
-            $destDocumentResource = $this->destination->getDocument($destinationDocumentName);
+            $destDocument = $this->destination->getDocument($destinationDocumentName);
             $this->destination->clearDocument($destinationDocumentName);
+
             $eavDocumentName = $this->helper->getDestEavDocument();
             $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
+
             /** @var \Migration\RecordTransformer $recordTranformer */
             $recordTransformer = $this->recordTransformerFactory->create(
                 [
                     'sourceDocument' => $sourceDocument,
-                    'destDocument' => $destDocumentResource,
+                    'destDocument' => $destDocument,
                     'mapReader' => $this->mapReader
                 ]
             );
@@ -117,7 +119,7 @@ class Migrate
             $pageNumber = 0;
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
-                $destinationCollection = $destDocumentResource->getRecords();
+                $destinationCollection = $destDocument->getRecords();
                 $destEavCollection = $eavDocumentResource->getRecords();
                 foreach ($bulk as $recordData) {
                     /** @var Record $sourceRecord */
@@ -125,21 +127,11 @@ class Migrate
                         ['document' => $sourceDocument, 'data' => $recordData]
                     );
                     /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create(['document' => $destDocumentResource]);
+                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
                     $recordTransformer->transform($sourceRecord, $destRecord);
                     $destinationCollection->addRecord($destRecord);
-                    foreach ($this->helper->getEavAttributes() as $orderEavAttribute) {
-                        $eavAttributeData = $this->prepareEavEntityData($orderEavAttribute, $recordData);
-                        if ($eavAttributeData) {
-                            $attributeRecord = $this->recordFactory->create(
-                                [
-                                    'document' => $sourceDocument,
-                                    'data' => $eavAttributeData
-                                ]
-                            );
-                            $destEavCollection->addRecord($attributeRecord);
-                        }
-                    }
+
+                    $this->migrateAdditionalOrderData($recordData, $sourceDocument, $destEavCollection);
                 }
                 $this->destination->saveRecords($destinationDocumentName, $destinationCollection);
                 $this->destination->saveRecords($eavDocumentName, $destEavCollection);
@@ -147,6 +139,28 @@ class Migrate
         }
         $this->progress->finish();
         return true;
+    }
+
+    /**
+     * @param array $data
+     * @param Resource\Document $sourceDocument
+     * @param Record\Collection $destEavCollection
+     * @return void
+     */
+    public function migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection)
+    {
+        foreach ($this->helper->getEavAttributes() as $orderEavAttribute) {
+            $eavAttributeData = $this->prepareEavEntityData($orderEavAttribute, $data);
+            if ($eavAttributeData) {
+                $attributeRecord = $this->recordFactory->create(
+                    [
+                        'document' => $sourceDocument,
+                        'data' => $eavAttributeData
+                    ]
+                );
+                $destEavCollection->addRecord($attributeRecord);
+            }
+        }
     }
 
     /**

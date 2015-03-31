@@ -9,6 +9,24 @@
     <source>
         <document_rules>
             <log_changes>
+                <document key="entity_id">enterprise_customer_sales_flat_order</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">enterprise_customer_sales_flat_order_address</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">enterprise_customer_sales_flat_quote</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">enterprise_customer_sales_flat_quote_address</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_order</document>
+            </log_changes>
+            <log_changes>
+                <document key="visitor_id">log_visitor</document>
+            </log_changes>
+            <log_changes>
                 <document key="url_id">log_url_info</document>
             </log_changes>
             <log_changes>
@@ -16,6 +34,9 @@
             </log_changes>
             <log_changes>
                 <document key="log_id">log_customer</document>
+            </log_changes>
+            <log_changes>
+                <document key="visitor_id">log_visitor</document>
             </log_changes>
             <log_changes>
                 <document key="quote_id">log_quote</document>
@@ -63,10 +84,10 @@
                 <document key="history_id">enterprise_reward_history</document>
             </log_changes>
             <log_changes>
-                <document key="entity_id">enterprise_customer_sales_flat_quote</document>
+                <document key="segment_id">enterprise_customersegment_customer</document>
             </log_changes>
             <log_changes>
-                <document key="segment_id">enterprise_customersegment_customer</document>
+                <document key="entity_id">sales_flat_invoice_grid</document>
             </log_changes>
             <log_changes>
                 <document key="entity_id">sales_flat_quote</document>
