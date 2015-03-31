@@ -136,19 +136,6 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell->run();
     }
 
-    public function testRunWithException3()
-    {
-        $this->shell->setRawArgs(['mode']);
-        $this->logManager->expects($this->once())->method('process');
-        $this->modeFactory->expects($this->once())->method('create')->with('mode')->willThrowException(
-            new \Migration\Exception('test error message')
-        );
-        $this->logger->expects($this->once())->method('error')->with(
-            "Migration tool exception: Mode 'mode' does not exist"
-        );
-        $this->shell->run();
-    }
-
     public function testRunShowHelp()
     {
         ob_start();
