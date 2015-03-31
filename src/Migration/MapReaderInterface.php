@@ -65,4 +65,10 @@ interface MapReaderInterface
      * @return mixed
      */
     public function getHandlerConfig($document, $field, $type);
+
+    /**
+     * @param array $documents
+     * @return array
+     */
+    public function getDeltaDocuments($documents);
 }

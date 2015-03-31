@@ -5,6 +5,7 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
@@ -12,7 +13,7 @@ use Migration\Resource\Destination;
 /**
  * Class Ratings
  */
-class Ratings extends DatabaseStep
+class Ratings extends DatabaseStep implements RollbackInterface
 {
     const RATING_TABLE_NAME = 'rating';
     const RATING_STORE_TABLE_NAME = 'rating_store';
@@ -73,6 +74,7 @@ class Ratings extends DatabaseStep
             );
             return false;
         }
+
         $structureRating = $this->destination->getDocument(self::RATING_TABLE_NAME)->getStructure()->getFields();
         if (!array_key_exists('is_active', $structureRating)) {
             $this->logger->error(

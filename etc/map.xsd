@@ -33,6 +33,7 @@
         <xs:choice minOccurs="1" maxOccurs="unbounded">
             <xs:element name="rename" type="renameDocumentType" maxOccurs="unbounded" minOccurs="0"/>
             <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="log_changes" type="logChangesDocumentType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:choice>
     </xs:complexType>
 
@@ -54,7 +55,18 @@
             <xs:element name="to" type="notEmptyString" />
         </xs:sequence>
     </xs:complexType>
-
+    <xs:complexType name="logChangesDocumentType">
+        <xs:sequence minOccurs="1" maxOccurs="1">
+            <xs:element name="document" type="attributeKeyType" />
+        </xs:sequence>
+    </xs:complexType>
+    <xs:complexType name="attributeKeyType">
+        <xs:simpleContent>
+            <xs:extension base="xs:string">
+                <xs:attribute name="key" type="notEmptyString" use="required"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
     <xs:complexType name="sourceFieldRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
             <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded"/>

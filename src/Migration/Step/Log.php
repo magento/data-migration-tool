@@ -5,12 +5,13 @@
  */
 namespace Migration\Step;
 
-use Migration\App\Step\StepInterface;
+use Migration\App\Step\DeltaInterface;
+use Migration\App\Step\RollbackInterface;
 
 /**
  * Class Log
  */
-class Log implements StepInterface
+class Log implements DeltaInterface, RollbackInterface
 {
     /**
      * @var Log\Integrity
@@ -28,18 +29,26 @@ class Log implements StepInterface
     protected $volumeCheck;
 
     /**
+     * @var Log\Delta
+     */
+    protected $delta;
+
+    /**
      * @param Log\Integrity $integrity
      * @param Log\Migrate $dataMigration
      * @param Log\Volume $volumeCheck
+     * @param Log\Delta $delta
      */
     public function __construct(
         Log\Integrity $integrity,
         Log\Migrate $dataMigration,
-        Log\Volume $volumeCheck
+        Log\Volume $volumeCheck,
+        Log\Delta $delta
     ) {
         $this->integrityCheck = $integrity;
         $this->dataMigration = $dataMigration;
         $this->volumeCheck = $volumeCheck;
+        $this->delta = $delta;
     }
 
     /**
@@ -80,5 +89,13 @@ class Log implements StepInterface
     public function rollback()
     {
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delta()
+    {
+        return $this->delta->delta();
     }
 }

@@ -41,6 +41,11 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
      */
     protected $factory;
 
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
     public function setUp()
     {
         $this->config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
@@ -67,12 +72,17 @@ class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['create'])
             ->getMock();
 
+        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+
         $this->step = new CustomCustomerAttributes(
             $this->config,
             $this->source,
             $this->destination,
             $this->progress,
-            $this->factory
+            $this->factory,
+            $this->logger
         );
     }
 

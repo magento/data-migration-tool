@@ -6,6 +6,7 @@
 namespace Migration\Resource\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
+use Magento\Framework\DB\Ddl\Trigger;
 use Migration\Resource\Document;
 
 /**
@@ -20,16 +21,34 @@ class Mysql implements \Migration\Resource\AdapterInterface
     protected $resourceAdapter;
 
     /**
+     * @var \Magento\Framework\DB\Ddl\Trigger
+     */
+    protected $triggerFactory;
+
+    /**
+     * @var string
+     */
+    protected $schemaName  = null;
+
+    /**
+     * @var array
+     */
+    protected $triggers = [];
+
+    /**
      * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
      * @param array $config
      */
     public function __construct(
         \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
         array $config
     ) {
         $configData['config'] = $config;
         $this->resourceAdapter = $adapterFactory->create($configData);
         $this->resourceAdapter->query('SET FOREIGN_KEY_CHECKS=0;');
+        $this->triggerFactory = $triggerFactory;
     }
 
     /**
@@ -74,11 +93,16 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function insertRecords($documentName, $records)
+    public function insertRecords($documentName, $records, $updateOnDuplicate = false)
     {
         $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
-        $result = $this->resourceAdapter->insertMultiple($documentName, $records);
+        if ($updateOnDuplicate) {
+            $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+        } else {
+            $result = $this->resourceAdapter->insertMultiple($documentName, $records);
+        }
         $this->resourceAdapter->rawQuery("SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'')");
+
         return $result;
     }
 
@@ -88,6 +112,42 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function deleteAllRecords($documentName)
     {
         $this->resourceAdapter->truncateTable($documentName);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function deleteRecords($documentName, $idKey, $ids)
+    {
+        $ids = implode("','", $ids);
+        $this->resourceAdapter->delete($documentName, "$idKey IN ('$ids')");
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
+    {
+        $select = $this->resourceAdapter->select();
+        $select->from($changeLogName, [])
+            ->join($documentName, "$documentName.$idKey = $changeLogName.$idKey", '*')
+            ->where("`operation` in ('INSERT', 'UPDATE')")
+            ->limit($pageSize, $pageNumber * $pageSize);
+        $result = $this->resourceAdapter->fetchAll($select);
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize)
+    {
+        $select = $this->resourceAdapter->select();
+        $select->from($changeLogName, [$idKey])
+            ->where("`operation` = 'DELETE'")
+            ->limit($pageSize, $pageNumber * $pageSize);
+        $result = $this->resourceAdapter->fetchCol($select);
+        return $result;
     }
 
     /**
@@ -133,7 +193,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
-     * Updates document rows with specified data based on a WHERE clause.
+     * Updates document rows with specified data based on a WHERE clause
      *
      * @param mixed $document
      * @param array $bind
@@ -143,6 +203,14 @@ class Mysql implements \Migration\Resource\AdapterInterface
     public function updateDocument($document, array $bind, $where = '')
     {
         return $this->resourceAdapter->update($document, $bind, $where);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function updateChangedRecords($document, $data)
+    {
+        return $this->resourceAdapter->insertOnDuplicate($document, $data);
     }
 
     /**
@@ -184,5 +252,151 @@ class Mysql implements \Migration\Resource\AdapterInterface
         if ($this->resourceAdapter->isTableExists($backupTableName)) {
             $this->resourceAdapter->dropTable($backupTableName);
         }
+    }
+
+    /**
+     * Create delta for specified table
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
+     * @return void
+     */
+    public function createDelta($documentName, $changeLogName, $idKey)
+    {
+        if (!$this->resourceAdapter->isTableExists($changeLogName)) {
+            $triggerTable = $this->resourceAdapter->newTable($changeLogName)
+                ->addColumn(
+                    $idKey,
+                    \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+                    null,
+                    ['nullable' => false, 'primary' => true]
+                )->addColumn(
+                    'operation',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_TEXT
+                );
+            $this->resourceAdapter->createTable($triggerTable);
+        } else {
+            $this->deleteAllRecords($changeLogName);
+        }
+        foreach (Trigger::getListOfEvents() as $event) {
+            $triggerName = 'trg_' . $documentName . '_after_' . strtolower($event);
+            $statement = $this->buildStatement($event, $idKey, $changeLogName);
+            $trigger = $this->triggerFactory->create()
+                ->setTime(Trigger::TIME_AFTER)
+                ->setEvent($event)
+                ->setTable($documentName);
+            $triggerKey = $documentName . $event . Trigger::TIME_AFTER;
+            $triggerExists = $this->isTriggerExist($triggerKey);
+            if ($triggerExists) {
+                $triggerName = $this->triggers[$triggerKey]['trigger_name'];
+                $oldTriggerStatement = $this->triggers[$triggerKey]['action_statement'];
+                if (strpos($oldTriggerStatement, $statement) !== false) {
+                    unset($trigger);
+                    continue;
+                }
+                $trigger->addStatement($oldTriggerStatement);
+                $this->resourceAdapter->dropTrigger($triggerName);
+            }
+            $trigger->addStatement($statement)->setName($triggerName);
+            $this->resourceAdapter->createTrigger($trigger);
+            if (!$triggerExists) {
+                $this->triggers[$triggerKey] = 1;
+            }
+            unset($trigger);
+        }
+    }
+
+    /**
+     * @param string $event
+     * @param string $idKey
+     * @param string $triggerTableName
+     * @return string
+     */
+    protected function buildStatement($event, $idKey, $triggerTableName)
+    {
+        $entityTime = ($event == Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
+        return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
+            . "ON DUPLICATE KEY UPDATE operation = '$event'";
+    }
+
+    /**
+     * @param string $triggerKey
+     * @return bool
+     */
+    protected function isTriggerExist($triggerKey)
+    {
+        if (empty($this->triggers)) {
+            $this->loadTriggers();
+        }
+
+        if (isset($this->triggers[$triggerKey])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * Get all database triggers
+     *
+     * @return void
+     */
+    protected function loadTriggers()
+    {
+        $schema = $this->getSchemaName();
+        if ($schema) {
+            $sqlFilter = $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+                . ' = ' . $this->resourceAdapter->quote($schema);
+        } else {
+            $sqlFilter = $this->resourceAdapter->quoteIdentifier('TRIGGER_SCHEMA')
+                . ' != ' . $this->resourceAdapter->quote('INFORMATION_SCHEMA');
+        }
+        $select = $this->getSelect()
+            ->from(new \Zend_Db_Expr($this->resourceAdapter->quoteIdentifier(['INFORMATION_SCHEMA', 'TRIGGERS'])))
+            ->where($sqlFilter);
+        $results = $this->resourceAdapter->query($select);
+        $data = [];
+        foreach ($results as $row) {
+            $row = array_change_key_case($row, CASE_LOWER);
+            $row['action_statement'] = $this->convertStatement($row['action_statement']);
+            $key = $row['event_object_table'] . $row['event_manipulation'] . $row['action_timing'];
+            $data[$key] = $row;
+        }
+        $this->triggers = $data;
+    }
+
+    /**
+     * @param string $row
+     * @return mixed
+     */
+    protected function convertStatement($row)
+    {
+        $regex = '/(BEGIN)([\s\S]*?)(END.?)/';
+        return preg_replace($regex, '$2', $row);
+    }
+
+    /**
+     * Returns current schema name
+     *
+     * @return string
+     */
+    protected function getCurrentSchema()
+    {
+        return $this->resourceAdapter->fetchOne('SELECT SCHEMA()');
+    }
+
+    /**
+     * Returns schema name
+     *
+     * @return string
+     */
+    protected function getSchemaName()
+    {
+        if (!$this->schemaName) {
+            $this->schemaName = $this->getCurrentSchema();
+        }
+
+        return $this->schemaName;
     }
 }

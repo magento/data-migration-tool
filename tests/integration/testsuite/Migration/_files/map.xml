@@ -28,6 +28,9 @@
                 <document>table_with_data</document>
                 <to>table_without_data</to>
             </rename>
+            <log_changes>
+                <document key="field1">table_with_data</document>
+            </log_changes>
         </document_rules>
         <field_rules>
             <ignore>

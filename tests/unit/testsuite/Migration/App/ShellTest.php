@@ -32,9 +32,9 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $logManager;
 
     /**
-     * @var Step\Factory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Mode\ModeFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $stepManager;
+    protected $modeFactory;
 
     /**
      * @var Step\Progress|\PHPUnit_Framework_MockObject_MockObject
@@ -43,6 +43,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $_SERVER['argv'] = [];
         $this->filesystem = $this->getMock('\Magento\Framework\Filesystem', [], [], '', false);
         $read = $this->getMock('\Magento\Framework\Filesystem\Directory\ReadInterface', [], [], '', false);
         $this->filesystem->expects($this->any())
@@ -50,9 +51,10 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             ->willReturn($read);
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
         $this->logManager = $this->getMock('\Migration\Logger\Manager', [], [], '', false);
+        /** @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject $config */
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()->getMock();
-        $this->stepManager = $this->getMockBuilder('\Migration\App\Step\Manager')
-            ->setMethods(['runSteps'])
+        $this->modeFactory = $this->getMockBuilder('\Migration\App\Mode\ModeFactory')
+            ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->progressStep = $this->getMockBuilder('\Migration\App\Step\Progress')
@@ -62,7 +64,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->shell = new Shell(
             $this->filesystem,
             $config,
-            $this->stepManager,
+            $this->modeFactory,
             $this->logger,
             $this->logManager,
             $this->progressStep,
@@ -72,10 +74,12 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRun()
     {
-        $args = ['--config', 'file/to/config.xml', '--type', 'mapStep'];
+        $args = ['data', '--config', 'file/to/config.xml'];
         $this->shell->setRawArgs($args);
-        $this->logger->expects($this->at(1))->method('info')->with('mapStep');
-        $this->stepManager->expects($this->once())->method('runSteps');
+        $this->logger->expects($this->at(1))->method('info')->with('Running mode: data');
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run');
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
         $result = $this->shell->run();
         $this->assertSame($this->shell, $result);
     }
@@ -83,26 +87,34 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     public function testRunVerboseValid()
     {
         $level = 'DEBUG';
-        $this->shell->setRawArgs(['--verbose', $level]);
-        $this->stepManager->expects($this->once())->method('runSteps');
+        $this->shell->setRawArgs(['data', '--verbose', $level]);
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run');
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
         $this->logManager->expects($this->once())->method('process')->with($level);
         $this->shell->run();
     }
 
     public function testRunClearProgress()
     {
-        $this->shell->setRawArgs(['--reset']);
-        $this->stepManager->expects($this->once())->method('runSteps');
+        $this->shell->setRawArgs(['data', '--reset']);
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run');
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
         $this->progressStep->expects($this->once())->method('clearLockFile');
         $this->shell->run();
     }
 
     public function testRunWithException1()
     {
+        $this->shell->setRawArgs(['data']);
         $this->logManager->expects($this->once())->method('process');
         $errorMessage = 'test error message';
         $exception = new \Exception($errorMessage);
-        $this->stepManager->expects($this->once())->method('runSteps')->will($this->throwException($exception));
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run')->willThrowException($exception);
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
+
         $this->logger->expects($this->once())->method('error')->with(
             'Application failed with exception: test error message'
         );
@@ -111,10 +123,13 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunWithException2()
     {
+        $this->shell->setRawArgs(['data']);
         $this->logManager->expects($this->once())->method('process');
-        $this->stepManager->expects($this->once())->method('runSteps')->will($this->throwException(
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run')->willThrowException(
             new \Migration\Exception('test error message')
-        ));
+        );
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
         $this->logger->expects($this->once())->method('error')->with(
             'Migration tool exception: test error message'
         );
@@ -123,18 +138,40 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunShowHelp()
     {
+        ob_start();
+        $result = $this->shell->run();
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertSame($this->shell, $result);
+        $this->assertContains('Usage:', $output);
+
         $this->shell->setRawArgs(['help']);
         ob_start();
         $result = $this->shell->run();
         $output = ob_get_contents();
         ob_end_clean();
         $this->assertSame($this->shell, $result);
-        $this->assertContains('Usage:  php -f', $output);
+        $this->assertContains('Usage:', $output);
+    }
+
+    public function testRunShowModeHelp()
+    {
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('getUsageHelp')->willReturn('mode help');
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
+        $this->shell->setRawArgs(['data', 'help']);
+        ob_start();
+        $result = $this->shell->run();
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertSame($this->shell, $result);
+        $this->assertContains('Usage:', $output);
+        $this->assertContains('mode help', $output);
     }
 
     public function testGetUsageHelp()
     {
         $result = $this->shell->getUsageHelp();
-        $this->assertContains('Usage:  php -f', $result);
+        $this->assertContains('Usage:', $result);
     }
 }

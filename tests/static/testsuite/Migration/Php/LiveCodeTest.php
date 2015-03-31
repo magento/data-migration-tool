@@ -11,7 +11,7 @@ use Magento\TestFramework\CodingStandard\Tool\CodeSniffer;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;
 use PHPMD\TextUI\Command;
 use PHPUnit_Framework_TestCase;
-use Magento\Framework\Test\Utility\Files;
+use Magento\Framework\App\Utility\Files;
 
 /**
  * Set of tests for static code analysis, e.g. code style, code complexity, copy paste detecting, etc.
@@ -50,7 +50,7 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::$pathToSource = Utility\Files::init()->getPathToSource();
+        self::$pathToSource = \Magento\Framework\App\Utility\Files::init()->getPathToSource();
         self::$reportDir = self::$pathToSource . '/tests/static/report';
         self::$magentoDir = require __DIR__ . '/../../../../../etc/magento_path.php';
         if (!is_dir(self::$reportDir)) {
@@ -70,8 +70,8 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
         if ($type != '' && !preg_match('/\/$/', $type)) {
             $type = $type . '/';
         }
-        self::$whiteList = Utility\Files::readLists(__DIR__ . '/_files/' . $type . 'whitelist/*.txt');
-        self::$blackList = Utility\Files::readLists(__DIR__ . '/_files/' . $type . 'blacklist/*.txt');
+        self::$whiteList = Files::readLists(__DIR__ . '/_files/' . $type . 'whitelist/*.txt');
+        self::$blackList = Files::readLists(__DIR__ . '/_files/' . $type . 'blacklist/*.txt');
     }
 
     /**

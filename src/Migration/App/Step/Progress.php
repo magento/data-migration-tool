@@ -6,7 +6,7 @@
 namespace Migration\App\Step;
 
 /**
- * Class ProgressStep
+ * Class Progress
  */
 class Progress
 {
@@ -35,7 +35,7 @@ class Progress
     }
 
     /**
-     * Load step progress from serialized file
+     * Load progress from serialized file
      * @return $this
      */
     protected function loadData()
@@ -50,42 +50,42 @@ class Progress
     }
 
     /**
-     * @param StepInterface $step
+     * @param mixed $object
      * @param string $stage
      * @param bool $result
      * @return $this
      */
-    public function saveResult(StepInterface $step, $stage, $result)
+    public function saveResult($object, $stage, $result)
     {
-        $stepName = $this->getStepName($step);
+        $name = $this->getName($object);
         if ($this->filesystem->isExists($this->getLockFile())) {
-            $this->data[$stepName][$stage] = $result;
+            $this->data[$name][$stage] = $result;
             $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         }
         return $this;
     }
 
     /**
-     * @param StepInterface $step
+     * @param mixed $object
      * @param string $stage
      * @return bool
      */
-    public function isCompleted(StepInterface $step, $stage)
+    public function isCompleted($object, $stage)
     {
         $this->loadData();
-        $stepName = $this->getStepName($step);
-        return !empty($this->data[$stepName][$stage]);
+        $name = $this->getName($object);
+        return !empty($this->data[$name][$stage]);
     }
 
     /**
-     * @param StepInterface $step
+     * @param mixed $object
      * @return void
      */
-    public function resetStep(StepInterface $step)
+    public function reset($object)
     {
         $this->loadData();
-        if (!empty($this->data[$this->getStepName($step)])) {
-            unset($this->data[$this->getStepName($step)]);
+        if (!empty($this->data[$this->getName($object)])) {
+            unset($this->data[$this->getName($object)]);
             $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
         }
     }
@@ -113,11 +113,11 @@ class Progress
     }
 
     /**
-     * @param StepInterface $step
+     * @param mixed $object
      * @return null|string
      */
-    protected function getStepName(StepInterface $step)
+    protected function getName($object)
     {
-        return get_class($step);
+        return get_class($object);
     }
 }

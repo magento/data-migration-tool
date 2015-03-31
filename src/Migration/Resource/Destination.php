@@ -20,7 +20,7 @@ class Destination extends AbstractResource
      * @param \Migration\Resource\Record\Collection $records
      * @return $this
      */
-    public function saveRecords($documentName, $records)
+    public function saveRecords($documentName, $records, $updateOnDuplicate = false)
     {
         $pageSize = $this->configReader->getOption('bulk_size');
         $i = 0;
@@ -31,13 +31,13 @@ class Destination extends AbstractResource
             $i++;
             $data[] = $row->getData();
             if ($i == $pageSize) {
-                $this->adapter->insertRecords($documentName, $data);
+                $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
                 $data = [];
                 $i = 0;
             }
         }
         if ($i > 0) {
-            $this->adapter->insertRecords($documentName, $data);
+            $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
         }
         return $this;
     }
@@ -100,5 +100,23 @@ class Destination extends AbstractResource
     public function deleteDocumentBackup($documentName)
     {
         $this->getAdapter()->deleteBackup($this->addDocumentPrefix($documentName));
+    }
+
+    /**
+     * @param string $documentName
+     * @param \Migration\Resource\Record\Collection $records
+     * @return void
+     */
+    public function updateChangedRecords($documentName, $records)
+    {
+        $documentName = $this->addDocumentPrefix($documentName);
+        $data = [];
+        /** @var \Migration\Resource\Record $row */
+        foreach ($records as $row) {
+            $data[] = $row->getData();
+        }
+        if (!empty($data)) {
+            $this->adapter->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
+        }
     }
 }
