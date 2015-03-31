@@ -37,7 +37,16 @@ class ModeFactoryTest extends \PHPUnit_Framework_TestCase
 
     public function testCreateStepWithException()
     {
-        $this->setExpectedException('\Exception', 'Mode class must implement ModeInterface.');
+        $this->setExpectedException('\Exception', "Mode 'mode' does not exist.");
         $this->modeFactory->create('mode');
+    }
+
+    public function testCreateStepWithException2()
+    {
+        $mode = $this->getMock('Migration\Mode\Unknown', [], [], '', false);
+        $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($mode));
+
+        $this->setExpectedException('\InvalidArgumentException', 'Mode class must implement ModeInterface.');
+        $this->modeFactory->create('unknown');
     }
 }
