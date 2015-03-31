@@ -6,7 +6,6 @@
 namespace Migration\Step;
 
 use Migration\App\Step\RollbackInterface;
-use Migration\Config;
 
 /**
  * Class Eav

@@ -5,8 +5,6 @@
  */
 namespace Migration\Step;
 
-use Migration\Exception;
-
 /**
  * Class UrlRewrite
  */

@@ -144,7 +144,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             new \Migration\Exception('test error message')
         );
         $this->logger->expects($this->once())->method('error')->with(
-            "Migration tool exception: Mode 'mode' does not exists"
+            "Migration tool exception: Mode 'mode' does not exist"
         );
         $this->shell->run();
     }

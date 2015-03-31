@@ -374,7 +374,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                 $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
-                    $message = sprintf('%s table does not exists: %s', ucfirst($resourceName), $documentName);
+                    $message = sprintf('%s table does not exist: %s', ucfirst($resourceName), $documentName);
                     $this->logger->error($message);
                     $errors = true;
                     continue;

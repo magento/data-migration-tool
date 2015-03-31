@@ -6,12 +6,10 @@
 namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderChangelog;
 use Migration\MapReader\MapReaderMain;
 use Migration\MapReaderInterface;
 use Migration\Resource\Source;
 use Migration\Resource;
-use Migration\ProgressBar;
 
 class Delta
 {
