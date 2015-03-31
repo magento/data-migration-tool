@@ -74,11 +74,16 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function insertRecords($documentName, $records)
+    public function insertRecords($documentName, $records, $updateOnDuplicate = false)
     {
         $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
-        $result = $this->resourceAdapter->insertMultiple($documentName, $records);
+        if ($updateOnDuplicate) {
+            $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+        } else {
+            $result = $this->resourceAdapter->insertMultiple($documentName, $records);
+        }
         $this->resourceAdapter->rawQuery("SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'')");
+
         return $result;
     }
 

@@ -191,8 +191,17 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $this->progress->start($this->getIterationsCount());
 
         $sourceDocument = $this->source->getDocument($this->tableName);
-
         $destinationDocument = $this->destination->getDocument('url_rewrite');
+
+        $duplicates = $this->getDuplicatesList();
+        if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
+            && empty($this->duplicateIndex)
+        ) {
+            foreach ($duplicates as $key => $row) {
+                $this->duplicateIndex[$row['request_path']][] = $row;
+            }
+        }
+
         $pageNumber = 0;
         while (!empty($data = $this->source->getRecords($sourceDocument->getName(), $pageNumber))) {
             $pageNumber++;
@@ -233,14 +242,6 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      */
     protected function migrateRewrites($source, $destination)
     {
-        $duplicates = $this->getDuplicatesList();
-        if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
-            && empty($this->duplicateIndex)
-        ) {
-            foreach ($duplicates as $key => $row) {
-                $this->duplicateIndex[$row['request_path']][] = $key;
-            }
-        }
         /** @var \Migration\Resource\Record $sourceRecord */
         foreach ($source as $sourceRecord) {
             /** @var \Migration\Resource\Record $destinationRecord */
@@ -279,13 +280,12 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                 $destinationRecord->setValue('entity_id', 0);
             }
 
-            if (!empty($duplicates) && !empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
-                $currentDuplicates = $this->duplicateIndex[$sourceRecord->getValue('request_path')];
+            if (!empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
                 $shouldResolve = false;
-                foreach ($currentDuplicates as $key) {
-                    $onStore = $duplicates[$key]['store_id'] == $sourceRecord->getValue('store_id');
-                    if ($onStore && empty($duplicates[$key]['used'])) {
-                        $duplicates[$key]['used'] = true;
+                foreach ($this->duplicateIndex[$sourceRecord->getValue('request_path')] as &$duplicate) {
+                    $onStore = $duplicate['store_id'] == $sourceRecord->getValue('store_id');
+                    if ($onStore && empty($duplicate['used'])) {
+                        $duplicate['used'] = true;
                         break;
                     }
                     if ($onStore) {
@@ -293,15 +293,15 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                     }
                 }
                 if ($shouldResolve) {
-                    $key = md5(mt_rand());
+                    $hash = md5(mt_rand());
                     $requestPath = preg_replace(
                         '/^(.*)\.([^\.]+)$/i',
-                        '$1-' . $key . '.$2',
+                        '$1-' . $hash . '.$2',
                         $sourceRecord->getValue('request_path')
                     );
                     $this->resolvedDuplicates[$destinationRecord->getValue('entity_type')]
                         [$destinationRecord->getValue('entity_id')]
-                        [$sourceRecord->getValue('store_id')] = $key;
+                        [$sourceRecord->getValue('store_id')] = $hash;
                     $destinationRecord->setValue('request_path', $requestPath);
                     $message = 'Duplicate resolved. '
                         . sprintf(
@@ -357,7 +357,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                 }
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
             }
-            $this->destination->saveRecords($destinationName, $records);
+            $this->destination->saveRecords($destinationName, $records, true);
         }
     }
 
@@ -433,23 +433,23 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $this->progress->start(1);
         $this->getRewritesSelect();
         $this->progress->advance();
-        $categoryRecords = $this->source->getRecordsCount('catalog_category_entity_varchar')
-            + $this->source->getRecordsCount('catalog_category_entity_url_key')
-            + (isset($this->resolvedDuplicates['catalog_category_entity_varchar'])
-                ? $this->resolvedDuplicates['catalog_category_entity_varchar']
-                : 0
-            );
-        $productRecords = $this->source->getRecordsCount('catalog_product_entity_varchar')
-            + $this->source->getRecordsCount('catalog_product_entity_url_key')
-            + (isset($this->resolvedDuplicates['catalog_product_entity_varchar'])
-                ? $this->resolvedDuplicates['catalog_product_entity_varchar']
-                : 0
-            );
+//        $categoryRecords = $this->source->getRecordsCount('catalog_category_entity_varchar')
+//            + $this->source->getRecordsCount('catalog_category_entity_url_key')
+//            + (isset($this->resolvedDuplicates['catalog_category_entity_varchar'])
+//                ? $this->resolvedDuplicates['catalog_category_entity_varchar']
+//                : 0
+//            );
+//        $productRecords = $this->source->getRecordsCount('catalog_product_entity_varchar')
+//            + $this->source->getRecordsCount('catalog_product_entity_url_key')
+//            + (isset($this->resolvedDuplicates['catalog_product_entity_varchar'])
+//                ? $this->resolvedDuplicates['catalog_product_entity_varchar']
+//                : 0[
+//            );
 
         $result = $this->source->getRecordsCount($this->tableName)
-            == $this->destination->getRecordsCount('url_rewrite')
-            && $categoryRecords == $this->destination->getRecordsCount('catalog_category_entity_varchar')
-            && $productRecords == $this->destination->getRecordsCount('catalog_product_entity_varchar');
+            == $this->destination->getRecordsCount('url_rewrite');
+//            && $categoryRecords == $this->destination->getRecordsCount('catalog_category_entity_varchar')
+//            && $productRecords == $this->destination->getRecordsCount('catalog_product_entity_varchar');
         $this->progress->finish();
         return $result;
     }

@@ -54,9 +54,10 @@ interface AdapterInterface
      *
      * @param string $documentName
      * @param array $records
+     * @param bool $updateOnDuplicate
      * @return int
      */
-    public function insertRecords($documentName, $records);
+    public function insertRecords($documentName, $records, $updateOnDuplicate = false);
 
     /**
      * Delete all record from the document
