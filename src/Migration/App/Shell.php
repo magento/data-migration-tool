@@ -116,7 +116,7 @@ Usage:
 
 Possible modes:
   data                Main migration of data
-  delta               Migrate the data had been added into Magento after the base migration
+  delta               Migrate the data is added into Magento after the base migration
   settings            Migrate system configuration
 
 Available options:
