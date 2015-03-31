@@ -6,36 +6,94 @@
 
 namespace Migration\Step\SalesOrder;
 
+use Migration\App\Step\AbstractDelta;
+use Migration\Logger\Logger;
+use Migration\MapReaderInterface;
 use Migration\Resource\Source;
+use Migration\Resource\Destination;
 use Migration\MapReader\MapReaderSalesOrder;
-use Migration\ProgressBar;
+use Migration\Resource;
 
-class Delta
+class Delta extends AbstractDelta
 {
     /**
-     * @var Source
+     * @var Helper
      */
-    protected $source;
+    protected $helper;
 
     /**
-     * @var MapReaderSalesOrder
+     * @var Migrate
      */
-    protected $mapReader;
-
-    /**
-     * @var ProgressBar
-     */
-    protected $progress;
+    protected $migrate;
 
     /**
      * @param Source $source
      * @param MapReaderSalesOrder $mapReader
-     * @param ProgressBar $progress
+     * @param Logger $logger
+     * @param Destination $destination
+     * @param Resource\RecordFactory $recordFactory
+     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param Helper $helper
+     * @param Migrate $migrate
      */
-    public function __construct(Source $source, MapReaderSalesOrder $mapReader, ProgressBar $progress)
+    public function __construct(
+        Source $source,
+        MapReaderSalesOrder $mapReader,
+        Logger $logger,
+        Resource\Destination $destination,
+        Resource\RecordFactory $recordFactory,
+        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        Helper $helper,
+        Migrate $migrate
+    ) {
+        $this->helper = $helper;
+        $this->migrate = $migrate;
+        parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
+    }
+
+    /**
+     * @param string $documentName
+     * @param string $idKey
+     * @return void
+     */
+    protected function processChangedRecords($documentName, $idKey)
     {
-        $this->source = $source;
-        $this->mapReader = $mapReader;
-        $this->progress = $progress;
+        $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+
+        $items = $this->source->getChangedRecords($documentName, $idKey);
+
+        $sourceDocument = $this->source->getDocument($documentName);
+        $destDocument = $this->destination->getDocument($destinationName);
+
+        $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
+
+        $eavDocumentName = $this->helper->getDestEavDocument();
+        $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
+
+        do {
+            $destinationRecords = $destDocument->getRecords();
+            $destEavCollection = $eavDocumentResource->getRecords();
+
+            $ids = [];
+
+            foreach ($items as $data) {
+                echo('.');
+                $ids[] = $data[$idKey];
+
+                $this->transformData(
+                    $data,
+                    $sourceDocument,
+                    $destDocument,
+                    $recordTransformer,
+                    $destinationRecords
+                );
+                $this->migrate->migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection);
+            }
+
+            $this->destination->updateChangedRecords($destinationName, $destinationRecords);
+            $this->destination->updateChangedRecords($eavDocumentName, $destEavCollection);
+
+            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $ids);
+        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 }

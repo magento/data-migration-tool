@@ -96,6 +96,6 @@ class Log implements DeltaInterface, RollbackInterface
      */
     public function delta()
     {
-        return true;
+        return $this->delta->delta();
     }
 }

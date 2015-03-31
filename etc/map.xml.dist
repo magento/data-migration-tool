@@ -1114,9 +1114,6 @@
                 <document key="history_id">enterprise_reward_history</document>
             </log_changes>
             <log_changes>
-                <document key="entity_id">enterprise_customer_sales_flat_quote</document>
-            </log_changes>
-            <log_changes>
                 <document key="segment_id">enterprise_customersegment_customer</document>
             </log_changes>
             <log_changes>
@@ -1226,6 +1223,9 @@
             </log_changes>
             <log_changes>
                 <document key="entity_id">sales_flat_invoice_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_invoice_grid</document>
             </log_changes>
             <log_changes>
                 <document key="log_id">enterprise_logging_event</document>

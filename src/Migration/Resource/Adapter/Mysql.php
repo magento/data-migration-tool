@@ -121,13 +121,27 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadChanges($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
+    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($changeLogName, ['operation', "old_$idKey" => $idKey])
-            ->joinLeft($documentName, "$documentName.$idKey = $changeLogName.$idKey", '*')
+        $select->from($changeLogName, [])
+            ->join($documentName, "$documentName.$idKey = $changeLogName.$idKey", '*')
+            ->where("`operation` in ('INSERT', 'UPDATE')")
             ->limit($pageSize, $pageNumber * $pageSize);
         $result = $this->resourceAdapter->fetchAll($select);
+        return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize)
+    {
+        $select = $this->resourceAdapter->select();
+        $select->from($changeLogName, [$idKey])
+            ->where("`operation` = 'DELETE'")
+            ->limit($pageSize, $pageNumber * $pageSize);
+        $result = $this->resourceAdapter->fetchCol($select);
         return $result;
     }
 
@@ -282,7 +296,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $trigger->addStatement($statement)->setName($triggerName);
             $this->resourceAdapter->createTrigger($trigger);
             if (!$triggerExists) {
-                $this->loadTriggers();
+                $this->triggers[$triggerKey] = 1;
             }
             unset($trigger);
         }
