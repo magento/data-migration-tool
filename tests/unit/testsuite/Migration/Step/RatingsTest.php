@@ -137,6 +137,11 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->method('from')
             ->with('rating_store', ['rating_id'])
             ->will($this->returnSelf());
+        $this->select
+            ->expects($this->once())
+            ->method('where')
+            ->with('store_id > 0')
+            ->will($this->returnSelf());
         $this->adapter
             ->expects($this->once())
             ->method('loadDataFromSelect')
@@ -161,12 +166,17 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->method('from')
             ->with('rating_store', ['rating_id'])
             ->will($this->returnSelf());
+        $this->select
+            ->expects($this->at(1))
+            ->method('where')
+            ->with('store_id > 0')
+            ->will($this->returnSelf());
         $this->adapter
             ->expects($this->exactly(2))
             ->method('loadDataFromSelect')
             ->with($this->select)->willReturn([['rating_id' => 1]]);
-        $this->select->expects($this->at(1))->method('from')->with('rating', ['rating_id'])->will($this->returnSelf());
-        $this->select->expects($this->at(2))->method('where')->with('is_active = ?', 1)->will($this->returnSelf());
+        $this->select->expects($this->at(2))->method('from')->with('rating', ['rating_id'])->will($this->returnSelf());
+        $this->select->expects($this->at(3))->method('where')->with('is_active = ?', 1)->will($this->returnSelf());
         $this->logger->expects($this->never())->method('error');
         $this->assertTrue($this->ratings->volumeCheck());
     }
@@ -183,6 +193,11 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->method('from')
             ->with('rating_store', ['rating_id'])
             ->will($this->returnSelf());
+        $this->select
+            ->expects($this->at(1))
+            ->method('where')
+            ->with('store_id > 0')
+            ->will($this->returnSelf());
         $this->adapter
             ->expects($this->at(1))
             ->method('loadDataFromSelect')
@@ -194,12 +209,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->with($this->select)
             ->willReturn([['rating_id' => 2]]);
         $this->select
-            ->expects($this->at(1))
+            ->expects($this->at(2))
             ->method('from')
             ->with('rating', ['rating_id'])
             ->will($this->returnSelf());
         $this->select
-            ->expects($this->at(2))
+            ->expects($this->at(3))
             ->method('where')
             ->with('is_active = ?', 1)
             ->will($this->returnSelf());

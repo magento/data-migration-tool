@@ -123,7 +123,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
-        $result = $map->length > 0;
+        $result = ($map->length > 0);
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
                 $regexp = '/^' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
@@ -279,6 +279,25 @@ abstract class MapReaderAbstract implements MapReaderInterface
         }
 
         return $config;
+    }
+
+    /**
+     * @param array $documents
+     * @return array
+     */
+    public function getDeltaDocuments($documents)
+    {
+        $result = [];
+        foreach ($documents as $document) {
+            $queryResult = $this->xml
+                ->query(sprintf('//source/document_rules/log_changes/*[text()="%s"]', $document));
+            if ($queryResult->length > 0) {
+                /** @var \DOMElement $document */
+                $document = $queryResult->item(0);
+                $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
+            }
+        }
+        return $result;
     }
 
     /**

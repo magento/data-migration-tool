@@ -5,12 +5,12 @@
  */
 namespace Migration\Step;
 
-use Migration\App\Step\StepInterface;
+use Migration\App\Step\RollbackInterface;
 
 /**
  * Class Eav
  */
-class Eav implements StepInterface
+class Eav implements RollbackInterface
 {
     /**
      * @var Eav\Integrity

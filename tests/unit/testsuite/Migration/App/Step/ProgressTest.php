@@ -7,7 +7,7 @@
 namespace Migration\App\Step;
 
 /**
- * Class ProgressStepTest
+ * Class ProgressTest
  */
 class ProgressTest extends \PHPUnit_Framework_TestCase
 {
@@ -19,7 +19,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\App\Step\Progress
      */
-    protected $progressStep;
+    protected $progress;
 
     public function setUp()
     {
@@ -28,7 +28,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
         $this->filesystem->expects($this->any())->method('filePutContents')->will($this->returnValue(true));
-        $this->progressStep = new Progress($this->filesystem);
+        $this->progress = new Progress($this->filesystem);
     }
 
     public function testIsCompleted()
@@ -37,7 +37,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $progress = sprintf('a:1:{s:18:"Migration\Step\Map";a:1:{s:9:"integrity";b:1;}}');
         $this->filesystem->expects($this->once())->method('fileGetContents')->will($this->returnValue($progress));
         $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
-        $this->progressStep->isCompleted($step, 'integrity');
+        $this->progress->isCompleted($step, 'integrity');
     }
 
     public function testSaveResult()
@@ -45,30 +45,30 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
         $this->filesystem->expects($this->once())->method('filePutContents')->will($this->returnValue(1));
         $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
-        $this->progressStep->saveResult($step, 'integrity', 'true');
+        $this->progress->saveResult($step, 'integrity', 'true');
     }
 
     public function testClearLockFileExisting()
     {
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
         $this->filesystem->expects($this->once())->method('filePutContents')->will($this->returnValue(0));
-        $this->assertEquals($this->progressStep, $this->progressStep->clearLockFile());
+        $this->assertEquals($this->progress, $this->progress->clearLockFile());
     }
 
     public function testClearLockFileAbsent()
     {
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
         $this->filesystem->expects($this->exactly(2))->method('filePutContents')->will($this->returnValue(0));
-        $this->assertEquals($this->progressStep, $this->progressStep->clearLockFile());
+        $this->assertEquals($this->progress, $this->progress->clearLockFile());
     }
 
-    public function testResetStep()
+    public function testReset()
     {
         $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
         $progress = sprintf('a:1:{s:%s:"%s";a:1:{s:9:"integrity";b:1;}}', strlen(get_class($step)), get_class($step));
         $this->filesystem->expects($this->once())->method('fileGetContents')->will($this->returnValue($progress));
         $this->filesystem->expects($this->once())->method('filePutContents');
-        $this->progressStep->resetStep($step);
+        $this->progress->reset($step);
     }
 }

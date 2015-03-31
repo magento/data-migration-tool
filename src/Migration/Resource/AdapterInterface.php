@@ -68,6 +68,48 @@ interface AdapterInterface
     public function deleteAllRecords($documentName);
 
     /**
+     * Delete records
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @param array $ids
+     * @return void
+     */
+    public function deleteRecords($documentName, $idKey, $ids);
+
+    /**
+     * Load page with changed records from the document
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize);
+
+    /**
+     * Load page with changed records from the document
+     *
+     * @param string $changeLogName
+     * @param string $idKey
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize);
+
+    /**
+     * Updates document records with specified data or insert if this is a new record
+     *
+     * @param mixed $document
+     * @param array $data
+     * @return int
+     */
+    public function updateChangedRecords($document, $data);
+
+    /**
      * @param string $documentName
      * @return void
      */
@@ -86,4 +128,14 @@ interface AdapterInterface
      * @return void
      */
     public function deleteBackup($documentName);
+
+    /**
+     * Create delta for specified tables
+     *
+     * @param string $documentName
+     * @param string $changeLogName
+     * @param string $idKey
+     * @return void
+     */
+    public function createDelta($documentName, $changeLogName, $idKey);
 }

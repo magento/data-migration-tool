@@ -5,7 +5,6 @@
  */
 namespace Migration\Step\Map;
 
-use Migration\Handler;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
@@ -91,7 +90,7 @@ class Migrate
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
 
-            $recordTranformer = $this->getRecordTransformer($sourceDocument, $destDocument);
+            $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
             $pageNumber = 0;
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
@@ -99,10 +98,10 @@ class Migrate
                 foreach ($items as $data) {
                     /** @var Record $record */
                     /** @var Record $destRecord */
-                    if ($recordTranformer) {
+                    if ($recordTransformer) {
                         $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
                         $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                        $recordTranformer->transform($record, $destRecord);
+                        $recordTransformer->transform($record, $destRecord);
                     } else {
                         $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $data]);
                     }
@@ -125,16 +124,16 @@ class Migrate
         if ($this->canJustCopy($sourceDocument, $destDocument)) {
             return null;
         }
-        /** @var \Migration\RecordTransformer $recordTranformer */
-        $recordTranformer = $this->recordTransformerFactory->create(
+        /** @var \Migration\RecordTransformer $recordTransformer */
+        $recordTransformer = $this->recordTransformerFactory->create(
             [
                 'sourceDocument' => $sourceDocument,
                 'destDocument' => $destDocument,
                 'mapReader' => $this->mapReader
             ]
         );
-        $recordTranformer->init();
-        return $recordTranformer;
+        $recordTransformer->init();
+        return $recordTransformer;
     }
 
     /**
@@ -172,7 +171,8 @@ class Migrate
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            if ($this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type)) {
+            $handlerConfig = $this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type);
+            if (!empty($handlerConfig)) {
                 $result = true;
                 break;
             }

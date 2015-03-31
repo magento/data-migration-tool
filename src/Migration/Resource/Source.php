@@ -48,4 +48,67 @@ class Source extends AbstractResource
     {
         return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
     }
+
+    /**
+     * Create delta for specified table
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @return void
+     */
+    public function createDelta($documentName, $idKey)
+    {
+        $this->adapter->createDelta($documentName, $this->getChangeLogName($documentName), $idKey);
+    }
+
+    /**
+     * Get changed records for document
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @return array
+     */
+    public function getChangedRecords($documentName, $idKey)
+    {
+        return $this->adapter->loadChangedRecords(
+            $documentName,
+            $this->getChangeLogName($documentName),
+            $idKey,
+            0,
+            $this->getPageSize()
+        );
+    }
+
+    /**
+     * Get deleted records for document
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @return array
+     */
+    public function getDeletedRecords($documentName, $idKey)
+    {
+        return $this->adapter->loadDeletedRecords(
+            $this->getChangeLogName($documentName),
+            $idKey,
+            0,
+            $this->getPageSize()
+        );
+    }
+
+    /**
+     * @param string $documentName
+     * @return string
+     */
+    public function getChangeLogName($documentName)
+    {
+        $maximumNameLength = 64;
+        $documentName = 'm2_cl_' . $documentName;
+
+        if (strlen($documentName) > $maximumNameLength) {
+            $documentName = substr($documentName, 0, $maximumNameLength);
+        }
+
+        return $documentName;
+    }
 }

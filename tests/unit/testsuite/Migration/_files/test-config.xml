@@ -6,7 +6,7 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
-    <steps>
+    <steps mode="data">
         <step>Migration\Step\SalesOrder</step>
         <step>Migration\Step\Eav</step>
         <step>Migration\Step\CustomCustomerAttributes</step>

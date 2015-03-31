@@ -5,12 +5,14 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StepInterface;
+use Migration\App\Step\DeltaInterface;
 
 /**
  * Class Map
  */
-class Map implements StepInterface
+class Map implements StepInterface, DeltaInterface, RollbackInterface
 {
     /**
      * @var Map\Integrity
@@ -28,18 +30,26 @@ class Map implements StepInterface
     protected $volume;
 
     /**
+     * @var Map\Delta
+     */
+    protected $delta;
+
+    /**
      * @param Map\Integrity $integrity
      * @param Map\Migrate $run
      * @param Map\Volume $volume
+     * @param Map\Delta $delta
      */
     public function __construct(
         Map\Integrity $integrity,
         Map\Migrate $run,
-        Map\Volume $volume
+        Map\Volume $volume,
+        Map\Delta $delta
     ) {
         $this->integrity = $integrity;
         $this->run = $run;
         $this->volume = $volume;
+        $this->delta = $delta;
     }
 
     /**
@@ -79,6 +89,15 @@ class Map implements StepInterface
      */
     public function rollback()
     {
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delta()
+    {
+        $this->delta->delta();
         return true;
     }
 }

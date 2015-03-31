@@ -37,17 +37,24 @@ class SalesOrderTest extends \PHPUnit_Framework_TestCase
      */
     protected $initialData;
 
+    /**
+     * @var SalesOrder\Delta
+     */
+    protected $delta;
+
     public function setUp()
     {
         $this->integrity = $this->getMock('Migration\Step\SalesOrder\Integrity', ['perform'], [], '', false);
         $this->run = $this->getMock('Migration\Step\SalesOrder\Migrate', ['perform'], [], '', false);
         $this->volume = $this->getMock('Migration\Step\SalesOrder\Volume', ['perform'], [], '', false);
         $this->initialData = $this->getMock('Migration\Step\SalesOrder\InitialData', ['init'], [], '', false);
+        $this->delta = $this->getMock('Migration\Step\SalesOrder\Delta', ['init'], [], '', false);
         $this->salesOrder = new SalesOrder(
             $this->integrity,
             $this->run,
             $this->volume,
-            $this->initialData
+            $this->initialData,
+            $this->delta
         );
     }
 
