@@ -147,7 +147,6 @@ USAGE;
     {
         return $this->modeFactory->create($modeName);
     }
-
     /**
      * @return void
      */

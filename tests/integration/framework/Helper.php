@@ -128,7 +128,7 @@ class Helper
     {
         $mysqlConfigPath = dirname(__DIR__) . '/etc/mysql.php';
         if (!is_file($mysqlConfigPath)) {
-            throw new \Exception('Database configuration file does not exists: ' . $mysqlConfigPath);
+            throw new \Exception('Database configuration file does not exist: ' . $mysqlConfigPath);
         }
         $resourceSource = $fixturePath . '/source.sql';
         $resourceDestination = $fixturePath . '/dest.sql';

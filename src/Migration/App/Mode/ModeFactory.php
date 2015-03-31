@@ -33,9 +33,12 @@ class ModeFactory
      */
     public function create($mode)
     {
+        if (!class_exists('\\Migration\\Mode\\' . ucfirst($mode))) {
+            throw new \InvalidArgumentException(sprintf("Mode '%s' does not exist.", $mode));
+        }
         $mode = $this->objectManager->create('\\Migration\\Mode\\' . ucfirst($mode));
         if (!($mode instanceof \Migration\App\Mode\ModeInterface)) {
-            throw new Exception("Mode class must implement ModeInterface.");
+            throw new \InvalidArgumentException('Mode class must implement ModeInterface.');
         }
         return $mode;
     }
