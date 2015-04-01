@@ -6,7 +6,15 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
-    <steps mode="migration"/>
+    <steps mode="migration">
+        <step>Migration\Step\Eav</step>
+        <step>Migration\Step\CustomCustomerAttributes</step>
+        <step>Migration\Step\Map</step>
+        <step>Migration\Step\UrlRewrite</step>
+        <step>Migration\Step\Log</step>
+        <step>Migration\Step\Ratings</step>
+        <step>Migration\Step\SalesOrder</step>
+    </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1_integration" user="root" password=""/>
     </source>
@@ -14,13 +22,14 @@
         <database host="localhost" name="magento2_integration" user="root" password=""/>
     </destination>
     <options>
-        <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
-        <eav_map_file>tests/integration/testsuite/Migration/_files/eav-map.xml</eav_map_file>
-        <log_map_file>map-log.xml</log_map_file>
+        <map_file>etc/map.xml</map_file>
+        <eav_map_file>tests/integration/testsuite/Migration/_files/map-eav.xml</eav_map_file>
+        <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
-        <changelog_map_file>tests/integration/testsuite/Migration/_files/changelog.xml</changelog_map_file>
         <bulk_size>100</bulk_size>
-        <auto_resolve_urlrewrite_duplicates>true</auto_resolve_urlrewrite_duplicates>
+        <source_prefix />
+        <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>

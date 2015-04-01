@@ -149,5 +149,4 @@ class InitialData
     {
         return $this->attributeGroups[$type];
     }
-    // @codeCoverageIgnoreEnd
 }
