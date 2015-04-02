@@ -10,11 +10,12 @@ atlassian*
 /.gitattributes
 /node_modules
 /etc/config.xml
-/etc/map-eav.xml
-/etc/map.xml
-/etc/map-log.xml
-/etc/map-sales.xml
-/etc/changelog.xml
+/etc/map/eav.xml
+/etc/map/map.xml
+/etc/map/log.xml
+/etc/map/sales.xml
+/etc/map/changelog.xml
+/etc/map/settings.xml
 /tests/unit/tmp
 /tests/unit/phpunit.xml
 /tests/integration/etc/config.xml

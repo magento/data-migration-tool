@@ -33,7 +33,7 @@ class ClassMap
     public function getMap()
     {
         if ($this->map === null) {
-            $this->map = include __DIR__ . '/../../etc/class_map.php';
+            $this->map = include __DIR__ . '/../../etc/map/class_map.php';
         }
         return $this->map;
     }

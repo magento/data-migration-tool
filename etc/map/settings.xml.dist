@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<settings xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="settings.xsd">
+    <ignore>
+        <path>path/to/ignore</path>
+    </ignore>
+    <ignore>
+        <path>other/path/to/ignore</path>
+    </ignore>
+    <rename>
+        <path>path/to/rename</path>
+        <to>new/path/renamed</to>
+        <handler class="Some\Class"/>
+    </rename>
+    <rename>
+        <path>path/to/rename2</path>
+        <to>new/path/renamed2</to>
+    </rename>
+</settings>

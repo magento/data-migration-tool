@@ -79,7 +79,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
         $xml = file_get_contents($configFile);
         $document = new \Magento\Framework\Config\Dom($xml);
 
-        if (!$document->validate($this->getRootDir() .'etc/' . self::CONFIGURATION_SCHEMA)) {
+        if (!$document->validate($this->getRootDir() .'etc/map/' . self::CONFIGURATION_SCHEMA)) {
             throw new Exception('XML file is invalid.');
         }
 
