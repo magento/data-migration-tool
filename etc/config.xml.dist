@@ -21,6 +21,9 @@
         <step>Migration\Step\Log</step>
         <step>Migration\Step\SalesOrder</step>
     </steps>
+    <steps mode="settings">
+        <step>Migration\Step\Settings</step>
+    </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>
     </source>
