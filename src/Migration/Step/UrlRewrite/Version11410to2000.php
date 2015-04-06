@@ -275,7 +275,9 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             } elseif (empty($productId) && !empty($categoryId)) {
                 $destinationRecord->setValue('entity_type', 'category');
                 $destinationRecord->setValue('entity_id', $categoryId);
-                $targetPath = 'catalog/category/view/id/' . $categoryId;
+                if ($sourceRecord->getValue('entity_type') != 'custom') {
+                    $targetPath = 'catalog/category/view/id/' . $categoryId;
+                }
             } else {
                 $destinationRecord->setValue('entity_id', 0);
             }
@@ -433,23 +435,8 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $this->progress->start(1);
         $this->getRewritesSelect();
         $this->progress->advance();
-//        $categoryRecords = $this->source->getRecordsCount('catalog_category_entity_varchar')
-//            + $this->source->getRecordsCount('catalog_category_entity_url_key')
-//            + (isset($this->resolvedDuplicates['catalog_category_entity_varchar'])
-//                ? $this->resolvedDuplicates['catalog_category_entity_varchar']
-//                : 0
-//            );
-//        $productRecords = $this->source->getRecordsCount('catalog_product_entity_varchar')
-//            + $this->source->getRecordsCount('catalog_product_entity_url_key')
-//            + (isset($this->resolvedDuplicates['catalog_product_entity_varchar'])
-//                ? $this->resolvedDuplicates['catalog_product_entity_varchar']
-//                : 0[
-//            );
-
         $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite');
-//            && $categoryRecords == $this->destination->getRecordsCount('catalog_category_entity_varchar')
-//            && $productRecords == $this->destination->getRecordsCount('catalog_product_entity_varchar');
         $this->progress->finish();
         return $result;
     }
@@ -541,7 +528,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                     'store_id' => 's.store_id',
                     'suffix' => new \Zend_Db_Expr(
                         sprintf(
-                            "(IFNULL((%s), IFNULL((%s), IFNULL((%s), 'html'))))",
+                            "(IFNULL((%s), IFNULL((%s), IFNULL((%s), ''))))",
                             $storeSuffix,
                             $websiteSuffix,
                             $defaultSuffix
@@ -554,9 +541,9 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
 
         $suffix = "CASE {$mainTable}.store_id";
         foreach ($this->suffixData[$suffixFor] as $row) {
-            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix']);
+            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix'] ? '.' . $row['suffix'] : '');
         }
-        $suffix .= " ELSE 'html' END";
+        $suffix .= " ELSE '.html' END";
 
         return $suffix;
     }
@@ -572,6 +559,21 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
     {
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
+        $this->createTemporaryTable($adapter);
+        $this->collectProductRewrites($adapter);
+        $this->collectCategoryRewrites($adapter);
+        $this->collectRedirects($adapter);
+        $this->dataInitialized = true;
+    }
+
+    /**
+     * Crete temporary table
+     *
+     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @return void
+     */
+    public function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
+    {
         $select = $adapter->getSelect();
         $select->getAdapter()->dropTable($this->source->addDocumentPrefix($this->tableName));
         /** @var \Magento\Framework\DB\Ddl\Table $table */
@@ -627,55 +629,26 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             )
             ->addIndex(
                 'url_rewrite',
-                ['request_path', 'store_id', 'entity_type', 'target_path'],
+                ['request_path', 'target_path', 'store_id'],
                 ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
             )        ;
         $select->getAdapter()->createTable($table);
+    }
 
-        $select->from(
-            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => 'r.request_path',
-                'target_path' => 'r.target_path',
-                'is_system' => 'r.is_system',
-                'store_id' => 'r.store_id',
-                'entity_type' => "trim('custom')",
-                'redirect_type' => "trim('0')",
-                'product_id' => "trim('0')",
-                'category_id' => "trim('0')",
-                'priority' => "trim('2')"
-            ]
-        );
-        $query = $select->where('`r`.`entity_type` = 1')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
-
-        $select = $adapter->getSelect();
-        $select->from(
-            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
-            [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => 'r.identifier',
-                'target_path' => 'r.target_path',
-                'is_system' => "trim('0')",
-                'store_id' => 'r.store_id',
-                'entity_type' => "trim('custom')",
-                'redirect_type' => "(SELECT CASE r.options WHEN 'RP' THEN 301 WHEN 'R' THEN 302 ELSE 0 END)",
-                'product_id' => "r.product_id",
-                'category_id' => "r.category_id",
-                'priority' => "trim('1')"
-            ]
-        );
-        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
-
+    /**
+     * Fulfill temporary table with category url rewrites
+     *
+     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @return void
+     */
+    public function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    {
         $select = $adapter->getSelect();
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => sprintf("CONCAT(`r`.`request_path`, '.', %s)", $this->getSuffix('category', 'r')),
+                'request_path' => sprintf("CONCAT(`r`.`request_path`, %s)", $this->getSuffix('category', 'r')),
                 'target_path' => 'r.target_path',
                 'is_system' => 'r.is_system',
                 'store_id' => 'r.store_id',
@@ -694,7 +667,18 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $query = $select->where('`r`.`entity_type` = 2')
             ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
+    }
 
+    /**
+     * Fulfill temporary table with product url rewrites
+     *
+     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @return void
+     */
+    public function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    {
+        /** @var \Magento\Framework\Db\Select $select */
+        $select = $adapter->getSelect();
         $subSelect = $adapter->getSelect();
         $subSelect->from(
             ['cr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
@@ -707,7 +691,6 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             "($subSelect)",
             "'/'",
             '`r`.`request_path`',
-            "'.'",
             $this->getSuffix('product')
         ]);
         $storeSubSelect = $adapter->getSelect();
@@ -723,13 +706,15 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $storeSubSelect->where('sr.entity_type = 3')
             ->where('srcu.entity_id = p.entity_id')
             ->where('sr.store_id > 0');
+
+        $targetPath = 'IF(ISNULL(c.category_id), r.target_path, CONCAT(r.target_path, "/category/", c.category_id))';
         $select = $adapter->getSelect();
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
                 'request_path' => $subConcatCategories,
-                'target_path' => 'r.target_path',
+                'target_path' => $targetPath,
                 'is_system' => 'r.is_system',
                 'store_id' => 's.store_id',
                 'entity_type' => "trim('product')",
@@ -769,27 +754,27 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
 
+        $select = $adapter->getSelect();
         $subConcat = $select->getAdapter()->getConcatSql([
-            '`r`.`request_path`',
-            "'.'",
-            $this->getSuffix('product')
+           '`r`.`request_path`',
+           $this->getSuffix('product')
         ]);
 
         $select = $adapter->getSelect();
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => $subConcat,
-                'target_path' => 'r.target_path',
-                'is_system' => 'r.is_system',
-                'store_id' => 's.store_id',
-                'entity_type' => "trim('product')",
-                'redirect_type' => "trim('0')",
-                'product_id' => "p.entity_id",
-                'category_id' => "trim('0')",
-                'priority' => "trim('4')"
-            ]
+               'id' => 'IFNULL(NULL, NULL)',
+               'request_path' => $subConcat,
+               'target_path' => 'r.target_path',
+               'is_system' => 'r.is_system',
+               'store_id' => 's.store_id',
+               'entity_type' => "trim('product')",
+               'redirect_type' => "trim('0')",
+               'product_id' => "p.entity_id",
+               'category_id' => "trim('0')",
+               'priority' => "trim('4')"
+           ]
         );
         $select->join(
             ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
@@ -816,7 +801,6 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             "($subSelect)",
             "'/'",
             '`s`.`request_path`',
-            "'.'",
             $this->getSuffix('product')
         ]);
         $select->from(
@@ -857,7 +841,6 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $select = $adapter->getSelect();
         $subConcat = $select->getAdapter()->getConcatSql([
             '`s`.`request_path`',
-            "'.'",
             $this->getSuffix('product')
         ]);
         $select->from(
@@ -884,6 +867,53 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             ->where('`s`.`store_id` > 0')
             ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
-        $this->dataInitialized = true;
+    }
+
+    /**
+     * Fulfill temporary table with redirects
+     *
+     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @return void
+     */
+    public function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
+    {
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => 'r.request_path',
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 'r.store_id',
+                'entity_type' => "trim('custom')",
+                'redirect_type' => "trim('0')",
+                'product_id' => "trim('0')",
+                'category_id' => "trim('0')",
+                'priority' => "trim('2')"
+            ]
+        );
+        $query = $select->where('`r`.`entity_type` = 1')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+
+        $select = $adapter->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => 'r.identifier',
+                'target_path' => 'r.target_path',
+                'is_system' => "trim('0')",
+                'store_id' => 'r.store_id',
+                'entity_type' => "trim('custom')",
+                'redirect_type' => "(SELECT CASE r.options WHEN 'RP' THEN 301 WHEN 'R' THEN 302 ELSE 0 END)",
+                'product_id' => "r.product_id",
+                'category_id' => "r.category_id",
+                'priority' => "trim('1')"
+            ]
+        );
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
     }
 }

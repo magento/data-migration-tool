@@ -123,7 +123,6 @@ class Migrate
         $this->migrateAttributes();
         $this->migrateEntityAttributes();
         $this->migrateMappedTables();
-        $this->migrateJustCopyTables();
         $this->progress->finish();
         return true;
     }
@@ -289,7 +288,7 @@ class Migrate
     }
 
     /**
-     * Migrate EAV tables which in result must have all unique records from both suorce and destination documents
+     * Migrate EAV tables which in result must have all unique records from both source and destination documents
      * @return void
      */
     protected function migrateMappedTables()
@@ -359,33 +358,6 @@ class Migrate
                 }
             }
 
-            $this->saveRecords($destinationDocument, $recordsToSave);
-        }
-    }
-
-    /**
-     * Migrate tables which does not require some custom migration logic
-     * @throws \Exception
-     * @return void
-     */
-    protected function migrateJustCopyTables()
-    {
-        foreach ($this->map->getJustCopyDocuments() as $documentName) {
-            $this->progress->advance();
-            $sourceDocument = $this->source->getDocument($documentName);
-            $destinationDocument = $this->destination->getDocument(
-                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
-            );
-
-            $sourceRecords = $this->helper->getSourceRecords($documentName);
-            $recordsToSave = $destinationDocument->getRecords();
-            foreach ($sourceRecords as $recordData) {
-                $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
-                $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-                $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                   ->transform($sourceRecord, $destinationRecord);
-                $recordsToSave->addRecord($destinationRecord);
-            }
             $this->saveRecords($destinationDocument, $recordsToSave);
         }
     }
@@ -500,7 +472,7 @@ class Migrate
      */
     public function getIterationsCount()
     {
-        return count($this->map->getDocumentsMap());
+        return count($this->helper->getDocuments());
     }
 
     /**
@@ -509,7 +481,7 @@ class Migrate
      */
     public function rollback()
     {
-        foreach ($this->map->getBackupedTablesList() as $documentName) {
+        foreach ($this->helper->getDocuments() as $documentName) {
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
@@ -523,7 +495,7 @@ class Migrate
      */
     public function deleteBackups()
     {
-        foreach ($this->map->getBackupedTablesList() as $documentName) {
+        foreach ($this->helper->getDocuments() as $documentName) {
             $documentName = $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
             if ($documentName) {
                 $this->destination->deleteDocumentBackup($documentName);
