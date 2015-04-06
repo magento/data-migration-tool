@@ -85,7 +85,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetOption()
     {
         $this->assertEquals('map-file.xml', $this->config->getOption('map_file'));
-        $this->assertEquals('settings-map-file.xml', $this->config->getOption('settings_map_file'));
+        $this->assertEquals('etc/settings.xml', $this->config->getOption('settings_map_file'));
         $this->assertEquals('100', $this->config->getOption('bulk_size'));
         $this->assertEquals('custom_option_value', $this->config->getOption('custom_option'));
         $this->assertEquals('map-sales.xml', $this->config->getOption('sales_order_map_file'));
