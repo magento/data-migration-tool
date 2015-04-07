@@ -8,7 +8,7 @@ namespace Migration\MapReader;
 use Migration\Config;
 
 /**
- * Class MapReaderMain
+ * Class MapReaderChangelog
  */
 class MapReaderChangelog extends MapReaderAbstract
 {
