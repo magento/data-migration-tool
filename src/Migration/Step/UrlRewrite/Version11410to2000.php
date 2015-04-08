@@ -197,7 +197,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
             && empty($this->duplicateIndex)
         ) {
-            foreach ($duplicates as $key => $row) {
+            foreach ($duplicates as $row) {
                 $this->duplicateIndex[$row['request_path']][] = $row;
             }
         }
@@ -499,49 +499,49 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             $adapter = $this->source->getAdapter();
             $select = $adapter->getSelect();
 
-            $storeSuffix = $adapter->getSelect()->from(
-                ['cd' => $this->source->addDocumentPrefix('core_config_data')],
-                ['suffix' => 'cd.value']
-            );
-            $storeSuffix->where("cd.path = 'catalog/seo/{$suffixFor}_url_suffix'")
-                ->where("cd.scope='stores'")
-                ->where("cd.scope_id=s.store_id");
-
-            $websiteSuffix = $adapter->getSelect()->from(
-                ['cd1' => $this->source->addDocumentPrefix('core_config_data')],
-                ['suffix' => 'cd1.value']
-            );
-            $websiteSuffix->where("cd1.path = 'catalog/seo/{$suffixFor}_url_suffix'")
-                ->where("cd1.scope='websites'")
-                ->where("cd1.scope_id=s.website_id");
-
-            $defaultSuffix = $adapter->getSelect()->from(
-                ['cd2' => $this->source->addDocumentPrefix('core_config_data')],
-                ['suffix' => 'cd2.value']
-            );
-            $defaultSuffix->where("cd2.path = 'catalog/seo/{$suffixFor}_url_suffix'")
-                ->where("cd2.scope='default'");
-
             $select->from(
                 ['s' => $this->source->addDocumentPrefix('core_store')],
-                [
-                    'store_id' => 's.store_id',
-                    'suffix' => new \Zend_Db_Expr(
-                        sprintf(
-                            "(IFNULL((%s), IFNULL((%s), IFNULL((%s), ''))))",
-                            $storeSuffix,
-                            $websiteSuffix,
-                            $defaultSuffix
-                        )
-                    )
-                ]
+                ['store_id' => 's.store_id']
             );
-            $this->suffixData[$suffixFor] = $select->getAdapter()->fetchAll($select);
+
+            $select->joinLeft(
+                ['c1' => $this->source->addDocumentPrefix('core_config_data')],
+                "c1.scope='stores' AND c1.path = 'catalog/seo/{$suffixFor}_url_suffix' AND c1.scope_id=s.store_id",
+                ['store_path' => 'c1.path', 'store_value' => 'c1.value']
+            );
+            $select->joinLeft(
+                ['c2' => $this->source->addDocumentPrefix('core_config_data')],
+                "c2.scope='websites' AND c2.path = 'catalog/seo/{$suffixFor}_url_suffix' AND c2.scope_id=s.website_id",
+                ['website_path' => 'c2.path', 'website_value' => 'c2.value']
+            );
+            $select->joinLeft(
+                ['c3' => $this->source->addDocumentPrefix('core_config_data')],
+                "c3.scope='default' AND c3.path = 'catalog/seo/{$suffixFor}_url_suffix'",
+                ['admin_path' => 'c3.path', 'admin_value' => 'c3.value']
+            );
+
+            $result = $select->getAdapter()->fetchAll($select);
+            foreach ($result as $row) {
+                $suffix = 'html';
+                if ($row['admin_path'] !== null) {
+                    $suffix = $row['admin_value'];
+                }
+                if ($row['website_path'] !== null) {
+                    $suffix = $row['website_value'];
+                }
+                if ($row['store_path'] !== null) {
+                    $suffix = $row['store_value'];
+                }
+                $this->suffixData[$suffixFor][] = [
+                    'store_id' => $row['store_id'],
+                    'suffix' => $suffix ? '.' . $suffix : ''
+                ];
+            }
         }
 
         $suffix = "CASE {$mainTable}.store_id";
         foreach ($this->suffixData[$suffixFor] as $row) {
-            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix'] ? '.' . $row['suffix'] : '');
+            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix']);
         }
         $suffix .= " ELSE '.html' END";
 
@@ -749,9 +749,12 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
             []
         );
-        $query = $select->where('`r`.`entity_type` = 3')
-            ->where('`r`.`store_id` = 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->where('`r`.`entity_type` = 3')->where('`r`.`store_id` = 0');
+
+        $query = $adapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
+            ->where('result.request_path IS NOT NULL')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName))
+        ;
         $select->getAdapter()->query($query);
 
         $select = $adapter->getSelect();
