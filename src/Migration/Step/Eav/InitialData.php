@@ -81,7 +81,7 @@ class InitialData
      */
     protected function initAttributes()
     {
-        if (is_null($this->attributes)) {
+        if ($this->attributes === null) {
             $sourceDocument = 'eav_attribute';
 
             foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {

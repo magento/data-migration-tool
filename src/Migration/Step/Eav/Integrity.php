@@ -51,20 +51,29 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->map->getDocumentsMap()), MapReaderInterface::TYPE_SOURCE);
-        $this->check(array_values($this->map->getDocumentsMap()), MapReaderInterface::TYPE_DEST);
+        $documents = $this->helper->getDocuments();
+        $this->progress->start(count($documents));
+        foreach ($documents as $sourceDocumentName) {
+            if ($sourceDocumentName == 'enterprise_rma_item_eav_attribute'
+                && !$this->source->getDocument($sourceDocumentName)
+            ) {
+                continue;
+            }
+            $this->check([$sourceDocumentName], MapReaderInterface::TYPE_SOURCE);
+            $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE);
+            $this->check([$destinationDocumentName], MapReaderInterface::TYPE_DEST);
+        }
+
         $this->progress->finish();
         return $this->checkForErrors();
     }
 
     /**
-     * Get iterations count for step
-     *
-     * @return int
+     * Returns number of iterations for integrity check
+     * @return mixed
      */
     protected function getIterationsCount()
     {
-        return count($this->map->getDocumentsMap()) * 2;
+        return count($this->helper->getDocuments());
     }
 }

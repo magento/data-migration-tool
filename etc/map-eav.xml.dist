@@ -12,10 +12,6 @@
                 <document>enterprise_rma_item_eav_attribute</document>
                 <to>magento_rma_item_eav_attribute</to>
             </rename>
-            <rename>
-                <document>enterprise_rma_item_eav_attribute_website</document>
-                <to>magento_rma_item_eav_attribute_website</to>
-            </rename>
         </document_rules>
         <field_rules>
             <transform>

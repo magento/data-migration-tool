@@ -70,10 +70,8 @@ class Volume
      */
     public function perform()
     {
-        $this->progress->start(count($this->map->getDocumentsMap()));
-        $result = $this->validateAttributes();
-        $result = $result & $this->validateAttributeSetsAndGroups();
-        $result = $result & $this->validateJustCopyTables();
+        $this->progress->start(count($this->helper->getDocuments()));
+        $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
         $this->printErrors();
         return (bool)$result;
@@ -107,7 +105,7 @@ class Volume
             }
 
             foreach (['attribute_model', 'backend_model', 'frontend_model', 'source_model'] as $field) {
-                if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
+                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
                     $result = false;
                     $this->errors[] = 'Incorrect value in: eav_attribute.' . $field .' for attribute_code='
                         . $attribute['attribute_code'];
@@ -126,7 +124,7 @@ class Volume
         $result = true;
         foreach ($this->helper->getDestinationRecords('customer_eav_attribute') as $attribute) {
             foreach (['data_model'] as $field) {
-                if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
+                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
                     $result = false;
                     $this->errors[] = 'Incorrect value: customer_eav_attribute.' . $field
                         . ' for attribute_id=' . $attribute['attribute_id'];
@@ -144,7 +142,7 @@ class Volume
         $result = true;
         foreach ($this->helper->getDestinationRecords('catalog_eav_attribute') as $attribute) {
             foreach (['frontend_input_renderer'] as $field) {
-                if (!is_null($attribute[$field]) && !class_exists($attribute[$field])) {
+                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
                     $result = false;
                     $this->errors[] = 'Incorrect value in: catalog_eav_attribute.' . $field
                         . ' for attribute_id=' . $attribute['attribute_id'];
@@ -172,23 +170,6 @@ class Volume
         if ($this->helper->getDestinationRecordsCount('eav_attribute_group') != $sourceRecords + $initialDestRecords) {
             $result = false;
             $this->errors[] = 'Incorrect number of entities in document: eav_attribute_group';
-        }
-
-        return $result;
-    }
-
-    /**
-     * @return bool|int
-     */
-    public function validateJustCopyTables()
-    {
-        $result = true;
-        foreach ($this->map->getJustCopyDocuments() as $document) {
-            $result = $result & $this->assertEqual(
-                $this->helper->getSourceRecordsCount($document),
-                $this->helper->getDestinationRecordsCount($document),
-                'Incorrect number of entities in document: ' . $document
-            );
         }
 
         return $result;
