@@ -9,6 +9,12 @@
     <source>
         <document_rules>
             <ignore>
+                <document>catalogsearch_recommendations</document>
+            </ignore>
+            <ignore>
+                <document>core_session</document>
+            </ignore>
+            <ignore>
                 <document>m2_cl_*</document>
             </ignore>
             <ignore>
@@ -618,6 +624,15 @@
                 <document>cron_schedule</document>
             </ignore>
             <ignore>
+                <document>core_store</document>
+            </ignore>
+            <ignore>
+                <document>core_store_group</document>
+            </ignore>
+            <ignore>
+                <document>core_website</document>
+            </ignore>
+            <ignore>
                 <document>admin_user</document>
             </ignore>
             <ignore>
@@ -652,20 +667,8 @@
                 <to>email_template</to>
             </rename>
             <rename>
-                <document>core_store</document>
-                <to>store</to>
-            </rename>
-            <rename>
-                <document>core_store_group</document>
-                <to>store_group</to>
-            </rename>
-            <rename>
                 <document>core_translate</document>
                 <to>translation</to>
-            </rename>
-            <rename>
-                <document>core_website</document>
-                <to>store_website</to>
             </rename>
             <rename>
                 <document>coupon_aggregated</document>
@@ -1752,6 +1755,15 @@
             </ignore>
             <ignore>
                 <document>sales_order</document>
+            </ignore>
+            <ignore>
+                <document>store</document>
+            </ignore>
+            <ignore>
+                <document>store_group</document>
+            </ignore>
+            <ignore>
+                <document>store_website</document>
             </ignore>
             <ignore>
                 <document>cache</document>
