@@ -86,9 +86,15 @@ class Migrate
     protected $progress;
 
     /**
+     * @var \Migration\MapReader\MapReaderSimple
+     */
+    protected $readerSimple;
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapReaderEav $mapReader
+     * @param \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
@@ -98,6 +104,7 @@ class Migrate
         Source $source,
         Destination $destination,
         MapReaderEav $mapReader,
+        \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory,
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
@@ -106,6 +113,7 @@ class Migrate
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
+        $this->readerSimple = $readerSimpleFactory->create(['optionName' => 'eav_list_file']);
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;
@@ -293,12 +301,7 @@ class Migrate
      */
     protected function migrateMappedTables()
     {
-        $documents = [
-            'catalog_eav_attribute' => ['attribute_id'],
-            'customer_eav_attribute' => ['attribute_id'],
-            'eav_entity_type' => ['entity_type_id'],
-            'enterprise_rma_item_eav_attribute' => ['attribute_id'],
-        ];
+        $documents = $this->getDocuments();
 
         foreach ($documents as $documentName => $mappingFields) {
             $this->progress->advance();
@@ -360,6 +363,19 @@ class Migrate
 
             $this->saveRecords($destinationDocument, $recordsToSave);
         }
+    }
+
+    protected function getDocuments()
+    {
+        $result = [];
+        $documents = $this->readerSimple->getList('documents');
+        foreach ($documents as $document) {
+            $fieldsMap = $this->readerSimple->getList($document);
+            if (!empty($fieldsMap)) {
+                $result[$document] = $fieldsMap;
+            }
+        }
+        return $result;
     }
 
     /**
@@ -472,7 +488,7 @@ class Migrate
      */
     public function getIterationsCount()
     {
-        return count($this->helper->getDocuments());
+        return count($this->readerSimple->getList('documents'));
     }
 
     /**
@@ -481,7 +497,7 @@ class Migrate
      */
     public function rollback()
     {
-        foreach ($this->helper->getDocuments() as $documentName) {
+        foreach ($this->readerSimple->getList('documents') as $documentName) {
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
@@ -495,7 +511,7 @@ class Migrate
      */
     public function deleteBackups()
     {
-        foreach ($this->helper->getDocuments() as $documentName) {
+        foreach ($this->readerSimple->getList('documents') as $documentName) {
             $documentName = $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
             if ($documentName) {
                 $this->destination->deleteDocumentBackup($documentName);

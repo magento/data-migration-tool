@@ -36,6 +36,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $mapReader;
 
     /**
+     * @var \Migration\MapReader\MapReaderSimpleFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $mapReaderSimple;
+
+    /**
      * @var \Migration\Step\Eav\Volume
      */
     protected $volume;
@@ -55,9 +60,29 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
-            ->setMethods(['getDocumentsMap', 'getJustCopyDocuments'])
+            ->setMethods(['getDocumentMap', 'getJustCopyDocuments'])
             ->getMock();
-        $this->volume = new Volume($this->helper, $this->initialData, $this->logger, $this->progress, $this->mapReader);
+        $this->mapReaderSimple = $this->getMockBuilder('\Migration\MapReader\MapReaderSimple')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $mapReaderSimpleFactory = $this->getMockBuilder('\Migration\MapReader\MapReaderSimpleFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $mapReaderSimpleFactory->expects($this->any())
+            ->method('create')
+            ->with(['optionName' => 'eav_list_file'])
+            ->willReturn($this->mapReaderSimple);
+
+        $this->volume = new Volume(
+            $this->helper,
+            $this->initialData,
+            $this->logger,
+            $this->progress,
+            $this->mapReader,
+            $mapReaderSimpleFactory
+        );
     }
 
     public function testPerform()
@@ -70,26 +95,28 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             'eav_attribute_1' => [
                 'attribute_id' => '1',
                 'attribute_code' => 'attribute_code_1',
-                'attribute_model' => NULL,
-                'backend_model' => NULL,
-                'frontend_model' => NULL,
-                'source_model' => NULL,
-                'frontend_input_renderer' => NULL,
-                'data_model' => NULL],
+                'attribute_model' => null,
+                'backend_model' => null,
+                'frontend_model' => null,
+                'source_model' => null,
+                'frontend_input_renderer' => null,
+                'data_model' => null
+            ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
                 'attribute_code' => 'attribute_code_2',
-                'attribute_model' => NULL,
-                'backend_model' => NULL,
-                'frontend_model' => NULL,
-                'source_model' => NULL,
-                'frontend_input_renderer' => NULL,
-                'data_model' => NULL]
+                'attribute_model' => null,
+                'backend_model' => null,
+                'frontend_model' => null,
+                'source_model' => null,
+                'frontend_input_renderer' => null,
+                'data_model' => null
+            ]
         ];
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentsMap);
+        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
         $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
             [
@@ -145,7 +172,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentsMap);
+        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
         $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
             [

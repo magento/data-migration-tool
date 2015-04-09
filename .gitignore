@@ -11,6 +11,7 @@ atlassian*
 /node_modules
 /etc/config.xml
 /etc/map-eav.xml
+/etc/map-eav-list.xml
 /etc/map.xml
 /etc/map-log.xml
 /etc/map-sales.xml

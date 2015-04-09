@@ -30,6 +30,7 @@
     <options>
         <map_file>etc/map.xml</map_file>
         <eav_map_file>etc/map-eav.xml</eav_map_file>
+        <eav_list_file>etc/map-eav-list.xml</eav_list_file>
         <log_map_file>etc/map-log.xml</log_map_file>
         <settings_map_file>settings-map-file.xml</settings_map_file>
         <sales_order_map_file>etc/map-sales.xml</sales_order_map_file>
