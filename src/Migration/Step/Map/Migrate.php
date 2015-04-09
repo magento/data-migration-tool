@@ -11,6 +11,7 @@ use Migration\Resource;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
+use Migration\App\Step\Progress;
 
 /**
  * Class Migrate
@@ -47,29 +48,39 @@ class Migrate
      *
      * @var ProgressBar
      */
+    protected $progressBar;
+
+    /**
+     * Progress instance, saves the state of the process
+     *
+     * @var Progress
+     */
     protected $progress;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar $progressBar
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapReaderMain $mapReader
+     * @param Progress $progress
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar $progressBar,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderMain $mapReader
+        MapReaderMain $mapReader,
+        Progress $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
+        $this->progressBar = $progressBar;
         $this->progress = $progress;
     }
 
@@ -78,10 +89,16 @@ class Migrate
      */
     public function perform()
     {
-        $this->progress->start(count($this->source->getDocumentList()));
+        $this->progressBar->start(count($this->source->getDocumentList()));
         $sourceDocuments = $this->source->getDocumentList();
+        // TODO: during steps refactoring MAGETWO-35749 stage will be removed
+        $stage = 'run';
+        $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            $this->progressBar->advance();
+            if (in_array($sourceDocName, $processedDocuments)) {
+                continue;
+            }
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
             if (!$destinationName) {
@@ -96,10 +113,10 @@ class Migrate
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($items as $data) {
-                    /** @var Record $record */
-                    /** @var Record $destRecord */
                     if ($recordTransformer) {
+                        /** @var Record $record */
                         $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
+                        /** @var Record $destRecord */
                         $destRecord = $this->recordFactory->create(['document' => $destDocument]);
                         $recordTransformer->transform($record, $destRecord);
                     } else {
@@ -109,8 +126,9 @@ class Migrate
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
+            $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
         }
-        $this->progress->finish();
+        $this->progressBar->finish();
         return true;
     }
 

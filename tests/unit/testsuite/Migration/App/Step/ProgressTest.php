@@ -40,6 +40,42 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->progress->isCompleted($step, 'integrity');
     }
 
+    public function testSaveProcessedEntities()
+    {
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $stage = 'run';
+        $this->progress->saveProcessedEntities($step, $stage, ['document_name1', 'document_name2']);
+    }
+
+    public function testAddProcessedEntity()
+    {
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $stage = 'run';
+        $this->progress->addProcessedEntity($step, $stage, 'document_name1');
+    }
+
+    public function testResetProcessedEntities()
+    {
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $stage = 'run';
+        $this->progress->resetProcessedEntities($step, $stage);
+    }
+
+    public function testGetProcessedEntities()
+    {
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
+        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $stage = 'run';
+        $document = ['some_document'];
+        $progress = serialize([get_class($step) => [$stage => ['process' => $document]]]);
+        $this->filesystem->expects($this->once())->method('fileGetContents')->will($this->returnValue($progress));
+        $result = $this->progress->getProcessedEntities($step, $stage);
+        $this->assertEquals($document, $result);
+    }
+
     public function testSaveResult()
     {
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
@@ -70,5 +106,14 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->filesystem->expects($this->once())->method('fileGetContents')->will($this->returnValue($progress));
         $this->filesystem->expects($this->once())->method('filePutContents');
         $this->progress->reset($step);
+    }
+
+    public function testSaveDataNoFile()
+    {
+        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(false));
+        $this->filesystem->expects($this->once())->method('filePutContents');
+        $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
+        $this->progress->saveResult($step, 'integrity', 'true');
+
     }
 }
