@@ -365,6 +365,9 @@ class Migrate
         }
     }
 
+    /**
+     * @return array
+     */
     protected function getDocuments()
     {
         $result = [];
