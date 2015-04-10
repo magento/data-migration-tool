@@ -6,8 +6,7 @@
 namespace Migration\Step;
 
 use Migration\App\Step\StepInterface;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderMain;
+use Migration\MapReader;
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
@@ -15,6 +14,7 @@ use Migration\Resource\Source;
 use Migration\Resource;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
+use Migration\Handler;
 
 /**
  * Class Settings
@@ -23,33 +23,56 @@ class Settings implements StepInterface
 {
     const CONFIG_TABLE_NAME_SOURCE = 'core_config_data';
     const CONFIG_TABLE_NAME_DESTINATION = 'core_config_data';
+    const CONFIG_FIELD_CONFIG_ID = 'config_id';
+    const CONFIG_FIELD_SCOPE_ID = 'scope_id';
+    const CONFIG_FIELD_SCOPE = 'scope';
+    const CONFIG_FIELD_PATH = 'path';
+    const CONFIG_FIELD_VALUE = 'value';
 
     /**
-     * Destination resource
-     *
      * @var Destination
      */
     protected $destination;
 
     /**
-     * Logger instance
-     *
      * @var Logger
      */
     protected $logger;
 
     /**
-     * Progress bar
-     *
+     * @var Source
+     */
+    protected $source;
+
+    /**
      * @var ProgressBar
      */
     protected $progress;
+
+    /**
+     * @var MapReader\Settings
+     */
+    protected $mapReader;
+
+    /**
+     * @var Resource\RecordFactory
+     */
+    protected $recordFactory;
+
+    /**
+     * @var Handler\ManagerFactory
+     */
+    protected $handlerManagerFactory;
 
     /**
      * @param Destination $destination
      * @param Source $source
      * @param Logger $logger
      * @param ProgressBar $progress
+     * @param Resource\RecordFactory $recordFactory
+     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param MapReader\Settings $mapReader
+     * @param Handler\ManagerFactory $handlerManagerFactory
      */
     public function __construct(
         Destination $destination,
@@ -57,16 +80,16 @@ class Settings implements StepInterface
         Logger $logger,
         ProgressBar $progress,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderMain $mapReader
+        MapReader\Settings $mapReader,
+        Handler\ManagerFactory $handlerManagerFactory
     ) {
         $this->destination = $destination;
         $this->source = $source;
         $this->logger = $logger;
         $this->progress = $progress;
         $this->recordFactory = $recordFactory;
-        $this->recordTransformerFactory = $recordTransformerFactory;
         $this->mapReader = $mapReader;
+        $this->handlerManagerFactory = $handlerManagerFactory;
     }
 
     /**
@@ -96,6 +119,7 @@ class Settings implements StepInterface
             );
             return false;
         }
+        $this->progress->finish();
         return true;
     }
 
@@ -104,39 +128,85 @@ class Settings implements StepInterface
      */
     public function run()
     {
-        $this->progress->start($this->getIterationsCount());
-        $this->progress->advance();
-        $sourceDocument = $this->source->getDocument(self::CONFIG_TABLE_NAME_SOURCE);
-        $destinationName = $this->mapReader->getDocumentMap(
-            self::CONFIG_TABLE_NAME_DESTINATION, MapReaderInterface::TYPE_SOURCE
+        $destinationDocument = $this->destination->getDocument(self::CONFIG_TABLE_NAME_DESTINATION);
+        $recordsCountSource = $this->source->getRecordsCount(self::CONFIG_TABLE_NAME_SOURCE);
+        $recordsCountDestination = $this->destination->getRecordsCount(self::CONFIG_TABLE_NAME_DESTINATION);
+        $this->progress->start($recordsCountSource);
+        $sourceRecords = $this->source->getRecords(
+            self::CONFIG_TABLE_NAME_SOURCE,
+            0,
+            $recordsCountSource
         );
-        $destDocument = $this->destination->getDocument($destinationName);
-        $this->destination->clearDocument($destinationName);
-        /** @var \Migration\RecordTransformer $recordTransformer */
-        $recordTransformer = $this->recordTransformerFactory->create(
-            [
-                'sourceDocument' => $sourceDocument,
-                'destDocument' => $destDocument,
-                'mapReader' => $this->mapReader
-            ]
+        $destinationRecords = $this->destination->getRecords(
+            self::CONFIG_TABLE_NAME_DESTINATION,
+            0,
+            $recordsCountDestination
         );
-        $recordTransformer->init();
-        $pageNumber = 0;
-        while (!empty($bulk = $this->source->getRecords(self::CONFIG_TABLE_NAME_SOURCE, $pageNumber))) {
-            $pageNumber++;
-            $destinationRecords = $destDocument->getRecords();
-            foreach ($bulk as $recordData) {
-                /** @var Record $record */
-                $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
-                /** @var Record $destRecord */
-                $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                $recordTransformer->transform($record, $destRecord);
-                $destinationRecords->addRecord($destRecord);
+        foreach ($sourceRecords as $sourceRecord) {
+            $this->progress->advance();
+            if (!$this->mapReader->isNodeIgnored($sourceRecord[self::CONFIG_FIELD_PATH])) {
+                $sourceRecordPathMapped = $this->mapReader->getNodeMap($sourceRecord[self::CONFIG_FIELD_PATH]);
+                foreach ($destinationRecords as &$destinationRecord) {
+                    if ($destinationRecord[self::CONFIG_FIELD_SCOPE] == $sourceRecord[self::CONFIG_FIELD_SCOPE]
+                        && $destinationRecord[self::CONFIG_FIELD_SCOPE_ID] == $sourceRecord[self::CONFIG_FIELD_SCOPE_ID]
+                        && $destinationRecord[self::CONFIG_FIELD_PATH] == $sourceRecordPathMapped
+                    ) {
+                        $record = $this->applyHandler($destinationDocument, $sourceRecord, $destinationRecord);
+                        $destinationRecord[self::CONFIG_FIELD_VALUE] = $record->getValue(self::CONFIG_FIELD_VALUE);
+                        continue 2;
+                    }
+                }
+                $record = $this->applyHandler($destinationDocument, $sourceRecord, []);
+                $record->setValue(self::CONFIG_FIELD_PATH, $sourceRecordPathMapped);
+                $destinationRecords[] = $record->getData();
             }
-            $this->destination->saveRecords($destinationName, $destinationRecords);
         }
+        foreach ($destinationRecords as &$destinationRecord) {
+            unset($destinationRecord[self::CONFIG_FIELD_CONFIG_ID]);
+        }
+        $this->destination->clearDocument(self::CONFIG_TABLE_NAME_DESTINATION);
+        $this->destination->saveRecords(self::CONFIG_TABLE_NAME_DESTINATION, $destinationRecords);
         $this->progress->finish();
         return true;
+    }
+
+    /**
+     * @param Document $document
+     * @param array $sourceData
+     * @param array $destinationData
+     * @return Record
+     */
+    protected function applyHandler(
+        \Migration\Resource\Document $document,
+        array $sourceData,
+        array $destinationData
+    ) {
+        /** @var Record $sourceRecord */
+        $sourceRecord = $this->recordFactory->create(['document' => $document, 'data' => $sourceData]);
+        /** @var Record $destinationData */
+        $destinationRecord = $this->recordFactory->create(['document' => $document, 'data' => $destinationData]);
+        $handler = $this->getHandler($sourceData[self::CONFIG_FIELD_PATH]);
+        if ($handler) {
+            $handler->handle($sourceRecord, $destinationRecord);
+        }
+        return $sourceRecord;
+    }
+
+    /**
+     * @param string $path
+     * @return bool|Handler\HandlerInterface|null
+     * @throws \Migration\Exception
+     */
+    protected function getHandler($path)
+    {
+        $handlerConfig = $this->mapReader->getValueHandler($path);
+        if (!$handlerConfig) {
+            return false;
+        }
+        /** @var Handler\Manager $handlerManager */
+        $handlerManager = $this->handlerManagerFactory->create();
+        $handlerManager->initHandler(self::CONFIG_FIELD_VALUE, $handlerConfig, $path);
+        return $handlerManager->getHandler($path);
     }
 
     /**
@@ -152,16 +222,6 @@ class Settings implements StepInterface
      */
     public function getTitle()
     {
-        return "Settings step";
-    }
-
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        return count($this->source->getDocument(self::CONFIG_TABLE_NAME_SOURCE)->getRecords());
+        return 'Settings step';
     }
 }

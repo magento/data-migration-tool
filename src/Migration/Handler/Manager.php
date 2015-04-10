@@ -38,7 +38,7 @@ class Manager
      * @return void
      * @throws Exception
      */
-    public function initHandler($field, $handlerConfig = [])
+    public function initHandler($field, $handlerConfig = [], $handlerKey = null)
     {
         if (empty($handlerConfig)) {
             return;
@@ -53,19 +53,20 @@ class Manager
             throw new Exception("'{$handlerConfig['class']}' is not correct handler.");
         }
         $handler->setField($field);
-        $this->handlers[$field] = $handler;
+        $handlerKey = $handlerKey ?: $field;
+        $this->handlers[$handlerKey] = $handler;
     }
 
     /**
      * Get handler for $field field
      *
-     * @param string $field
+     * @param string $handlerKey
      * @return HandlerInterface|null
      */
-    public function getHandler($field)
+    public function getHandler($handlerKey)
     {
-        if (!empty($this->handlers[$field])) {
-            return $this->handlers[$field];
+        if (!empty($this->handlers[$handlerKey])) {
+            return $this->handlers[$handlerKey];
         }
         return null;
     }
