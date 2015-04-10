@@ -99,7 +99,7 @@ class Progress
      * @param array $processedEntities
      * @return void
      */
-    public function saveProcessedEntities($object, $stage, array $processedEntities)
+    protected function saveProcessedEntities($object, $stage, array $processedEntities)
     {
         $this->loadData();
         $name = $this->getName($object);
@@ -111,15 +111,17 @@ class Progress
      * @param mixed $object
      * @param string $stage
      * @param string $entity
-     * @return void
+     * @return bool
      */
     public function addProcessedEntity($object, $stage, $entity)
     {
         $entities = $this->getProcessedEntities($object, $stage);
-        if (!in_array($entity, $entities)) {
-            $entities[] = $entity;
-            $this->saveProcessedEntities($object, $stage, $entities);
+        if (in_array($entity, $entities)) {
+            return false;
         }
+        $entities[] = $entity;
+        $this->saveProcessedEntities($object, $stage, $entities);
+        return true;
     }
 
     /**

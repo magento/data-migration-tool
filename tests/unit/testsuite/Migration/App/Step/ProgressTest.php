@@ -40,20 +40,15 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->progress->isCompleted($step, 'integrity');
     }
 
-    public function testSaveProcessedEntities()
-    {
-        $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
-        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
-        $stage = 'run';
-        $this->progress->saveProcessedEntities($step, $stage, ['document_name1', 'document_name2']);
-    }
-
     public function testAddProcessedEntity()
     {
         $this->filesystem->expects($this->any())->method('isExists')->will($this->returnValue(true));
         $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
         $stage = 'run';
-        $this->progress->addProcessedEntity($step, $stage, 'document_name1');
+        $result = $this->progress->addProcessedEntity($step, $stage, 'document_name1');
+        $this->assertTrue($result);
+        $result = $this->progress->addProcessedEntity($step, $stage, 'document_name1');
+        $this->assertFalse($result);
     }
 
     public function testResetProcessedEntities()
