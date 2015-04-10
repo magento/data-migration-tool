@@ -35,6 +35,7 @@ class Manager
     /**
      * @param string $field
      * @param array $handlerConfig
+     * @param string|null $handlerKey
      * @return void
      * @throws Exception
      */
