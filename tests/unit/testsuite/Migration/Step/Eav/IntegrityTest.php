@@ -63,7 +63,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getDocumentsMap', 'getDocumentMap', 'getDocumentList', 'getFieldMap'])
             ->getMock();
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
-            ->setMethods([])
+            ->setMethods(['getDocuments'])
             ->getMock();
         $this->integrity = new Integrity(
             $this->progress,
@@ -78,18 +78,23 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function testPerformWithoutError()
     {
         $fields = ['field1' => []];
-        $documentMap = ['document_1' => 'document_2'];
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentMap) ;
+        $this->helper->expects($this->any())->method('getDocuments')->willReturn(['source_document']) ;
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
-            ->disableOriginalConstructor()->setMethods([])->getMock();
+            ->disableOriginalConstructor()->setMethods(['getFields'])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
+
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_2']));
+            ->will($this->returnValue(['source_document']));
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_1']));
+            ->will($this->returnValue(['destination_document']));
+
         $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
+
+        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturnMap([
+            ['source_document', 'source', 'destination_document'],
+            ['destination_document', 'destination', 'source_document']
+        ]);
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->mapReader->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
@@ -98,19 +103,20 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->integrity->perform());
     }
 
-    public function testPerformWithError()
+    public function testPerformWithMissingDocuments()
     {
         $fields = ['field1' => []];
-        $documentMap = ['document_2' => 'document_1'];
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentMap) ;
+        $this->helper->expects($this->any())->method('getDocuments')->willReturn(['missed_source_document']) ;
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
-            ->disableOriginalConstructor()->setMethods([])->getMock();
+            ->disableOriginalConstructor()->setMethods(['getFields'])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_2']));
+            ->will($this->returnValue(['some_document']));
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_1']));
+            ->will($this->returnValue(['destination_document']));
+
         $this->mapReader->expects($this->atLeastOnce())->method('getDocumentMap')->will($this->returnArgument(0));
+
         $this->logger->expects($this->exactly(2))->method('error');
         $this->assertFalse($this->integrity->perform());
     }

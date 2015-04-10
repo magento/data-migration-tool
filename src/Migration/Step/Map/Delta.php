@@ -7,6 +7,7 @@ namespace Migration\Step\Map;
 
 use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
+use Migration\MapReader\MapReaderChangelog;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource\Source;
 use Migration\Resource;
@@ -20,7 +21,7 @@ class Delta extends AbstractDelta
 
     /**
      * @param Source $source
-     * @param MapReaderMain $mapReader
+     * @param MapReaderChangelog $mapReader
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -29,7 +30,7 @@ class Delta extends AbstractDelta
      */
     public function __construct(
         Source $source,
-        MapReaderMain $mapReader,
+        MapReaderChangelog $mapReader,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,

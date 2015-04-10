@@ -102,6 +102,9 @@ class Helper
         if (!$this->objectManager) {
             $this->objectManager = $this->initObjectManager();
         }
+        $this->objectManager->configure([
+            'preferences' => ['\Migration\ProgressBar' => '\Migration\TestFramework\ProgressBar']
+        ]);
         return $this->objectManager;
     }
 
