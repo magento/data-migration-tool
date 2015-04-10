@@ -131,7 +131,7 @@ class Progress
      */
     public function resetProcessedEntities($object, $stage)
     {
-        return $this->saveProcessedEntities($object, $stage, []);
+        $this->saveProcessedEntities($object, $stage, []);
     }
 
     /**
