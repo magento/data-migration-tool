@@ -14,8 +14,10 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
 
     public function testSetupTriggers()
     {
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         /** @var \Migration\Resource\Source $source */
         $source = $objectManager->create('\Migration\Resource\Source');
         /** @var \Migration\App\SetupChangeLog $setupChangeLog */
