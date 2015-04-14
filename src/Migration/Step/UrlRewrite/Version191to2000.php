@@ -181,8 +181,6 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
         $this->progress->start(1);
         $result &= $this->source->getRecordsCount(self::SOURCE) ==
             $this->destination->getRecordsCount(self::DESTINATION);
-        $result &= $this->source->getRecordsCount('catalog_category_product') ==
-            $this->destination->getRecordsCount(self::DESTINATION_PRODUCT_CATEGORY);
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
