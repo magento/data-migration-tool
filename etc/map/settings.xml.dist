@@ -1786,71 +1786,71 @@
     <value>
         <transform>
             <path>catalog/category/root_id</path>
-            <handler class="change\category\id\if\not\2"/>
+            <handler class="\Migration\Handler\Settings\CategoryRootId"/>
         </transform>
         <transform>
             <path>catalog/seo/category_url_suffix</path>
-            <handler class="add\point\before\ext"/>
+            <handler class="\Migration\Handler\Settings\UrlSuffix"/>
         </transform>
         <transform>
             <path>catalog/seo/product_url_suffix</path>
-            <handler class="add\point\before\ext"/>
+            <handler class="\Migration\Handler\Settings\UrlSuffix"/>
         </transform>
         <transform>
             <path>enterprise_giftregistry/owner_email/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>enterprise_giftregistry/sharing_email/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>enterprise_giftregistry/update_email/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>enterprise_invitation/email/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>enterprise_reward/notification/balance_update_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>enterprise_reward/notification/expiry_warning_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma/guest_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma_auth/guest_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma_auth/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma_comment/guest_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma_comment/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>sales_email/enterprise_rma_customer_comment/template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
         <transform>
             <path>system/enterprise_import_export_log/error_email_template</path>
-            <handler class="find\correct\value"/>
+            <handler class="\Migration\Handler\Settings\Template"/>
         </transform>
     </value>
 </settings>
