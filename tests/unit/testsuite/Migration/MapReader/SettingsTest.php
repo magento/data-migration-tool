@@ -125,7 +125,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     {
         return [
             ['node' => '', 'valueHandler' => false],
-            ['node' => 'some/key/to/change', 'valueHandler' => 'Some\Handler\Class'],
+            ['node' => 'some/key/to/change', 'valueHandler' => ['class' => 'Some\Handler\Class',  'params' => []]],
             ['node' => 'handled/path/to/ignore', 'valueHandler' => false],
             ['node' => 'some/dummy/path', 'valueHandler' => false]
 

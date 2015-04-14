@@ -209,9 +209,15 @@ class Settings
             /** @var \DOMElement $node */
             foreach ($queryResult->item(0)->parentNode->childNodes as $node) {
                 if (($node->nodeType == XML_ELEMENT_NODE) && ($node->nodeName == 'handler')) {
-                    $className = $node->getAttribute('class');
-                    // TODO: create class and whether it implements required interface
-                    $this->nodeHandle[$path] = $className;
+                    $handler['class'] = $node->getAttribute('class');
+                    $handler['params'] = [];
+                    /** @var \DOMElement $param */
+                    foreach ($node->childNodes as $param) {
+                        if ($param->nodeType == XML_ELEMENT_NODE) {
+                            $handler['params'][$param->getAttribute('name')] = $param->getAttribute('value');
+                        }
+                    }
+                    $this->nodeHandle[$path] = $handler;
                     break;
                 }
             }

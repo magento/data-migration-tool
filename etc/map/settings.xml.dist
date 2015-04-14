@@ -1388,7 +1388,7 @@
         </rename>
         <rename>
             <path>enterprise_giftregistry/update_email/template</path>
-            <to>magento_giftregistry_update_email_template</to>
+            <to>magento_giftregistry/update_email/template</to>
         </rename>
         <rename>
             <path>enterprise_invitation/email/identity</path>

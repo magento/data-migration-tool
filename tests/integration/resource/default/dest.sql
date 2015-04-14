@@ -173,6 +173,31 @@ LOCK TABLES `dest_table_2` WRITE;
 /*!40000 ALTER TABLE `dest_table_2` ENABLE KEYS */;
 UNLOCK TABLES;
 
+
+-- Dumping structure for table magento2mainlinece.core_config_data
+DROP TABLE IF EXISTS `core_config_data`;
+CREATE TABLE IF NOT EXISTS `core_config_data` (
+  `config_id` int(10) unsigned NOT NULL AUTO_INCREMENT COMMENT 'Config Id',
+  `scope` varchar(8) NOT NULL DEFAULT 'default' COMMENT 'Config Scope',
+  `scope_id` int(11) NOT NULL DEFAULT '0' COMMENT 'Config Scope Id',
+  `path` varchar(255) NOT NULL DEFAULT 'general' COMMENT 'Config Path',
+  `value` text COMMENT 'Config Value',
+  PRIMARY KEY (`config_id`),
+  UNIQUE KEY `UNQ_CORE_CONFIG_DATA_SCOPE_SCOPE_ID_PATH` (`scope`,`scope_id`,`path`)
+) ENGINE=InnoDB AUTO_INCREMENT=59 DEFAULT CHARSET=utf8 COMMENT='Config Data';
+
+LOCK TABLES `core_config_data` WRITE;
+-- Dumping data for table magento2mainlinece.core_config_data: ~58 rows (approximately)
+DELETE FROM `core_config_data`;
+/*!40000 ALTER TABLE `core_config_data` DISABLE KEYS */;
+INSERT INTO `core_config_data` (`config_id`, `scope`, `scope_id`, `path`, `value`) VALUES
+	(1, 'default', 0, 'web/seo/use_rewrites', '0'),
+	(2, 'default', 0, 'web/unsecure/base_url', 'http://magento2.dev/'),
+	(3, 'default', 0, 'admin/security/session_lifetime', '60'),
+	(4, 'default', 0, 'catalog/seo/product_url_suffix', '.html');
+/*!40000 ALTER TABLE `core_config_data` ENABLE KEYS */;
+UNLOCK TABLES;
+
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
