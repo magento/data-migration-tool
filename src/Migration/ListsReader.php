@@ -36,18 +36,18 @@ class ListsReader
     /**
      * Init configuration
      *
-     * @param string $mapFile
+     * @param string $listFile
      * @return $this
      * @throws Exception
      */
-    public function init($mapFile)
+    public function init($listFile)
     {
         $this->ignoredDocuments = [];
         $this->wildcards = null;
 
-        $configFile = $this->getRootDir() . $mapFile;
+        $configFile = $this->getRootDir() . $listFile;
         if (!is_file($configFile)) {
-            throw new Exception('Invalid map filename: ' . $configFile);
+            throw new Exception('Invalid list filename: ' . $configFile);
         }
 
         $xml = file_get_contents($configFile);

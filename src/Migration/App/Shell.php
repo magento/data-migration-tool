@@ -127,7 +127,7 @@ Possible modes:
 
 Available options:
   --reset             Reset the current position of migration to start from the beginning
-  --config <value>    Path to main configuration file. F.e.: etc/m1_version/config.xml
+  --config <value>    Path to main configuration file, i.e.: etc/m1_version/config.xml
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
   --help              Help information
 
