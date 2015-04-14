@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map_simple.xsd">
+<lists xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../lists.xsd">
     <list name="documents">
         <item>eav_attribute_group</item>
         <item>eav_attribute_set</item>
@@ -28,5 +28,4 @@
     <list name="enterprise_rma_item_eav_attribute">
         <item>attribute_id</item>
     </list>
-</map>
-
+</lists>

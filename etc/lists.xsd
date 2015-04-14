@@ -6,7 +6,7 @@
  */
 -->
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
-    <xs:element name="map" type="mapType">
+    <xs:element name="lists" type="mapType">
         <xs:unique name="uniqueList">
             <xs:selector xpath="list"/>
             <xs:field xpath="@name"/>

@@ -86,7 +86,7 @@ class Migrate
     protected $progress;
 
     /**
-     * @var \Migration\MapReader\MapReaderSimple
+     * @var \Migration\ListsReader
      */
     protected $readerSimple;
 
@@ -94,7 +94,7 @@ class Migrate
      * @param Source $source
      * @param Destination $destination
      * @param MapReaderEav $mapReader
-     * @param \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
@@ -104,7 +104,7 @@ class Migrate
         Source $source,
         Destination $destination,
         MapReaderEav $mapReader,
-        \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory,
+        \Migration\ListsReaderFactory $listsReaderFactory,
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
@@ -113,7 +113,7 @@ class Migrate
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
-        $this->readerSimple = $readerSimpleFactory->create(['optionName' => 'eav_list_file']);
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;

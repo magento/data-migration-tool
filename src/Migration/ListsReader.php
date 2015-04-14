@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\MapReader;
+namespace Migration;
 
 use Migration\Config;
 use Migration\Exception;
@@ -11,9 +11,9 @@ use Migration\Exception;
 /**
  * Class MapReaderSimple
  */
-class MapReaderSimple
+class ListsReader
 {
-    const CONFIGURATION_SCHEMA = 'map_simple.xsd';
+    const CONFIGURATION_SCHEMA = 'lists.xsd';
 
     /**
      * @var \DOMXPath
@@ -67,7 +67,7 @@ class MapReaderSimple
      */
     protected function getRootDir()
     {
-        return dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR;
+        return dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
     }
 
     /**

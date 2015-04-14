@@ -22,7 +22,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $map;
 
     /**
-     * @var \Migration\MapReader\MapReaderSimple
+     * @var \Migration\ListsReader
      */
     protected $readerSimple;
 
@@ -32,7 +32,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReaderEav $mapReader
-     * @param \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -40,10 +40,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         Resource\Source $source,
         Resource\Destination $destination,
         MapReaderEav $mapReader,
-        \Migration\MapReader\MapReaderSimpleFactory $readerSimpleFactory
+        \Migration\ListsReaderFactory $listsReaderFactory
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapReader);
-        $this->readerSimple = $readerSimpleFactory->create(['optionName' => 'eav_list_file']);
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
     }
 
     /**

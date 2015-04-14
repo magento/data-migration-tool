@@ -18,14 +18,15 @@
         <step>Migration\Step\Log</step>
     </steps>
     <source version="1.9.1">
-        <database host="localhost" name="mageonece" user="root"/>
+        <database host="localhost" name="magento1" user="root"/>
     </source>
     <destination version="2.0.0.0">
-        <database host="localhost" name="magetwo" user="root"/>
+        <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
         <map_file>etc/ce-1.9.1/map.xml.dist</map_file>
         <eav_map_file>etc/ce-1.9.1/map-eav.xml.dist</eav_map_file>
+        <eav_list_file>etc/ce-1.9.1/list-eav.xml.dist</eav_list_file>
         <log_map_file>etc/ce-1.9.1/map-log.xml.dist</log_map_file>
         <settings_map_file>etc/ce-1.9.1/settings-map-file.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ce-1.9.1/map-sales.xml.dist</sales_order_map_file>

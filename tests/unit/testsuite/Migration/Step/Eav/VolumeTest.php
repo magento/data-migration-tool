@@ -36,9 +36,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $mapReader;
 
     /**
-     * @var \Migration\MapReader\MapReaderSimpleFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ListsReaderFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReaderSimple;
+    protected $listsReader;
 
     /**
      * @var \Migration\Step\Eav\Volume
@@ -62,18 +62,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getJustCopyDocuments'])
             ->getMock();
-        $this->mapReaderSimple = $this->getMockBuilder('\Migration\MapReader\MapReaderSimple')
+        $this->listsReader = $this->getMockBuilder('\Migration\ListsReader')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $mapReaderSimpleFactory = $this->getMockBuilder('\Migration\MapReader\MapReaderSimpleFactory')
+        $listsReaderFactory = $this->getMockBuilder('\Migration\ListsReaderFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $mapReaderSimpleFactory->expects($this->any())
+        $listsReaderFactory->expects($this->any())
             ->method('create')
             ->with(['optionName' => 'eav_list_file'])
-            ->willReturn($this->mapReaderSimple);
+            ->willReturn($this->listsReader);
 
         $this->volume = new Volume(
             $this->helper,
@@ -81,7 +81,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->progress,
             $this->mapReader,
-            $mapReaderSimpleFactory
+            $listsReaderFactory
         );
     }
 
