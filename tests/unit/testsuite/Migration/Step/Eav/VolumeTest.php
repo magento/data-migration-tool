@@ -36,6 +36,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $mapReader;
 
     /**
+     * @var \Migration\MapReader\MapReaderSimpleFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $mapReaderSimple;
+
+    /**
      * @var \Migration\Step\Eav\Volume
      */
     protected $volume;
@@ -55,9 +60,29 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
-            ->setMethods(['getDocumentsMap', 'getJustCopyDocuments'])
+            ->setMethods(['getDocumentMap', 'getJustCopyDocuments'])
             ->getMock();
-        $this->volume = new Volume($this->helper, $this->initialData, $this->logger, $this->progress, $this->mapReader);
+        $this->mapReaderSimple = $this->getMockBuilder('\Migration\MapReader\MapReaderSimple')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $mapReaderSimpleFactory = $this->getMockBuilder('\Migration\MapReader\MapReaderSimpleFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $mapReaderSimpleFactory->expects($this->any())
+            ->method('create')
+            ->with(['optionName' => 'eav_list_file'])
+            ->willReturn($this->mapReaderSimple);
+
+        $this->volume = new Volume(
+            $this->helper,
+            $this->initialData,
+            $this->logger,
+            $this->progress,
+            $this->mapReader,
+            $mapReaderSimpleFactory
+        );
     }
 
     public function testPerform()
@@ -89,7 +114,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentsMap);
+        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
         $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
             [
@@ -145,7 +170,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentsMap')->willReturn($documentsMap);
+        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
         $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
             [

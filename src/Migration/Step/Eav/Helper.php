@@ -133,23 +133,4 @@ class Helper
             'mapReader' => $this->map
         ])->init();
     }
-
-    /**
-     * EAV step tables
-     *
-     * @return array
-     */
-    public function getDocuments()
-    {
-        return [
-            'eav_attribute_group',
-            'eav_attribute_set',
-            'eav_attribute',
-            'eav_entity_attribute',
-            'catalog_eav_attribute',
-            'customer_eav_attribute',
-            'eav_entity_type',
-            'enterprise_rma_item_eav_attribute'
-        ];
-    }
 }

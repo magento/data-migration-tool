@@ -30,6 +30,7 @@
     <options>
         <map_file>etc/ee-1.14.1/map.xml.dist</map_file>
         <eav_map_file>etc/ee-1.14.1/map-eav.xml.dist</eav_map_file>
+        <eav_list_file>etc/ee-1.14.1/list-eav.xml</eav_list_file>
         <log_map_file>etc/ee-1.14.1/map-log.xml.dist</log_map_file>
         <settings_map_file>etc/1.14.1/settings-map-file.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ee-1.14.1/map-sales.xml.dist</sales_order_map_file>

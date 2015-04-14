@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map_simple.xsd">
+    <list name="documents">
+        <item>eav_attribute_group</item>
+        <item>eav_attribute_set</item>
+        <item>eav_attribute</item>
+        <item>eav_entity_attribute</item>
+        <item>catalog_eav_attribute</item>
+        <item>customer_eav_attribute</item>
+        <item>eav_entity_type</item>
+        <item>enterprise_rma_item_eav_attribute</item>
+    </list>
+    <list name="catalog_eav_attribute">
+        <item>attribute_id</item>
+    </list>
+    <list name="customer_eav_attribute">
+        <item>attribute_id</item>
+    </list>
+    <list name="eav_entity_type">
+        <item>entity_type_id</item>
+    </list>
+    <list name="enterprise_rma_item_eav_attribute">
+        <item>attribute_id</item>
+    </list>
+</map>
+
