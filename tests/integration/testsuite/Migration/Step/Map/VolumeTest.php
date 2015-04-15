@@ -24,8 +24,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $progress->expects($this->any())->method('addProcessedEntity');
 
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
         $runMap = $objectManager->create('\Migration\Step\Map\Migrate', ['progress' => $progress]);

@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+    <source>
+        <document_rules>
+            <log_changes>
+                <document key="entity_id">sales_flat_order</document>
+            </log_changes>
+            <log_changes>
+                <document key="visitor_id">log_visitor</document>
+            </log_changes>
+            <log_changes>
+                <document key="url_id">log_url_info</document>
+            </log_changes>
+            <log_changes>
+                <document key="url_id">log_url</document>
+            </log_changes>
+            <log_changes>
+                <document key="log_id">log_customer</document>
+            </log_changes>
+            <log_changes>
+                <document key="visitor_id">log_visitor</document>
+            </log_changes>
+            <log_changes>
+                <document key="quote_id">log_quote</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">customer_entity</document>
+            </log_changes>
+            <log_changes>
+                <document key="value_id">customer_entity_int</document>
+            </log_changes>
+            <log_changes>
+                <document key="value_id">customer_entity_varchar</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">customer_address_entity</document>
+            </log_changes>
+            <log_changes>
+                <document key="value_id">customer_address_entity_varchar</document>
+            </log_changes>
+            <log_changes>
+                <document key="value_id">customer_address_entity_text</document>
+            </log_changes>
+            <log_changes>
+                <document key="value_id">customer_address_entity_int</document>
+            </log_changes>
+            <log_changes>
+                <document key="catalog_compare_item_id">catalog_compare_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="item_id">cataloginventory_stock_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="version_id">catalog_product_index_price_cl</document>
+            </log_changes>
+            <log_changes>
+                <document key="message_id">core_email_queue</document>
+            </log_changes>
+            <log_changes>
+                <document key="subscriber_id">newsletter_subscriber</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_invoice_grid</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_quote</document>
+            </log_changes>
+            <log_changes>
+                <document key="address_id">sales_flat_quote_address</document>
+            </log_changes>
+            <log_changes>
+                <document key="item_id">sales_flat_quote_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="option_id">sales_flat_quote_item_option</document>
+            </log_changes>
+            <log_changes>
+                <document key="rate_id">sales_flat_quote_shipping_rate</document>
+            </log_changes>
+            <log_changes>
+                <document key="payment_id">sales_flat_quote_payment</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_order_address</document>
+            </log_changes>
+            <log_changes>
+                <document key="item_id">sales_flat_order_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_order_payment</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_order_status_history</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_order_grid</document>
+            </log_changes>
+            <log_changes>
+                <document key="wishlist_id">wishlist</document>
+            </log_changes>
+            <log_changes>
+                <document key="wishlist_item_id">wishlist_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="option_id">wishlist_item_option</document>
+            </log_changes>
+            <log_changes>
+                <document key="index_id">report_viewed_product_index</document>
+            </log_changes>
+            <log_changes>
+                <document key="index_id">report_compared_product_index</document>
+            </log_changes>
+            <log_changes>
+                <document key="event_id">report_event</document>
+            </log_changes>
+            <log_changes>
+                <document key="review_id">review</document>
+            </log_changes>
+            <log_changes>
+                <document key="detail_id">review_detail</document>
+            </log_changes>
+            <log_changes>
+                <document key="review_id">review_store</document>
+            </log_changes>
+            <log_changes>
+                <document key="vote_id">rating_option_vote</document>
+            </log_changes>
+            <log_changes>
+                <document key="primary_id">rating_option_vote_aggregated</document>
+            </log_changes>
+            <log_changes>
+                <document key="primary_id">review_entity_summary</document>
+            </log_changes>
+            <log_changes>
+                <document key="poll_id">poll</document>
+            </log_changes>
+            <log_changes>
+                <document key="vote_id">poll_vote</document>
+            </log_changes>
+            <log_changes>
+                <document key="answer_id">poll_answer</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_shipment</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_shipment_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_shipment_track</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_shipment_grid</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_creditmemo</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_creditmemo_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_creditmemo_grid</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_invoice</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">sales_flat_invoice_item</document>
+            </log_changes>
+        </document_rules>
+    </source>
+    <destination/>
+</map>

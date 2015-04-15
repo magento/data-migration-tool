@@ -17,14 +17,14 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var Helper
-     */
-    protected $helper;
-
-    /**
      * @var MapReaderEav
      */
     protected $map;
+
+    /**
+     * @var \Migration\ListsReader
+     */
+    protected $readerSimple;
 
     /**
      * @param ProgressBar $progress
@@ -32,7 +32,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReaderEav $mapReader
-     * @param Helper $helper
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -40,10 +40,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         Resource\Source $source,
         Resource\Destination $destination,
         MapReaderEav $mapReader,
-        Helper $helper
+        \Migration\ListsReaderFactory $listsReaderFactory
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapReader);
-        $this->helper = $helper;
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
     }
 
     /**
@@ -51,14 +51,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $documents = $this->helper->getDocuments();
-        $this->progress->start(count($documents));
+        $this->progress->start($this->getIterationsCount());
+
+        $documents = $this->readerSimple->getList('documents');
         foreach ($documents as $sourceDocumentName) {
-            if ($sourceDocumentName == 'enterprise_rma_item_eav_attribute'
-                && !$this->source->getDocument($sourceDocumentName)
-            ) {
-                continue;
-            }
             $this->check([$sourceDocumentName], MapReaderInterface::TYPE_SOURCE);
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapReaderInterface::TYPE_DEST);
@@ -74,6 +70,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getDocuments());
+        return count($this->readerSimple->getList('documents')) * 2;
     }
 }

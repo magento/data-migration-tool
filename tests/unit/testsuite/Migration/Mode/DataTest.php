@@ -112,7 +112,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->once())->method('volumeCheck')->will($this->returnValue(true));
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Stage: setup triggers");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: data migration");
@@ -132,7 +131,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $step->expects($this->never())->method('volumeCheck');
         $this->progress->expects($this->never())->method('saveResult');
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(true);
-        $this->progress->expects($this->once())->method('clearLockFile')->willReturnSelf();
         $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
         $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Stage: setup triggers");
         $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: data migration");

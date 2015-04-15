@@ -5,8 +5,9 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
     <source>
+        <document_rules/>
         <field_rules>
             <transform>
                 <field>eav_attribute.attribute_model</field>
@@ -133,12 +134,6 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
-
-            <transform>
-                <field>enterprise_rma_item_eav_attribute.input_filter</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
-            </transform>
-
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
@@ -154,6 +149,9 @@
             </ignore>
             <ignore>
                 <field>eav_attribute_group.tab_group_code</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.search_weight</field>
             </ignore>
 
             <transform>

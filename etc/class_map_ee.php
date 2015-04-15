@@ -108,5 +108,66 @@ return [
     'salesrule/rule_condition_product_subselect' => 'Magento\SalesRule\Model\Rule\Condition\Product\Subselect',
     'salesrule/rule_customer' => 'Magento\SalesRule\Model\Rule\Customer',
     'salesrule/rule_product' => 'Magento\SalesRule\Model\Rule\Product',
-    'tax/class_source_product' => 'Magento\Tax\Model\TaxClass\Source\Product'
+    'tax/class_source_product' => 'Magento\Tax\Model\TaxClass\Source\Product',
+    'enterprise_targetrule/rule_condition_combine' => 'Magento\TargetRule\Model\Rule\Condition\Combine',
+    'enterprise_banner/widget_banner' => 'Magento\Banner\Block\Widget\Banner',
+    'enterprise_catalog/product_attribute_backend_urlkey' => null,
+    'enterprise_catalogevent/event_lister' => 'Magento\CatalogEvent\Block\Event\Lister',
+    'enterprise_catalogevent/widget_lister' => 'Magento\CatalogEvent\Block\Widget\Lister',
+    'enterprise_checkout/widget_sku' => 'Magento\AdvancedCheckout\Block\Widget\Sku',
+    'enterprise_cms/widget_node' => 'Magento\VersionsCms\Block\Widget\Node',
+    'enterprise_giftcard/attribute_backend_giftcard_amount' =>
+        'Magento\GiftCard\Model\Attribute\Backend\Giftcard\Amount',
+    'enterprise_giftcard/source_open' => 'Magento\GiftCard\Model\Source\Open',
+    'enterprise_giftcard/source_type' => 'Magento\GiftCard\Model\Source\Type',
+    'enterprise_giftregistry/search_widget_form' => 'Magento\GiftRegistry\Block\Search\Widget\Form',
+    'enterprise_giftwrapping/adminhtml_product_helper_form_config' =>
+        'Magento\GiftWrapping\Block\Adminhtml\Product\Helper\Form\Config',
+    'enterprise_reminder/rule_condition_cart' => '\Magento\Reminder\Model\Rule\Condition\Cart',
+    'enterprise_reminder/rule_condition_cart_amount' => '\Magento\Reminder\Model\Rule\Condition\Cart\Amount',
+    'enterprise_reminder/rule_condition_cart_attributes' => '\Magento\Reminder\Model\Rule\Condition\Cart\Attributes',
+    'enterprise_reminder/rule_condition_cart_combine' => '\Magento\Reminder\Model\Rule\Condition\Cart\Combine',
+    'enterprise_reminder/rule_condition_cart_couponcode' => '\Magento\Reminder\Model\Rule\Condition\Cart\Couponcode',
+    'enterprise_reminder/rule_condition_cart_itemsquantity' =>
+        '\Magento\Reminder\Model\Rule\Condition\Cart\Itemsquantity',
+    'enterprise_reminder/rule_condition_cart_sku' => '\Magento\Reminder\Model\Rule\Condition\Cart\Sku',
+    'enterprise_reminder/rule_condition_cart_storeview' => '\Magento\Reminder\Model\Rule\Condition\Cart\Storeview',
+    'enterprise_reminder/rule_condition_cart_subcombine' => '\Magento\Reminder\Model\Rule\Condition\Cart\Subcombine',
+    'enterprise_reminder/rule_condition_cart_subselection' =>
+        '\Magento\Reminder\Model\Rule\Condition\Cart\Subselection',
+    'enterprise_reminder/rule_condition_cart_totalquantity' =>
+        '\Magento\Reminder\Model\Rule\Condition\Cart\Totalquantity',
+    'enterprise_reminder/rule_condition_cart_virtual' => '\Magento\Reminder\Model\Rule\Condition\Cart\Virtual',
+    'enterprise_reminder/rule_condition_combine' => '\Magento\Reminder\Model\Rule\Condition\Combine',
+    'enterprise_reminder/rule_condition_combine_root' => '\Magento\Reminder\Model\Rule\Condition\Combine\Root',
+    'enterprise_reminder/rule_condition_wishlist' => '\Magento\Reminder\Model\Rule\Condition\Wishlist',
+    'enterprise_reminder/rule_condition_wishlist_attributes' =>
+        '\Magento\Reminder\Model\Rule\Condition\Wishlist\Attributes',
+    'enterprise_reminder/rule_condition_wishlist_combine' => '\Magento\Reminder\Model\Rule\Condition\Wishlist\Combine',
+    'enterprise_reminder/rule_condition_wishlist_quantity' =>
+        '\Magento\Reminder\Model\Rule\Condition\Wishlist\Quantity',
+    'enterprise_reminder/rule_condition_wishlist_sharing' => '\Magento\Reminder\Model\Rule\Condition\Wishlist\Sharing',
+    'enterprise_reminder/rule_condition_wishlist_storeview' =>
+        '\Magento\Reminder\Model\Rule\Condition\Wishlist\Storeview',
+    'enterprise_reminder/rule_condition_wishlist_subcombine' =>
+        '\Magento\Reminder\Model\Rule\Condition\Wishlist\Subcombine',
+    'enterprise_reminder/rule_condition_wishlist_subselection' =>
+        '\Magento\Reminder\Model\Rule\Condition\Wishlist\Subselection',
+    'enterprise_rma/adminhtml_product_renderer' => 'Magento\Rma\Block\Adminhtml\Product\Renderer',
+    'enterprise_rma/item' => 'Magento\Rma\Model\Resource\Item',
+    'enterprise_rma/item_attribute' => 'Magento\Rma\Model\Item\Attribute',
+    'enterprise_rma/item_attribute_source_status' => 'Magento\Rma\Model\Item\Attribute\Source\Status',
+    'enterprise_rma/product_source' => 'Magento\Rma\Model\Product\Source',
+    'enterprise_targetrule/actions_condition_combine' => 'Magento\TargetRule\Model\Actions\Condition\Combine',
+    'enterprise_targetrule/actions_condition_product_attributes' =>
+        'Magento\TargetRule\Model\Actions\Condition\Product\Attributes',
+    'enterprise_targetrule/actions_condition_product_special' =>
+        'Magento\TargetRule\Model\Actions\Condition\Product\Special',
+    'enterprise_targetrule/actions_condition_product_special_price' =>
+        'Magento\TargetRule\Model\Actions\Condition\Product\Special\Price',
+    'enterprise_targetrule/catalog_product_attribute_backend_rule' =>
+        'Magento\TargetRule\Model\Catalog\Product\Attribute\Backend\Rule',
+    'enterprise_targetrule/rule_condition_product_attributes' =>
+        'Magento\TargetRule\Model\Rule\Condition\Product\Attributes',
+    'enterprise_wishlist/widget_search' => 'Magento\MultipleWishlist\Block\Widget\Search'
 ];

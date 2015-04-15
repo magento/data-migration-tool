@@ -102,6 +102,9 @@ class Helper
         if (!$this->objectManager) {
             $this->objectManager = $this->initObjectManager();
         }
+        $this->objectManager->configure([
+            'preferences' => ['\Migration\ProgressBar' => '\Migration\TestFramework\ProgressBar']
+        ]);
         return $this->objectManager;
     }
 
@@ -225,17 +228,38 @@ class Helper
         return $this;
     }
 
+    /**
+     * @param array $annotations
+     * @return void
+     */
     public function loadFixture($annotations)
     {
         $fixture = 'default';
         $annotations = array_replace($annotations['class'], $annotations['method']);
         if (!empty($annotations['dbFixture'])) {
-            $fixture = reset($annotations['dbFixture']);
+            $fixtureName = $this->getFixturePrefix() . reset($annotations['dbFixture']);
+            $fixture = (is_dir($this->dbFixturePath . $fixtureName))
+                ? $fixtureName
+                : reset($annotations['dbFixture']);
         }
         if (!isset($this->testFixtures[$this->getTestSuite()]) || $this->currentFixture != $fixture) {
             $this->reinstallDb($fixture);
             $this->testFixtures[$this->getTestSuite()] = $fixture;
             $this->currentFixture = $fixture;
         }
+    }
+
+    /**
+     * Check if fixture prefix defined and return it
+     *
+     * @return string
+     */
+    public function getFixturePrefix()
+    {
+        $prefix = null;
+        if (defined('FIXTURE_PREFIX')) {
+            $prefix = FIXTURE_PREFIX;
+        }
+        return (string)$prefix;
     }
 }

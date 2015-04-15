@@ -40,6 +40,11 @@ class Volume
     protected $map;
 
     /**
+     * @var \Migration\ListsReader
+     */
+    protected $readerSimple;
+
+    /**
      * @var array
      */
     protected $errors = [];
@@ -50,19 +55,22 @@ class Volume
      * @param Logger $logger
      * @param ProgressBar $progress
      * @param MapReaderEav $mapReader
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      */
     public function __construct(
         Helper $helper,
         InitialData $initialData,
         Logger $logger,
         ProgressBar $progress,
-        MapReaderEav $mapReader
+        MapReaderEav $mapReader,
+        \Migration\ListsReaderFactory $listsReaderFactory
     ) {
         $this->initialData = $initialData;
         $this->helper = $helper;
         $this->logger = $logger;
         $this->progress = $progress;
         $this->map = $mapReader;
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
     }
 
     /**
@@ -70,7 +78,7 @@ class Volume
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocuments()));
+        $this->progress->start(count($this->readerSimple->getList('documents')));
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
         $this->printErrors();

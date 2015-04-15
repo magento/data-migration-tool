@@ -40,7 +40,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
     /**
      * @var array
      */
-    public $generalOptions = ['verbose', 'config', 'reset'];
+    public $generalOptions = ['verbose', 'reset'];
 
     /**
      * @param \Magento\Framework\Filesystem $filesystem
@@ -89,6 +89,11 @@ class Shell extends \Magento\Framework\App\AbstractShell
                 return $this;
             }
 
+            if (!$this->optionConfig()) {
+                echo $this->getUsageHelp();
+                return $this;
+            }
+
             $this->processGeneralOptions();
 
             $mode = $this->createMode($modeName);
@@ -99,6 +104,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
             $this->logger->error('Migration tool exception: ' . $e->getMessage());
         } catch (\Exception $e) {
             $this->logger->error('Application failed with exception: ' . $e->getMessage());
+            $this->logger->error($e->getTraceAsString());
         }
 
         return $this;
@@ -111,7 +117,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
     {
         return <<<USAGE
 Usage:
-  {$this->_entryPoint} <mode> [options]
+  {$this->_entryPoint} <mode> --config=path/to/config.xml [options]
   {$this->_entryPoint} --help
 
 Possible modes:
@@ -121,7 +127,7 @@ Possible modes:
 
 Available options:
   --reset             Reset the current position of migration to start from the beginning
-  --config <value>    Path to main configuration file
+  --config <value>    Path to main configuration file, i.e.: etc/m1_version/config.xml
   --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
   --help              Help information
 
@@ -174,7 +180,7 @@ USAGE;
     }
 
     /**
-     * @return void
+     * @return bool
      */
     protected function optionConfig()
     {
@@ -182,10 +188,9 @@ USAGE;
         if ($config) {
             $this->logger->info('Loaded custom config file: ' . $config);
             $this->config->init($this->getArg('config'));
-        } else {
-            $this->logger->info('Loaded default config file');
-            $this->config->init();
         }
+
+        return $config ? true : false;
     }
 
     /**

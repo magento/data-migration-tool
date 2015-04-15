@@ -87,7 +87,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     public function testRunVerboseValid()
     {
         $level = 'DEBUG';
-        $this->shell->setRawArgs(['data', '--verbose', $level]);
+        $this->shell->setRawArgs(['data', '--verbose', $level, '--config', 'file/to/config.xml']);
         $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
         $mode->expects($this->any())->method('run');
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
@@ -97,7 +97,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunClearProgress()
     {
-        $this->shell->setRawArgs(['data', '--reset']);
+        $this->shell->setRawArgs(['data', '--reset', '--config', 'file/to/config.xml']);
         $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
         $mode->expects($this->any())->method('run');
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
@@ -107,7 +107,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunWithException1()
     {
-        $this->shell->setRawArgs(['data']);
+        $this->shell->setRawArgs(['data', '--config', 'file/to/config.xml']);
         $this->logManager->expects($this->once())->method('process');
         $errorMessage = 'test error message';
         $exception = new \Exception($errorMessage);
@@ -123,16 +123,14 @@ class ShellTest extends \PHPUnit_Framework_TestCase
 
     public function testRunWithException2()
     {
-        $this->shell->setRawArgs(['data']);
+        $this->shell->setRawArgs(['data', '--config', 'file/to/config.xml']);
         $this->logManager->expects($this->once())->method('process');
         $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
         $mode->expects($this->any())->method('run')->willThrowException(
             new \Migration\Exception('test error message')
         );
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
-        $this->logger->expects($this->once())->method('error')->with(
-            'Migration tool exception: test error message'
-        );
+        $this->logger->expects($this->exactly(2))->method('error');
         $this->shell->run();
     }
 
