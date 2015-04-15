@@ -19,6 +19,7 @@ return [
     'catalog/category_attribute_backend_image' => 'Magento\Catalog\Model\Category\Attribute\Backend\Image',
     'catalog/category_attribute_backend_sortby' => 'Magento\Catalog\Model\Category\Attribute\Backend\Sortby',
     'catalog/category_attribute_backend_urlkey' => null,
+    'catalog/product_attribute_backend_urlkey' => null,
     'catalog/category_attribute_collection' => 'Magento\Catalog\Model\Resource\Category\Attribute\Collection',
     'catalog/category_attribute_source_layout' => 'Magento\Catalog\Model\Category\Attribute\Source\Layout',
     'catalog/category_attribute_source_mode' => 'Magento\Catalog\Model\Category\Attribute\Source\Mode',
