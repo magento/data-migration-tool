@@ -17,7 +17,7 @@ class Destination extends AbstractResource
      * Save data into destination resource
      *
      * @param string $documentName
-     * @param \Migration\Resource\Record\Collection $records
+     * @param \Migration\Resource\Record\Collection|array $records
      * @param bool $updateOnDuplicate
      * @return $this
      */
@@ -27,10 +27,14 @@ class Destination extends AbstractResource
         $i = 0;
         $data = [];
         $documentName = $this->addDocumentPrefix($documentName);
-        /** @var \Migration\Resource\Record $row */
+        /** @var \Migration\Resource\Record|array $row */
         foreach ($records as $row) {
             $i++;
-            $data[] = $row->getData();
+            if ($row instanceof \Migration\Resource\Record) {
+                $data[] = $row->getData();
+            } else {
+                $data[] = $row;
+            }
             if ($i == $pageSize) {
                 $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
                 $data = [];

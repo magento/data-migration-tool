@@ -6,13 +6,20 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
-    <steps mode="migration">
+    <steps mode="data">
         <step>Migration\Step\Eav</step>
+        <step>Migration\Step\CustomCustomerAttributes</step>
         <step>Migration\Step\Map</step>
         <step>Migration\Step\UrlRewrite</step>
         <step>Migration\Step\Log</step>
         <step>Migration\Step\Ratings</step>
         <step>Migration\Step\SalesOrder</step>
+    </steps>
+    <steps mode="delta">
+        <step>Migration\Step\Map</step>
+    </steps>
+    <steps mode="settings">
+        <step>Migration\Step\Stores</step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1_integration" user="root" password=""/>
@@ -32,6 +39,6 @@
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
-        <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
+        <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>
