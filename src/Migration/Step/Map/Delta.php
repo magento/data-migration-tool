@@ -21,7 +21,7 @@ class Delta extends AbstractDelta
 
     /**
      * @param Source $source
-     * @param MapReaderChangelog $mapReader
+     * @param MapReaderMain $mapReader
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -30,7 +30,7 @@ class Delta extends AbstractDelta
      */
     public function __construct(
         Source $source,
-        MapReaderChangelog $mapReader,
+        MapReaderMain $mapReader,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
