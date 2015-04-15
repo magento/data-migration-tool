@@ -14,6 +14,7 @@
         <item>catalog_eav_attribute</item>
         <item>customer_eav_attribute</item>
         <item>eav_entity_type</item>
+        <item>enterprise_rma_item_eav_attribute</item>
     </list>
     <list name="catalog_eav_attribute">
         <item>attribute_id</item>

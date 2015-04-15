@@ -19,8 +19,11 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')->init(
+            dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml'
+        );
         $initialData = $objectManager->create('Migration\Step\Eav\InitialData');
         $integrity = $objectManager->create('Migration\Step\Eav\Integrity');
         $migrate = $objectManager->create('Migration\Step\Eav\Migrate');
