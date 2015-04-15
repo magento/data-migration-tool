@@ -10,6 +10,10 @@ namespace Migration\App\Step;
  */
 class Progress
 {
+    const RESULT_KEY = 'result';
+
+    const PROCESS_KEY = 'process';
+
     /**
      * @var string
      */
@@ -40,13 +44,27 @@ class Progress
      */
     protected function loadData()
     {
-        if ($this->filesystem->isExists($this->getLockFile())) {
+        if (empty($this->data) && $this->filesystem->isExists($this->getLockFile())) {
             $data = @unserialize($this->filesystem->fileGetContents($this->getLockFile()));
             if (is_array($data)) {
                 $this->data = $data;
             }
         }
         return $this;
+    }
+
+    /**
+     * Writing data to lock file
+     *
+     * @return bool
+     */
+    protected function saveData()
+    {
+        if ($this->filesystem->isExists($this->getLockFile())) {
+            $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
+            return true;
+        }
+        return false;
     }
 
     /**
@@ -58,10 +76,8 @@ class Progress
     public function saveResult($object, $stage, $result)
     {
         $name = $this->getName($object);
-        if ($this->filesystem->isExists($this->getLockFile())) {
-            $this->data[$name][$stage] = $result;
-            $this->filesystem->filePutContents($this->getLockFile(), serialize($this->data));
-        }
+        $this->data[$name][$stage][self::RESULT_KEY] = $result;
+        $this->saveData();
         return $this;
     }
 
@@ -74,7 +90,63 @@ class Progress
     {
         $this->loadData();
         $name = $this->getName($object);
-        return !empty($this->data[$name][$stage]);
+        return !empty($this->data[$name][$stage][self::RESULT_KEY]);
+    }
+
+    /**
+     * @param mixed $object
+     * @param string $stage
+     * @param array $processedEntities
+     * @return void
+     */
+    protected function saveProcessedEntities($object, $stage, array $processedEntities)
+    {
+        $this->loadData();
+        $name = $this->getName($object);
+        $this->data[$name][$stage][self::PROCESS_KEY] = $processedEntities;
+        $this->saveData();
+    }
+
+    /**
+     * @param mixed $object
+     * @param string $stage
+     * @param string $entity
+     * @return bool
+     */
+    public function addProcessedEntity($object, $stage, $entity)
+    {
+        $entities = $this->getProcessedEntities($object, $stage);
+        if (in_array($entity, $entities)) {
+            return false;
+        }
+        $entities[] = $entity;
+        $this->saveProcessedEntities($object, $stage, $entities);
+        return true;
+    }
+
+    /**
+     * @param mixed $object
+     * @param string $stage
+     * @return void
+     */
+    public function resetProcessedEntities($object, $stage)
+    {
+        $this->saveProcessedEntities($object, $stage, []);
+    }
+
+    /**
+     * @param mixed $object
+     * @param string $stage
+     * @return array
+     */
+    public function getProcessedEntities($object, $stage)
+    {
+        $this->loadData();
+        $name = $this->getName($object);
+        if (!empty($this->data[$name][$stage][self::PROCESS_KEY])) {
+            return $this->data[$name][$stage][self::PROCESS_KEY];
+        }
+        return [];
     }
 
     /**

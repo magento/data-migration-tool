@@ -100,7 +100,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null],
+                'data_model' => null
+            ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
                 'attribute_code' => 'attribute_code_2',
@@ -109,7 +110,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null]
+                'data_model' => null
+            ]
         ];
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');

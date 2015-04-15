@@ -14,13 +14,23 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
     public function testPerform()
     {
+        $progress = $this->getMock(
+            'Migration\App\Step\Progress',
+            ['getProcessedEntities', 'addProcessedEntity'],
+            [],
+            '',
+            false
+        );
+        $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
+        $progress->expects($this->any())->method('addProcessedEntity');
+
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
-        $runMap = $objectManager->create('\Migration\Step\Map\Migrate');
+        $runMap = $objectManager->create('\Migration\Step\Map\Migrate', ['progress' => $progress]);
         $volume = $objectManager->create('\Migration\Step\Map\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
@@ -29,6 +39,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
         ob_start();
+        /**
+         * @var \Migration\Step\Map $map
+         */
         $map = $objectManager->create(
             '\Migration\Step\Map',
             [
