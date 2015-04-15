@@ -532,3 +532,37 @@ CREATE TABLE `eav_form_type_entity` (
   COLLATE='utf8_general_ci'
   ENGINE=InnoDB
 ;
+
+CREATE TABLE `magento_rma_item_eav_attribute` (
+	`attribute_id` SMALLINT(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+	`is_visible` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Is Visible',
+	`input_filter` VARCHAR(255) NULL DEFAULT NULL COMMENT 'Input Filter',
+	`multiline_count` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '1' COMMENT 'Multiline Count',
+	`validate_rules` TEXT NULL COMMENT 'Validate Rules',
+	`is_system` SMALLINT(5) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Is System',
+	`sort_order` INT(10) UNSIGNED NOT NULL DEFAULT '0' COMMENT 'Sort Order',
+	`data_model` VARCHAR(255) NULL DEFAULT NULL COMMENT 'Data Model',
+	PRIMARY KEY (`attribute_id`),
+	CONSTRAINT `FK_MAGENTO_RMA_ITEM_EAV_ATTR_ATTR_ID_EAV_ATTR_ATTR_ID` FOREIGN KEY (`attribute_id`) REFERENCES `eav_attribute` (`attribute_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='RMA Item EAV Attribute'
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;
+
+CREATE TABLE `magento_rma_item_eav_attribute_website` (
+	`attribute_id` SMALLINT(5) UNSIGNED NOT NULL COMMENT 'Attribute Id',
+	`website_id` SMALLINT(5) UNSIGNED NOT NULL COMMENT 'Website Id',
+	`is_visible` SMALLINT(5) UNSIGNED NULL DEFAULT NULL COMMENT 'Is Visible',
+	`is_required` SMALLINT(5) UNSIGNED NULL DEFAULT NULL COMMENT 'Is Required',
+	`default_value` TEXT NULL COMMENT 'Default Value',
+	`multiline_count` SMALLINT(5) UNSIGNED NULL DEFAULT NULL COMMENT 'Multiline Count',
+	PRIMARY KEY (`attribute_id`, `website_id`),
+	INDEX `IDX_MAGENTO_RMA_ITEM_EAV_ATTRIBUTE_WEBSITE_WEBSITE_ID` (`website_id`),
+	CONSTRAINT `FK_MAGENTO_RMA_ITEM_EAV_ATTR_WS_ATTR_ID_EAV_ATTR_ATTR_ID` FOREIGN KEY (`attribute_id`) REFERENCES `eav_attribute` (`attribute_id`) ON UPDATE CASCADE ON DELETE CASCADE,
+	CONSTRAINT `FK_MAGENTO_RMA_ITEM_EAV_ATTR_WS_WS_ID_STORE_WS_WS_ID` FOREIGN KEY (`website_id`) REFERENCES `store_website` (`website_id`) ON UPDATE CASCADE ON DELETE CASCADE
+)
+COMMENT='Enterprise RMA Item Eav Attribute Website'
+COLLATE='utf8_general_ci'
+ENGINE=InnoDB
+;

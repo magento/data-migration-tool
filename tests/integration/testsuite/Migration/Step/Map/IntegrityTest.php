@@ -15,8 +15,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function testIntegrityWithMap()
     {
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
         $runMap = $objectManager->create('\Migration\Step\Map\Migrate');

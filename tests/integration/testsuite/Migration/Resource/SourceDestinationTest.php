@@ -25,7 +25,8 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config.xml');
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->source = $objectManager->get('\Migration\Resource\Source');
         $this->destination = $objectManager->get('\Migration\Resource\Destination');
     }

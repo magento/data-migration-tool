@@ -29,9 +29,11 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $this->objectManager = $helper->getObjectManager();
+        $this->objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
-        $this->objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $this->objectManager->get('\Migration\Config')->init(__DIR__ . '/../../_files/config.xml');
         $logManager = $this->objectManager->create('\Migration\Logger\Manager');
         $logger = $this->objectManager->create('\Migration\Logger\Logger');
         $config = $this->objectManager->get('\Migration\Config');

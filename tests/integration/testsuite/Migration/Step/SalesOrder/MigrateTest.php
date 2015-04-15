@@ -62,8 +62,10 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
                 'value' => '2'
             ]
         ];
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $integritySalesOrder = $objectManager->create('\Migration\Step\SalesOrder\Integrity');
         $runSalesOrder = $objectManager->create('\Migration\Step\SalesOrder\Migrate');
