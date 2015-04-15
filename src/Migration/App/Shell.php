@@ -102,9 +102,9 @@ class Shell extends \Magento\Framework\App\AbstractShell
             $mode->run();
         } catch (Exception $e) {
             $this->logger->error('Migration tool exception: ' . $e->getMessage());
-            $this->logger->error('Migration tool exception: ' . $e->getTraceAsString());
         } catch (\Exception $e) {
             $this->logger->error('Application failed with exception: ' . $e->getMessage());
+            $this->logger->error($e->getTraceAsString());
         }
 
         return $this;
