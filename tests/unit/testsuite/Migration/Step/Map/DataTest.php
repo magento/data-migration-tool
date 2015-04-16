@@ -17,6 +17,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
+    protected $progressBar;
+
+    /**
+     * Progress instance, saves the state of the process
+     *
+     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $progress;
 
     /**
@@ -49,14 +56,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
-    /**
-     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $config;
-
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],
@@ -79,25 +81,31 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
-            ->setMethods([])->getMock();
         $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getHandlerConfig'])
             ->getMock();
+        $this->progress = $this->getMock(
+            'Migration\App\Step\Progress',
+            ['getProcessedEntities', 'addProcessedEntity'],
+            [],
+            '',
+            false
+        );
         $this->map = new Data(
-            $this->progress,
+            $this->progressBar,
             $this->source,
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
             $this->mapReader,
-            $this->config
+            $this->progress
         );
     }
 
     public function testGetMapEmptyDestinationDocumentName()
     {
         $sourceDocName = 'core_config_data';
+        $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $this->map->perform();
     }
@@ -107,6 +115,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
+        $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
         $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
 
@@ -164,6 +173,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
+        $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
         $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn([]);
 

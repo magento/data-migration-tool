@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="map.xsd">
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
     <source>
         <document_rules>
             <log_changes>
@@ -226,6 +226,81 @@
             </log_changes>
             <log_changes>
                 <document key="value_id">enterprise_rma_item_entity_varchar</document>
+            </log_changes>
+            <log_changes>
+                <document key="query_id">catalogsearch_query</document>
+            </log_changes>
+            <log_changes>
+                <document key="query_id">catalogsearch_result</document>
+            </log_changes>
+            <log_changes>
+                <document key="recipient_id">core_email_queue_recipients</document>
+            </log_changes>
+            <log_changes>
+                <document key="purchased_id">downloadable_link_purchased</document>
+            </log_changes>
+            <log_changes>
+                <document key="item_id">downloadable_link_purchased_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_store_id">eav_entity_store</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">enterprise_giftregistry_data</document>
+            </log_changes>
+            <log_changes>
+                <document key="entity_id">enterprise_giftregistry_entity</document>
+            </log_changes>
+            <log_changes>
+                <document key="item_id">enterprise_giftregistry_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="option_id">enterprise_giftregistry_item_option</document>
+            </log_changes>
+            <log_changes>
+                <document key="person_id">enterprise_giftregistry_person</document>
+            </log_changes>
+            <log_changes>
+                <document key="invitation_id">enterprise_invitation</document>
+            </log_changes>
+            <log_changes>
+                <document key="history_id">enterprise_invitation_status_history</document>
+            </log_changes>
+            <log_changes>
+                <document key="track_id">enterprise_invitation_track</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_crosssell</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_crosssell_product</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_related</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_related_product</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_upsell</document>
+            </log_changes>
+            <log_changes>
+                <document key="targetrule_id">enterprise_targetrule_index_upsell_product</document>
+            </log_changes>
+            <log_changes>
+                <document key="gift_message_id">gift_message</document>
+            </log_changes>
+            <log_changes>
+                <document key="visitor_id">log_visitor_info</document>
+            </log_changes>
+            <log_changes>
+                <document key="address_item_id">sales_flat_quote_address_item</document>
+            </log_changes>
+            <log_changes>
+                <document key="tax_id">sales_order_tax</document>
+            </log_changes>
+            <log_changes>
+                <document key="tax_item_id">sales_order_tax_item</document>
             </log_changes>
         </document_rules>
     </source>

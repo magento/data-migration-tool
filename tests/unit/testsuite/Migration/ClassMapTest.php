@@ -17,7 +17,12 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->classMap = new ClassMap();
+        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods(['getOption'])
+            ->getMock();
+        $config->expects($this->once())->method('getOption')->with('class_map')
+            ->willReturn('tests/unit/testsuite/Migration/_files/class_map.php');
+        $this->classMap = new ClassMap($config);
     }
 
     public function testConvertClassName()

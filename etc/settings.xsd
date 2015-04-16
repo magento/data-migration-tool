@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+    <xs:element name="settings" type="settingsType" />
+
+    <xs:complexType name="settingsType">
+        <xs:sequence>
+            <xs:element name="key" type="keyType"/>
+            <xs:element name="value" type="valueType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="keyType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="ignore" type="ignoreType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="rename" type="renameType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="ignoreType">
+        <xs:sequence>
+            <xs:element name="path" type="configPathTypeWithWildcard" maxOccurs="1" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="renameType">
+        <xs:sequence>
+            <xs:element name="path" type="configPathType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="to" type="configPathType" maxOccurs="1" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="valueType">
+        <xs:choice minOccurs="1" maxOccurs="unbounded">
+            <xs:element name="transform" type="transformType"/>
+        </xs:choice>
+    </xs:complexType>
+
+    <xs:complexType name="transformType">
+        <xs:sequence>
+            <xs:element name="path" type="configPathType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="handler" type="handlerType" maxOccurs="1" minOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+
+    <xs:simpleType name="configPathTypeWithWildcard">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:pattern value="[0-9a-zA-Z_/\\*]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:simpleType name="configPathType">
+        <xs:restriction base="xs:string">
+            <xs:minLength value="1"/>
+            <xs:pattern value="[0-9a-zA-Z_/\\]+"/>
+        </xs:restriction>
+    </xs:simpleType>
+
+    <xs:complexType name="handlerType">
+        <xs:sequence>
+            <xs:element name="param" type="handlerParamType" maxOccurs="unbounded" minOccurs="0" />
+        </xs:sequence>
+        <xs:attribute name="class" use="required">
+            <xs:simpleType>
+                <xs:restriction base="xs:string">
+                    <xs:pattern value="[0-9a-zA-Z\\\\]+"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:attribute>
+    </xs:complexType>
+
+    <xs:complexType name="handlerParamType">
+        <xs:attribute name="name" type="xs:string" use="required"/>
+        <xs:attribute name="value" type="xs:string" use="required"/>
+    </xs:complexType>
+</xs:schema>

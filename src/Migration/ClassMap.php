@@ -16,6 +16,19 @@ class ClassMap
     protected $map = null;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @param Config $config
+     */
+    public function __construct(Config $config)
+    {
+        $this->config = $config;
+    }
+
+    /**
      * @param string $className
      * @return mixed
      */
@@ -29,11 +42,16 @@ class ClassMap
 
     /**
      * @return array|mixed
+     * @throws Exception
      */
     public function getMap()
     {
         if ($this->map === null) {
-            $this->map = include __DIR__ . '/../../etc/class_map.php';
+            $classMapFile = __DIR__ . '/../../' . $this->config->getOption('class_map');
+            if (!file_exists($classMapFile)) {
+                throw new Exception('Invalid class map file name.');
+            }
+            $this->map = include $classMapFile;
         }
         return $this->map;
     }

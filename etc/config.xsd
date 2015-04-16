@@ -94,6 +94,7 @@
             <xs:element name="log_map_file" type="xmlFile" maxOccurs="1"/>
             <xs:element name="settings_map_file" type="xmlFile" maxOccurs="1"/>
             <xs:element name="sales_order_map_file" type="xmlFile" maxOccurs="1"/>
+            <xs:element name="changelog_map_file" type="xmlFile" maxOccurs="1"/>
             <xs:element name="bulk_size" type="xs:int" maxOccurs="1"/>
             <xs:element name="resource_adapter_class_name" type="xs:string" minOccurs="0" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
@@ -102,7 +103,7 @@
 
     <xs:simpleType name="xmlFile">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[-/A-Za-z0-9\._]+\.xml"/>
+            <xs:pattern value="[-/A-Za-z0-9\._]+\.(xml|dist)"/>
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

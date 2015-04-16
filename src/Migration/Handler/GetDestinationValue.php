@@ -31,7 +31,7 @@ class GetDestinationValue extends AbstractHandler implements HandlerInterface
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        if (!is_null($oppositeRecord->getValue($this->field)) || $this->setNullIfEmpty) {
+        if ($oppositeRecord->getValue($this->field) !== null || $this->setNullIfEmpty) {
             $recordToHandle->setValue($this->field, $oppositeRecord->getValue($this->field));
         }
     }

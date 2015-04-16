@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../config.xsd">
+    <steps mode="data">
+        <step>Migration\Step\Eav</step>
+        <step>Migration\Step\Map</step>
+        <step>Migration\Step\UrlRewrite</step>
+        <step>Migration\Step\Log</step>
+        <step>Migration\Step\Ratings</step>
+    </steps>
+    <steps mode="delta">
+        <step>Migration\Step\Map</step>
+        <step>Migration\Step\Log</step>
+    </steps>
+    <steps mode="settings">
+        <step>Migration\Step\Settings</step>
+        <step>Migration\Step\Stores</step>
+    </steps>
+    <source version="1.9.1">
+        <database host="localhost" name="magento1" user="root"/>
+    </source>
+    <destination version="2.0.0.0">
+        <database host="localhost" name="magento2" user="root"/>
+    </destination>
+    <options>
+        <map_file>etc/ce-1.9.1/map.xml.dist</map_file>
+        <eav_map_file>etc/ce-1.9.1/map-eav.xml.dist</eav_map_file>
+        <eav_list_file>etc/ce-1.9.1/list-eav.xml.dist</eav_list_file>
+        <log_map_file>etc/ce-1.9.1/map-log.xml.dist</log_map_file>
+        <settings_map_file>etc/ce-1.9.1/settings.xml.dist</settings_map_file>
+        <sales_order_map_file>etc/ce-1.9.1/map-sales.xml.dist</sales_order_map_file>
+        <changelog_map_file>etc/ce-1.9.1/changelog.xml.dist</changelog_map_file>
+        <class_map>etc/class_map.php</class_map>
+        <bulk_size>100</bulk_size>
+        <source_prefix />
+        <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
+    </options>
+</config>

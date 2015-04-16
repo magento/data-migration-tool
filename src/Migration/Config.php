@@ -33,7 +33,7 @@ class Config
      */
     public function init($configFile = null)
     {
-        if (is_null($configFile)) {
+        if ($configFile === null) {
             $configFile = $this->getConfigDirectoryPath() . self::CONFIGURATION_FILE;
         }
 
@@ -151,7 +151,7 @@ class Config
      */
     public function getOption($name)
     {
-        if (is_null($this->options)) {
+        if ($this->options === null) {
             $this->options = [];
             foreach ($this->config->query('//options/*') as $item) {
                 $this->options[$item->nodeName] = $item->nodeValue;

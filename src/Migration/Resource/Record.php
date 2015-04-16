@@ -29,7 +29,7 @@ class Record
     public function __construct(array $data = [], Document $document = null)
     {
         $this->data = $data;
-        if (!is_null($document)) {
+        if ($document !== null) {
             $this->setStructure($document->getStructure());
         }
     }

@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="config.xsd">
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../config.xsd">
     <steps mode="data">
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
@@ -62,21 +62,23 @@
         </step>
     </steps>
     <source version="1.14.1.0">
-        <database host="localhost" name="magento1" user="root"/>
+        <database host="localhost" name="mageone" user="root"/>
     </source>
     <destination version="2.0.0.0">
-        <database host="localhost" name="magento2" user="root"/>
+        <database host="localhost" name="magetwo" user="root"/>
     </destination>
     <options>
-        <map_file>etc/map.xml</map_file>
-        <eav_map_file>etc/map-eav.xml</eav_map_file>
-        <log_map_file>etc/map-log.xml</log_map_file>
-        <settings_map_file>settings-map-file.xml</settings_map_file>
-        <sales_order_map_file>etc/map-sales.xml</sales_order_map_file>
-        <changelog_map_file>etc/changelog.xml</changelog_map_file>
+        <map_file>etc/ee-1.14.1/map.xml.dist</map_file>
+        <eav_map_file>etc/ee-1.14.1/map-eav.xml.dist</eav_map_file>
+        <eav_list_file>etc/ee-1.14.1/list-eav.xml.dist</eav_list_file>
+        <log_map_file>etc/ee-1.14.1/map-log.xml.dist</log_map_file>
+        <settings_map_file>etc/1.14.1/settings.xml.dist</settings_map_file>
+        <sales_order_map_file>etc/ee-1.14.1/map-sales.xml.dist</sales_order_map_file>
+        <changelog_map_file>etc/ee-1.14.1/changelog.xml.dist</changelog_map_file>
+        <class_map>etc/class_map_ee.php</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
-        <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
+        <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
     </options>
 </config>

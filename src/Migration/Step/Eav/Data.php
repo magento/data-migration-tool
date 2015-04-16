@@ -87,9 +87,15 @@ class Data implements StageInterface
     protected $progress;
 
     /**
+     * @var \Migration\ListsReader
+     */
+    protected $readerSimple;
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapReaderEav $mapReader
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
@@ -99,6 +105,7 @@ class Data implements StageInterface
         Source $source,
         Destination $destination,
         MapReaderEav $mapReader,
+        \Migration\ListsReaderFactory $listsReaderFactory,
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
@@ -107,6 +114,7 @@ class Data implements StageInterface
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapReader;
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;
@@ -125,7 +133,6 @@ class Data implements StageInterface
         $this->migrateAttributes();
         $this->migrateEntityAttributes();
         $this->migrateMappedTables();
-        $this->migrateJustCopyTables();
         $this->progress->finish();
         return true;
     }
@@ -291,17 +298,12 @@ class Data implements StageInterface
     }
 
     /**
-     * Migrate EAV tables which in result must have all unique records from both suorce and destination documents
+     * Migrate EAV tables which in result must have all unique records from both source and destination documents
      * @return void
      */
     protected function migrateMappedTables()
     {
-        $documents = [
-            'catalog_eav_attribute' => ['attribute_id'],
-            'customer_eav_attribute' => ['attribute_id'],
-            'eav_entity_type' => ['entity_type_id'],
-            'enterprise_rma_item_eav_attribute' => ['attribute_id'],
-        ];
+        $documents = $this->getDocuments();
 
         foreach ($documents as $documentName => $mappingFields) {
             $this->progress->advance();
@@ -366,30 +368,19 @@ class Data implements StageInterface
     }
 
     /**
-     * Migrate tables which does not require some custom migration logic
-     * @throws \Exception
-     * @return void
+     * @return array
      */
-    protected function migrateJustCopyTables()
+    protected function getDocuments()
     {
-        foreach ($this->map->getJustCopyDocuments() as $documentName) {
-            $this->progress->advance();
-            $sourceDocument = $this->source->getDocument($documentName);
-            $destinationDocument = $this->destination->getDocument(
-                $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
-            );
-
-            $sourceRecords = $this->helper->getSourceRecords($documentName);
-            $recordsToSave = $destinationDocument->getRecords();
-            foreach ($sourceRecords as $recordData) {
-                $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
-                $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-                $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                   ->transform($sourceRecord, $destinationRecord);
-                $recordsToSave->addRecord($destinationRecord);
+        $result = [];
+        $documents = $this->readerSimple->getList('documents');
+        foreach ($documents as $document) {
+            $fieldsMap = $this->readerSimple->getList($document);
+            if (!empty($fieldsMap)) {
+                $result[$document] = $fieldsMap;
             }
-            $this->saveRecords($destinationDocument, $recordsToSave);
         }
+        return $result;
     }
 
     /**
@@ -502,7 +493,7 @@ class Data implements StageInterface
      */
     public function getIterationsCount()
     {
-        return count($this->map->getDocumentsMap());
+        return count($this->readerSimple->getList('documents'));
     }
 
     /**
@@ -511,7 +502,7 @@ class Data implements StageInterface
      */
     public function rollback()
     {
-        foreach ($this->map->getBackupedTablesList() as $documentName) {
+        foreach ($this->readerSimple->getList('documents') as $documentName) {
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE)
             );
@@ -525,7 +516,7 @@ class Data implements StageInterface
      */
     public function deleteBackups()
     {
-        foreach ($this->map->getBackupedTablesList() as $documentName) {
+        foreach ($this->readerSimple->getList('documents') as $documentName) {
             $documentName = $this->map->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
             if ($documentName) {
                 $this->destination->deleteDocumentBackup($documentName);

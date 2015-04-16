@@ -14,8 +14,20 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
     public function testPerform()
     {
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
+        $progress = $this->getMock(
+            'Migration\App\Step\Progress',
+            ['getProcessedEntities', 'addProcessedEntity'],
+            [],
+            '',
+            false
+        );
+        $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
+        $progress->expects($this->any())->method('addProcessedEntity');
+
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
@@ -36,7 +48,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             [
                 'logger' => $logger,
                 'map' => $mapReader,
-                'config' => $config
+                'config' => $config,
+                'progress' => $progress
             ]
         );
         ob_start();

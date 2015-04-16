@@ -143,7 +143,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
      */
     protected function getWildcards($type)
     {
-        if (is_null($this->wildcards) || !isset($this->wildcards[$type])) {
+        if ($this->wildcards === null || !isset($this->wildcards[$type])) {
             $this->wildcards[$type] = [];
             $searchExpression = sprintf('//%s/document_rules/ignore/document[contains (.,"*")]', $type);
             foreach ($this->xml->query($searchExpression) as $wildcard) {

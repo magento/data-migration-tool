@@ -17,14 +17,14 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var Helper
-     */
-    protected $helper;
-
-    /**
      * @var MapReaderEav
      */
     protected $map;
+
+    /**
+     * @var \Migration\ListsReader
+     */
+    protected $readerSimple;
 
     /**
      * @param ProgressBar $progress
@@ -32,7 +32,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReaderEav $mapReader
-     * @param Helper $helper
+     * @param \Migration\ListsReaderFactory $listsReaderFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -40,10 +40,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         Resource\Source $source,
         Resource\Destination $destination,
         MapReaderEav $mapReader,
-        Helper $helper
+        \Migration\ListsReaderFactory $listsReaderFactory
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapReader);
-        $this->helper = $helper;
+        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
     }
 
     /**
@@ -52,19 +52,24 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->map->getDocumentsMap()), MapReaderInterface::TYPE_SOURCE);
-        $this->check(array_values($this->map->getDocumentsMap()), MapReaderInterface::TYPE_DEST);
+
+        $documents = $this->readerSimple->getList('documents');
+        foreach ($documents as $sourceDocumentName) {
+            $this->check([$sourceDocumentName], MapReaderInterface::TYPE_SOURCE);
+            $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE);
+            $this->check([$destinationDocumentName], MapReaderInterface::TYPE_DEST);
+        }
+
         $this->progress->finish();
         return $this->checkForErrors();
     }
 
     /**
-     * Get iterations count for step
-     *
-     * @return int
+     * Returns number of iterations for integrity check
+     * @return mixed
      */
     protected function getIterationsCount()
     {
-        return count($this->map->getDocumentsMap()) * 2;
+        return count($this->readerSimple->getList('documents')) * 2;
     }
 }
