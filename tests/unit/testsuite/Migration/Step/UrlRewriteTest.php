@@ -50,7 +50,7 @@ class UrlRewriteTest extends \PHPUnit_Framework_TestCase
         $this->config = $this->getMock('\Migration\Config', [], [], '', false);
 
         $this->versionFactory = $this->getMock('\Migration\Step\UrlRewrite\VersionFactory', [], [], '', false);
-        $this->version = $this->getMock('\Migration\Step\UrlRewrite\Version11410to2000', [], [], '', false);
+        $this->version = $this->getMock('\Migration\Step\UrlRewrite\Version191to2000', [], [], '', false);
         $this->versionFactory->expects($this->any())->method('create')->willReturn($this->version);
         $this->config->expects($this->any())->method('getSource')->willReturn([
             'type' => 'database',

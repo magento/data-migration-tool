@@ -515,9 +515,6 @@
             <path>oauth/email/template</path>
         </ignore>
         <ignore>
-            <path>payment/authorizenet/using_pbridge</path>
-        </ignore>
-        <ignore>
             <path>payment/ccsave/active</path>
         </ignore>
         <ignore>
@@ -546,9 +543,6 @@
         </ignore>
         <ignore>
             <path>payment/ccsave/useccv</path>
-        </ignore>
-        <ignore>
-            <path>payment/cybersource_soap/using_pbridge</path>
         </ignore>
         <ignore>
             <path>payment/dd_settings/active</path>
@@ -893,9 +887,6 @@
             <path>payment/verisign/user</path>
         </ignore>
         <ignore>
-            <path>payment/verisign/using_pbridge</path>
-        </ignore>
-        <ignore>
             <path>payment/verisign/vendor</path>
         </ignore>
         <ignore>
@@ -957,15 +948,6 @@
         </ignore>
         <ignore>
             <path>payment/payone_gate/specificcountry</path>
-        </ignore>
-        <ignore>
-            <path>payment/pbridge_ogone_direct/cc_settings</path>
-        </ignore>
-        <ignore>
-            <path>payment/pbridge_ogone_direct/dd_settings</path>
-        </ignore>
-        <ignore>
-            <path>payment/pbridge_payone_debit/specificcountry</path>
         </ignore>
         <ignore>
             <path>payment/sagepay_direct/specificcountry</path>
@@ -1050,9 +1032,6 @@
         </ignore>
         <ignore>
             <path>catalog/seo/priority</path>
-        </ignore>
-        <ignore>
-            <path>giftcard/giftcardaccount_general/generate</path>
         </ignore>
         <ignore>
             <path>sales/product_sku/allowed_groups</path>
