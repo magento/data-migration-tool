@@ -32,8 +32,10 @@ class StoresTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/_files/config.xml');
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $objectManager = $helper->getObjectManager();
+        $objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         $progress = $objectManager->create('Migration\ProgressBar');
         $logger = $objectManager->create('Migration\Logger\Logger');
         $source = $objectManager->create('Migration\Resource\Source');
