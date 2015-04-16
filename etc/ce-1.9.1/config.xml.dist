@@ -34,7 +34,7 @@
         <log_map_file>etc/ce-1.9.1/map-log.xml.dist</log_map_file>
         <settings_map_file>etc/ce-1.9.1/settings.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ce-1.9.1/map-sales.xml.dist</sales_order_map_file>
-        <changelog_map_file>etc/ce-1.9.1/changelog.xml.dist</changelog_map_file>
+        <deltalog_map_file>etc/ce-1.9.1/deltalog.xml.dist</deltalog_map_file>
         <class_map>etc/class_map.php</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />

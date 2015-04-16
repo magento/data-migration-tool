@@ -5,12 +5,12 @@
  */
 namespace Migration\App;
 
-use Migration\MapReader\MapReaderChangelog;
+use Migration\MapReader\MapReaderDeltalog;
 use Migration\Resource\Source;
 use Migration\MapReader\MapReaderMain;
 use Migration\ProgressBar;
 
-class SetupChangeLog
+class SetupDeltaLog
 {
     /**
      * @var Source
@@ -29,10 +29,10 @@ class SetupChangeLog
 
     /**
      * @param Source $source
-     * @param MapReaderChangelog $mapReader
+     * @param MapReaderDeltalog $mapReader
      * @param ProgressBar $progress
      */
-    public function __construct(Source $source, MapReaderChangelog $mapReader, ProgressBar $progress)
+    public function __construct(Source $source, MapReaderDeltalog $mapReader, ProgressBar $progress)
     {
         $this->source = $source;
         $this->mapReader = $mapReader;
@@ -42,7 +42,7 @@ class SetupChangeLog
     /**
      * @return bool
      */
-    public function setupChangeLog()
+    public function setupDeltaLog()
     {
         $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
         $this->progress->start(count($deltaDocuments));

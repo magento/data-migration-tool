@@ -5,7 +5,7 @@
  */
 namespace Migration\Mode;
 
-use Migration\App\SetupChangeLog;
+use Migration\App\SetupDeltaLog;
 use Migration\App\Mode\StepList;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
@@ -33,26 +33,26 @@ class Data implements \Migration\App\Mode\ModeInterface
     protected $progress;
 
     /**
-     * @var SetupChangeLog
+     * @var SetupDeltaLog
      */
-    protected $setupChangeLog;
+    protected $setupDeltaLog;
 
     /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepList $stepList
-     * @param SetupChangeLog $setupChangeLog
+     * @param SetupDeltaLog $setupDeltaLog
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         StepList $stepList,
-        SetupChangeLog $setupChangeLog
+        SetupDeltaLog $setupDeltaLog
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
         $this->stepList = $stepList;
-        $this->setupChangeLog = $setupChangeLog;
+        $this->setupDeltaLog = $setupDeltaLog;
     }
 
     /**
@@ -82,7 +82,7 @@ USAGE;
             }
         }
 
-        $result = $this->runStage($this->setupChangeLog, 'setupChangeLog', 'setup triggers');
+        $result = $this->runStage($this->setupDeltaLog, 'setupDeltaLog', 'setup triggers');
         if (!$result) {
             throw new Exception('Setup triggers failed');
         }

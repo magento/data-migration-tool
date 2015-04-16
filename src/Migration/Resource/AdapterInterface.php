@@ -81,24 +81,24 @@ interface AdapterInterface
      * Load page with changed records from the document
      *
      * @param string $documentName
-     * @param string $changeLogName
+     * @param string $deltaLogName
      * @param string $idKey
      * @param int $pageNumber
      * @param int $pageSize
      * @return array
      */
-    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize);
+    public function loadChangedRecords($documentName, $deltaLogName, $idKey, $pageNumber, $pageSize);
 
     /**
      * Load page with changed records from the document
      *
-     * @param string $changeLogName
+     * @param string $deltaLogName
      * @param string $idKey
      * @param int $pageNumber
      * @param int $pageSize
      * @return array
      */
-    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize);
+    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize);
 
     /**
      * Updates document records with specified data or insert if this is a new record
@@ -133,9 +133,9 @@ interface AdapterInterface
      * Create delta for specified tables
      *
      * @param string $documentName
-     * @param string $changeLogName
+     * @param string $deltaLogName
      * @param string $idKey
      * @return void
      */
-    public function createDelta($documentName, $changeLogName, $idKey);
+    public function createDelta($documentName, $deltaLogName, $idKey);
 }

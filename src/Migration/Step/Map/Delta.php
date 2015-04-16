@@ -7,7 +7,7 @@ namespace Migration\Step\Map;
 
 use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderChangelog;
+use Migration\MapReader\MapReaderDeltalog;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource\Source;
 use Migration\Resource;

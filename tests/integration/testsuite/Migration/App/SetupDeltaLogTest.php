@@ -9,7 +9,7 @@ namespace Migration\App;
 /**
  * Delta step test class
  */
-class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
+class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
     public function testSetupTriggers()
@@ -20,19 +20,19 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         /** @var \Migration\Resource\Source $source */
         $source = $objectManager->create('\Migration\Resource\Source');
-        /** @var \Migration\App\SetupChangeLog $setupChangeLog */
-        $setupChangeLog = $objectManager->create(
-            '\Migration\App\SetupChangeLog'
+        /** @var \Migration\App\SetupDeltaLog $setupDeltaLog */
+        $setupDeltaLog = $objectManager->create(
+            '\Migration\App\SetupDeltaLog'
         );
 
         ob_start();
-        $this->assertTrue($setupChangeLog->setUpChangeLog());
+        $this->assertTrue($setupDeltaLog->setupDeltaLog());
         ob_end_clean();
 
         $dataTable = 'table_with_data';
-        $changeLogTableName = $source->getChangeLogName($dataTable);
-        $changeLogTable = $source->getDocument($changeLogTableName);
-        $this->assertEquals($changeLogTableName, $changeLogTable->getName());
+        $deltaLogTableName = $source->getDeltaLogName($dataTable);
+        $deltaLogTable = $source->getDocument($deltaLogTableName);
+        $this->assertEquals($deltaLogTableName, $deltaLogTable->getName());
         $sourceAdapter = $source->getAdapter();
         $sourceAdapter->insertRecords(
             $dataTable,
@@ -62,6 +62,6 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
             ['field1' => '100', 'operation' => 'UPDATE'],
             ['field1' => '101', 'operation' => 'INSERT']
         ];
-        $this->assertEquals($expectingData, $source->getRecords($changeLogTableName, 0));
+        $this->assertEquals($expectingData, $source->getRecords($deltaLogTableName, 0));
     }
 }

@@ -44,12 +44,12 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'reset'])
             ->getMock();
-        $setupChangeLog = $this->getMockBuilder('\Migration\App\SetupChangeLog')->disableOriginalConstructor()
-            ->setMethods(['setupChangeLog'])
+        $setupDeltaLog = $this->getMockBuilder('\Migration\App\SetupDeltaLog')->disableOriginalConstructor()
+            ->setMethods(['setupDeltaLog'])
             ->getMock();
-        $setupChangeLog->expects($this->any())->method('setupChangeLog')->willReturn(true);
+        $setupDeltaLog->expects($this->any())->method('setupDeltaLog')->willReturn(true);
 
-        $this->data = new Data($this->progress, $this->logger, $this->stepList, $setupChangeLog);
+        $this->data = new Data($this->progress, $this->logger, $this->stepList, $setupDeltaLog);
     }
 
     public function testRunStepsIntegrityFail()
