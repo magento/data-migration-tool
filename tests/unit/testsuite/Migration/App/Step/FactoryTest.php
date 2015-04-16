@@ -11,7 +11,7 @@ namespace Migration\App\Step;
 class FactoryTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Factory
+     * @var StageFactory
      */
     protected $factory;
 
@@ -25,19 +25,19 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->objectManager = $this->getMockBuilder('\Magento\Framework\ObjectManager\ObjectManager')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->factory = new Factory($this->objectManager);
+        $this->factory = new StageFactory($this->objectManager);
     }
 
     public function testCreate()
     {
-        $step = $this->getMock('\Migration\App\Step\StepInterface');
+        $step = $this->getMock('\Migration\App\Step\StageInterface');
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($step));
         $this->assertSame($step, $this->factory->create('\Migration\Steps\Integrity'));
     }
 
     public function testCreateStepWithException()
     {
-        $this->setExpectedException('\Exception', 'Class: \Migration\Step\Integrity must implement StepInterface.');
+        $this->setExpectedException('\Exception', 'Class: \Migration\Step\Integrity must implement StageInterface.');
         $this->factory->create('\Migration\Step\Integrity');
     }
 }

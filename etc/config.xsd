@@ -18,7 +18,7 @@
             <xs:documentation>Configuration root node</xs:documentation>
         </xs:annotation>
         <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="steps" type="stepsType" maxOccurs="3" minOccurs="1"/>
+            <xs:element name="steps" type="stepsType" maxOccurs="unbounded" minOccurs="1"/>
             <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1"/>
             <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1"/>
             <xs:element name="options" type="optionsType" maxOccurs="1" minOccurs="1"/>
@@ -35,9 +35,19 @@
         <xs:attribute name="mode" type="xs:string" use="required"/>
     </xs:complexType>
 
-    <xs:simpleType name="stepType">
+    <xs:complexType name="stepType">
+        <xs:sequence maxOccurs="unbounded" minOccurs="0">
+            <xs:element name="integrity" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="data" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="delta" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="volume" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
+        </xs:sequence>
+        <xs:attribute name="title" type="xs:string" use="required"/>
+    </xs:complexType>
+
+    <xs:simpleType name="stageType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[a-zA-Z_\\\\]+"/>
+            <xs:pattern value="[a-zA-Z][a-zA-Z0-9_\\\\]+"/>
         </xs:restriction>
     </xs:simpleType>
 

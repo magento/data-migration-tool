@@ -10,9 +10,9 @@ use Migration\MapReader;
 use Migration\Resource;
 
 /**
- * Class MigrateTest
+ * Class DataTest
  */
-class MigrateTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
@@ -45,7 +45,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $recordTransformerFactory;
 
     /**
-     * @var Migrate|\PHPUnit_Framework_MockObject_MockObject
+     * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $map;
 
@@ -84,7 +84,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getHandlerConfig'])
             ->getMock();
-        $this->map = new Migrate(
+        $this->map = new Data(
             $this->progress,
             $this->source,
             $this->destination,
@@ -198,5 +198,10 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->map->perform();
+    }
+
+    public function testRollback()
+    {
+        $this->assertTrue($this->map->rollback());
     }
 }

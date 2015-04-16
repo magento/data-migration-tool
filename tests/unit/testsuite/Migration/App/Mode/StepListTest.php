@@ -12,19 +12,21 @@ class StepListTest extends \PHPUnit_Framework_TestCase
 {
     public function testGetSteps()
     {
-        $step1 = $this->getMock('\Migration\App\Step\StepInterface');
-        $step2 = $this->getMock('\Migration\App\Step\StepInterface');
-        $stepFactory = $this->getMock('\Migration\App\Step\Factory', [], [], '', false);
+        $stage1 = $this->getMock('\Migration\App\Step\StageInterface');
+        $stage2 = $this->getMock('\Migration\App\Step\StageInterface');
+        $stepFactory = $this->getMock('\Migration\App\Step\StageFactory', [], [], '', false);
         $stepFactory->expects($this->any())->method('create')->willReturnMap([
-            ['\Migration\Step\Step1', $step1],
-            ['\Migration\Step\Step2', $step2]
+            ['\Migration\Step\Stage1', ['stage' => 'stage1'], $stage1],
+            ['\Migration\Step\Stage2', ['stage' => 'stage2'], $stage2]
         ]);
         $config = $this->getMock('\Migration\Config', [], [], '', false);
-        $config->expects($this->any())->method('getSteps')->willReturn([
-            '\Migration\Step\Step1',
-            '\Migration\Step\Step2'
+        $config->expects($this->any())->method('getSteps')->with('mode')->willReturn([
+            'Test Step' => [
+                'stage1' => '\Migration\Step\Stage1',
+                'stage2' => '\Migration\Step\Stage2',
+            ]
         ]);
-        $stepList = new StepList($stepFactory, $config);
-        $this->assertEquals([$step1, $step2], $stepList->getSteps('data'));
+        $stepList = new StepList($stepFactory, $config, 'mode');
+        $this->assertEquals(['Test Step' => ['stage1' => $stage1, 'stage2' => $stage2]], $stepList->getSteps());
     }
 }

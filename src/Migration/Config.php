@@ -71,8 +71,18 @@ class Config
     public function getSteps($mode)
     {
         $steps = [];
+        /** @var \DOMElement $item */
         foreach ($this->config->query("//steps[@mode='{$mode}']/step") as $item) {
-            $steps[] = $item->nodeValue;
+            if (empty($item->attributes) || !$item->hasAttribute('title')) {
+                continue;
+            }
+            $title = $item->getAttribute('title');
+            /** @var \DOMElement $stage */
+            foreach ($item->childNodes as $stage) {
+                if ($stage->nodeType == XML_ELEMENT_NODE) {
+                    $steps[$title][$stage->nodeName] = $stage->nodeValue;
+                }
+            }
         }
         return $steps;
     }

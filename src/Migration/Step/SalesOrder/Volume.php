@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
+use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderSalesOrder;
 use Migration\MapReaderInterface;
@@ -15,7 +16,7 @@ use Migration\ProgressBar;
 /**
  * Class Volume
  */
-class Volume
+class Volume implements StageInterface
 {
     /**
      * @var InitialData

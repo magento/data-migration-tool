@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Eav;
 
+use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderEav;
 use Migration\ProgressBar;
@@ -12,7 +13,7 @@ use Migration\ProgressBar;
 /**
  * Class Volume
  */
-class Volume
+class Volume implements StageInterface
 {
     /**
      * @var Helper

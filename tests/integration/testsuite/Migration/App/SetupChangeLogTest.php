@@ -24,7 +24,7 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $this->assertTrue($setupChangeLog->setUpChangeLog());
+        $this->assertTrue($setupChangeLog->perform());
         ob_end_clean();
 
         $dataTable = 'table_with_data';

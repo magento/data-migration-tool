@@ -7,18 +7,15 @@
 namespace Migration\Step\Map;
 
 /**
- * Migrate step test class
+ * Data step test class
  */
-class MigrateTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     public function testPerform()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
-        $runMap = $objectManager->create('\Migration\Step\Map\Migrate');
-        $volume = $objectManager->create('\Migration\Step\Map\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
@@ -28,18 +25,15 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         \Migration\Logger\Logger::clearMessages();
 
         $map = $objectManager->create(
-            '\Migration\Step\Map',
+            '\Migration\Step\Map\Data',
             [
-                'integrity' => $integrityMap,
-                'run' => $runMap,
-                'volume' => $volume,
                 'logger' => $logger,
                 'map' => $mapReader,
                 'config' => $config
             ]
         );
         ob_start();
-        $map->run();
+        $map->perform();
         ob_end_clean();
 
         $migratedData = $destination->getRecords('table_without_data', 0);

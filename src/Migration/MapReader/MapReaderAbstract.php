@@ -282,20 +282,19 @@ abstract class MapReaderAbstract implements MapReaderInterface
     }
 
     /**
-     * @param array $documents
      * @return array
      */
-    public function getDeltaDocuments($documents)
+    public function getDeltaDocuments()
     {
         $result = [];
-        foreach ($documents as $document) {
-            $queryResult = $this->xml
-                ->query(sprintf('//source/document_rules/log_changes/*[text()="%s"]', $document));
-            if ($queryResult->length > 0) {
-                /** @var \DOMElement $document */
-                $document = $queryResult->item(0);
-                $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
-            }
+        $queryResult = $this->xml
+            ->query('//source/document_rules/log_changes/document');
+        if (!$queryResult->length) {
+            return $result;
+        }
+        foreach ($queryResult as $document) {
+            /** @var \DOMElement $document */
+            $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
         }
         return $result;
     }

@@ -5,13 +5,14 @@
  */
 namespace Migration\Step\Map;
 
+use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
 use Migration\ProgressBar;
 
-class Volume
+class Volume implements StageInterface
 {
     /**
      * @var Resource\Source

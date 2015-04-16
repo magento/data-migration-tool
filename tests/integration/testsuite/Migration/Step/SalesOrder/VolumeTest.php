@@ -9,7 +9,7 @@ namespace Migration\Step\SalesOrder;
  * SalesOrder step run test class
  * @dbFixture sales_order
  */
-class MigrateTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit_Framework_TestCase
 {
     public function testPerform()
     {
@@ -65,9 +65,6 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $integritySalesOrder = $objectManager->create('\Migration\Step\SalesOrder\Integrity');
-        $runSalesOrder = $objectManager->create('\Migration\Step\SalesOrder\Migrate');
-        $volumeSalesOrder = $objectManager->create('\Migration\Step\SalesOrder\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderSalesOrder');
         $config = $objectManager->get('\Migration\Config');
@@ -77,12 +74,18 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
 
-        $salesOrder = $objectManager->create(
-            '\Migration\Step\SalesOrder',
+        $data = $objectManager->create(
+            '\Migration\Step\SalesOrder\Data',
             [
-                'integrity' => $integritySalesOrder,
-                'run' => $runSalesOrder,
-                'volume' => $volumeSalesOrder,
+                'logger' => $logger,
+                'map' => $mapReader,
+                'config' => $config,
+                'initialData' => $initialData
+            ]
+        );
+        $volume = $objectManager->create(
+            '\Migration\Step\SalesOrder\Volume',
+            [
                 'logger' => $logger,
                 'map' => $mapReader,
                 'config' => $config,
@@ -90,7 +93,8 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
             ]
         );
         ob_start();
-        $salesOrder->run();
+        $data->perform();
+        $this->assertTrue($volume->perform());
         ob_end_clean();
 
         $this->assertEquals($eavAttributesToMigrate, $destination->getRecords('eav_entity_int', 0));

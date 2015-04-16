@@ -9,34 +9,35 @@ use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource\Source;
+use Migration\Resource\Destination;
 use Migration\Resource;
 
 class Delta extends AbstractDelta
 {
     /**
-     * @var Migrate
+     * @var Data
      */
-    protected $migrate;
+    protected $data;
 
     /**
      * @param Source $source
      * @param MapReaderMain $mapReader
      * @param Logger $logger
-     * @param Resource\Destination $destination
+     * @param Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param Migrate $migrate
+     * @param Data $data
      */
     public function __construct(
         Source $source,
         MapReaderMain $mapReader,
         Logger $logger,
-        Resource\Destination $destination,
+        Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        Migrate $migrate
+        Data $data
     ) {
-        $this->migrate = $migrate;
+        $this->data = $data;
         parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
     }
 
@@ -47,6 +48,6 @@ class Delta extends AbstractDelta
      */
     protected function getRecordTransformer($sourceDocument, $destinationDocument)
     {
-        return $this->migrate->getRecordTransformer($sourceDocument, $destinationDocument);
+        return $this->data->getRecordTransformer($sourceDocument, $destinationDocument);
     }
 }
