@@ -40,7 +40,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             [
                 'logger' => $logger,
                 'map' => $mapReader,
-                'config' => $config
+                'config' => $config,
+                'progress' => $progress
             ]
         );
         $volume = $objectManager->create(
@@ -49,7 +50,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'logger' => $logger,
                 'map' => $mapReader,
                 'config' => $config,
-                'progress' => $progress
             ]
         );
         ob_start();

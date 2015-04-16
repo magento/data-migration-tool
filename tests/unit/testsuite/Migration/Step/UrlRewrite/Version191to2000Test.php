@@ -178,9 +178,12 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION_PRODUCT_CATEGORY))
             ->willReturn($destinationProductCategory);
 
-        $this->destination->expects($this->once())
+        $this->destination->expects($this->exactly(2))
             ->method('clearDocument')
-            ->with(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION);
+            ->withConsecutive(
+                [\Migration\Step\UrlRewrite\Version191to2000::DESTINATION],
+                [\Migration\Step\UrlRewrite\Version191to2000::DESTINATION_PRODUCT_CATEGORY]
+            );
 
         $this->source->expects($this->at(2))
             ->method('getRecords')
@@ -239,7 +242,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $sourceRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $sourceRecord
      */
     private function mockSourceRecordGetters($sourceRecord)
     {
@@ -259,7 +262,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $destinationRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $destinationRecord
      */
     private function mockDestinationRecordSetters($destinationRecord)
     {
@@ -305,7 +308,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $destinationCategoryRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $destinationCategoryRecord
      */
     private function mockDestinationCategorySetters($destinationCategoryRecord)
     {

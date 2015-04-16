@@ -48,7 +48,7 @@ class Ratings extends DatabaseStage implements RollbackInterface
      * @param Destination $destination
      * @param Logger $logger
      * @param ProgressBar $progress
-     * @param $stage
+     * @param string $stage
      */
     public function __construct(
         Destination $destination,
@@ -63,7 +63,7 @@ class Ratings extends DatabaseStage implements RollbackInterface
     }
 
     /**
-     * @inheritdoc
+     * @return bool
      */
     protected function integrity()
     {
@@ -98,6 +98,9 @@ class Ratings extends DatabaseStage implements RollbackInterface
         return true;
     }
 
+    /**
+     * @return bool
+     */
     protected function data()
     {
         $this->progress->start(1);
@@ -132,11 +135,11 @@ class Ratings extends DatabaseStage implements RollbackInterface
             throw new \Exception('Invalid step configuration');
         }
 
-        return call_user_func(array($this, $this->stage));
+        return call_user_func([$this, $this->stage]);
     }
 
     /**
-     * @inheritdoc
+     * @return bool
      */
     protected function volume()
     {

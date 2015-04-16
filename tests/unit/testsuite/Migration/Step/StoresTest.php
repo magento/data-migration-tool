@@ -5,6 +5,10 @@
  */
 namespace Migration\Step;
 
+use Migration\RecordTransformerFactory;
+use Migration\ProgressBar;
+use Migration\Logger\Logger;
+
 /**
  * Class Integrity
  */
@@ -71,7 +75,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    public function te1stIntegrity()
+    public function testIntegrity()
     {
         $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()->getMock();
 
@@ -93,7 +97,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->stores->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
         $recordsData = [
             'record_1' => ['field_name' => []],

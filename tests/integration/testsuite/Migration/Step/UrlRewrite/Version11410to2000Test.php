@@ -58,7 +58,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             ]
         );
         ob_start();
-        $result = $urlRewrite->integrity();
+        $result = $urlRewrite->perform();
         ob_end_clean();
         $this->assertTrue($result);
 

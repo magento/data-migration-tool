@@ -9,30 +9,14 @@ use Migration\App\SetupChangeLog;
 use Migration\App\Mode\StepList;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
-use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
 /**
  * Class Migration
  */
-class Data implements \Migration\App\Mode\ModeInterface
+class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
-    /**
-     * @var \Migration\App\Mode\StepListFactory
-     */
-    protected $stepListFactory;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var Progress
-     */
-    protected $progress;
-
     /**
      * @var SetupChangeLog
      */
@@ -50,9 +34,7 @@ class Data implements \Migration\App\Mode\ModeInterface
         \Migration\App\Mode\StepListFactory $stepListFactory,
         SetupChangeLog $setupChangeLog
     ) {
-        $this->progress = $progress;
-        $this->logger = $logger;
-        $this->stepListFactory = $stepListFactory;
+        parent::__construct($progress, $logger, $stepListFactory);
         $this->setupChangeLog = $setupChangeLog;
     }
 
@@ -111,34 +93,6 @@ USAGE;
 
         $this->logger->info(PHP_EOL . "Migration completed");
         return true;
-    }
-
-    /**
-     * @param StageInterface $object
-     * @param string $step
-     * @param string $stage
-     * @return bool
-     */
-    protected function runStage($object, $step, $stage)
-    {
-        $this->logger->info(sprintf('%s: %s', PHP_EOL . $step, $stage));
-
-        if ($this->progress->isCompleted($object, $stage)) {
-            return true;
-        }
-
-        try {
-            $result = $object->perform();
-        } catch (\Exception $e) {
-            $this->logger->error(PHP_EOL . $e->getMessage());
-            return false;
-        }
-
-        if ($result) {
-            $this->progress->saveResult($object, $stage, $result);
-        }
-
-        return $result;
     }
 
     /**

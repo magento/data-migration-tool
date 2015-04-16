@@ -77,7 +77,7 @@ class Settings implements StageInterface
      * @param Resource\RecordFactory $recordFactory
      * @param MapReader\Settings $mapReader
      * @param Handler\ManagerFactory $handlerManagerFactory
-     * @param $stage
+     * @param string $stage
      */
     public function __construct(
         Destination $destination,
@@ -108,11 +108,11 @@ class Settings implements StageInterface
             throw new \Exception('Invalid step configuration');
         }
 
-        return call_user_func(array($this, $this->stage));
+        return call_user_func([$this, $this->stage]);
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     protected function integrity()
     {
@@ -143,7 +143,8 @@ class Settings implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
+     * @throws \Migration\Exception
      */
     protected function data()
     {

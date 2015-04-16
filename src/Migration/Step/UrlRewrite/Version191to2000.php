@@ -94,7 +94,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
      * @param Destination $destination
      * @param ProgressBar $progress
      * @param RecordFactory $factory
-     * @param $stage
+     * @param string $stage
      * @throws \Migration\Exception
      */
     public function __construct(
@@ -145,6 +145,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
         $destProductCategory = $this->destination->getDocument(self::DESTINATION_PRODUCT_CATEGORY);
 
         $this->destination->clearDocument(self::DESTINATION);
+        $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
 
         $pageNumber = 0;
         while (!empty($bulk = $this->source->getRecords(self::SOURCE, $pageNumber))) {
@@ -188,7 +189,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
             throw new \Exception('Invalid step configuration');
         }
 
-        return call_user_func(array($this, $this->stage));
+        return call_user_func([$this, $this->stage]);
     }
 
     /**
@@ -212,7 +213,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
      */
     public function rollback()
     {
-        return false;
+        return true;
     }
 
     /**

@@ -166,7 +166,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @param \Migration\Resource\Destination $destination
      * @param \Migration\Resource\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\Resource\RecordFactory $recordFactory
-     * @param $stage
+     * @param string $stage
      * @throws \Migration\Exception
      */
     public function __construct(
@@ -199,7 +199,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
             throw new \Exception('Invalid step configuration');
         }
 
-        return call_user_func(array($this, $this->stage));
+        return call_user_func([$this, $this->stage]);
     }
 
     /**

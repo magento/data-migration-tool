@@ -93,7 +93,7 @@ class Stores implements StageInterface
             throw new \Exception('Invalid step configuration');
         }
 
-        return call_user_func(array($this, $this->stage));
+        return call_user_func([$this, $this->stage]);
     }
 
     /**

@@ -39,7 +39,7 @@ class Volume implements StageInterface
      *
      * @var ProgressBar
      */
-    protected $progress;
+    protected $progressBar;
 
     /**
      * @var array
@@ -51,20 +51,20 @@ class Volume implements StageInterface
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapReaderMain $mapReader
-     * @param ProgressBar $progress
+     * @param ProgressBar $progressBar
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         MapReaderMain $mapReader,
-        ProgressBar $progress
+        ProgressBar $progressBar
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->mapReader = $mapReader;
         $this->logger = $logger;
-        $this->progress = $progress;
+        $this->progressBar = $progressBar;
     }
 
     /**
@@ -74,9 +74,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = $this->source->getDocumentList();
-        $this->progress->start(count($sourceDocuments));
+        $this->progressBar->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            $this->progressBar->advance();
             $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -88,7 +88,7 @@ class Volume implements StageInterface
                 $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
-        $this->progress->finish();
+        $this->progressBar->finish();
         $this->printErrors();
         return $isSuccess;
     }
