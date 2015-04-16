@@ -5,16 +5,16 @@
  */
 namespace Migration\Step;
 
+use Migration\App\Step\StageInterface;
 use Migration\Resource;
 use Migration\RecordTransformerFactory;
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
-use Migration\App\Step\StepInterface;
 
 /**
  * Class Integrity
  */
-class Stores implements StepInterface
+class Stores implements StageInterface
 {
     /**
      * @var array
@@ -52,12 +52,18 @@ class Stores implements StepInterface
     protected $logger;
 
     /**
+     * @var string
+     */
+    protected $stage;
+
+    /**
      * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param RecordTransformerFactory $recordTransformerFactory
      * @param Resource\RecordFactory $recordFactory
+     * @param string $stage
      */
     public function __construct(
         ProgressBar $progress,
@@ -65,7 +71,8 @@ class Stores implements StepInterface
         Resource\Source $source,
         Resource\Destination $destination,
         RecordTransformerFactory $recordTransformerFactory,
-        Resource\RecordFactory $recordFactory
+        Resource\RecordFactory $recordFactory,
+        $stage
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
@@ -74,6 +81,19 @@ class Stores implements StepInterface
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->recordFactory = $recordFactory;
         $this->documents = [];
+        $this->stage = $stage;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function perform()
+    {
+        if (!method_exists($this, $this->stage)) {
+            throw new \Exception('Invalid step configuration');
+        }
+
+        return call_user_func(array($this, $this->stage));
     }
 
     /**
@@ -81,7 +101,7 @@ class Stores implements StepInterface
      *
      * @return bool
      */
-    public function integrity()
+    protected function integrity()
     {
         $result = true;
         $this->progress->start(count($this->getDocumentList()));
@@ -97,7 +117,7 @@ class Stores implements StepInterface
     /**
      * @return bool
      */
-    public function run()
+    protected function data()
     {
         $this->progress->start(count($this->getDocumentList()));
         $documents = $this->getDocumentList();
@@ -132,7 +152,7 @@ class Stores implements StepInterface
      *
      * @return bool
      */
-    public function volumeCheck()
+    protected function volume()
     {
         $result = true;
         $this->progress->start(count($this->getDocumentList()));
@@ -195,13 +215,5 @@ class Stores implements StepInterface
             $destDocument->getStructure()->getFields()
         );
         return empty($diff);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return "Stores step";
     }
 }

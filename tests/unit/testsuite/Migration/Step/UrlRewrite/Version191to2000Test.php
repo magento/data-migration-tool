@@ -13,11 +13,6 @@ namespace Migration\Step\UrlRewrite;
 class Version191to2000Test extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Step\UrlRewrite\Version191to2000
-     */
-    protected $version;
-
-    /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
@@ -71,24 +66,19 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             false
         );
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
-
-        $this->version = new \Migration\Step\UrlRewrite\Version191to2000(
-            $this->config,
-            $this->source,
-            $this->destination,
-            $this->progress,
-            $this->recordFactory
-        );
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Url Rewrites Step', $this->version->getTitle());
     }
 
     public function testRollback()
     {
-        $this->assertTrue($this->version->rollback());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'data'
+        );
+        $this->assertTrue($version->rollback());
     }
 
     public function testIntegrity()
@@ -144,10 +134,19 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())
             ->method('finish')
             ->willReturnSelf();
-        $this->assertTrue($this->version->integrity());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'integrity'
+        );
+
+        $this->assertTrue($version->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
         $this->source->expects($this->once())
             ->method('getRecordsCount')
@@ -228,7 +227,15 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('getRecords')
             ->willReturn($this->recordCollection);
 
-        $this->assertTrue($this->version->run());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'data'
+        );
+        $this->assertTrue($version->perform());
     }
 
     /**

@@ -389,7 +389,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     /**
      * {@inheritdoc}
      */
-    public function integrity()
+    protected function integrity()
     {
         $errors = false;
         $this->progress->start(count($this->structure['source']) + count($this->structure['destination']));
@@ -453,7 +453,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     /**
      * {@inheritdoc}
      */
-    public function volume()
+    protected function volume()
     {
         $this->progress->start(1);
         $this->getRewritesSelect();
@@ -462,14 +462,6 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
             == $this->destination->getRecordsCount('url_rewrite');
         $this->progress->finish();
         return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return "Url Rewrite step";
     }
 
     /**
@@ -598,7 +590,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->getAdapter()->dropTable($this->source->addDocumentPrefix($this->tableName));
@@ -667,7 +659,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(
@@ -701,7 +693,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
     {
         /** @var \Magento\Framework\Db\Select $select */
         $select = $adapter->getSelect();
@@ -904,7 +896,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(
