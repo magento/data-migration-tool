@@ -13,7 +13,6 @@
         <step>Migration\Step\UrlRewrite</step>
         <step>Migration\Step\Log</step>
         <step>Migration\Step\Ratings</step>
-        <step>Migration\Step\SalesOrder</step>
     </steps>
     <steps mode="delta">
         <step>Migration\Step\Map</step>
