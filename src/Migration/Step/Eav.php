@@ -18,7 +18,7 @@ class Eav implements RollbackInterface
     protected $integrityCheck;
 
     /**
-     * @var Eav\Migrate
+     * @var Eav\Data
      */
     protected $dataMigration;
 
@@ -35,13 +35,13 @@ class Eav implements RollbackInterface
     /**
      * @param Eav\InitialData $initialData
      * @param Eav\Integrity $integrity
-     * @param Eav\Migrate $dataMigration
+     * @param Eav\Data $dataMigration
      * @param Eav\Volume $volumeCheck
      */
     public function __construct(
         Eav\InitialData $initialData,
         Eav\Integrity $integrity,
-        Eav\Migrate $dataMigration,
+        Eav\Data $dataMigration,
         Eav\Volume $volumeCheck
     ) {
         $this->initialData = $initialData;
@@ -61,7 +61,7 @@ class Eav implements RollbackInterface
     /**
      * {@inheritdoc}
      */
-    public function run()
+    public function perform()
     {
         $this->initialData->init();
         return $this->dataMigration->perform();

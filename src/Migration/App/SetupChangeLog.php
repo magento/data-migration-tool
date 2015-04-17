@@ -5,12 +5,12 @@
  */
 namespace Migration\App;
 
+use Migration\App\Step\StageInterface;
 use Migration\MapReader\MapReaderChangelog;
 use Migration\Resource\Source;
-use Migration\MapReader\MapReaderMain;
 use Migration\ProgressBar;
 
-class SetupChangeLog
+class SetupChangeLog implements StageInterface
 {
     /**
      * @var Source
@@ -18,7 +18,7 @@ class SetupChangeLog
     protected $source;
 
     /**
-     * @var MapReaderMain
+     * @var MapReaderChangelog
      */
     protected $mapReader;
 
@@ -42,9 +42,9 @@ class SetupChangeLog
     /**
      * @return bool
      */
-    public function setupChangeLog()
+    public function perform()
     {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        $deltaDocuments = $this->mapReader->getDeltaDocuments();
         $this->progress->start(count($deltaDocuments));
         foreach ($deltaDocuments as $documentName => $idKey) {
             $this->progress->advance();

@@ -5,6 +5,10 @@
  */
 namespace Migration\Step;
 
+use Migration\RecordTransformerFactory;
+use Migration\ProgressBar;
+use Migration\Logger\Logger;
+
 /**
  * Class Integrity
  */
@@ -69,17 +73,9 @@ class StoresTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->stores = new Stores(
-            $this->progress,
-            $this->logger,
-            $this->source,
-            $this->destination,
-            $this->recordTransformerFactory,
-            $this->recordFactory
-        );
     }
 
-    public function te1stIntegrity()
+    public function testIntegrity()
     {
         $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()->getMock();
 
@@ -89,10 +85,19 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocument', 'getRecords')->willReturn($document);
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
 
-        $this->assertTrue($this->stores->integrity());
+        $this->stores = new Stores(
+            $this->progress,
+            $this->logger,
+            $this->source,
+            $this->destination,
+            $this->recordTransformerFactory,
+            $this->recordFactory,
+            'integrity'
+        );
+        $this->assertTrue($this->stores->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
         $recordsData = [
             'record_1' => ['field_name' => []],
@@ -138,7 +143,16 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
         $this->destination->expects($this->any())->method('clearDocument')->willReturnSelf();
 
-        $this->stores->run();
+        $this->stores = new Stores(
+            $this->progress,
+            $this->logger,
+            $this->source,
+            $this->destination,
+            $this->recordTransformerFactory,
+            $this->recordFactory,
+            'data'
+        );
+        $this->stores->perform();
     }
 
     public function testVolumeCheck()
@@ -161,11 +175,15 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getRecordsCount')->with()->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->with()->willReturn(1);
 
-        $this->assertTrue($this->stores->volumeCheck());
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Stores step', $this->stores->getTitle());
+        $this->stores = new Stores(
+            $this->progress,
+            $this->logger,
+            $this->source,
+            $this->destination,
+            $this->recordTransformerFactory,
+            $this->recordFactory,
+            'volume'
+        );
+        $this->assertTrue($this->stores->perform());
     }
 }

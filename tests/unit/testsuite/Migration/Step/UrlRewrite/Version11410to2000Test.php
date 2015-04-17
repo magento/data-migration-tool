@@ -69,7 +69,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             false
         );
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
+    }
 
+    public function testIntegrity()
+    {
         $this->version = new \Migration\Step\UrlRewrite\Version11410to2000(
             $this->progress,
             $this->logger,
@@ -77,12 +80,8 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $this->recordCollectionFactory,
-            $this->recordFactory
+            $this->recordFactory,
+            'integrity'
         );
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Url Rewrite step', $this->version->getTitle());
     }
 }

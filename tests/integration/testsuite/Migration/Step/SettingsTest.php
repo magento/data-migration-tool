@@ -11,7 +11,7 @@ namespace Migration\Step\Map;
  */
 class SettingsTest extends \PHPUnit_Framework_TestCase
 {
-    public function testRun()
+    public function testData()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
@@ -37,11 +37,12 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
                 'progress' => $progress,
                 'recordFactory' => $recordFactory,
                 'mapReader' => $mapReader,
-                'handlerManagerFactory' => $handlerManagerFactory
+                'handlerManagerFactory' => $handlerManagerFactory,
+                'stage' => 'data'
             ]
         );
         ob_start();
-        $settings->run();
+        $settings->perform();
         ob_end_clean();
         $migratedData = $destination->getRecords('core_config_data', 0);
         $migratedDataExpected = [

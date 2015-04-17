@@ -6,12 +6,12 @@
 namespace Migration\Step;
 
 use Migration\Exception;
-use Migration\App\Step\StepInterface;
+use Migration\App\Step\StageInterface;
 
 /**
- * Class DatabaseStep
+ * Class DatabaseStage
  */
-abstract class DatabaseStep implements StepInterface
+abstract class DatabaseStage implements StageInterface
 {
     const SOURCE_TYPE = 'database';
 

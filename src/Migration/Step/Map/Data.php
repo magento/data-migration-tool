@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Map;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
@@ -14,9 +15,9 @@ use Migration\ProgressBar;
 use Migration\App\Step\Progress;
 
 /**
- * Class Migrate
+ * Class Data
  */
-class Migrate
+class Data implements RollbackInterface
 {
     /**
      * @var Resource\Source
@@ -196,5 +197,13 @@ class Migrate
             }
         }
         return $result;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        return true;
     }
 }

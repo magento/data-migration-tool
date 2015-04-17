@@ -11,7 +11,7 @@ namespace Migration\App\Mode;
 class StepList
 {
     /**
-     * @var \Migration\App\Step\Factory
+     * @var \Migration\App\Step\StageFactory
      */
     protected $stepFactory;
 
@@ -21,29 +21,51 @@ class StepList
     protected $config;
 
     /**
-     * @param \Migration\App\Step\Factory $stepFactory
+     * @var array
+     */
+    protected $data;
+
+    /**
+     * @var string
+     */
+    protected $mode;
+
+    /**
+     * @param \Migration\App\Step\StageFactory $stepFactory
      * @param \Migration\Config $config
+     * @param string $mode
      */
     public function __construct(
-        \Migration\App\Step\Factory $stepFactory,
-        \Migration\Config $config
+        \Migration\App\Step\StageFactory $stepFactory,
+        \Migration\Config $config,
+        $mode
     ) {
         $this->stepFactory = $stepFactory;
         $this->config = $config;
+        $this->mode = $mode;
     }
 
     /**
-     * @param string $modeName
-     * @return array
-     * @throws \Migration\Exception
+     * @return void
      */
-    public function getSteps($modeName)
+    protected function createInstances()
     {
-        $stepClasses = $this->config->getSteps($modeName);
-        $steps = [];
-        foreach ($stepClasses as $stepClass) {
-            $steps[] = $this->stepFactory->create($stepClass);
+        array_walk_recursive($this->data, function (&$item, $key) {
+            if (!is_array($item)) {
+                $item = $this->stepFactory->create($item, ['stage' => $key]);
+            }
+        });
+    }
+
+    /**
+     * @return array
+     */
+    public function getSteps()
+    {
+        if (empty($this->data)) {
+            $this->data = $this->config->getSteps($this->mode);
+            $this->createInstances();
         }
-        return $steps;
+        return $this->data;
     }
 }

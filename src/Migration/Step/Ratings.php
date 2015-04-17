@@ -13,7 +13,7 @@ use Migration\Resource\Destination;
 /**
  * Class Ratings
  */
-class Ratings extends DatabaseStep implements RollbackInterface
+class Ratings extends DatabaseStage implements RollbackInterface
 {
     const RATING_TABLE_NAME = 'rating';
     const RATING_STORE_TABLE_NAME = 'rating_store';
@@ -40,24 +40,32 @@ class Ratings extends DatabaseStep implements RollbackInterface
     protected $progress;
 
     /**
+     * @var string
+     */
+    protected $stage;
+
+    /**
      * @param Destination $destination
      * @param Logger $logger
      * @param ProgressBar $progress
+     * @param string $stage
      */
     public function __construct(
         Destination $destination,
         Logger $logger,
-        ProgressBar $progress
+        ProgressBar $progress,
+        $stage
     ) {
         $this->destination = $destination;
         $this->logger = $logger;
         $this->progress = $progress;
+        $this->stage = $stage;
     }
 
     /**
-     * @inheritdoc
+     * @return bool
      */
-    public function integrity()
+    protected function integrity()
     {
         $this->progress->start(1);
         $this->progress->advance();
@@ -91,13 +99,14 @@ class Ratings extends DatabaseStep implements RollbackInterface
     }
 
     /**
-     * @inheritdoc
+     * @return bool
      */
-    public function run()
+    protected function data()
     {
         $this->progress->start(1);
         $this->progress->advance();
         $ratingsIsActive = [];
+        /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->destination->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id'])->where('store_id > 0');
@@ -120,12 +129,25 @@ class Ratings extends DatabaseStep implements RollbackInterface
     /**
      * @inheritdoc
      */
-    public function volumeCheck()
+    public function perform()
+    {
+        if (!method_exists($this, $this->stage)) {
+            throw new \Exception('Invalid step configuration');
+        }
+
+        return call_user_func([$this, $this->stage]);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function volume()
     {
         $this->progress->start(1);
         $this->progress->advance();
         $ratingsShouldBeActive = [];
         $ratingsIsActive = [];
+        /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->destination->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id'])->where('store_id > 0');
@@ -155,14 +177,6 @@ class Ratings extends DatabaseStep implements RollbackInterface
         }
         $this->progress->finish();
         return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return 'Ratings step';
     }
 
     /**

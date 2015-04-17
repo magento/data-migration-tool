@@ -14,11 +14,6 @@ use Migration\Resource;
 class Delta extends AbstractDelta
 {
     /**
-     * @var Migrate
-     */
-    protected $migrate;
-
-    /**
      * @param Source $source
      * @param MapReaderLog $mapReader
      * @param Logger $logger

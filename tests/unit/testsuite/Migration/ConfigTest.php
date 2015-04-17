@@ -43,12 +43,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetSteps()
     {
         $steps = [
-            'Migration\Step\SalesOrder',
-            'Migration\Step\Eav',
-            'Migration\Step\CustomCustomerAttributes',
-            'Migration\Step\Map',
-            'Migration\Step\UrlRewrite',
-            'Migration\Step\Log'
+            'Step1' => [
+                'integrity' => 'Migration\Step\SomeStep\Integrity',
+                'volume' => 'Migration\Step\SomeStep\Volume'
+            ],
+            'Step2' => [
+                'integrity' => 'Migration\Step\SomeStep\Integrity',
+                'volume' => 'Migration\Step\SomeStep\Volume'
+            ]
         ];
         $this->assertEquals($steps, $this->config->getSteps('data'));
     }

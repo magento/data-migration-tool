@@ -11,7 +11,7 @@ use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\ProgressBar;
 
-class MigrateTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var Resource\Source|\PHPUnit_Framework_MockObject_MockObject
@@ -51,7 +51,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $helper;
 
     /**
-     * SalesOrder
+     * @var Data
      */
     protected $salesOrder;
 
@@ -88,7 +88,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->salesOrder = new Migrate(
+        $this->salesOrder = new Data(
             $this->progress,
             $this->source,
             $this->destination,

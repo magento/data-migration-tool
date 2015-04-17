@@ -13,7 +13,7 @@ use Migration\Resource;
 /**
  * Class AbstractIntegrity
  */
-abstract class AbstractIntegrity
+abstract class AbstractIntegrity implements StageInterface
 {
     /**
      * Resource of source
@@ -84,13 +84,6 @@ abstract class AbstractIntegrity
         $this->destination = $destination;
         $this->map = $mapReader;
     }
-
-    /**
-     * Peform Integrity Check
-     *
-     * @return mixed
-     */
-    abstract public function perform();
 
     /**
      * Returns number of iterations for integrity check

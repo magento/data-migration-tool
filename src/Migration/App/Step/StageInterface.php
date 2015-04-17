@@ -7,14 +7,14 @@
 namespace Migration\App\Step;
 
 /**
- * Interface RollbackInterface
+ * Interface StageInterface
  */
-interface RollbackInterface extends StageInterface
+interface StageInterface
 {
     /**
-     * Perform rollback
+     * Perform the stage
      *
-     * @return void
+     * @return bool
      */
-    public function rollback();
+    public function perform();
 }

@@ -20,9 +20,6 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
-        $runMap = $objectManager->create('\Migration\Step\Map\Migrate');
-        $volume = $objectManager->create('\Migration\Step\Map\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
@@ -30,20 +27,17 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
 
-        /** @var \Symfony\Component\Console\Output\ConsoleOutput $progressBar */
+        /** @var \Migration\Step\Map\Integrity $map */
         $map = $objectManager->create(
-            '\Migration\Step\Map',
+            '\Migration\Step\Map\Integrity',
             [
-                'integrity' => $integrityMap,
-                'run' => $runMap,
-                'volume' => $volume,
                 'logger' => $logger,
                 'map' => $mapReader,
                 'config' => $config
             ]
         );
         ob_start();
-        $map->integrity();
+        $map->perform();
         ob_end_clean();
 
         $logOutput = \Migration\Logger\Logger::getMessages();
@@ -56,29 +50,23 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config-with-empty-map.xml');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity', ['mapReader' => $mapReader]);
-        $runMap = $objectManager->create('\Migration\Step\Map\Migrate');
-        $volume = $objectManager->create('\Migration\Step\Map\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
 
-        /** @var \Migration\Step\Map $map */
+        /** @var \Migration\Step\Map\Integrity $map */
         $map = $objectManager->create(
-            '\Migration\Step\Map',
+            '\Migration\Step\Map\Integrity',
             [
-                'integrity' => $integrityMap,
-                'run' => $runMap,
-                'volume' => $volume,
                 'logger' => $logger,
                 'mapReader' => $mapReader,
                 'config' => $config
             ]
         );
         ob_start();
-        $map->integrity();
+        $map->perform();
         ob_end_clean();
 
         $messages = [];

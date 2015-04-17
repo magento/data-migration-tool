@@ -7,20 +7,25 @@
 namespace Migration\Step\UrlRewrite;
 
 /**
- * Migrate step test class
+ * UrlRewrite step test class
  * @dbFixture url_rewrite
  */
 class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Step\UrlRewrite
-     */
-    protected $urlRewrite;
-
-    /**
      * @var string
      */
     protected $tableName;
+
+    /**
+     * @var \Migration\Logger\Logger
+     */
+    protected $logger;
+
+    /**
+     * @var \Migration\Config
+     */
+    protected $config;
 
     /**
      * @var \Magento\Framework\ObjectManagerInterface
@@ -35,26 +40,25 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         $logManager = $this->objectManager->create('\Migration\Logger\Manager');
-        $logger = $this->objectManager->create('\Migration\Logger\Logger');
-        $config = $this->objectManager->get('\Migration\Config');
+        $this->logger = $this->objectManager->create('\Migration\Logger\Logger');
+        $this->config = $this->objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
         \Migration\Logger\Logger::clearMessages();
-
-        /** @var \Migration\Step\UrlRewrite $urlRewrite */
-        $this->urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite',
-            [
-                'logger' => $logger,
-                'config' => $config
-            ]
-        );
     }
 
     public function testIntegrity()
     {
+        $urlRewrite = $this->objectManager->create(
+            '\Migration\Step\UrlRewrite\Version11410to2000',
+            [
+                'logger' => $this->logger,
+                'config' => $this->config,
+                'stage' => 'integrity'
+            ]
+        );
         ob_start();
-        $result = $this->urlRewrite->integrity();
+        $result = $urlRewrite->perform();
         ob_end_clean();
         $this->assertTrue($result);
 
@@ -74,12 +78,20 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         }
     }
 
-    public function testRun()
+    public function testData()
     {
+        $urlRewrite = $this->objectManager->create(
+            '\Migration\Step\UrlRewrite\Version11410to2000',
+            [
+                'logger' => $this->logger,
+                'config' => $this->config,
+                'stage' => 'data'
+            ]
+        );
         /** @var \Migration\Resource\Destination $destination */
         $destination = $this->objectManager->get('\Migration\Resource\Destination');
         ob_start();
-        $this->urlRewrite->run();
+        $urlRewrite->perform();
         ob_end_clean();
 
         $logOutput = \Migration\Logger\Logger::getMessages();
@@ -88,7 +100,15 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals(11, $destination->getRecordsCount('catalog_category_entity_varchar'));
         $this->assertEquals(4, $destination->getRecordsCount('catalog_product_entity_varchar'));
 
-        $result = $this->urlRewrite->volumeCheck();
+        $urlRewrite = $this->objectManager->create(
+            '\Migration\Step\UrlRewrite\Version11410to2000',
+            [
+                'logger' => $this->logger,
+                'config' => $this->config,
+                'stage' => 'volume'
+            ]
+        );
+        $result = $urlRewrite->perform();
         $this->assertTrue($result);
     }
 }

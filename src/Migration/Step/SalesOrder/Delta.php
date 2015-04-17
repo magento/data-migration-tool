@@ -22,9 +22,9 @@ class Delta extends AbstractDelta
     protected $helper;
 
     /**
-     * @var Migrate
+     * @var Data
      */
-    protected $migrate;
+    protected $data;
 
     /**
      * @param Source $source
@@ -34,7 +34,7 @@ class Delta extends AbstractDelta
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Helper $helper
-     * @param Migrate $migrate
+     * @param Data $data
      */
     public function __construct(
         Source $source,
@@ -44,10 +44,10 @@ class Delta extends AbstractDelta
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
-        Migrate $migrate
+        Data $data
     ) {
         $this->helper = $helper;
-        $this->migrate = $migrate;
+        $this->data = $data;
         parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
     }
 
@@ -87,7 +87,7 @@ class Delta extends AbstractDelta
                     $recordTransformer,
                     $destinationRecords
                 );
-                $this->migrate->migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection);
+                $this->data->migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection);
             }
 
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);

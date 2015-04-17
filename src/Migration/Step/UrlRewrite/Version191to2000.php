@@ -12,7 +12,7 @@ use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
 
-class Version191to2000 extends \Migration\Step\DatabaseStep
+class Version191to2000 extends \Migration\Step\DatabaseStage
 {
     const SOURCE = 'core_url_rewrite';
 
@@ -38,6 +38,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
      * @var RecordFactory
      */
     protected $recordFactory;
+
+    /**
+     * @var string
+     */
+    protected $stage;
 
     /**
      * @var array
@@ -89,19 +94,23 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
      * @param Destination $destination
      * @param ProgressBar $progress
      * @param RecordFactory $factory
+     * @param string $stage
+     * @throws \Migration\Exception
      */
     public function __construct(
         \Migration\Config $config,
         Source $source,
         Destination $destination,
         ProgressBar $progress,
-        RecordFactory $factory
+        RecordFactory $factory,
+        $stage
     ) {
         parent::__construct($config);
         $this->source = $source;
         $this->destination = $destination;
         $this->progress = $progress;
         $this->recordFactory = $factory;
+        $this->stage = $stage;
     }
 
     /**
@@ -109,7 +118,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
      *
      * @return bool
      */
-    public function integrity()
+    protected function integrity()
     {
         $result = true;
         $this->progress->start(1);
@@ -127,7 +136,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
      *
      * @return bool
      */
-    public function run()
+    protected function data()
     {
         $this->progress->start($this->source->getRecordsCount(self::SOURCE));
 
@@ -136,6 +145,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
         $destProductCategory = $this->destination->getDocument(self::DESTINATION_PRODUCT_CATEGORY);
 
         $this->destination->clearDocument(self::DESTINATION);
+        $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
 
         $pageNumber = 0;
         while (!empty($bulk = $this->source->getRecords(self::SOURCE, $pageNumber))) {
@@ -171,11 +181,23 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function perform()
+    {
+        if (!method_exists($this, $this->stage)) {
+            throw new \Exception('Invalid step configuration');
+        }
+
+        return call_user_func([$this, $this->stage]);
+    }
+
+    /**
      * Volume check
      *
      * @return bool
      */
-    public function volumeCheck()
+    protected function volume()
     {
         $result = true;
         $this->progress->start(1);
@@ -184,16 +206,6 @@ class Version191to2000 extends \Migration\Step\DatabaseStep
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
-    }
-
-    /**
-     * Get step title
-     *
-     * @return string
-     */
-    public function getTitle()
-    {
-        return 'Url Rewrites Step';
     }
 
     /**

@@ -9,9 +9,9 @@ use Magento\Framework\ObjectManagerInterface;
 use Migration\Exception;
 
 /**
- * Class Factory
+ * Class StageFactory
  */
-class Factory
+class StageFactory
 {
     /**
      * @var array
@@ -33,15 +33,16 @@ class Factory
     }
 
     /**
-     * @param string $stepClass
-     * @return StepInterface
+     * @param string $stageClass
+     * @param array $arguments
+     * @return StageInterface
      * @throws Exception
      */
-    public function create($stepClass)
+    public function create($stageClass, array $arguments = [])
     {
-        $step = $this->objectManager->create($stepClass);
-        if (!($step instanceof StepInterface)) {
-            throw new Exception("Class: $stepClass must implement StepInterface.");
+        $step = $this->objectManager->create($stageClass, $arguments);
+        if (!($step instanceof StageInterface)) {
+            throw new Exception("Class: $stageClass must implement StageInterface.");
         }
 
         return $step;

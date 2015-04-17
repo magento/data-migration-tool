@@ -7,12 +7,19 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps mode="data">
-        <step>Migration\Step\SalesOrder</step>
-        <step>Migration\Step\Eav</step>
-        <step>Migration\Step\CustomCustomerAttributes</step>
-        <step>Migration\Step\Map</step>
-        <step>Migration\Step\UrlRewrite</step>
-        <step>Migration\Step\Log</step>
+        <step title="Step1">
+            <integrity>Migration\Step\SomeStep\Integrity</integrity>
+            <volume>Migration\Step\SomeStep\Volume</volume>
+        </step>
+        <step title="Step2">
+            <integrity>Migration\Step\SomeStep\Integrity</integrity>
+            <volume>Migration\Step\SomeStep\Volume</volume>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Step1">
+            <delta>Migration\Step\SomeStep\Integrity</delta>
+        </step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1" user="root"/>

@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
+use Migration\App\Step\StageInterface;
 use Migration\Handler;
 use Migration\MapReader\MapReaderSalesOrder;
 use Migration\MapReaderInterface;
@@ -13,9 +14,9 @@ use Migration\Resource\Record;
 use Migration\ProgressBar;
 
 /**
- * Class Migrate
+ * Class Data
  */
-class Migrate
+class Data implements StageInterface
 {
     /**
      * @var Resource\Source
@@ -225,5 +226,13 @@ class Migrate
     protected function getDestEavDocument()
     {
         return count($this->helper->getDocumentList());
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function rollback()
+    {
+        throw new \Exception('Rollback is impossible');
     }
 }
