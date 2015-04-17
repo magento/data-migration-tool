@@ -34,7 +34,7 @@
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
         <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
-        <changelog_map_file>tests/integration/testsuite/Migration/_files/changelog.xml</changelog_map_file>
+        <deltalog_map_file>tests/integration/testsuite/Migration/_files/deltalog.xml</deltalog_map_file>
         <class_map>tests/integration/testsuite/Migration/_files/class_map.php</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
