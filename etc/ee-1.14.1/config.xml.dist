@@ -60,15 +60,15 @@
             <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
         </step>
         <step title="Map step">
-            <delta>Migration\Step\Map</delta>
+            <delta>Migration\Step\Map\Delta</delta>
         </step>
         <step title="Log Step">
-            <delta>Migration\Step\Log</delta>
-            <volume>Migration\Step\Log</volume>
+            <delta>Migration\Step\Log\Delta</delta>
+            <volume>Migration\Step\Log\Volume</volume>
         </step>
         <step title="SalesOrder step">
-            <delta>Migration\Step\SalesOrder</delta>
-            <volume>Migration\Step\SalesOrder</volume>
+            <delta>Migration\Step\SalesOrder\Delta</delta>
+            <volume>Migration\Step\SalesOrder\Volume</volume>
         </step>
     </steps>
     <source version="1.14.1.0">
