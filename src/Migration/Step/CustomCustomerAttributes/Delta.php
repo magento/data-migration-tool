@@ -62,11 +62,11 @@ class Delta extends CustomCustomerAttributes implements StageInterface
         $sourceDocuments = array_flip($this->source->getDocumentList());
         $documentsMap = $this->getDocumentList();
         foreach ($this->getDeltaDocuments() as $sourceDocumentName => $idKey) {
-            $changeLogName = $this->source->getChangeLogName($sourceDocumentName);
-            if (!isset($sourceDocuments[$changeLogName])) {
-                throw new \Migration\Exception(sprintf('Changelog for %s is not installed', $sourceDocumentName));
+            $deltaLogName = $this->source->getDeltaLogName($sourceDocumentName);
+            if (!isset($sourceDocuments[$deltaLogName])) {
+                throw new \Migration\Exception(sprintf('Delta log for %s is not installed', $sourceDocumentName));
             }
-            if ($this->source->getRecordsCount($changeLogName, false) == 0) {
+            if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
                 continue;
             }
             $this->logger->debug(sprintf(PHP_EOL . '%s have changes', $sourceDocumentName));
@@ -88,7 +88,7 @@ class Delta extends CustomCustomerAttributes implements StageInterface
                     $recordsToSave->addRecord($destinationRecord);
                 }
                 $this->destination->updateChangedRecords($destinationDocumentName, $recordsToSave);
-                $this->source->deleteRecords($this->source->getChangeLogName($sourceDocumentName), $idKey, $ids);
+                $this->source->deleteRecords($this->source->getDeltaLogName($sourceDocumentName), $idKey, $ids);
             }
         }
         return true;
@@ -108,7 +108,7 @@ class Delta extends CustomCustomerAttributes implements StageInterface
                 $idKey,
                 $items
             );
-            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $items);
+            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $items);
         }
     }
 

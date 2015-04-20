@@ -75,8 +75,8 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())
             ->method('getDocumentList')
             ->willReturn([$sourceDocName, $sourceDeltaName]);
-        $this->source->expects($this->any())
-            ->method('getChangeLogName')
+        $this->source->expects($this->atLeastOnce())
+            ->method('getDeltaLogName')
             ->with('orders')
             ->willReturn($sourceDeltaName);
         $this->source->expects($this->any())

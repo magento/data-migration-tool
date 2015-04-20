@@ -8,9 +8,9 @@ namespace Migration\MapReader;
 use Migration\Config;
 
 /**
- * Class MapReaderChangelog
+ * Class MapReaderDeltalog
  */
-class MapReaderChangelog extends MapReaderAbstract
+class MapReaderDeltalog extends MapReaderAbstract
 {
     /**
      * @param Config $config
@@ -18,6 +18,6 @@ class MapReaderChangelog extends MapReaderAbstract
     public function __construct(Config $config)
     {
         parent::__construct($config);
-        $this->init($this->config->getOption('changelog_map_file'));
+        $this->init($this->config->getOption('deltalog_map_file'));
     }
 }

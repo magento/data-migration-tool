@@ -9,10 +9,10 @@ namespace Migration\App;
 /**
  * Class ShellTest
  */
-class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
+class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
-    public function testSetupChangeLog()
+    public function testPerform()
     {
         /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */
         $source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
@@ -23,8 +23,8 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
                 ['invoices', 'invoice_id']
             );
 
-        /** @var \Migration\MapReader\MapReaderChangelog|\PHPUnit_Framework_MockObject_MockObject $mapReader */
-        $mapReader = $this->getMock('\Migration\MapReader\MapReaderChangelog', [], [], '', false);
+        /** @var \Migration\MapReader\MapReaderDeltalog|\PHPUnit_Framework_MockObject_MockObject $mapReader */
+        $mapReader = $this->getMock('\Migration\MapReader\MapReaderDeltalog', [], [], '', false);
         $mapReader->expects($this->any())
             ->method('getDeltaDocuments')
             ->with()
@@ -42,7 +42,7 @@ class SetupChangeLogTest extends \PHPUnit_Framework_TestCase
         $progress->expects($this->once())
             ->method('finish');
 
-        $changelog = new SetupChangeLog($source, $mapReader, $progress);
-        $this->assertTrue($changelog->perform());
+        $deltalog = new SetupDeltaLog($source, $mapReader, $progress);
+        $this->assertTrue($deltalog->perform());
     }
 }

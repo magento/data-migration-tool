@@ -5,7 +5,7 @@
  */
 namespace Migration\Mode;
 
-use Migration\App\SetupChangeLog;
+use Migration\App\SetupDeltaLog;
 use Migration\App\Mode\StepList;
 use Migration\App\Step\Progress;
 use Migration\App\Step\RollbackInterface;
@@ -18,24 +18,24 @@ use Migration\Exception;
 class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
     /**
-     * @var SetupChangeLog
+     * @var SetupDeltaLog
      */
-    protected $setupChangeLog;
+    protected $setupDeltaLog;
 
     /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
-     * @param SetupChangeLog $setupChangeLog
+     * @param SetupDeltaLog $setupDeltaLog
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         \Migration\App\Mode\StepListFactory $stepListFactory,
-        SetupChangeLog $setupChangeLog
+        SetupDeltaLog $setupDeltaLog
     ) {
         parent::__construct($progress, $logger, $stepListFactory);
-        $this->setupChangeLog = $setupChangeLog;
+        $this->setupDeltaLog = $setupDeltaLog;
     }
 
     /**
@@ -68,7 +68,7 @@ USAGE;
             throw new Exception('Integrity Check failed');
         }
 
-        $result = $this->runStage($this->setupChangeLog, 'Stage', 'setup triggers');
+        $result = $this->runStage($this->setupDeltaLog, 'Stage', 'setup triggers');
         if (!$result) {
             throw new Exception('Setup triggers failed');
         }

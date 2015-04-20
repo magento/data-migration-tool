@@ -5,12 +5,12 @@
  */
 namespace Migration\App;
 
+use Migration\MapReader\MapReaderDeltalog;
 use Migration\App\Step\StageInterface;
-use Migration\MapReader\MapReaderChangelog;
 use Migration\Resource\Source;
 use Migration\ProgressBar;
 
-class SetupChangeLog implements StageInterface
+class SetupDeltaLog  implements StageInterface
 {
     /**
      * @var Source
@@ -18,7 +18,7 @@ class SetupChangeLog implements StageInterface
     protected $source;
 
     /**
-     * @var MapReaderChangelog
+     * @var MapReaderDeltalog
      */
     protected $mapReader;
 
@@ -29,10 +29,10 @@ class SetupChangeLog implements StageInterface
 
     /**
      * @param Source $source
-     * @param MapReaderChangelog $mapReader
+     * @param MapReaderDeltalog $mapReader
      * @param ProgressBar $progress
      */
-    public function __construct(Source $source, MapReaderChangelog $mapReader, ProgressBar $progress)
+    public function __construct(Source $source, MapReaderDeltalog $mapReader, ProgressBar $progress)
     {
         $this->source = $source;
         $this->mapReader = $mapReader;

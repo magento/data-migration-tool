@@ -75,9 +75,9 @@ abstract class AbstractDelta implements StageInterface
         $sourceDocuments = array_flip($this->source->getDocumentList());
         $deltaDocuments = $this->mapReader->getDeltaDocuments();
         foreach ($deltaDocuments as $documentName => $idKey) {
-            $changeLogName = $this->source->getChangeLogName($documentName);
-            if (!isset($sourceDocuments[$changeLogName])) {
-                throw new \Migration\Exception(sprintf('Changelog for %s is not installed', $documentName));
+            $deltaLogName = $this->source->getDeltaLogName($documentName);
+            if (!isset($sourceDocuments[$deltaLogName])) {
+                throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
 
             $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
@@ -85,7 +85,7 @@ abstract class AbstractDelta implements StageInterface
                 continue;
             }
 
-            if ($this->source->getRecordsCount($changeLogName, false) == 0) {
+            if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
                 continue;
             }
             $this->logger->debug(sprintf(PHP_EOL . '%s has changes', $documentName));
@@ -110,7 +110,7 @@ abstract class AbstractDelta implements StageInterface
                 $idKey,
                 $items
             );
-            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $items);
+            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $items);
         }
     }
 
@@ -150,7 +150,7 @@ abstract class AbstractDelta implements StageInterface
             }
 
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
-            $this->source->deleteRecords($this->source->getChangeLogName($documentName), $idKey, $ids);
+            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $ids);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 

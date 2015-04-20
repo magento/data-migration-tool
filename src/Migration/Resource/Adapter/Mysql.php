@@ -126,11 +126,11 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadChangedRecords($documentName, $changeLogName, $idKey, $pageNumber, $pageSize)
+    public function loadChangedRecords($documentName, $deltaLogName, $idKey, $pageNumber, $pageSize)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($changeLogName, [])
-            ->join($documentName, "$documentName.$idKey = $changeLogName.$idKey", '*')
+        $select->from($deltaLogName, [])
+            ->join($documentName, "$documentName.$idKey = $deltaLogName.$idKey", '*')
             ->where("`operation` in ('INSERT', 'UPDATE')")
             ->limit($pageSize, $pageNumber * $pageSize);
         $result = $this->resourceAdapter->fetchAll($select);
@@ -140,10 +140,10 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadDeletedRecords($changeLogName, $idKey, $pageNumber, $pageSize)
+    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($changeLogName, [$idKey])
+        $select->from($deltaLogName, [$idKey])
             ->where("`operation` = 'DELETE'")
             ->limit($pageSize, $pageNumber * $pageSize);
         $result = $this->resourceAdapter->fetchCol($select);
@@ -258,14 +258,14 @@ class Mysql implements \Migration\Resource\AdapterInterface
      * Create delta for specified table
      *
      * @param string $documentName
-     * @param string $changeLogName
+     * @param string $deltaLogName
      * @param string $idKey
      * @return void
      */
-    public function createDelta($documentName, $changeLogName, $idKey)
+    public function createDelta($documentName, $deltaLogName, $idKey)
     {
-        if (!$this->resourceAdapter->isTableExists($changeLogName)) {
-            $triggerTable = $this->resourceAdapter->newTable($changeLogName)
+        if (!$this->resourceAdapter->isTableExists($deltaLogName)) {
+            $triggerTable = $this->resourceAdapter->newTable($deltaLogName)
                 ->addColumn(
                     $idKey,
                     \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
@@ -277,11 +277,11 @@ class Mysql implements \Migration\Resource\AdapterInterface
                 );
             $this->resourceAdapter->createTable($triggerTable);
         } else {
-            $this->deleteAllRecords($changeLogName);
+            $this->deleteAllRecords($deltaLogName);
         }
         foreach (Trigger::getListOfEvents() as $event) {
             $triggerName = 'trg_' . $documentName . '_after_' . strtolower($event);
-            $statement = $this->buildStatement($event, $idKey, $changeLogName);
+            $statement = $this->buildStatement($event, $idKey, $deltaLogName);
             $trigger = $this->triggerFactory->create()
                 ->setTime(Trigger::TIME_AFTER)
                 ->setEvent($event)
