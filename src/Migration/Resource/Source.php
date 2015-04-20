@@ -58,7 +58,7 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta($documentName, $this->getChangeLogName($documentName), $idKey);
+        $this->adapter->createDelta($documentName, $this->getDeltaLogName($documentName), $idKey);
     }
 
     /**
@@ -72,7 +72,7 @@ class Source extends AbstractResource
     {
         return $this->adapter->loadChangedRecords(
             $documentName,
-            $this->getChangeLogName($documentName),
+            $this->getDeltaLogName($documentName),
             $idKey,
             0,
             $this->getPageSize()
@@ -89,7 +89,7 @@ class Source extends AbstractResource
     public function getDeletedRecords($documentName, $idKey)
     {
         return $this->adapter->loadDeletedRecords(
-            $this->getChangeLogName($documentName),
+            $this->getDeltaLogName($documentName),
             $idKey,
             0,
             $this->getPageSize()
@@ -100,7 +100,7 @@ class Source extends AbstractResource
      * @param string $documentName
      * @return string
      */
-    public function getChangeLogName($documentName)
+    public function getDeltaLogName($documentName)
     {
         $maximumNameLength = 64;
         $documentName = 'm2_cl_' . $documentName;

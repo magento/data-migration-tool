@@ -9,14 +9,14 @@ atlassian*
 /.idea
 /.gitattributes
 /node_modules
-/etc/ce-1.9.1/changelog.xml
+/etc/ce-1.9.1/deltalog.xml
 /etc/ce-1.9.1/config.xml
 /etc/ce-1.9.1/list-eav.xml
 /etc/ce-1.9.1/map-eav.xml
 /etc/ce-1.9.1/map.xml
 /etc/ce-1.9.1/map-log.xml
 /etc/ce-1.9.1/settings.xml
-/etc/ee-1.14.1/changelog.xml
+/etc/ee-1.14.1/deltalog.xml
 /etc/ee-1.14.1/config.xml
 /etc/ee-1.14.1/list-eav.xml
 /etc/ee-1.14.1/map.xml
