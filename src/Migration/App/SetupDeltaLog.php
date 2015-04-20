@@ -10,7 +10,7 @@ use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
 use Migration\ProgressBar;
 
-class SetupDeltaLog  implements StageInterface
+class SetupDeltaLog implements StageInterface
 {
     /**
      * @var Source

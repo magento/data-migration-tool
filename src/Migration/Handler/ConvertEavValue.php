@@ -17,15 +17,26 @@ use Migration\Step\DatabaseStage;
  */
 class ConvertEavValue extends AbstractHandler implements HandlerInterface
 {
+    /**
+     * @var array
+     */
     protected $map;
+
+    /**
+     * @var array
+     */
     protected $attributeIds;
+
+    /**
+     * @var bool
+     */
     protected $canStart;
 
     /**
      * @param Config $config
      * @param Source $source
-     * @param $map
-     * @param $attributeCode
+     * @param string $map
+     * @param string $attributeCode
      * @throws Exception
      */
     public function __construct(Config $config, Source $source, $map, $attributeCode)
