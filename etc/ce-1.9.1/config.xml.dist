@@ -6,16 +6,22 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../config.xsd">
+    <steps mode="settings">
+        <step title="Settings step">
+            <integrity>Migration\Step\Settings</integrity>
+            <data>Migration\Step\Settings</data>
+        </step>
+        <step title="Stores step">
+            <integrity>Migration\Step\Stores</integrity>
+            <data>Migration\Step\Stores</data>
+            <volume>Migration\Step\Stores</volume>
+        </step>
+    </steps>
     <steps mode="data">
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
             <data>Migration\Step\Eav\Data</data>
             <volume>Migration\Step\Eav\Volume</volume>
-        </step>
-        <step title="Custom Customer Attributes Step">
-            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
-            <data>Migration\Step\CustomCustomerAttributes\Data</data>
-            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
         </step>
         <step title="Map step">
             <integrity>Migration\Step\Map\Integrity</integrity>
@@ -37,17 +43,8 @@
             <data>Migration\Step\Ratings</data>
             <volume>Migration\Step\Ratings</volume>
         </step>
-        <step title="SalesOrder step">
-            <integrity>Migration\Step\SalesOrder\Integrity</integrity>
-            <data>Migration\Step\SalesOrder\Data</data>
-            <volume>Migration\Step\SalesOrder\Volume</volume>
-        </step>
     </steps>
     <steps mode="delta">
-        <step title="Custom Customer Attributes Step">
-            <delta>Migration\Step\CustomCustomerAttributes\Delta</delta>
-            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
-        </step>
         <step title="Map step">
             <delta>Migration\Step\Map\Delta</delta>
             <volume>Migration\Step\Map\Volume</volume>
@@ -55,21 +52,6 @@
         <step title="Log Step">
             <delta>Migration\Step\Log\Delta</delta>
             <volume>Migration\Step\Log\Volume</volume>
-        </step>
-        <step title="SalesOrder step">
-            <delta>Migration\Step\SalesOrder\Delta</delta>
-            <volume>Migration\Step\SalesOrder\Volume</volume>
-        </step>
-    </steps>
-    <steps mode="settings">
-        <step title="Settings step">
-            <integrity>Migration\Step\Settings</integrity>
-            <data>Migration\Step\Settings</data>
-        </step>
-        <step title="Stores step">
-            <integrity>Migration\Step\Stores</integrity>
-            <data>Migration\Step\Stores</data>
-            <volume>Migration\Step\Stores</volume>
         </step>
     </steps>
     <source version="1.9.1">
@@ -84,7 +66,6 @@
         <eav_list_file>etc/ce-1.9.1/list-eav.xml.dist</eav_list_file>
         <log_map_file>etc/ce-1.9.1/map-log.xml.dist</log_map_file>
         <settings_map_file>etc/ce-1.9.1/settings.xml.dist</settings_map_file>
-        <sales_order_map_file>etc/ce-1.9.1/map-sales.xml.dist</sales_order_map_file>
         <changelog_map_file>etc/ce-1.9.1/changelog.xml.dist</changelog_map_file>
         <class_map>etc/class_map.php</class_map>
         <bulk_size>100</bulk_size>

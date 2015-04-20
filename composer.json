@@ -1,12 +1,12 @@
 {
     "name": "magento/migration-tool",
     "description": "Migration Tool",
-    "version": "0.42.0-beta2",
+    "version": "0.74.0-beta4",
     "require": {
         "symfony/console": "~2.3",
         "magento/framework": "*"
     },
     "autoload": {
-        "psr-4": {"Migration\\": "src/Migration"}
+        "psr-4": {"Migration\\": ["src/Migration", "tests/unit/testsuite/Migration"]}
     }
 }

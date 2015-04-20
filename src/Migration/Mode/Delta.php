@@ -94,9 +94,13 @@ USAGE;
                 } else {
                     throw new Exception('Delta delivering failed');
                 }
+
                 if (!empty($step['volume'])) {
                     $this->logger->info(sprintf('%s: %s', PHP_EOL . $stepName, 'volume'));
-                    $step['volume']->perform();
+                    $result = $step['volume']->perform();
+                    if (!$result) {
+                        throw new Exception('Volume check failed');
+                    }
                 }
             }
             $this->logger->info(PHP_EOL . 'Migration completed successfully');
