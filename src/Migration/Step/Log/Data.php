@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Log;
 
+use Migration\App\Step\StageInterface;
 use Migration\Handler;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderLog;
@@ -13,9 +14,9 @@ use Migration\Resource\Record;
 use Migration\ProgressBar;
 
 /**
- * Class Migrate
+ * Class Data
  */
-class Migrate
+class Data implements StageInterface
 {
     /**
      * @var Resource\Source

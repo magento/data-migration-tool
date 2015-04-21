@@ -5,10 +5,10 @@
  */
 namespace Migration\Step\UrlRewrite;
 
-use Migration\App\Step\StepInterface;
-use Migration\Step\DatabaseStep;
+use Migration\App\Step\StageInterface;
+use Migration\Step\DatabaseStage;
 
-class Version11410to2000 extends DatabaseStep implements StepInterface
+class Version11410to2000 extends DatabaseStage implements StageInterface
 {
     /**
      * Temporary table name
@@ -68,6 +68,11 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @var \Migration\Logger\Logger
      */
     protected $logger;
+
+    /**
+     * @var string
+     */
+    protected $stage;
 
     /**
      * @var bool
@@ -161,7 +166,8 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @param \Migration\Resource\Destination $destination
      * @param \Migration\Resource\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\Resource\RecordFactory $recordFactory
-     * @throws \Exception
+     * @param string $stage
+     * @throws \Migration\Exception
      */
     public function __construct(
         \Migration\ProgressBar $progress,
@@ -170,7 +176,8 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         \Migration\Resource\Source $source,
         \Migration\Resource\Destination $destination,
         \Migration\Resource\Record\CollectionFactory $recordCollectionFactory,
-        \Migration\Resource\RecordFactory $recordFactory
+        \Migration\Resource\RecordFactory $recordFactory,
+        $stage
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
@@ -179,13 +186,29 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
+        $this->stage = $stage;
         parent::__construct($config);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function run()
+    public function perform()
+    {
+        if (!method_exists($this, $this->stage)) {
+            throw new \Exception('Invalid step configuration');
+        }
+
+        return call_user_func([$this, $this->stage]);
+    }
+
+    /**
+     * Data migration
+     *
+     * @return bool
+     * @throws \Migration\Exception
+     */
+    protected function data()
     {
         $this->getRewritesSelect();
         $this->progress->start($this->getIterationsCount());
@@ -366,7 +389,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
     /**
      * {@inheritdoc}
      */
-    public function integrity()
+    protected function integrity()
     {
         $errors = false;
         $this->progress->start(count($this->structure['source']) + count($this->structure['destination']));
@@ -430,7 +453,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
     /**
      * {@inheritdoc}
      */
-    public function volumeCheck()
+    protected function volume()
     {
         $this->progress->start(1);
         $this->getRewritesSelect();
@@ -439,14 +462,6 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
             == $this->destination->getRecordsCount('url_rewrite');
         $this->progress->finish();
         return $result;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return "Url Rewrite step";
     }
 
     /**
@@ -470,8 +485,11 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
         $subSelect->group(['request_path', 'store_id'])
             ->having('COUNT(*) > 1');
 
+        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+
         /** @var \Magento\Framework\DB\Select $select */
-        $select = $this->source->getAdapter()->getSelect();
+        $select = $adapter->getSelect();
         $select->from(['t' => $this->source->addDocumentPrefix($this->tableName)], ['t.*'])
             ->join(
                 ['t2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
@@ -479,7 +497,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
                 []
             )
             ->order(['store_id', 'request_path', 'priority']);
-        $resultData = $this->source->getAdapter()->loadDataFromSelect($select);
+        $resultData = $adapter->loadDataFromSelect($select);
 
         return $resultData;
     }
@@ -572,7 +590,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->getAdapter()->dropTable($this->source->addDocumentPrefix($this->tableName));
@@ -641,7 +659,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(
@@ -675,7 +693,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
     {
         /** @var \Magento\Framework\Db\Select $select */
         $select = $adapter->getSelect();
@@ -878,7 +896,7 @@ class Version11410to2000 extends DatabaseStep implements StepInterface
      * @param \Migration\Resource\Adapter\Mysql $adapter
      * @return void
      */
-    public function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(

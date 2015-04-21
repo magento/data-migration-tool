@@ -29,33 +29,32 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $integrityMap = $objectManager->create('\Migration\Step\Map\Integrity');
-        $runMap = $objectManager->create('\Migration\Step\Map\Migrate', ['progress' => $progress]);
-        $volume = $objectManager->create('\Migration\Step\Map\Volume');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
 
-        ob_start();
-        /**
-         * @var \Migration\Step\Map $map
-         */
-        $map = $objectManager->create(
-            '\Migration\Step\Map',
+        $data = $objectManager->create(
+            '\Migration\Step\Map\Data',
             [
-                'integrity' => $integrityMap,
-                'run' => $runMap,
-                'volume' => $volume,
                 'logger' => $logger,
                 'map' => $mapReader,
-                'config' => $config
+                'config' => $config,
+                'progress' => $progress
+            ]
+        );
+        $volume = $objectManager->create(
+            '\Migration\Step\Map\Volume',
+            [
+                'logger' => $logger,
+                'map' => $mapReader,
+                'config' => $config,
             ]
         );
         ob_start();
-        $map->run();
-        $isSuccess = $map->volumeCheck();
+        $data->perform();
+        $isSuccess = $volume->perform();
         ob_end_clean();
 
         $this->assertTrue($isSuccess);

@@ -67,8 +67,7 @@ interface MapReaderInterface
     public function getHandlerConfig($document, $field, $type);
 
     /**
-     * @param array $documents
      * @return array
      */
-    public function getDeltaDocuments($documents);
+    public function getDeltaDocuments();
 }

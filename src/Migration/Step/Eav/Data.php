@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\Eav;
 
+use Migration\App\Step\StageInterface;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderEav;
 use Migration\ProgressBar;
@@ -15,10 +16,10 @@ use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
 
 /**
- * Class Migrate
+ * Class Data
  * @codeCoverageIgnoreStart
  */
-class Migrate
+class Data implements StageInterface
 {
     /**
      * @var array;
@@ -127,6 +128,7 @@ class Migrate
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
+        $this->initialData->init();
         $this->migrateAttributeSetsAndGroups();
         $this->migrateAttributes();
         $this->migrateEntityAttributes();

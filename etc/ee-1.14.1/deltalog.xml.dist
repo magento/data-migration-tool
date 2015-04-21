@@ -27,21 +27,6 @@
                 <document key="visitor_id">log_visitor</document>
             </log_changes>
             <log_changes>
-                <document key="url_id">log_url_info</document>
-            </log_changes>
-            <log_changes>
-                <document key="url_id">log_url</document>
-            </log_changes>
-            <log_changes>
-                <document key="log_id">log_customer</document>
-            </log_changes>
-            <log_changes>
-                <document key="visitor_id">log_visitor</document>
-            </log_changes>
-            <log_changes>
-                <document key="quote_id">log_quote</document>
-            </log_changes>
-            <log_changes>
                 <document key="entity_id">customer_entity</document>
             </log_changes>
             <log_changes>
@@ -289,9 +274,6 @@
             </log_changes>
             <log_changes>
                 <document key="gift_message_id">gift_message</document>
-            </log_changes>
-            <log_changes>
-                <document key="visitor_id">log_visitor_info</document>
             </log_changes>
             <log_changes>
                 <document key="address_item_id">sales_flat_quote_address_item</document>

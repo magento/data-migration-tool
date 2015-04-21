@@ -5,8 +5,8 @@
  */
 namespace Migration\Mode;
 
-use Migration\App\Step\DeltaInterface;
 use Migration\App\Step\Progress;
+use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 
@@ -18,7 +18,7 @@ class Delta implements \Migration\App\Mode\ModeInterface
     /**
      * @var \Migration\App\Mode\StepList
      */
-    protected $stepList;
+    protected $stepListFactory;
 
     /**
      * @var Logger
@@ -38,18 +38,18 @@ class Delta implements \Migration\App\Mode\ModeInterface
     /**
      * @param Progress $progress
      * @param Logger $logger
-     * @param \Migration\App\Mode\StepList $stepList
+     * @param \Migration\App\Mode\StepListFactory $stepListFactory
      * @param int $autoRestart
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
-        \Migration\App\Mode\StepList $stepList,
+        \Migration\App\Mode\StepListFactory $stepListFactory,
         $autoRestart = 5
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
-        $this->stepList = $stepList;
+        $this->stepListFactory = $stepListFactory;
         $this->autoRestart = $autoRestart;
     }
 
@@ -73,25 +73,37 @@ USAGE;
     public function run()
     {
         do {
-            $steps = $this->stepList->getSteps('delta');
-            foreach ($steps as $step) {
-                if ($step instanceof DeltaInterface) {
-                    $this->logger->info(sprintf('%s: %s', PHP_EOL . $step->getTitle(), 'delta'));
-                    try {
-                        $result = $step->delta();
-                    } catch (\Exception $e) {
-                        $this->logger->error(PHP_EOL . $e->getMessage());
-                        $result = false;
-                    }
-                    if ($result) {
-                        $this->progress->saveResult($step, 'delta', $result);
-                    } else {
-                        throw new Exception('Delta delivering failed');
+            $steps = $this->stepListFactory->create(['mode' => 'delta']);
+            /**
+             * @var string $stepName
+             * @var StageInterface[] $step
+             */
+            foreach ($steps->getSteps() as $stepName => $step) {
+                if (empty($step['delta'])) {
+                    continue;
+                }
+                $this->logger->info(sprintf('%s: %s', PHP_EOL . $stepName, 'delta'));
+                try {
+                    $result = $step['delta']->perform();
+                } catch (\Exception $e) {
+                    $this->logger->error(PHP_EOL . $e->getMessage());
+                    $result = false;
+                }
+                if ($result) {
+                    $this->progress->saveResult($step['delta'], 'delta', $result);
+                } else {
+                    throw new Exception('Delta delivering failed');
+                }
+
+                if (!empty($step['volume'])) {
+                    $this->logger->info(sprintf('%s: %s', PHP_EOL . $stepName, 'volume'));
+                    $result = $step['volume']->perform();
+                    if (!$result) {
+                        throw new Exception('Volume check failed');
                     }
                 }
             }
             $this->logger->info(PHP_EOL . 'Migration completed successfully');
-            $this->progress->clearLockFile();
             if ($this->autoRestart) {
                 $this->logger->info(PHP_EOL . "Automatic restart in {$this->autoRestart} sec. Use CTRL-C to abort");
                 sleep($this->autoRestart);

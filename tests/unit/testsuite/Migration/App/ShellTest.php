@@ -115,7 +115,11 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $mode->expects($this->any())->method('run')->willThrowException($exception);
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
 
-        $this->logger->expects($this->exactly(2))->method('error');
+        $this->logger->expects($this->at(2))->method('error')->with(
+            'Application failed with exception: test error message',
+            []
+        );
+        $this->logger->expects($this->at(3))->method('error')->with($this->stringContains('{main}'));
         $this->shell->run();
     }
 
@@ -128,7 +132,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             new \Migration\Exception('test error message')
         );
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
-        $this->logger->expects($this->once())->method('error')->with('Migration tool exception: test error message');
+        $this->logger->expects($this->once())->method('error')->with($this->stringContains('test error message'));
         $this->shell->run();
     }
 

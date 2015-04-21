@@ -5,7 +5,7 @@
  */
 namespace Migration\Step;
 
-use Migration\App\Step\StepInterface;
+use Migration\App\Step\StageInterface;
 use Migration\MapReader;
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
@@ -19,7 +19,7 @@ use Migration\Handler;
 /**
  * Class Settings
  */
-class Settings implements StepInterface
+class Settings implements StageInterface
 {
     const CONFIG_TABLE_NAME_SOURCE = 'core_config_data';
     const CONFIG_TABLE_NAME_DESTINATION = 'core_config_data';
@@ -65,14 +65,19 @@ class Settings implements StepInterface
     protected $handlerManagerFactory;
 
     /**
+     * @var string
+     */
+    protected $stage;
+
+    /**
      * @param Destination $destination
      * @param Source $source
      * @param Logger $logger
      * @param ProgressBar $progress
      * @param Resource\RecordFactory $recordFactory
-     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapReader\Settings $mapReader
      * @param Handler\ManagerFactory $handlerManagerFactory
+     * @param string $stage
      */
     public function __construct(
         Destination $destination,
@@ -81,7 +86,8 @@ class Settings implements StepInterface
         ProgressBar $progress,
         Resource\RecordFactory $recordFactory,
         MapReader\Settings $mapReader,
-        Handler\ManagerFactory $handlerManagerFactory
+        Handler\ManagerFactory $handlerManagerFactory,
+        $stage
     ) {
         $this->destination = $destination;
         $this->source = $source;
@@ -90,12 +96,25 @@ class Settings implements StepInterface
         $this->recordFactory = $recordFactory;
         $this->mapReader = $mapReader;
         $this->handlerManagerFactory = $handlerManagerFactory;
+        $this->stage = $stage;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function integrity()
+    public function perform()
+    {
+        if (!method_exists($this, $this->stage)) {
+            throw new \Exception('Invalid step configuration');
+        }
+
+        return call_user_func([$this, $this->stage]);
+    }
+
+    /**
+     * @return bool
+     */
+    protected function integrity()
     {
         $this->progress->start(1);
         $this->progress->advance();
@@ -124,9 +143,10 @@ class Settings implements StepInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
+     * @throws \Migration\Exception
      */
-    public function run()
+    protected function data()
     {
         $destinationDocument = $this->destination->getDocument(self::CONFIG_TABLE_NAME_DESTINATION);
         $recordsCountSource = $this->source->getRecordsCount(self::CONFIG_TABLE_NAME_SOURCE);
@@ -207,21 +227,5 @@ class Settings implements StepInterface
         $handlerManager = $this->handlerManagerFactory->create();
         $handlerManager->initHandler(self::CONFIG_FIELD_VALUE, $handlerConfig, $path);
         return $handlerManager->getHandler($path);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function volumeCheck()
-    {
-        return true;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getTitle()
-    {
-        return 'Settings step';
     }
 }

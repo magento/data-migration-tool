@@ -10,7 +10,7 @@ use Migration\MapReaderInterface;
 use Migration\Resource\Source;
 use Migration\Resource;
 
-abstract class AbstractDelta
+abstract class AbstractDelta implements StageInterface
 {
     /**
      * @var Source
@@ -70,10 +70,10 @@ abstract class AbstractDelta
      * @return bool
      * @throws \Migration\Exception
      */
-    public function delta()
+    public function perform()
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
-        $deltaDocuments = $this->mapReader->getDeltaDocuments($this->source->getDocumentList());
+        $deltaDocuments = $this->mapReader->getDeltaDocuments();
         foreach ($deltaDocuments as $documentName => $idKey) {
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
@@ -88,7 +88,7 @@ abstract class AbstractDelta
             if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
                 continue;
             }
-            $this->logger->debug(sprintf(PHP_EOL . '%s have changes', $documentName));
+            $this->logger->debug(sprintf(PHP_EOL . '%s has changes', $documentName));
 
             $this->processDeletedRecords($documentName, $idKey, $destinationName);
             $this->processChangedRecords($documentName, $idKey);

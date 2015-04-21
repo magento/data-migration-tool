@@ -6,33 +6,83 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../config.xsd">
+    <steps mode="settings">
+        <step title="Settings step">
+            <integrity>Migration\Step\Settings</integrity>
+            <data>Migration\Step\Settings</data>
+        </step>
+        <step title="Stores step">
+            <integrity>Migration\Step\Stores</integrity>
+            <data>Migration\Step\Stores</data>
+            <volume>Migration\Step\Stores</volume>
+        </step>
+    </steps>
     <steps mode="data">
-        <step>Migration\Step\Eav</step>
-        <step>Migration\Step\CustomCustomerAttributes</step>
-        <step>Migration\Step\Map</step>
-        <step>Migration\Step\UrlRewrite</step>
-        <step>Migration\Step\Log</step>
-        <step>Migration\Step\Ratings</step>
-        <step>Migration\Step\SalesOrder</step>
+        <step title="EAV Step">
+            <integrity>Migration\Step\Eav\Integrity</integrity>
+            <data>Migration\Step\Eav\Data</data>
+            <volume>Migration\Step\Eav\Volume</volume>
+        </step>
+        <step title="Custom Customer Attributes Step">
+            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
+            <data>Migration\Step\CustomCustomerAttributes\Data</data>
+            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
+        </step>
+        <step title="Map step">
+            <integrity>Migration\Step\Map\Integrity</integrity>
+            <data>Migration\Step\Map\Data</data>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Url Rewrite step">
+            <integrity>Migration\Step\UrlRewrite\Version11410to2000</integrity>
+            <data>Migration\Step\UrlRewrite\Version11410to2000</data>
+            <volume>Migration\Step\UrlRewrite\Version11410to2000</volume>
+        </step>
+        <step title="Log Step">
+            <integrity>Migration\Step\Log\Integrity</integrity>
+            <data>Migration\Step\Log\Data</data>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="Ratings step">
+            <integrity>Migration\Step\Ratings</integrity>
+            <data>Migration\Step\Ratings</data>
+            <volume>Migration\Step\Ratings</volume>
+        </step>
+        <step title="SalesOrder step">
+            <integrity>Migration\Step\SalesOrder\Integrity</integrity>
+            <data>Migration\Step\SalesOrder\Data</data>
+            <volume>Migration\Step\SalesOrder\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
-        <step>Migration\Step\CustomCustomerAttributes</step>
-        <step>Migration\Step\Map</step>
-        <step>Migration\Step\Log</step>
-        <step>Migration\Step\SalesOrder</step>
+        <step title="Custom Customer Attributes Step">
+            <delta>Migration\Step\CustomCustomerAttributes\Delta</delta>
+            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
+        </step>
+        <step title="Map step">
+            <delta>Migration\Step\Map\Delta</delta>
+        </step>
+        <step title="Log Step">
+            <delta>Migration\Step\Log\Delta</delta>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="SalesOrder step">
+            <delta>Migration\Step\SalesOrder\Delta</delta>
+            <volume>Migration\Step\SalesOrder\Volume</volume>
+        </step>
     </steps>
     <source version="1.14.1.0">
-        <database host="localhost" name="mageone" user="root"/>
+        <database host="localhost" name="magento1" user="root"/>
     </source>
     <destination version="2.0.0.0">
-        <database host="localhost" name="magetwo" user="root"/>
+        <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
         <map_file>etc/ee-1.14.1/map.xml.dist</map_file>
         <eav_map_file>etc/ee-1.14.1/map-eav.xml.dist</eav_map_file>
         <eav_list_file>etc/ee-1.14.1/list-eav.xml.dist</eav_list_file>
         <log_map_file>etc/ee-1.14.1/map-log.xml.dist</log_map_file>
-        <settings_map_file>etc/1.14.1/settings.xml.dist</settings_map_file>
+        <settings_map_file>etc/ee-1.14.1/settings.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ee-1.14.1/map-sales.xml.dist</sales_order_map_file>
         <deltalog_map_file>etc/ee-1.14.1/deltalog.xml.dist</deltalog_map_file>
         <class_map>etc/class_map_ee.php</class_map>

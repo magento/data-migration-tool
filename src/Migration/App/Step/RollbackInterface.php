@@ -9,7 +9,7 @@ namespace Migration\App\Step;
 /**
  * Interface RollbackInterface
  */
-interface RollbackInterface extends StepInterface
+interface RollbackInterface extends StageInterface
 {
     /**
      * Perform rollback

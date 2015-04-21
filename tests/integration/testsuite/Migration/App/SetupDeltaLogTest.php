@@ -26,7 +26,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         );
 
         ob_start();
-        $this->assertTrue($setupDeltaLog->setupDeltaLog());
+        $this->assertTrue($setupDeltaLog->perform());
         ob_end_clean();
 
         $dataTable = 'table_with_data';

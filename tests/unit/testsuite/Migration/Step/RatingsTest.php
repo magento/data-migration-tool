@@ -72,11 +72,11 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->document = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
         $this->progress = $this->getMock('Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
-        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress);
     }
 
     public function testIntegrity()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'integrity');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->once())->method('finish');
@@ -84,11 +84,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->structure->expects($this->once())->method('getFields')->willReturn(['is_active' => []]);
         $this->document->expects($this->once())->method('getStructure')->willReturn($this->structure);
         $this->destination->expects($this->once())->method('getDocument')->with('rating')->willReturn($this->document);
-        $this->assertTrue($this->ratings->integrity());
+        $this->assertTrue($this->ratings->perform());
     }
 
     public function testIntegrityDocumentsFail()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'integrity');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->never())->method('finish');
@@ -103,11 +104,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
                 'Integrity check failed due to "rating" or "rating_store" documents do not exist in the'
                 . ' destination resource'
             );
-        $this->assertFalse($this->ratings->integrity());
+        $this->assertFalse($this->ratings->perform());
     }
 
     public function testIntegrityFieldFail()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'integrity');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->never())->method('finish');
@@ -122,11 +124,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
                 'Integrity check failed due to "is_active" field does not exist in "rating" document of '
                 . 'the destination resource'
             );
-        $this->assertFalse($this->ratings->integrity());
+        $this->assertFalse($this->ratings->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'data');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->once())->method('finish');
@@ -151,11 +154,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->expects($this->once())
             ->method('updateDocument')
             ->with('rating', ['is_active' => 1], 'rating_id IN (1)');
-        $this->ratings->run();
+        $this->ratings->perform();
     }
 
     public function testVolumeCheck()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'volume');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->once())->method('finish');
@@ -178,11 +182,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->select->expects($this->at(2))->method('from')->with('rating', ['rating_id'])->will($this->returnSelf());
         $this->select->expects($this->at(3))->method('where')->with('is_active = ?', 1)->will($this->returnSelf());
         $this->logger->expects($this->never())->method('error');
-        $this->assertTrue($this->ratings->volumeCheck());
+        $this->assertTrue($this->ratings->perform());
     }
 
     public function testVolumeCheckFailed()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'volume');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
         $this->progress->expects($this->never())->method('finish');
@@ -225,16 +230,12 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
                 'Volume check failed due to discrepancy in "rating" and "rating_store" documents in the'
                 . ' destination resource'
             );
-        $this->assertFalse($this->ratings->volumeCheck());
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Ratings step', $this->ratings->getTitle());
+        $this->assertFalse($this->ratings->perform());
     }
 
     public function testRollback()
     {
+        $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'data');
         $this->assertTrue($this->ratings->rollback());
     }
 }

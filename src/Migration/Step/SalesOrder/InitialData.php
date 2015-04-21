@@ -43,6 +43,7 @@ class InitialData
         $this->source = $source;
         $this->destination = $destination;
         $this->helper = $helper;
+        $this->init();
     }
 
     /**

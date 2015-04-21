@@ -66,6 +66,21 @@
                 <document>log_customer</document>
             </ignore>
             <ignore>
+                <document>log_quote</document>
+            </ignore>
+            <ignore>
+                <document>log_summary_type</document>
+            </ignore>
+            <ignore>
+                <document>log_url</document>
+            </ignore>
+            <ignore>
+                <document>log_url_info</document>
+            </ignore>
+            <ignore>
+                <document>log_summary</document>
+            </ignore>
+            <ignore>
                 <document>catalog_category_anc_categs_index_idx</document>
             </ignore>
             <ignore>
@@ -124,9 +139,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_index_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cl</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_price_bundle_idx</document>
@@ -647,18 +659,6 @@
                 <to>sales_shipment_track</to>
             </rename>
             <log_changes>
-                <document key="url_id">log_url_info</document>
-            </log_changes>
-            <log_changes>
-                <document key="url_id">log_url</document>
-            </log_changes>
-            <log_changes>
-                <document key="log_id">log_customer</document>
-            </log_changes>
-            <log_changes>
-                <document key="quote_id">log_quote</document>
-            </log_changes>
-            <log_changes>
                 <document key="entity_id">customer_entity</document>
             </log_changes>
             <log_changes>
@@ -684,9 +684,6 @@
             </log_changes>
             <log_changes>
                 <document key="item_id">cataloginventory_stock_item</document>
-            </log_changes>
-            <log_changes>
-                <document key="version_id">catalog_product_index_price_cl</document>
             </log_changes>
             <log_changes>
                 <document key="message_id">core_email_queue</document>
@@ -1041,6 +1038,9 @@
     <destination>
         <document_rules>
             <ignore>
+                <document>migration_backup_*</document>
+            </ignore>
+            <ignore>
                 <document>googleoptimizer_code</document>
             </ignore>
             <ignore>
@@ -1165,6 +1165,21 @@
             </ignore>
             <ignore>
                 <document>log_customer</document>
+            </ignore>
+            <ignore>
+                <document>log_quote</document>
+            </ignore>
+            <ignore>
+                <document>log_summary_type</document>
+            </ignore>
+            <ignore>
+                <document>log_summary</document>
+            </ignore>
+            <ignore>
+                <document>log_url</document>
+            </ignore>
+            <ignore>
+                <document>log_url_info</document>
             </ignore>
             <ignore>
                 <document>session</document>

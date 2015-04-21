@@ -48,6 +48,21 @@
                 <document>log_customer</document>
             </ignore>
             <ignore>
+                <document>log_quote</document>
+            </ignore>
+            <ignore>
+                <document>log_summary_type</document>
+            </ignore>
+            <ignore>
+                <document>log_summary</document>
+            </ignore>
+            <ignore>
+                <document>log_url</document>
+            </ignore>
+            <ignore>
+                <document>log_url_info</document>
+            </ignore>
+            <ignore>
                 <document>catalog_category_anc_categs_index_idx</document>
             </ignore>
             <ignore>
@@ -1022,18 +1037,6 @@
                 <to>magento_targetrule_product</to>
             </rename>
             <log_changes>
-                <document key="url_id">log_url_info</document>
-            </log_changes>
-            <log_changes>
-                <document key="url_id">log_url</document>
-            </log_changes>
-            <log_changes>
-                <document key="log_id">log_customer</document>
-            </log_changes>
-            <log_changes>
-                <document key="quote_id">log_quote</document>
-            </log_changes>
-            <log_changes>
                 <document key="entity_id">customer_entity</document>
             </log_changes>
             <log_changes>
@@ -1649,6 +1652,21 @@
             </ignore>
             <ignore>
                 <document>log_customer</document>
+            </ignore>
+            <ignore>
+                <document>log_quote</document>
+            </ignore>
+            <ignore>
+                <document>log_summary_type</document>
+            </ignore>
+            <ignore>
+                <document>log_summary</document>
+            </ignore>
+            <ignore>
+                <document>log_url</document>
+            </ignore>
+            <ignore>
+                <document>log_url_info</document>
             </ignore>
             <ignore>
                 <document>session</document>

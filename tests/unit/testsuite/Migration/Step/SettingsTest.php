@@ -74,15 +74,6 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->handlerManagerFactory = $this->getMock('Migration\Handler\ManagerFactory', ['create'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
         $this->progress = $this->getMock('Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
-        $this->settings = new Settings(
-            $this->destination,
-            $this->source,
-            $this->logger,
-            $this->progress,
-            $this->recordFactory,
-            $this->mapReader,
-            $this->handlerManagerFactory
-        );
     }
 
 
@@ -93,7 +84,17 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('finish');
         $this->source->expects($this->once())->method('getDocumentList')->willReturn(['core_config_data']);
         $this->destination->expects($this->once())->method('getDocumentList')->willReturn(['core_config_data']);
-        $this->assertTrue($this->settings->integrity());
+        $this->settings = new Settings(
+            $this->destination,
+            $this->source,
+            $this->logger,
+            $this->progress,
+            $this->recordFactory,
+            $this->mapReader,
+            $this->handlerManagerFactory,
+            'integrity'
+        );
+        $this->assertTrue($this->settings->perform());
     }
 
     public function testIntegritySourceFail()
@@ -108,7 +109,17 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             ->with(
                 'Integrity check failed due to "core_config_data" document does not exist in the source resource'
             );
-        $this->assertFalse($this->settings->integrity());
+        $this->settings = new Settings(
+            $this->destination,
+            $this->source,
+            $this->logger,
+            $this->progress,
+            $this->recordFactory,
+            $this->mapReader,
+            $this->handlerManagerFactory,
+            'integrity'
+        );
+        $this->assertFalse($this->settings->perform());
     }
 
     public function testIntegrityDestinationFail()
@@ -124,10 +135,20 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             ->with(
                 'Integrity check failed due to "core_config_data" document does not exist in the destination resource'
             );
-        $this->assertFalse($this->settings->integrity());
+        $this->settings = new Settings(
+            $this->destination,
+            $this->source,
+            $this->logger,
+            $this->progress,
+            $this->recordFactory,
+            $this->mapReader,
+            $this->handlerManagerFactory,
+            'integrity'
+        );
+        $this->assertFalse($this->settings->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
         $count = 2;
         $sourceRecords = [
@@ -171,65 +192,43 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->exactly($count))->method('advance');
         $this->progress->expects($this->once())->method('finish');
         $this->source->expects($this->once())->method('getRecordsCount')->with('core_config_data')->willReturn($count);
-        $this->source->expects($this->once())
-            ->method('getRecords')
-            ->with('core_config_data', 0, $count)
+        $this->source->expects($this->once())->method('getRecords')->with('core_config_data', 0, $count)
             ->willReturn($sourceRecords);
-        $this->destination
-            ->expects($this->once())
-            ->method('getRecordsCount')
-            ->with('core_config_data')
+        $this->destination->expects($this->once())->method('getRecordsCount')->with('core_config_data')
             ->willReturn($count);
-        $this->destination
-            ->expects($this->once())
-            ->method('getDocument')
-            ->with('core_config_data')
+        $this->destination->expects($this->once())->method('getDocument')->with('core_config_data')
             ->willReturn($document);
         $this->destination->expects($this->once())->method('clearDocument')->with('core_config_data');
-        $this->destination
-            ->expects($this->once())
-            ->method('saveRecords')
+        $this->destination->expects($this->once())->method('saveRecords')
             ->with('core_config_data', $destinationRecordsFinal);
-        $this->destination->expects($this->once())
-            ->method('getRecords')
-            ->with('core_config_data', 0, $count)
+        $this->destination->expects($this->once())->method('getRecords')->with('core_config_data', 0, $count)
             ->willReturn($destinationRecords);
         $this->mapReader->expects($this->any())->method('isNodeIgnored')->willReturn(false);
         $this->mapReader->expects($this->any())->method('getNodeMap')->willReturnMap($pathMapped);
         $this->mapReader->expects($this->any())->method('getValueHandler')->willReturnMap($handlerParams);
-        $this->recordFactory
-            ->expects($this->at(0))
-            ->method('create')
+        $this->recordFactory->expects($this->at(0))->method('create')
             ->with(['document' => $document, 'data' => $sourceRecords[0]])
             ->willReturn($sourceRecord);
-        $this->recordFactory
-            ->expects($this->at(1))
-            ->method('create')
+        $this->recordFactory->expects($this->at(1))->method('create')
             ->with(['document' => $document, 'data' => $destinationRecords[0]])
             ->willReturn($destinationRecord);
-        $this->recordFactory
-            ->expects($this->at(2))
-            ->method('create')
+        $this->recordFactory->expects($this->at(2))->method('create')
             ->with(['document' => $document, 'data' => $sourceRecords[1]])
             ->willReturn($sourceRecord);
-        $this->recordFactory
-            ->expects($this->at(3))
-            ->method('create')
+        $this->recordFactory->expects($this->at(3))->method('create')
             ->with(['document' => $document, 'data' => []])
             ->willReturn($destinationRecord);
-        $this->handlerManagerFactory
-            ->expects($this->once())
-            ->method('create')->willReturn($handlerManager);
-        $this->assertTrue($this->settings->run());
-    }
-
-    public function testVolumeCheck()
-    {
-        $this->assertTrue($this->settings->volumeCheck());
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Settings step', $this->settings->getTitle());
+        $this->handlerManagerFactory->expects($this->once())->method('create')->willReturn($handlerManager);
+        $this->settings = new Settings(
+            $this->destination,
+            $this->source,
+            $this->logger,
+            $this->progress,
+            $this->recordFactory,
+            $this->mapReader,
+            $this->handlerManagerFactory,
+            'data'
+        );
+        $this->assertTrue($this->settings->perform());
     }
 }

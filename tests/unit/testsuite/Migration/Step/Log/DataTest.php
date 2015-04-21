@@ -10,7 +10,7 @@ use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
 
 /**
- * Class MigrateTest
+ * Class DataTest
  */
 class MigrateTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,7 +35,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReaderLog
+     * @var MapReaderLog|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -45,9 +45,9 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $recordTransformerFactory;
 
     /**
-     * @var Migrate|\PHPUnit_Framework_MockObject_MockObject
+     * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $log;
+    protected $data;
 
     public function setUp()
     {
@@ -77,7 +77,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderLog')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'init', 'getDocumentList', 'getDestDocumentsToClear'])
             ->getMock();
-        $this->log = new Migrate(
+        $this->data = new Data(
             $this->progress,
             $this->source,
             $this->destination,
@@ -126,7 +126,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->exactly(2))->method('clearDocument');
-        $this->log->perform();
+        $this->data->perform();
     }
 
     public function testGetMapEmptyDestinationDocumentName()
@@ -136,6 +136,6 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $recordTransformer = $this->getMock('Migration\RecordTransformer', ['transform'], [], '', false);
         $recordTransformer->expects($this->never())->method('transform');
-        $this->log->perform();
+        $this->data->perform();
     }
 }

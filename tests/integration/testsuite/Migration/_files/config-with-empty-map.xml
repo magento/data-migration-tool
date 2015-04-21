@@ -18,7 +18,7 @@
         <eav_map_file>tests/integration/testsuite/Migration/_files/eav-map.xml</eav_map_file>
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
-        <sales_order_map_file>test/integration/testsuite/Migration_files/map-sales.xml</sales_order_map_file>
+        <sales_order_map_file>test/integration/testsuite/Migration/_files/map/sales.xml</sales_order_map_file>
         <bulk_size>100</bulk_size>
     </options>
 </config>

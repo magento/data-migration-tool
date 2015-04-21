@@ -13,11 +13,6 @@ namespace Migration\Step\UrlRewrite;
 class Version191to2000Test extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Step\UrlRewrite\Version191to2000
-     */
-    protected $version;
-
-    /**
      * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
@@ -71,24 +66,19 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             false
         );
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
-
-        $this->version = new \Migration\Step\UrlRewrite\Version191to2000(
-            $this->config,
-            $this->source,
-            $this->destination,
-            $this->progress,
-            $this->recordFactory
-        );
-    }
-
-    public function testGetTitle()
-    {
-        $this->assertEquals('Url Rewrites Step', $this->version->getTitle());
     }
 
     public function testRollback()
     {
-        $this->assertTrue($this->version->rollback());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'data'
+        );
+        $this->assertTrue($version->rollback());
     }
 
     public function testIntegrity()
@@ -144,10 +134,19 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())
             ->method('finish')
             ->willReturnSelf();
-        $this->assertTrue($this->version->integrity());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'integrity'
+        );
+
+        $this->assertTrue($version->perform());
     }
 
-    public function testRun()
+    public function testData()
     {
         $this->source->expects($this->once())
             ->method('getRecordsCount')
@@ -179,9 +178,12 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION_PRODUCT_CATEGORY))
             ->willReturn($destinationProductCategory);
 
-        $this->destination->expects($this->once())
+        $this->destination->expects($this->exactly(2))
             ->method('clearDocument')
-            ->with(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION);
+            ->withConsecutive(
+                [\Migration\Step\UrlRewrite\Version191to2000::DESTINATION],
+                [\Migration\Step\UrlRewrite\Version191to2000::DESTINATION_PRODUCT_CATEGORY]
+            );
 
         $this->source->expects($this->at(2))
             ->method('getRecords')
@@ -228,11 +230,19 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('getRecords')
             ->willReturn($this->recordCollection);
 
-        $this->assertTrue($this->version->run());
+        $version = new \Migration\Step\UrlRewrite\Version191to2000(
+            $this->config,
+            $this->source,
+            $this->destination,
+            $this->progress,
+            $this->recordFactory,
+            'data'
+        );
+        $this->assertTrue($version->perform());
     }
 
     /**
-     * @param $sourceRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $sourceRecord
      */
     private function mockSourceRecordGetters($sourceRecord)
     {
@@ -252,7 +262,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $destinationRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $destinationRecord
      */
     private function mockDestinationRecordSetters($destinationRecord)
     {
@@ -298,7 +308,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $destinationCategoryRecord
+     * @param \PHPUnit_Framework_MockObject_MockObject $destinationCategoryRecord
      */
     private function mockDestinationCategorySetters($destinationCategoryRecord)
     {

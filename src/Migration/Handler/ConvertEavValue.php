@@ -10,27 +10,38 @@ use Migration\Resource\Record;
 use Migration\Resource\Source;
 use Migration\Config;
 use Migration\Exception;
-use Migration\Step\DatabaseStep;
+use Migration\Step\DatabaseStage;
 
 /**
  * Class ConverEavValue
  */
 class ConvertEavValue extends AbstractHandler implements HandlerInterface
 {
+    /**
+     * @var array
+     */
     protected $map;
+
+    /**
+     * @var array
+     */
     protected $attributeIds;
+
+    /**
+     * @var bool
+     */
     protected $canStart;
 
     /**
      * @param Config $config
      * @param Source $source
-     * @param $map
-     * @param $attributeCode
+     * @param string $map
+     * @param string $attributeCode
      * @throws Exception
      */
     public function __construct(Config $config, Source $source, $map, $attributeCode)
     {
-        $this->canStart = $config->getSource()['type'] == DatabaseStep::SOURCE_TYPE;
+        $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
         if ($this->canStart) {
             $map = rtrim($map, ']');
             $map = ltrim($map, '[');
