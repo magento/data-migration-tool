@@ -5,6 +5,7 @@
  */
 namespace Migration\Step\UrlRewrite;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Document;
@@ -12,7 +13,10 @@ use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
 
-class Version191to2000 extends \Migration\Step\DatabaseStage
+/**
+ * Class Version191to2000
+ */
+class Version191to2000 extends \Migration\Step\DatabaseStage implements RollbackInterface
 {
     const SOURCE = 'core_url_rewrite';
 

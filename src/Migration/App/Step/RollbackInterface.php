@@ -14,7 +14,7 @@ interface RollbackInterface extends StageInterface
     /**
      * Perform rollback
      *
-     * @return void
+     * @return mixed
      */
     public function rollback();
 }

@@ -5,10 +5,14 @@
  */
 namespace Migration\Step\UrlRewrite;
 
+use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StageInterface;
 use Migration\Step\DatabaseStage;
 
-class Version11410to2000 extends DatabaseStage implements StageInterface
+/**
+ * Class Version11410to2000
+ */
+class Version11410to2000 extends DatabaseStage implements StageInterface, RollbackInterface
 {
     /**
      * Temporary table name
@@ -215,6 +219,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
 
         $sourceDocument = $this->source->getDocument($this->tableName);
         $destinationDocument = $this->destination->getDocument('url_rewrite');
+        $destProductCategory = $this->destination->getDocument('catalog_url_rewrite_product_category');
 
         $duplicates = $this->getDuplicatesList();
         if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
@@ -229,13 +234,22 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
         while (!empty($data = $this->source->getRecords($sourceDocument->getName(), $pageNumber))) {
             $pageNumber++;
             $records = $this->recordCollectionFactory->create();
+            $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($data as $row) {
                 $this->progress->advance();
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
+                if ($row['is_system'] && $row['product_id'] && $row['category_id']) {
+                    $destProductCategoryRecord = $this->recordFactory->create(['document' => $destProductCategory]);
+                    $destProductCategoryRecord->setValue('url_rewrite_id', $row['id']);
+                    $destProductCategoryRecord->setValue('category_id', $row['category_id']);
+                    $destProductCategoryRecord->setValue('product_id', $row['product_id']);
+                    $destProductCategoryRecords->addRecord($destProductCategoryRecord);
+                }
             }
             $destinationRecords = $destinationDocument->getRecords();
             $this->migrateRewrites($records, $destinationRecords);
             $this->destination->saveRecords($destinationDocument->getName(), $destinationRecords);
+            $this->destination->saveRecords($destProductCategory->getName(), $destProductCategoryRecords);
         }
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
@@ -936,5 +950,16 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
         );
         $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
+    }
+
+    /**
+     * Perform rollback
+     *
+     * @return void
+     */
+    public function rollback()
+    {
+        $this->destination->clearDocument('url_rewrite');
+        $this->destination->clearDocument('catalog_url_rewrite_product_category');
     }
 }
