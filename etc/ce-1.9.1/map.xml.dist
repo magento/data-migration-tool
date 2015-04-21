@@ -884,12 +884,6 @@
                 <field>core_website.visibility</field>
             </ignore>
             <ignore>
-                <field>sales_flat_order.reward_points_balance_refunded</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.reward_salesrule_points</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_order.paypal_ipn_customer_notified</field>
             </ignore>
             <ignore>

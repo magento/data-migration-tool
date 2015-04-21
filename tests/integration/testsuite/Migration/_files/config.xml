@@ -12,11 +12,6 @@
             <data>Migration\Step\Eav\Data</data>
             <volume>Migration\Step\Eav\Volume</volume>
         </step>
-        <step title="Custom Customer Attributes Step">
-            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
-            <data>Migration\Step\CustomCustomerAttributes\Data</data>
-            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
-        </step>
         <step title="Map step">
             <integrity>Migration\Step\Map\Integrity</integrity>
             <data>Migration\Step\Map\Data</data>
@@ -37,17 +32,8 @@
             <data>Migration\Step\Ratings</data>
             <volume>Migration\Step\Ratings</volume>
         </step>
-        <step title="SalesOrder step">
-            <integrity>Migration\Step\SalesOrder</integrity>
-            <data>Migration\Step\SalesOrder</data>
-            <volume>Migration\Step\SalesOrder</volume>
-        </step>
     </steps>
     <steps mode="delta">
-        <step title="Custom Customer Attributes Step">
-            <delta>Migration\Step\CustomCustomerAttributes</delta>
-            <volume>Migration\Step\CustomCustomerAttributes</volume>
-        </step>
         <step title="Map step">
             <delta>Migration\Step\Map</delta>
             <volume>Migration\Step\Map</volume>
@@ -56,16 +42,12 @@
             <delta>Migration\Step\Log</delta>
             <volume>Migration\Step\Log</volume>
         </step>
-        <step title="SalesOrder step">
-            <delta>Migration\Step\SalesOrder</delta>
-            <volume>Migration\Step\SalesOrder</volume>
-        </step>
     </steps>
-    <source version="1.14.1.0">
-        <database host="localhost" name="magento1_integration" user="root" password=""/>
+    <source version="1.9.1">
+        <database host="localhost" name="magento1_integration" user="root"/>
     </source>
     <destination version="2.0.0.0">
-        <database host="localhost" name="magento2_integration" user="root" password=""/>
+        <database host="localhost" name="magento2_integration" user="root"/>
     </destination>
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
@@ -73,7 +55,6 @@
         <eav_list_file>tests/integration/testsuite/Migration/_files/list-eav.xml</eav_list_file>
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
-        <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
         <deltalog_map_file>tests/integration/testsuite/Migration/_files/deltalog.xml</deltalog_map_file>
         <class_map>tests/integration/testsuite/Migration/_files/class_map.php</class_map>
         <bulk_size>100</bulk_size>

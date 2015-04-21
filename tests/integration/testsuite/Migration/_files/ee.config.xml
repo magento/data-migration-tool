@@ -6,14 +6,60 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
-    <steps mode="migration">
-        <step>Migration\Step\Eav</step>
-        <step>Migration\Step\CustomCustomerAttributes</step>
-        <step>Migration\Step\Map</step>
-        <step>Migration\Step\UrlRewrite</step>
-        <step>Migration\Step\Log</step>
-        <step>Migration\Step\Ratings</step>
-        <step>Migration\Step\SalesOrder</step>
+    <steps mode="data">
+        <step title="EAV Step">
+            <integrity>Migration\Step\Eav\Integrity</integrity>
+            <data>Migration\Step\Eav\Data</data>
+            <volume>Migration\Step\Eav\Volume</volume>
+        </step>
+        <step title="Custom Customer Attributes Step">
+            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
+            <data>Migration\Step\CustomCustomerAttributes\Data</data>
+            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
+        </step>
+        <step title="Map step">
+            <integrity>Migration\Step\Map\Integrity</integrity>
+            <data>Migration\Step\Map\Data</data>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Url Rewrite step">
+            <integrity>Migration\Step\UrlRewrite</integrity>
+            <data>Migration\Step\UrlRewrite</data>
+            <volume>Migration\Step\UrlRewrite</volume>
+        </step>
+        <step title="Log Step">
+            <integrity>Migration\Step\Log</integrity>
+            <data>Migration\Step\Log</data>
+            <volume>Migration\Step\Log</volume>
+        </step>
+        <step title="Ratings step">
+            <integrity>Migration\Step\Ratings</integrity>
+            <data>Migration\Step\Ratings</data>
+            <volume>Migration\Step\Ratings</volume>
+        </step>
+        <step title="SalesOrder step">
+            <integrity>Migration\Step\SalesOrder</integrity>
+            <data>Migration\Step\SalesOrder</data>
+            <volume>Migration\Step\SalesOrder</volume>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Custom Customer Attributes Step">
+            <delta>Migration\Step\CustomCustomerAttributes</delta>
+            <volume>Migration\Step\CustomCustomerAttributes</volume>
+        </step>
+        <step title="Map step">
+            <delta>Migration\Step\Map</delta>
+            <volume>Migration\Step\Map</volume>
+        </step>
+        <step title="Log Step">
+            <delta>Migration\Step\Log</delta>
+            <volume>Migration\Step\Log</volume>
+        </step>
+        <step title="SalesOrder step">
+            <delta>Migration\Step\SalesOrder</delta>
+            <volume>Migration\Step\SalesOrder</volume>
+        </step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1_integration" user="root" password=""/>
