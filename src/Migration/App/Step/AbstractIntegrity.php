@@ -6,7 +6,8 @@
 namespace Migration\App\Step;
 
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\ProgressBar;
 use Migration\Resource;
 
@@ -53,7 +54,7 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * Map reader
      *
-     * @var MapReaderInterface
+     * @var \Migration\Reader\MapInterface
      */
     protected $map;
 
@@ -69,20 +70,22 @@ abstract class AbstractIntegrity implements StageInterface
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderInterface $mapReader
+     * @param MapFactory $mapFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderInterface $mapReader
+        MapFactory $mapFactory,
+        $mapConfigOption
     ) {
         $this->logger = $logger;
         $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
-        $this->map = $mapReader;
+        $this->map = $mapFactory->create($mapConfigOption);
     }
 
     /**
@@ -95,14 +98,14 @@ abstract class AbstractIntegrity implements StageInterface
      * Check if source and destination resources have equal document names and fields
      *
      * @param array $documents
-     * @param string $type - allowed values: MapReaderInterface::TYPE_SOURCE, MapReaderInterface::TYPE_DEST
+     * @param string $type - allowed values: MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST
      * @return $this
      * @throws \Exception
      */
     protected function check($documents, $type)
     {
-        $source = $type == MapReaderInterface::TYPE_SOURCE ? $this->source : $this->destination;
-        $destination = $type == MapReaderInterface::TYPE_SOURCE ? $this->destination : $this->source;
+        $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
+        $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
 
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($documents as $document) {
@@ -135,24 +138,24 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkForErrors()
     {
         $isSuccess = true;
-        if (isset($this->missingDocuments['source'])) {
+        if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
                 PHP_EOL . 'Next documents from source are not mapped:%s',
-                PHP_EOL . implode(',', array_keys($this->missingDocuments['source']))
+                PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
             ));
         }
-        if (isset($this->missingDocuments['destination'])) {
+        if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
                 PHP_EOL . 'Next documents from destination are not mapped:%s',
-                PHP_EOL . implode(',', array_keys($this->missingDocuments['destination']))
+                PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
         $errorMsgFields = '';
-        if (isset($this->missingDocumentFields['source'])) {
+        if (isset($this->missingDocumentFields[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
-            foreach ($this->missingDocumentFields['source'] as $document => $fields) {
+            foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     PHP_EOL . 'Document name: %s; Fields: %s',
                     $document,
@@ -164,9 +167,9 @@ abstract class AbstractIntegrity implements StageInterface
             );
         }
         $errorMsgFields = '';
-        if (isset($this->missingDocumentFields['destination'])) {
+        if (isset($this->missingDocumentFields[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
-            foreach ($this->missingDocumentFields['destination'] as $document => $fields) {
+            foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
                 $errorMsgFields .= sprintf(
                     PHP_EOL . 'Document name: %s; Fields: %s',
                     $document,

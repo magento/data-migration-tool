@@ -5,6 +5,8 @@
  */
 namespace Migration;
 
+use Migration\Reader\MapInterface;
+
 /**
  * Class RecordTransformerTest
  */
@@ -21,7 +23,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
     protected $destDocument;
 
     /**
-     * @var MapReaderInterface|\PHPUnit_Framework_MockObject_MockObject
+     * @var MapInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $mapReader;
 
@@ -39,7 +41,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
     {
         $this->sourceDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
         $this->destDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
-        $this->mapReader = $this->getMock('Migration\MapReaderInterface');
+        $this->mapReader = $this->getMock('Migration\Reader\MapInterface');
         $this->handlerManagerFactory = $this->getMock(
             'Migration\Handler\ManagerFactory',
             ['create'],
@@ -55,6 +57,11 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @param Resource\Document|\PHPUnit_Framework_MockObject_MockObject $document
+     * @param int $callNumber
+     * @return \Migration\Handler\Manager|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected function initHandler($document, $callNumber = 1)
     {
         $handlerManager = $this->getMock('Migration\Handler\Manager', ['initHandler', 'getHandlers'], [], '', false);

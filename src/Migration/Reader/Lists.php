@@ -3,15 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration;
+namespace Migration\Reader;
 
-use Migration\Config;
 use Migration\Exception;
 
 /**
- * Class MapReaderSimple
+ * Class Lists
  */
-class ListsReader
+class Lists
 {
     const CONFIGURATION_SCHEMA = 'lists.xsd';
 
@@ -21,15 +20,13 @@ class ListsReader
     protected $xml;
 
     /**
-     * @param Config $config
-     * @param string $optionName
+     * @param string $listsFile
      * @throws Exception
      */
-    public function __construct(Config $config, $optionName = '')
+    public function __construct($listsFile = '')
     {
-        $this->config = $config;
-        if (!empty($optionName)) {
-            $this->init($this->config->getOption($optionName));
+        if (!empty($listsFile)) {
+            $this->init($listsFile);
         }
     }
 
@@ -67,7 +64,7 @@ class ListsReader
      */
     protected function getRootDir()
     {
-        return dirname(dirname(__DIR__)) . DIRECTORY_SEPARATOR;
+        return dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR;
     }
 
     /**

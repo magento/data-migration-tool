@@ -21,7 +21,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $recordFactory = $objectManager->create('\Migration\Resource\RecordFactory');
         $progress = $objectManager->create('\Migration\ProgressBar');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader\Settings');
+        $mapReader = $objectManager->create('\Migration\Reader\Settings');
         $handlerManagerFactory = $objectManager->get('\Migration\Handler\ManagerFactory');
         $destination = $objectManager->get('\Migration\Resource\Destination');
         $source = $objectManager->get('\Migration\Resource\Source');

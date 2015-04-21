@@ -1299,7 +1299,7 @@
             </transform>
             <transform>
                 <field>enterprise_reminder_rule.condition_sql</field>
-                <handler class="Migration\Handler\Rule\ConditionSql"></handler>
+                <handler class="Migration\Handler\Rule\ConditionSql"/>
             </transform>
             <transform>
                 <field>enterprise_cms_page_revision.root_template</field>
@@ -1833,6 +1833,33 @@
             </ignore>
             <ignore>
                 <field>rating.is_active</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_note_notify</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_note_notify</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.customer_note_notify</field>
             </ignore>
             <ignore>
                 <field>sales_creditmemo_item.tax_ratio</field>

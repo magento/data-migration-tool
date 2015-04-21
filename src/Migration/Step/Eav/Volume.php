@@ -7,8 +7,8 @@ namespace Migration\Step\Eav;
 
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderEav;
 use Migration\ProgressBar;
+use Migration\Reader\ListsFactory;
 
 /**
  * Class Volume
@@ -36,14 +36,9 @@ class Volume implements StageInterface
     protected $progress;
 
     /**
-     * @var MapReaderEav
+     * @var \Migration\Reader\Lists
      */
-    protected $map;
-
-    /**
-     * @var \Migration\ListsReader
-     */
-    protected $readerSimple;
+    protected $lists;
 
     /**
      * @var array
@@ -55,23 +50,20 @@ class Volume implements StageInterface
      * @param InitialData $initialData
      * @param Logger $logger
      * @param ProgressBar $progress
-     * @param MapReaderEav $mapReader
-     * @param \Migration\ListsReaderFactory $listsReaderFactory
+     * @param ListsFactory $listsFactory
      */
     public function __construct(
         Helper $helper,
         InitialData $initialData,
         Logger $logger,
         ProgressBar $progress,
-        MapReaderEav $mapReader,
-        \Migration\ListsReaderFactory $listsReaderFactory
+        ListsFactory $listsFactory
     ) {
         $this->initialData = $initialData;
         $this->helper = $helper;
         $this->logger = $logger;
         $this->progress = $progress;
-        $this->map = $mapReader;
-        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
+        $this->lists = $listsFactory->create('eav_list_file');
     }
 
     /**
@@ -79,7 +71,7 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->readerSimple->getList('documents')));
+        $this->progress->start(count($this->lists->getList('documents')));
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
         $this->printErrors();

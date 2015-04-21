@@ -38,9 +38,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var \Migration\MapReader\Settings|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Settings|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $readerSettings;
 
     /**
      * @var \Migration\Handler\ManagerFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -63,8 +63,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMock(
-            'Migration\MapReader\Settings',
+        $this->readerSettings = $this->getMock(
+            'Migration\Reader\Settings',
             ['isNodeIgnored', 'getNodeMap', 'getValueHandler'],
             [],
             '',
@@ -90,7 +90,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->progress,
             $this->recordFactory,
-            $this->mapReader,
+            $this->readerSettings,
             $this->handlerManagerFactory,
             'integrity'
         );
@@ -115,7 +115,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->progress,
             $this->recordFactory,
-            $this->mapReader,
+            $this->readerSettings,
             $this->handlerManagerFactory,
             'integrity'
         );
@@ -141,7 +141,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->progress,
             $this->recordFactory,
-            $this->mapReader,
+            $this->readerSettings,
             $this->handlerManagerFactory,
             'integrity'
         );
@@ -203,9 +203,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             ->with('core_config_data', $destinationRecordsFinal);
         $this->destination->expects($this->once())->method('getRecords')->with('core_config_data', 0, $count)
             ->willReturn($destinationRecords);
-        $this->mapReader->expects($this->any())->method('isNodeIgnored')->willReturn(false);
-        $this->mapReader->expects($this->any())->method('getNodeMap')->willReturnMap($pathMapped);
-        $this->mapReader->expects($this->any())->method('getValueHandler')->willReturnMap($handlerParams);
+        $this->readerSettings->expects($this->any())->method('isNodeIgnored')->willReturn(false);
+        $this->readerSettings->expects($this->any())->method('getNodeMap')->willReturnMap($pathMapped);
+        $this->readerSettings->expects($this->any())->method('getValueHandler')->willReturnMap($handlerParams);
         $this->recordFactory->expects($this->at(0))->method('create')
             ->with(['document' => $document, 'data' => $sourceRecords[0]])
             ->willReturn($sourceRecord);
@@ -225,7 +225,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->progress,
             $this->recordFactory,
-            $this->mapReader,
+            $this->readerSettings,
             $this->handlerManagerFactory,
             'data'
         );

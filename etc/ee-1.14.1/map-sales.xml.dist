@@ -25,5 +25,11 @@
             </ignore>
         </field_rules>
     </source>
-    <destination />
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>sales_order.send_email</field>
+            </ignore>
+        </field_rules>
+    </destination>
 </map>

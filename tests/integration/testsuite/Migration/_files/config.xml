@@ -72,6 +72,7 @@
         <eav_map_file>tests/integration/testsuite/Migration/_files/map-eav.xml</eav_map_file>
         <eav_list_file>tests/integration/testsuite/Migration/_files/list-eav.xml</eav_list_file>
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
+        <log_list_file>etc/ce-1.9.1/list-log.xml.dist</log_list_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
         <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
         <deltalog_map_file>tests/integration/testsuite/Migration/_files/deltalog.xml</deltalog_map_file>
