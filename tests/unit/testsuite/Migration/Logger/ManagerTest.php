@@ -21,11 +21,17 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected $consoleHandler;
 
+    /**
+     * @var FileHandler|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $fileHandler;
+
     protected function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', [], [], '', false);
         $this->consoleHandler = $this->getMock('Migration\Logger\ConsoleHandler', [], [], '', false);
-        $this->manager = new Manager($this->logger, $this->consoleHandler);
+        $this->fileHandler = $this->getMock('Migration\Logger\FileHandler', [], [], '', false);
+        $this->manager = new Manager($this->logger, $this->consoleHandler, $this->fileHandler);
     }
 
     /**
@@ -50,7 +56,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testProcessSuccess($logLevel, $logLevelCode)
     {
         $this->consoleHandler->expects($this->once())->method('setLevel')->with($logLevelCode);
-        $this->logger->expects($this->once())->method('pushHandler')->with($this->consoleHandler);
+        $this->fileHandler->expects($this->once())->method('setLevel')->with($logLevelCode);
+        $this->logger->expects($this->exactly(2))->method('pushHandler');
         $this->assertSame($this->manager, $this->manager->process($logLevel));
     }
 
@@ -72,8 +79,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testProcessInvalidLevel($logLevel)
     {
         $this->consoleHandler->expects($this->once())->method('setLevel')->with(200);
+        $this->fileHandler->expects($this->once())->method('setLevel')->with(200);
         $this->logger->expects($this->once())->method('error');
-        $this->logger->expects($this->once())->method('pushHandler')->with($this->consoleHandler);
+        $this->logger->expects($this->any())->method('pushHandler');
         $this->assertSame($this->manager, $this->manager->process($logLevel));
     }
 }

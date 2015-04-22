@@ -29,6 +29,11 @@ class Manager
     protected $consoleHandler;
 
     /**
+     * @var FileHandler
+     */
+    protected $fileHandler;
+
+    /**
      * @var array
      */
     protected $logLevels = [
@@ -40,11 +45,12 @@ class Manager
     /**
      * @param Logger $logger
      * @param ConsoleHandler $consoleHandler
+     * @param FileHandler $fileHandler
      */
-    public function __construct(Logger $logger, ConsoleHandler $consoleHandler)
+    public function __construct(Logger $logger, ConsoleHandler $consoleHandler, FileHandler $fileHandler)
     {
         $this->logger = $logger;
-        $this->consoleHandler = $consoleHandler;
+        $this->handlers = [$consoleHandler, $fileHandler];
     }
 
     /**
@@ -58,8 +64,10 @@ class Manager
             $this->logger->error("Invalid log level '$logLevel' provided.");
             $logLevel = self::LOG_LEVEL_INFO;
         }
-        $this->consoleHandler->setLevel($this->logLevels[$logLevel]);
-        $this->logger->pushHandler($this->consoleHandler);
+        foreach ($this->handlers as $handler) {
+            $handler->setLevel($this->logLevels[$logLevel]);
+            $this->logger->pushHandler($handler);
+        }
         return $this;
     }
 }

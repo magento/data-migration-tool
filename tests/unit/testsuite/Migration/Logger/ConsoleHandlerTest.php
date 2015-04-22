@@ -46,6 +46,25 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->consoleHandler->handle($record);
         $output = ob_get_contents();
         ob_end_clean();
+        $this->assertFalse($result);
+        $this->assertEquals("Success message" . PHP_EOL, $output);
+    }
+
+    /**
+     * @param string $recordLevel
+     * @param string|int $handlerLevel
+     * @dataProvider dataProviderHandleSuccess
+     */
+    public function testHandleSuccessWithoutBubble($recordLevel, $handlerLevel)
+    {
+        $message = 'Success message';
+        $record = ['message' => $message, 'level' => $recordLevel];
+        $this->consoleHandler->setLevel($handlerLevel);
+        ob_start();
+        $this->consoleHandler->setBubble(false);
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
         $this->assertTrue($result);
         $this->assertEquals("Success message" . PHP_EOL, $output);
     }
