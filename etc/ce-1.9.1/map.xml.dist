@@ -1366,6 +1366,9 @@
             <ignore>
                 <field>sales_shipment_grid.updated_at</field>
             </ignore>
+            <ignore>
+                <field>sales_order.send_email</field>
+            </ignore>
         </field_rules>
     </destination>
 </map>
