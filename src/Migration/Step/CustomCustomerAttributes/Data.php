@@ -8,7 +8,7 @@ namespace Migration\Step\CustomCustomerAttributes;
 use Migration\Config;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;

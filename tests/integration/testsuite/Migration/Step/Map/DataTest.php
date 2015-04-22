@@ -14,7 +14,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         $progress = $this->getMock(
-            'Migration\App\Step\Progress',
+            'Migration\App\Progress',
             ['getProcessedEntities', 'addProcessedEntity'],
             [],
             '',

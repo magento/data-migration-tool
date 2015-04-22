@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 use Migration\App\Step\StageInterface;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderEav;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Record;
 use Migration\Resource\Document;

@@ -9,7 +9,7 @@ use Migration\MapReader\MapReaderMain;
 use Migration\Resource;
 use Migration\MapReaderInterface;
 use Migration\Logger\Logger;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Integrity

@@ -19,7 +19,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $recordFactory = $objectManager->create('\Migration\Resource\RecordFactory');
-        $progress = $objectManager->create('\Migration\ProgressBar');
+        $progress = $objectManager->create('\Migration\App\ProgressBar');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\MapReader\Settings');
         $handlerManagerFactory = $objectManager->get('\Migration\Handler\ManagerFactory');

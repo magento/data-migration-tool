@@ -9,7 +9,7 @@ use Migration\Handler;
 use Migration\MapReader\MapReaderSalesOrder;
 use Migration\Resource;
 use Migration\Resource\Record;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 class DataTest extends \PHPUnit_Framework_TestCase
 {
@@ -57,7 +57,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],
@@ -100,10 +100,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @covers \Migration\Step\SalesOrder\Migrate::prepareEavEntityData
-     * @covers \Migration\Step\SalesOrder\Migrate::getAttributeData
-     * @covers \Migration\Step\SalesOrder\Migrate::getAttributeValue
-     * @covers \Migration\Step\SalesOrder\Migrate::getDestEavDocument
+     * @covers \Migration\Step\SalesOrder\Data::prepareEavEntityData
+     * @covers \Migration\Step\SalesOrder\Data::getAttributeData
+     * @covers \Migration\Step\SalesOrder\Data::getAttributeValue
+     * @covers \Migration\Step\SalesOrder\Data::getDestEavDocument
      */
     public function testGetMap()
     {

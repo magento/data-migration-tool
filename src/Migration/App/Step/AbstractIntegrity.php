@@ -7,7 +7,7 @@ namespace Migration\App\Step;
 
 use Migration\Logger\Logger;
 use Migration\MapReaderInterface;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource;
 
 /**

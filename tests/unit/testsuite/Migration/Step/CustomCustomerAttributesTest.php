@@ -32,7 +32,7 @@ abstract class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -61,7 +61,7 @@ abstract class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
         $this->destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
             ->setMethods(['getDocument', 'getRecordsCount', 'getAdapter', 'addDocumentPrefix', 'saveRecords'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('Migration\ProgressBar')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->progress->expects($this->any())->method('start')->with(4);

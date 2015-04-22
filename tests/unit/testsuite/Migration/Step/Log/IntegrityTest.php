@@ -13,7 +13,7 @@ use Migration\MapReader\MapReaderLog;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -46,7 +46,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->destination = $this->getMock(
             '\Migration\Resource\Destination',
             ['getDocumentList', 'getDocument'],

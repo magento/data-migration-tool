@@ -11,7 +11,7 @@ use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
 use Migration\Resource\Record;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Data

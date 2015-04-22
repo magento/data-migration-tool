@@ -5,7 +5,7 @@
  */
 namespace Migration\Mode;
 
-use Migration\App\Step\Progress;
+use Migration\App\Progress;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;

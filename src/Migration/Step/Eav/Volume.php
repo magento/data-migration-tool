@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\MapReader\MapReaderEav;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Volume

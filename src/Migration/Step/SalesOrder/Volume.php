@@ -11,7 +11,7 @@ use Migration\MapReader\MapReaderSalesOrder;
 use Migration\MapReaderInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Volume

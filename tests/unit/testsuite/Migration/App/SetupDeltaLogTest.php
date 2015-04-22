@@ -32,8 +32,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
                 ['orders' => 'order_id', 'invoices' => 'invoice_id']
             );
 
-        /** @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
-        $progress = $this->getMock('\Migration\ProgressBar', [], [], '', false);
+        /** @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
+        $progress = $this->getMock('\Migration\App\ProgressBar', [], [], '', false);
         $progress->expects($this->once())
             ->method('start')
             ->with(2);

@@ -10,7 +10,7 @@ use Migration\Logger\Logger;
 use Migration\MapReaderInterface;
 use Migration\MapReader\MapReaderLog;
 use Migration\Resource;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Volume

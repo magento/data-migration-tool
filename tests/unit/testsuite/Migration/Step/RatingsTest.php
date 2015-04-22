@@ -43,7 +43,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
     protected $select;
 
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -71,7 +71,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->structure = $this->getMock('Migration\Resource\Structure', ['getFields'], [], '', false);
         $this->document = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('Migration\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
+        $this->progress = $this->getMock('Migration\App\ProgressBar', ['start', 'advance', 'finish'], [], '', false);
     }
 
     public function testIntegrity()
