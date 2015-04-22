@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration;
+namespace Migration\Reader;
 
 /**
  * Class ClassMap test
@@ -21,7 +21,7 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getOption'])
             ->getMock();
         $config->expects($this->once())->method('getOption')->with('class_map')
-            ->willReturn('tests/unit/testsuite/Migration/_files/class_map.php');
+            ->willReturn('tests/unit/testsuite/Migration/_files/class-map.xml');
         $this->classMap = new ClassMap($config);
     }
 

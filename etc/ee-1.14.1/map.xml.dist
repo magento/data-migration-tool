@@ -1036,6 +1036,14 @@
                 <document>enterprise_targetrule_product</document>
                 <to>magento_targetrule_product</to>
             </rename>
+            <rename>
+                <document>core_directory_storage</document>
+                <to>media_storage_directory_storage</to>
+            </rename>
+            <rename>
+                <document>core_file_storage</document>
+                <to>media_storage_file_storage</to>
+            </rename>
             <log_changes>
                 <document key="entity_id">customer_entity</document>
             </log_changes>
