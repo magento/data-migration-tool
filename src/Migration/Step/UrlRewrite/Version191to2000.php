@@ -11,6 +11,7 @@ use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
+use Migration\Reader\MapInterface;
 
 class Version191to2000 extends \Migration\Step\DatabaseStage
 {

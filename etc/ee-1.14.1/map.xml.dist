@@ -605,9 +605,6 @@
             <ignore>
                 <document>enterprise_index_multiplier</document>
             </ignore>
-            <ignore>
-                <document>migration_backup_*</document>
-            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1524,6 +1521,9 @@
     </source>
     <destination>
         <document_rules>
+            <ignore>
+                <document>migration_backup_*</document>
+            </ignore>
             <ignore>
                 <document>googleoptimizer_code</document>
             </ignore>
