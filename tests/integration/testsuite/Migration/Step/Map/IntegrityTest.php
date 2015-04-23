@@ -21,6 +21,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $logger = $objectManager->create('\Migration\Logger\Logger');
+        $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
@@ -51,6 +52,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $logger = $objectManager->create('\Migration\Logger\Logger');
+        $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);

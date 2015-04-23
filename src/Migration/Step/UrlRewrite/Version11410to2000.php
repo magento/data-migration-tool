@@ -8,9 +8,13 @@ namespace Migration\Step\UrlRewrite;
 use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StageInterface;
 use Migration\Step\DatabaseStage;
+use Migration\Resource\Document;
 
 /**
  * Class Version11410to2000
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
  */
 class Version11410to2000 extends DatabaseStage implements StageInterface, RollbackInterface
 {
@@ -238,12 +242,9 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             foreach ($data as $row) {
                 $this->progress->advance();
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
-                if ($row['is_system'] && $row['product_id'] && $row['category_id']) {
-                    $destProductCategoryRecord = $this->recordFactory->create(['document' => $destProductCategory]);
-                    $destProductCategoryRecord->setValue('url_rewrite_id', $row['id']);
-                    $destProductCategoryRecord->setValue('category_id', $row['category_id']);
-                    $destProductCategoryRecord->setValue('product_id', $row['product_id']);
-                    $destProductCategoryRecords->addRecord($destProductCategoryRecord);
+                $productCategoryRecord = $this->getProductCategoryRecord($destProductCategory, $row);
+                if ($productCategoryRecord) {
+                    $destProductCategoryRecords->addRecord($productCategoryRecord);
                 }
             }
             $destinationRecords = $destinationDocument->getRecords();
@@ -255,6 +256,24 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
         $this->progress->finish();
         return true;
+    }
+
+    /**
+     * @param Document $destProductCategory
+     * @param array $row
+     * @return \Migration\Resource\Record|null
+     * @throws \Migration\Exception
+     */
+    private function getProductCategoryRecord(Document $destProductCategory, array $row)
+    {
+        $destProductCategoryRecord = null;
+        if ($row['is_system'] && $row['product_id'] && $row['category_id']) {
+            $destProductCategoryRecord = $this->recordFactory->create(['document' => $destProductCategory]);
+            $destProductCategoryRecord->setValue('url_rewrite_id', $row['id']);
+            $destProductCategoryRecord->setValue('category_id', $row['category_id']);
+            $destProductCategoryRecord->setValue('product_id', $row['product_id']);
+        }
+        return $destProductCategoryRecord;
     }
 
     /**
@@ -432,8 +451,18 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
                 }
             }
         }
-        $data = $this->getDuplicatesList();
         $this->progress->finish();
+
+        return !$errors && !$this->processDuplicatesList();
+    }
+
+    /**
+     * @return bool
+     */
+    private function processDuplicatesList()
+    {
+        $errors = false;
+        $data = $this->getDuplicatesList();
         if (!empty($data)) {
             $duplicates = [];
             foreach ($data as $row) {
@@ -461,7 +490,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             $this->logger->error('Destination table is not empty: url_rewrite');
             $errors = true;
         }
-        return !$errors;
+        return $errors;
     }
 
     /**

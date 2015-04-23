@@ -18,6 +18,7 @@ use Migration\Handler;
 
 /**
  * Class Settings
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Settings implements StageInterface
 {

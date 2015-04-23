@@ -17,6 +17,8 @@ use Migration\Resource\Source;
 
 /**
  * Class Data
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @codeCoverageIgnoreStart
  */
 class Data implements StageInterface
