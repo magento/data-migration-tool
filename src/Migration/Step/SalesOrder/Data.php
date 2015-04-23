@@ -12,7 +12,7 @@ use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\Resource\Record;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Data

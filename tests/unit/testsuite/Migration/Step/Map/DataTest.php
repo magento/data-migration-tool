@@ -15,14 +15,14 @@ use Migration\Resource;
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progressBar;
 
     /**
      * Progress instance, saves the state of the process
      *
-     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -58,7 +58,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progressBar = $this->getMock(
+            '\Migration\App\ProgressBar',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],
@@ -90,7 +96,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         $this->progress = $this->getMock(
-            'Migration\App\Step\Progress',
+            'Migration\App\Progress',
             ['getProcessedEntities', 'addProcessedEntity'],
             [],
             '',

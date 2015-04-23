@@ -12,7 +12,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Volume

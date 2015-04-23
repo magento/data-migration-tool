@@ -6,7 +6,7 @@
 namespace Migration\Step;
 
 use Migration\RecordTransformerFactory;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
 
 /**
@@ -39,7 +39,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
     protected $recordTransformerFactory;
 
     /**
-     * @var ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -50,7 +50,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('Migration\ProgressBar')
+        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

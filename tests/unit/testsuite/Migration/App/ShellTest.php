@@ -37,9 +37,9 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     protected $modeFactory;
 
     /**
-     * @var Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var Progress|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $progressStep;
+    protected $progress;
 
     protected function setUp()
     {
@@ -57,8 +57,8 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['create'])
             ->disableOriginalConstructor()
             ->getMock();
-        $this->progressStep = $this->getMockBuilder('\Migration\App\Step\Progress')
-            ->setMethods(['clearLockFile'])
+        $this->progress = $this->getMockBuilder('\Migration\App\Progress')
+            ->setMethods(['reset'])
             ->disableOriginalConstructor()
             ->getMock();
         $this->shell = new Shell(
@@ -67,7 +67,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
             $this->modeFactory,
             $this->logger,
             $this->logManager,
-            $this->progressStep,
+            $this->progress,
             ''
         );
     }
@@ -101,7 +101,7 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
         $mode->expects($this->any())->method('run');
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
-        $this->progressStep->expects($this->once())->method('clearLockFile');
+        $this->progress->expects($this->once())->method('reset');
         $this->shell->run();
     }
 

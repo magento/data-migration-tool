@@ -15,7 +15,7 @@ use Migration\Resource;
 class MigrateTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -56,7 +56,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],

@@ -59,7 +59,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     /**
      * ProgressBar instance
      *
-     * @var \Migration\ProgressBar
+     * @var \Migration\App\ProgressBar
      */
     protected $progress;
 
@@ -160,7 +160,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     ];
 
     /**
-     * @param \Migration\ProgressBar $progress
+     * @param \Migration\App\ProgressBar $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
      * @param \Migration\Resource\Source $source
@@ -171,7 +171,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @throws \Migration\Exception
      */
     public function __construct(
-        \Migration\ProgressBar $progress,
+        \Migration\App\ProgressBar $progress,
         \Migration\Logger\Logger $logger,
         \Migration\Config $config,
         \Migration\Resource\Source $source,

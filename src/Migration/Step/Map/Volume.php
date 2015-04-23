@@ -11,7 +11,7 @@ use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Resource;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 class Volume implements StageInterface
 {

@@ -9,7 +9,7 @@ use Migration\Logger\Logger;
 use Migration\Reader\Map;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 class VolumeTest extends \PHPUnit_Framework_TestCase
 {
@@ -56,7 +56,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->initialData = $this->getMock(
             '\Migration\Step\SalesOrder\InitialData',
             ['getDestEavAttributesCount'],

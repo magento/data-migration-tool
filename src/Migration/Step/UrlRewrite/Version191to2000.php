@@ -5,8 +5,7 @@
  */
 namespace Migration\Step\UrlRewrite;
 
-use Migration\ProgressBar;
-use Migration\Reader\MapInterface;
+use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Document;
 use Migration\Resource\Record;

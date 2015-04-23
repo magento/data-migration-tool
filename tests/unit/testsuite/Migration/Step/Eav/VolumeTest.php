@@ -26,7 +26,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -51,7 +51,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['log'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\ProgressBar')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->readerLists = $this->getMockBuilder('\Migration\Reader\Lists')

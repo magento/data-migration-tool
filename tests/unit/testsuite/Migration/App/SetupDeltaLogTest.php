@@ -36,8 +36,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('deltalog_map_file')->willReturn($readerMap);
 
-        /** @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
-        $progress = $this->getMock('\Migration\ProgressBar', [], [], '', false);
+        /** @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
+        $progress = $this->getMock('\Migration\App\ProgressBar', [], [], '', false);
         $progress->expects($this->once())
             ->method('start')
             ->with(2);

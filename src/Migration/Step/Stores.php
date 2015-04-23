@@ -9,7 +9,7 @@ use Migration\App\Step\StageInterface;
 use Migration\Resource;
 use Migration\RecordTransformerFactory;
 use Migration\Logger\Logger;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Integrity

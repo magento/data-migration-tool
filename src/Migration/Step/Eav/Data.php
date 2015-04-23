@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 use Migration\Reader\ListsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Record;
 use Migration\Resource\Document;

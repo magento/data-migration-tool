@@ -8,7 +8,6 @@ namespace Migration\App;
 use Migration\Reader\Map;
 use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
 
 class SetupDeltaLog implements StageInterface
 {

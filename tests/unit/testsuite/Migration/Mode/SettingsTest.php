@@ -29,7 +29,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -47,7 +47,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['info'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\App\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted'])
             ->getMock();
 

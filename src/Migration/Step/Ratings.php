@@ -7,7 +7,7 @@ namespace Migration\Step;
 
 use Migration\App\Step\RollbackInterface;
 use Migration\Logger\Logger;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
 
 /**

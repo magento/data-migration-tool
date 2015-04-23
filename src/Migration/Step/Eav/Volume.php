@@ -7,7 +7,7 @@ namespace Migration\Step\Eav;
 
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Reader\ListsFactory;
 
 /**

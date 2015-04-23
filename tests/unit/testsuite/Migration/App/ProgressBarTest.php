@@ -4,9 +4,7 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step;
-
-use Migration\ProgressBar;
+namespace Migration\App;
 
 /**
  * Class ProgressBarTest
@@ -19,7 +17,7 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
     protected $output;
 
     /**
-     * @var \Migration\ProgressBar
+     * @var \Migration\App\ProgressBar
      */
     protected $progressBar;
 
@@ -31,6 +29,6 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
     public function testCreate()
     {
         $this->progressBar = new ProgressBar($this->output);
-        $this->assertInstanceOf('\Migration\ProgressBar', $this->progressBar);
+        $this->assertInstanceOf('\Migration\App\ProgressBar', $this->progressBar);
     }
 }
