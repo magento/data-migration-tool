@@ -23,7 +23,7 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
      *
      * @var int
      */
-    protected $permissions = 0755;
+    protected $permissions = 0777;
 
     /**
      * @var Config
