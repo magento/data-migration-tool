@@ -6,7 +6,7 @@
 namespace Migration\Step\Map;
 
 use Migration\Handler;
-use Migration\MapReader;
+use Migration\Reader\Map;
 use Migration\Resource;
 
 /**
@@ -15,14 +15,14 @@ use Migration\Resource;
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progressBar;
 
     /**
      * Progress instance, saves the state of the process
      *
-     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -42,9 +42,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReader\MapReaderMain|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -54,11 +54,17 @@ class DataTest extends \PHPUnit_Framework_TestCase
     /**
      * @var Data|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $map;
+    protected $data;
 
     public function setUp()
     {
-        $this->progressBar = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progressBar = $this->getMock(
+            '\Migration\App\ProgressBar',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords'],
@@ -81,23 +87,28 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getHandlerConfig'])
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
+
         $this->progress = $this->getMock(
-            'Migration\App\Step\Progress',
+            'Migration\App\Progress',
             ['getProcessedEntities', 'addProcessedEntity'],
             [],
             '',
             false
         );
-        $this->map = new Data(
+        $this->data = new Data(
             $this->progressBar,
             $this->source,
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
-            $this->mapReader,
+            $mapFactory,
             $this->progress
         );
     }
@@ -107,7 +118,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
-        $this->map->perform();
+        $this->data->perform();
     }
 
     public function testPerform()
@@ -116,8 +127,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
+        $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
+        $this->map->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->will(
@@ -165,7 +176,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
-        $this->map->perform();
+        $this->data->perform();
     }
 
     public function testPerformJustCopy()
@@ -174,8 +185,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
         $dstDocName = 'config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->mapReader->expects($this->any())->method('getHandlerConfig')->willReturn([]);
+        $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
+        $this->map->expects($this->any())->method('getHandlerConfig')->willReturn([]);
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $bulk = [['id' => 4, 'name' => 'john']];
@@ -207,11 +218,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
-        $this->map->perform();
+        $this->data->perform();
     }
 
     public function testRollback()
     {
-        $this->assertTrue($this->map->rollback());
+        $this->assertTrue($this->data->rollback());
     }
 }

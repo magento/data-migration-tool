@@ -5,7 +5,6 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\MapReader\MapReaderSalesOrder;
 use Migration\Resource\Source;
 
 /**
@@ -14,24 +13,16 @@ use Migration\Resource\Source;
 class Helper
 {
     /**
-     * @var MapReaderSalesOrder
-     */
-    protected $map;
-
-    /**
      * @var Source
      */
     protected $source;
 
     /**
-     * @param MapReaderSalesOrder $mapReader
      * @param Source $source
      */
     public function __construct(
-        MapReaderSalesOrder $mapReader,
         Source $source
     ) {
-        $this->map = $mapReader;
         $this->source = $source;
     }
 

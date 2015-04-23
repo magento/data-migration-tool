@@ -6,8 +6,9 @@
 namespace Migration\Handler\Rule;
 
 use Migration\Handler\AbstractHandler;
-use Migration\MapReader\MapReaderMain;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\Map;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Record;
 use Migration\Resource\Source;
@@ -18,7 +19,7 @@ use Migration\Resource\Source;
 class ConditionSql extends AbstractHandler
 {
     /**
-     * @var MapReaderMain
+     * @var Map
      */
     protected $map;
 
@@ -33,13 +34,13 @@ class ConditionSql extends AbstractHandler
     protected $destination;
 
     /**
-     * @param MapReaderMain $mapReader
+     * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
      */
-    public function __construct(MapReaderMain $mapReader, Source $source, Destination $destination)
+    public function __construct(MapFactory $mapFactory, Source $source, Destination $destination)
     {
-        $this->map = $mapReader;
+        $this->map = $mapFactory->create('map_file');
         $this->source = $source;
         $this->destination = $destination;
     }
@@ -55,7 +56,7 @@ class ConditionSql extends AbstractHandler
         $sourcePatterns = [];
         $destinationPatters = [];
         foreach ($this->source->getDocumentList() as $document) {
-            $destDocumentName = $this->map->getDocumentMap($document, MapReaderInterface::TYPE_SOURCE);
+            $destDocumentName = $this->map->getDocumentMap($document, MapInterface::TYPE_SOURCE);
             if ($destDocumentName === false) {
                 continue;
             }

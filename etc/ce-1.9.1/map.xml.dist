@@ -503,9 +503,6 @@
             <ignore>
                 <document>admin_rule</document>
             </ignore>
-            <ignore>
-                <document>migration_backup_*</document>
-            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1286,6 +1283,33 @@
                 <field>rating.is_active</field>
             </ignore>
             <ignore>
+                <field>sales_creditmemo.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_note_notify</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_note_notify</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.customer_note</field>
+            </ignore>
+            <ignore>
+                <field>sales_shipment.customer_note_notify</field>
+            </ignore>
+            <ignore>
                 <field>sales_creditmemo_item.tax_ratio</field>
             </ignore>
             <ignore>
@@ -1338,6 +1362,9 @@
             </ignore>
             <ignore>
                 <field>sales_shipment_grid.updated_at</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.send_email</field>
             </ignore>
         </field_rules>
     </destination>

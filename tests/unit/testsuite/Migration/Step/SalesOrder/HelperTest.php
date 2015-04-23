@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\MapReader;
+use Migration\Reader;
 use Migration\Resource\Source;
 
 /**
@@ -13,11 +13,6 @@ use Migration\Resource\Source;
  */
 class HelperTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var MapReader|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $map;
-
     /**
      * @var Source|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -30,9 +25,8 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->map = $this->getMock('\Migration\MapReader\MapReaderSalesOrder', [], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getAdapter'], [], '', false);
-        $this->helper = new Helper($this->map, $this->source);
+        $this->helper = new Helper($this->source);
     }
 
     public function testGetSourceAttributes()

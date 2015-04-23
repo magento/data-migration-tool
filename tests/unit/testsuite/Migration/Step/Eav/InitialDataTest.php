@@ -26,7 +26,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var \Migration\MapReader\MapReaderEav|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Map|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $map;
 
@@ -37,9 +37,14 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->map = $this->getMockBuilder('\Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
+
         $this->source = $this->getMockBuilder('\Migration\Resource\Source')->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -49,7 +54,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
             ->setMethods(['getSourceRecords', 'getDestinationRecords'])
             ->getMock();
-        $this->initialData = new InitialData($this->map, $this->source, $this->destination, $this->helper);
+        $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);
     }
 
     /**

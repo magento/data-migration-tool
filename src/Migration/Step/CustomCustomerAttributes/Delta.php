@@ -9,7 +9,7 @@ use Migration\App\Step\StageInterface;
 use Migration\Config;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\RecordFactory;
 use Migration\Logger\Logger;
 use Migration\Resource\Record;

@@ -5,8 +5,8 @@
  */
 namespace Migration\Step\Eav;
 
-use Migration\MapReader\MapReaderEav;
-use Migration\MapReaderInterface;
+use Migration\Reader\Map;
+use Migration\Reader\MapInterface;
 use Migration\RecordTransformerFactory;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
@@ -22,7 +22,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $helper;
 
     /**
-     * @var MapReaderEav|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $map;
 
@@ -43,9 +43,14 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->map = $this->getMockBuilder('Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
+
         $this->source = $this->getMockBuilder('Migration\Resource\Source')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
@@ -56,7 +61,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['create'])
             ->getMock();
 
-        $this->helper = new Helper($this->map, $this->source, $this->destination, $this->factory);
+        $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory);
     }
 
     public function testGetSourceRecordsCount()
@@ -69,7 +74,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     public function testGetDestinationRecordsCount()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
-            ->with('some_document', MapReaderInterface::TYPE_SOURCE)
+            ->with('some_document', MapInterface::TYPE_SOURCE)
             ->will($this->returnValue('some_dest_document'));
         $this->destination->expects($this->once())->method('getRecordsCount')->with('some_dest_document')
             ->will($this->returnValue(5));
@@ -92,7 +97,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     public function testGetDestinationRecords()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
-            ->with('test_source_document', MapReaderInterface::TYPE_SOURCE)
+            ->with('test_source_document', MapInterface::TYPE_SOURCE)
             ->will($this->returnValue('test_dest_document'));
         $this->destination->expects($this->once())->method('getRecordsCount')->will($this->returnValue(1));
         $this->destination->expects($this->once())->method('getRecords')->with('test_dest_document', 0, 1)
@@ -118,7 +123,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     {
         $row = ['key' => 'key_value', 'field' => 'field_value'];
         $this->map->expects($this->once())->method('getDocumentMap')
-            ->with('test_source_document', MapReaderInterface::TYPE_SOURCE)
+            ->with('test_source_document', MapInterface::TYPE_SOURCE)
             ->will($this->returnValue('test_dest_document'));
         $this->destination->expects($this->once())->method('getRecordsCount')->will($this->returnValue(1));
         $this->destination->expects($this->once())->method('getRecords')->with('test_dest_document', 0, 1)

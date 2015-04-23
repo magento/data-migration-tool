@@ -68,7 +68,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader\MapReaderSalesOrder');
         $config = $objectManager->get('\Migration\Config');
         $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
         $destination = $objectManager->get('\Migration\Resource\Destination');
@@ -80,7 +79,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '\Migration\Step\SalesOrder\Data',
             [
                 'logger' => $logger,
-                'map' => $mapReader,
                 'config' => $config,
                 'initialData' => $initialData
             ]

@@ -6,6 +6,7 @@
 namespace Migration\Step\UrlRewrite;
 
 use Migration\App\Step\StageInterface;
+use Migration\Reader\MapInterface;
 use Migration\Step\DatabaseStage;
 
 class Version11410to2000 extends DatabaseStage implements StageInterface
@@ -58,7 +59,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     /**
      * ProgressBar instance
      *
-     * @var \Migration\ProgressBar
+     * @var \Migration\App\ProgressBar
      */
     protected $progress;
 
@@ -88,7 +89,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @var array
      */
     protected $structure = [
-        'source' => [
+        MapInterface::TYPE_SOURCE => [
             'enterprise_url_rewrite' => [
                 'url_rewrite_id',
                 'request_path',
@@ -128,7 +129,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
                 'store_id'
             ],
         ],
-        'destination' => [
+        MapInterface::TYPE_DEST => [
             'url_rewrite' => [
                 'url_rewrite_id',
                 'entity_type',
@@ -159,7 +160,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     ];
 
     /**
-     * @param \Migration\ProgressBar $progress
+     * @param \Migration\App\ProgressBar $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
      * @param \Migration\Resource\Source $source
@@ -170,7 +171,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @throws \Migration\Exception
      */
     public function __construct(
-        \Migration\ProgressBar $progress,
+        \Migration\App\ProgressBar $progress,
         \Migration\Logger\Logger $logger,
         \Migration\Config $config,
         \Migration\Resource\Source $source,
@@ -392,9 +393,11 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     protected function integrity()
     {
         $errors = false;
-        $this->progress->start(count($this->structure['source']) + count($this->structure['destination']));
+        $this->progress->start(
+            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST])
+        );
         foreach ($this->structure as $resourceName => $documentList) {
-            $resource = $resourceName == 'source' ? $this->source : $this->destination;
+            $resource = $resourceName == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
                 $this->progress->advance();
                 $document = $resource->getDocument($documentName);

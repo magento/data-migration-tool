@@ -8,7 +8,7 @@ namespace Migration\TestFramework;
 /**
  * Class ProgressBar
  */
-class ProgressBar extends \Migration\ProgressBar
+class ProgressBar extends \Migration\App\ProgressBar
 {
     /**
      * @inheritdoc

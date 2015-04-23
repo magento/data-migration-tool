@@ -5,8 +5,9 @@
  */
 namespace Migration\Step\Eav;
 
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderEav;
+use Migration\Reader\MapInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\Map;
 use Migration\RecordTransformer;
 use Migration\RecordTransformerFactory;
 use Migration\Resource\Destination;
@@ -19,7 +20,7 @@ use Migration\Resource\Source;
 class Helper
 {
     /**
-     * @var MapReaderEav
+     * @var Map
      */
     protected $map;
 
@@ -34,18 +35,18 @@ class Helper
     protected $factory;
 
     /**
-     * @param MapReaderEav $mapReader
+     * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
      * @param RecordTransformerFactory $factory
      */
     public function __construct(
-        MapReaderEav $mapReader,
+        MapFactory $mapFactory,
         Source $source,
         Destination $destination,
         RecordTransformerFactory $factory
     ) {
-        $this->map = $mapReader;
+        $this->map = $mapFactory->create('eav_map_file');
         $this->source = $source;
         $this->destination = $destination;
         $this->factory = $factory;
@@ -67,7 +68,7 @@ class Helper
     public function getDestinationRecordsCount($sourceDocumentName)
     {
         return $this->destination->getRecordsCount(
-            $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE)
+            $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE)
         );
     }
 
@@ -78,7 +79,7 @@ class Helper
      */
     public function getDestinationRecords($sourceDocName, $keyFields = [])
     {
-        $destinationDocumentName = $this->map->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+        $destinationDocumentName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
         $data = [];
         $count = $this->destination->getRecordsCount($destinationDocumentName);
         foreach ($this->destination->getRecords($destinationDocumentName, 0, $count) as $row) {

@@ -7,11 +7,13 @@ namespace Migration\Step\Log;
 
 use Migration\App\Step\StageInterface;
 use Migration\Handler;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderLog;
+use Migration\Reader\MapInterface;
+use Migration\Reader\ListsFactory;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
 use Migration\Resource;
 use Migration\Resource\Record;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Data
@@ -34,9 +36,9 @@ class Data implements StageInterface
     protected $recordFactory;
 
     /**
-     * @var MapReaderLog
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory
@@ -51,12 +53,18 @@ class Data implements StageInterface
     protected $progress;
 
     /**
+     * @var \Migration\Reader\Lists
+     */
+    protected $readerList;
+
+    /**
      * @param ProgressBar $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReaderLog $mapReader
+     * @param MapFactory $mapFactory
+     * @param ListsFactory $listsFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -64,14 +72,16 @@ class Data implements StageInterface
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderLog $mapReader
+        MapFactory $mapFactory,
+        ListsFactory $listsFactory
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('log_map_file');
         $this->progress = $progress;
+        $this->readerList = $listsFactory->create('log_list_file');
     }
 
     /**
@@ -80,11 +90,11 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $sourceDocuments = array_keys($this->mapReader->getDocumentList());
+        $sourceDocuments = $this->readerList->getList('source_documents');
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -96,7 +106,7 @@ class Data implements StageInterface
                 [
                     'sourceDocument' => $sourceDocument,
                     'destDocument' => $destDocument,
-                    'mapReader' => $this->mapReader
+                    'mapReader' => $this->map
                 ]
             );
             $recordTransformer->init();
@@ -116,7 +126,7 @@ class Data implements StageInterface
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
         }
-        $this->clearLog($this->mapReader->getDestDocumentsToClear());
+        $this->clearLog($this->readerList->getList('destination_documents_to_clear'));
         $this->progress->finish();
         return true;
     }
@@ -140,6 +150,7 @@ class Data implements StageInterface
      */
     protected function getIterationsCount()
     {
-        return count($this->mapReader->getDestDocumentsToClear()) + count($this->mapReader->getDocumentList());
+        return count($this->readerList->getList('destination_documents_to_clear'))
+            + count($this->readerList->getList('source_documents'));
     }
 }

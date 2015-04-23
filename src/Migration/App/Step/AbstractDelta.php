@@ -6,7 +6,8 @@
 namespace Migration\App\Step;
 
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
 use Migration\Resource;
 
@@ -18,7 +19,7 @@ abstract class AbstractDelta implements StageInterface
     protected $source;
 
     /**
-     * @var MapReaderInterface
+     * @var MapInterface
      */
     protected $mapReader;
 
@@ -44,22 +45,24 @@ abstract class AbstractDelta implements StageInterface
 
     /**
      * @param Source $source
-     * @param MapReaderInterface $mapReader
+     * @param MapFactory $mapFactory
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
         Source $source,
-        MapReaderInterface $mapReader,
+        MapFactory $mapFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory
+        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        $mapConfigOption
     ) {
         $this->source = $source;
-        $this->mapReader = $mapReader;
+        $this->mapReader = $mapFactory->create($mapConfigOption);
         $this->logger = $logger;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
@@ -80,7 +83,7 @@ abstract class AbstractDelta implements StageInterface
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
 
-            $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -125,7 +128,7 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
-        $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+        $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);

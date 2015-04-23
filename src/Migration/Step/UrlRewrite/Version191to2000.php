@@ -5,12 +5,13 @@
  */
 namespace Migration\Step\UrlRewrite;
 
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
+use Migration\Reader\MapInterface;
 
 class Version191to2000 extends \Migration\Step\DatabaseStage
 {
@@ -58,7 +59,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
      * @var array
      */
     protected $structure = [
-        'source' => [
+        MapInterface::TYPE_SOURCE => [
             'core_url_rewrite' => [
                 'url_rewrite_id' ,
                 'store_id',
@@ -72,7 +73,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
                 'product_id',
             ],
         ],
-        'destination' => [
+        MapInterface::TYPE_DEST => [
             'url_rewrite' => [
                 'url_rewrite_id',
                 'entity_type',
@@ -123,9 +124,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
         $result = true;
         $this->progress->start(1);
         $result &= array_keys($this->source->getStructure(self::SOURCE)->getFields())
-            == $this->structure['source'][self::SOURCE];
+            == $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE];
         $result &= array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
-            == $this->structure['destination'][self::DESTINATION];
+            == $this->structure[MapInterface::TYPE_DEST][self::DESTINATION];
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;

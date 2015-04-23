@@ -5,10 +5,9 @@
  */
 namespace Migration\App;
 
-use Migration\MapReader\MapReaderDeltalog;
+use Migration\Reader\Map;
 use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
 
 class SetupDeltaLog implements StageInterface
 {
@@ -18,7 +17,7 @@ class SetupDeltaLog implements StageInterface
     protected $source;
 
     /**
-     * @var MapReaderDeltalog
+     * @var Map
      */
     protected $mapReader;
 
@@ -29,13 +28,13 @@ class SetupDeltaLog implements StageInterface
 
     /**
      * @param Source $source
-     * @param MapReaderDeltalog $mapReader
+     * @param \Migration\Reader\MapFactory $mapFactory
      * @param ProgressBar $progress
      */
-    public function __construct(Source $source, MapReaderDeltalog $mapReader, ProgressBar $progress)
+    public function __construct(Source $source, \Migration\Reader\MapFactory $mapFactory, ProgressBar $progress)
     {
         $this->source = $source;
-        $this->mapReader = $mapReader;
+        $this->mapReader = $mapFactory->create('deltalog_map_file');
         $this->progress = $progress;
     }
 

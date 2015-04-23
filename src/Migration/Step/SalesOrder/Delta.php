@@ -8,10 +8,10 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
-use Migration\MapReader\MapReaderSalesOrder;
+use Migration\Reader\MapFactory;
 use Migration\Resource;
 
 class Delta extends AbstractDelta
@@ -28,27 +28,37 @@ class Delta extends AbstractDelta
 
     /**
      * @param Source $source
-     * @param MapReaderSalesOrder $mapReader
+     * @param MapFactory $mapFactory
      * @param Logger $logger
      * @param Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Helper $helper
      * @param Data $data
+     * @param string $mapConfigOption
      */
     public function __construct(
         Source $source,
-        MapReaderSalesOrder $mapReader,
+        MapFactory $mapFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
-        Data $data
+        Data $data,
+        $mapConfigOption = 'sales_order_map_file'
     ) {
         $this->helper = $helper;
         $this->data = $data;
-        parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
+        parent::__construct(
+            $source,
+            $mapFactory,
+            $logger,
+            $destination,
+            $recordFactory,
+            $recordTransformerFactory,
+            $mapConfigOption
+        );
     }
 
     /**
@@ -58,7 +68,7 @@ class Delta extends AbstractDelta
      */
     protected function processChangedRecords($documentName, $idKey)
     {
-        $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+        $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $items = $this->source->getChangedRecords($documentName, $idKey);
 

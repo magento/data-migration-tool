@@ -7,11 +7,12 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderSalesOrder;
-use Migration\MapReaderInterface;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Volume
@@ -34,9 +35,9 @@ class Volume implements StageInterface
     protected $progress;
 
     /**
-     * @var MapReaderSalesOrder
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Source
@@ -58,7 +59,7 @@ class Volume implements StageInterface
      * @param Destination $destination
      * @param InitialData $initialData
      * @param Helper $helper
-     * @param MapReaderSalesOrder $mapReader
+     * @param MapFactory $mapFactory
      * @param ProgressBar $progress
      * @param Logger $logger
      */
@@ -67,7 +68,7 @@ class Volume implements StageInterface
         Destination $destination,
         InitialData $initialData,
         Helper $helper,
-        MapReaderSalesOrder $mapReader,
+        MapFactory $mapFactory,
         ProgressBar $progress,
         Logger $logger
     ) {
@@ -75,7 +76,7 @@ class Volume implements StageInterface
         $this->destination = $destination;
         $this->initialData = $initialData;
         $this->helper = $helper;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('sales_order_map_file');
         $this->progress = $progress;
         $this->logger = $logger;
     }
@@ -90,7 +91,7 @@ class Volume implements StageInterface
         $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }

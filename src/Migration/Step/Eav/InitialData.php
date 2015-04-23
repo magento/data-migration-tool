@@ -5,7 +5,8 @@
  */
 namespace Migration\Step\Eav;
 
-use Migration\MapReader\MapReaderEav;
+use Migration\Reader\MapFactory;
+use Migration\Reader\Map;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
 
@@ -41,7 +42,7 @@ class InitialData
     protected $destination;
 
     /**
-     * @var MapReaderEav
+     * @var Map
      */
     protected $map;
 
@@ -51,14 +52,14 @@ class InitialData
     protected $helper;
 
     /**
-     * @param MapReaderEav $mapReader
+     * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
      * @param Helper $helper
      */
-    public function __construct(MapReaderEav $mapReader, Source $source, Destination $destination, Helper $helper)
+    public function __construct(MapFactory $mapFactory, Source $source, Destination $destination, Helper $helper)
     {
-        $this->map = $mapReader;
+        $this->map = $mapFactory->create('eav_map_file');
         $this->source = $source;
         $this->destination = $destination;
         $this->helper = $helper;

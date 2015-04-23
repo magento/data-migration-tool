@@ -3,11 +3,10 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-namespace Migration\MapReader;
+namespace Migration\Reader;
 
 /**
- * Class MapReaderTest
+ * Class SettingsTest
  */
 class SettingsTest extends \PHPUnit_Framework_TestCase
 {

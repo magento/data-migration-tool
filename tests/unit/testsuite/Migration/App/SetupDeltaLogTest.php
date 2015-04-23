@@ -23,17 +23,21 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
                 ['invoices', 'invoice_id']
             );
 
-        /** @var \Migration\MapReader\MapReaderDeltalog|\PHPUnit_Framework_MockObject_MockObject $mapReader */
-        $mapReader = $this->getMock('\Migration\MapReader\MapReaderDeltalog', [], [], '', false);
-        $mapReader->expects($this->any())
+        /** @var \Migration\Reader\Map|\PHPUnit_Framework_MockObject_MockObject $readerMap */
+        $readerMap = $this->getMock('\Migration\Reader\Map', [], [], '', false);
+        $readerMap->expects($this->any())
             ->method('getDeltaDocuments')
             ->with()
             ->willReturn(
                 ['orders' => 'order_id', 'invoices' => 'invoice_id']
             );
 
-        /** @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
-        $progress = $this->getMock('\Migration\ProgressBar', [], [], '', false);
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('deltalog_map_file')->willReturn($readerMap);
+
+        /** @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
+        $progress = $this->getMock('\Migration\App\ProgressBar', [], [], '', false);
         $progress->expects($this->once())
             ->method('start')
             ->with(2);
@@ -42,7 +46,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $progress->expects($this->once())
             ->method('finish');
 
-        $deltalog = new SetupDeltaLog($source, $mapReader, $progress);
+        $deltalog = new SetupDeltaLog($source, $mapFactory, $progress);
         $this->assertTrue($deltalog->perform());
     }
 }
