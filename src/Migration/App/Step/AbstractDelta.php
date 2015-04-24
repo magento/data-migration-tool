@@ -6,6 +6,7 @@
 namespace Migration\App\Step;
 
 use Migration\Logger\Logger;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
@@ -22,6 +23,11 @@ abstract class AbstractDelta implements StageInterface
      * @var MapInterface
      */
     protected $mapReader;
+
+    /**
+     * @var []
+     */
+    protected $deltaDocuments;
 
     /**
      * @var Logger
@@ -46,23 +52,28 @@ abstract class AbstractDelta implements StageInterface
     /**
      * @param Source $source
      * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param string $mapConfigOption
+     * @param string $groupName
      */
     public function __construct(
         Source $source,
         MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        $mapConfigOption
+        $mapConfigOption,
+        $groupName
     ) {
         $this->source = $source;
         $this->mapReader = $mapFactory->create($mapConfigOption);
+        $this->deltaDocuments = $groupsFactory->create('delta_document_groups_file')->getGroup($groupName);
         $this->logger = $logger;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
@@ -76,8 +87,7 @@ abstract class AbstractDelta implements StageInterface
     public function perform()
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
-        $deltaDocuments = $this->mapReader->getDeltaDocuments();
-        foreach ($deltaDocuments as $documentName => $idKey) {
+        foreach ($this->deltaDocuments as $documentName => $idKey) {
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));

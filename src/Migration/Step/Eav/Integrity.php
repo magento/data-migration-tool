@@ -7,7 +7,7 @@ namespace Migration\Step\Eav;
 
 use Migration\Logger\Logger;
 use Migration\Reader\MapInterface;
-use Migration\Reader\ListsFactory;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\ProgressBar;
 use Migration\Resource;
@@ -18,9 +18,9 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var \Migration\Reader\Lists
+     * @var \Migration\Reader\Groups
      */
-    protected $lists;
+    protected $groups;
 
     /**
      * @param ProgressBar $progress
@@ -28,7 +28,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
-     * @param ListsFactory $listsFactory
+     * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -37,10 +37,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         Resource\Source $source,
         Resource\Destination $destination,
         MapFactory $mapFactory,
-        ListsFactory $listsFactory,
+        GroupsFactory $groupsFactory,
         $mapConfigOption = 'eav_map_file'
     ) {
-        $this->lists = $listsFactory->create('eav_list_file');
+        $this->groups = $groupsFactory->create('eav_document_groups_file');
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -51,7 +51,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     {
         $this->progress->start($this->getIterationsCount());
 
-        $documents = $this->lists->getList('documents');
+        $documents = array_keys($this->groups->getGroup('documents'));
         foreach ($documents as $sourceDocumentName) {
             $this->check([$sourceDocumentName], MapInterface::TYPE_SOURCE);
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
@@ -68,6 +68,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->lists->getList('documents')) * 2;
+        return count($this->groups->getGroup('documents')) * 2;
     }
 }

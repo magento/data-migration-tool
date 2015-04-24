@@ -8,7 +8,7 @@ namespace Migration\Step\Log;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Reader\MapInterface;
-use Migration\Reader\ListsFactory;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\Resource;
@@ -52,7 +52,7 @@ class Volume implements StageInterface
     protected $errors = [];
 
     /**
-     * @var \Migration\Reader\Lists
+     * @var \Migration\Reader\Groups
      */
     protected $readerList;
 
@@ -62,7 +62,7 @@ class Volume implements StageInterface
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
      * @param ProgressBar $progress
-     * @param ListsFactory $listsFactory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Logger $logger,
@@ -70,14 +70,14 @@ class Volume implements StageInterface
         Resource\Destination $destination,
         MapFactory $mapFactory,
         ProgressBar $progress,
-        ListsFactory $listsFactory
+        GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapFactory->create('log_map_file');
         $this->logger = $logger;
         $this->progress = $progress;
-        $this->readerList = $listsFactory->create('log_list_file');
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
     }
 
     /**
@@ -86,7 +86,7 @@ class Volume implements StageInterface
     public function perform()
     {
         $isSuccess = true;
-        $sourceDocuments = $this->readerList->getList('source_documents');
+        $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         $this->progress->start($this->getIterationsCount());
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
@@ -101,7 +101,7 @@ class Volume implements StageInterface
                 $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
-        if (!$this->checkCleared($this->readerList->getList('destination_documents_to_clear'))) {
+        if (!$this->checkCleared(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')))) {
             $isSuccess = false;
             $this->errors[] = 'Destination log documents are not cleared';
         }
@@ -136,8 +136,8 @@ class Volume implements StageInterface
      */
     protected function getIterationsCount()
     {
-        return count($this->readerList->getList('destination_documents_to_clear'))
-            + count($this->readerList->getList('source_documents'));
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents'));
     }
 
     /**

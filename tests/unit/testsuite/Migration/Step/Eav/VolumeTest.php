@@ -31,9 +31,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var \Migration\Reader\ListsFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $readerLists;
+    protected $readerGroups;
 
     /**
      * @var \Migration\Step\Eav\Volume
@@ -54,26 +54,26 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress = $this->getMockBuilder('\Migration\ProgressBar')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
-        $this->readerLists = $this->getMockBuilder('\Migration\Reader\Lists')
+        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        /** @var \Migration\Reader\ListsFactory|\PHPUnit_Framework_MockObject_MockObject $listsFactory */
-        $listsFactory = $this->getMockBuilder('\Migration\Reader\ListsFactory')
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $listsFactory->expects($this->any())
+        $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('eav_list_file')
-            ->willReturn($this->readerLists);
+            ->with('eav_document_groups_file')
+            ->willReturn($this->readerGroups);
 
         $this->volume = new Volume(
             $this->helper,
             $this->initialData,
             $this->logger,
             $this->progress,
-            $listsFactory
+            $groupsFactory
         );
     }
 

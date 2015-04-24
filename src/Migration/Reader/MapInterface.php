@@ -65,9 +65,4 @@ interface MapInterface
      * @return mixed
      */
     public function getHandlerConfig($document, $field, $type);
-
-    /**
-     * @return array
-     */
-    public function getDeltaDocuments();
 }

@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\ProgressBar;
-use Migration\Reader\ListsFactory;
+use Migration\Reader\GroupsFactory;
 
 /**
  * Class Volume
@@ -36,9 +36,9 @@ class Volume implements StageInterface
     protected $progress;
 
     /**
-     * @var \Migration\Reader\Lists
+     * @var \Migration\Reader\Groups
      */
-    protected $lists;
+    protected $groups;
 
     /**
      * @var array
@@ -50,20 +50,20 @@ class Volume implements StageInterface
      * @param InitialData $initialData
      * @param Logger $logger
      * @param ProgressBar $progress
-     * @param ListsFactory $listsFactory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Helper $helper,
         InitialData $initialData,
         Logger $logger,
         ProgressBar $progress,
-        ListsFactory $listsFactory
+        GroupsFactory $groupsFactory
     ) {
         $this->initialData = $initialData;
         $this->helper = $helper;
         $this->logger = $logger;
         $this->progress = $progress;
-        $this->lists = $listsFactory->create('eav_list_file');
+        $this->groups = $groupsFactory->create('eav_document_groups_file');
     }
 
     /**
@@ -71,7 +71,7 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->lists->getList('documents')));
+        $this->progress->start(count($this->groups->getGroup('documents')));
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
         $this->printErrors();
