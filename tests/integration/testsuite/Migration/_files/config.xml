@@ -12,11 +12,6 @@
             <data>Migration\Step\Eav\Data</data>
             <volume>Migration\Step\Eav\Volume</volume>
         </step>
-        <step title="Custom Customer Attributes Step">
-            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
-            <data>Migration\Step\CustomCustomerAttributes\Data</data>
-            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
-        </step>
         <step title="Map step">
             <integrity>Migration\Step\Map\Integrity</integrity>
             <data>Migration\Step\Map\Data</data>
@@ -37,17 +32,8 @@
             <data>Migration\Step\Ratings</data>
             <volume>Migration\Step\Ratings</volume>
         </step>
-        <step title="SalesOrder step">
-            <integrity>Migration\Step\SalesOrder</integrity>
-            <data>Migration\Step\SalesOrder</data>
-            <volume>Migration\Step\SalesOrder</volume>
-        </step>
     </steps>
     <steps mode="delta">
-        <step title="Custom Customer Attributes Step">
-            <delta>Migration\Step\CustomCustomerAttributes</delta>
-            <volume>Migration\Step\CustomCustomerAttributes</volume>
-        </step>
         <step title="Map step">
             <delta>Migration\Step\Map</delta>
             <volume>Migration\Step\Map</volume>
@@ -55,10 +41,6 @@
         <step title="Log Step">
             <delta>Migration\Step\Log</delta>
             <volume>Migration\Step\Log</volume>
-        </step>
-        <step title="SalesOrder step">
-            <delta>Migration\Step\SalesOrder</delta>
-            <volume>Migration\Step\SalesOrder</volume>
         </step>
     </steps>
     <source version="1.14.1.0">
