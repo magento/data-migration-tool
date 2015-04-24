@@ -5,13 +5,12 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
-    <source>
-        <document_rules>
-            <log_changes>
-                <document key="field1">table_with_data</document>
-            </log_changes>
-        </document_rules>
-    </source>
-    <destination/>
-</map>
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
+    <group name="group1">
+        <document key="key">table_with_data</document>
+    </group>
+    <group name="group2">
+        <document key="key">source_table_1</document>
+        <document key="key">source_table_2</document>
+    </group>
+</groups>

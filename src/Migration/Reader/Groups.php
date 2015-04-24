@@ -8,11 +8,11 @@ namespace Migration\Reader;
 use Migration\Exception;
 
 /**
- * Class Lists
+ * Class Groups
  */
-class Lists
+class Groups
 {
-    const CONFIGURATION_SCHEMA = 'lists.xsd';
+    const CONFIGURATION_SCHEMA = 'groups.xsd';
 
     /**
      * @var \DOMXPath
@@ -20,34 +20,31 @@ class Lists
     protected $xml;
 
     /**
-     * @param string $listsFile
+     * @param string $groupsFile
      * @throws Exception
      */
-    public function __construct($listsFile = '')
+    public function __construct($groupsFile = '')
     {
-        if (!empty($listsFile)) {
-            $this->init($listsFile);
+        if (!empty($groupsFile)) {
+            $this->init($groupsFile);
         }
     }
 
     /**
      * Init configuration
      *
-     * @param string $listFile
+     * @param string $groupsFile
      * @return $this
      * @throws Exception
      */
-    public function init($listFile)
+    public function init($groupsFile)
     {
-        $this->ignoredDocuments = [];
-        $this->wildcards = null;
-
-        $configFile = $this->getRootDir() . $listFile;
-        if (!is_file($configFile)) {
-            throw new Exception('Invalid list filename: ' . $configFile);
+        $xmlFile = $this->getRootDir() . $groupsFile;
+        if (!is_file($xmlFile)) {
+            throw new Exception('Invalid groups filename: ' . $xmlFile);
         }
 
-        $xml = file_get_contents($configFile);
+        $xml = file_get_contents($xmlFile);
         $document = new \Magento\Framework\Config\Dom($xml);
 
         if (!$document->validate($this->getRootDir() .'etc/' . self::CONFIGURATION_SCHEMA)) {
@@ -71,25 +68,42 @@ class Lists
      * @param string $name
      * @return array
      */
-    public function getList($name)
+    public function getGroup($name)
     {
         $result = [];
         if (!$this->xml) {
             return $result;
         }
-        $queryResult = $this->xml->query(sprintf('//list[@name="%s"]', $name));
+        $queryResult = $this->xml->query(sprintf('//group[@name="%s"]', $name));
         if ($queryResult->length > 0) {
             /** @var \DOMElement $document */
             $node = $queryResult->item(0);
             /** @var \DOMElement $item */
             foreach ($node->childNodes as $item) {
                 if ($item->nodeType == XML_ELEMENT_NODE) {
-                    if ($item->getAttribute('key') !== '') {
-                        $result[$item->getAttribute('key')] = $item->nodeValue;
-                    } else {
-                        $result[] = $item->nodeValue;
-                    }
+                    $result[$item->nodeValue] = $item->getAttribute('key');
                 }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Get all groups
+     *
+     * @return array
+     */
+    public function getGroups()
+    {
+        $result = [];
+        if (!$this->xml) {
+            return $result;
+        }
+        $queryResult = $this->xml->query('//group');
+        if ($queryResult->length > 0) {
+            /** @var \DOMElement $item */
+            foreach ($queryResult as $item) {
+                $result[$item->getAttribute('name')] = $this->getGroup($item->getAttribute('name'));
             }
         }
         return $result;

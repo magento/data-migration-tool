@@ -276,24 +276,6 @@ class Map implements MapInterface
     }
 
     /**
-     * @return array
-     */
-    public function getDeltaDocuments()
-    {
-        $result = [];
-        $queryResult = $this->xml
-            ->query('//source/document_rules/log_changes/document');
-        if (!$queryResult->length) {
-            return $result;
-        }
-        foreach ($queryResult as $document) {
-            /** @var \DOMElement $document */
-            $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
-        }
-        return $result;
-    }
-
-    /**
      * @param string $type
      * @return bool
      * @throws Exception

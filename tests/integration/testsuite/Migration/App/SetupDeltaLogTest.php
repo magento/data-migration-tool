@@ -30,9 +30,10 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         ob_end_clean();
 
         $dataTable = 'table_with_data';
-        $deltaLogTableName = $source->getDeltaLogName($dataTable);
-        $deltaLogTable = $source->getDocument($deltaLogTableName);
-        $this->assertEquals($deltaLogTableName, $deltaLogTable->getName());
+        $this->checkDeltaLogTable($dataTable, $source);
+        $this->checkDeltaLogTable('source_table_1', $source);
+        $this->checkDeltaLogTable('source_table_2', $source);
+
         $sourceAdapter = $source->getAdapter();
         $sourceAdapter->insertRecords(
             $dataTable,
@@ -58,10 +59,21 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             ],
             'field1 = 100'
         );
-        $expectingData = [
-            ['field1' => '100', 'operation' => 'UPDATE'],
-            ['field1' => '101', 'operation' => 'INSERT']
+        $expectedData = [
+            ['key' => '8', 'operation' => 'UPDATE'],
+            ['key' => '9', 'operation' => 'INSERT']
         ];
-        $this->assertEquals($expectingData, $source->getRecords($deltaLogTableName, 0));
+        $this->assertEquals($expectedData, $source->getRecords($source->getDeltaLogName($dataTable), 0));
+    }
+
+    /**
+     * @param string $dataTable
+     * @param \Migration\Resource\Source $resource
+     */
+    protected function checkDeltaLogTable($dataTable, $resource)
+    {
+        $deltaLogTableName = $resource->getDeltaLogName($dataTable);
+        $deltaLogTable = $resource->getDocument($deltaLogTableName);
+        $this->assertEquals($deltaLogTableName, $deltaLogTable->getName());
     }
 }

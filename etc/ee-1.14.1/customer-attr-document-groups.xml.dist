@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+    <group name="source_documents">
+        <document key="entity_id">enterprise_customer_sales_flat_order</document>
+        <document key="entity_id">enterprise_customer_sales_flat_order_address</document>
+        <document key="entity_id">enterprise_customer_sales_flat_quote</document>
+        <document key="entity_id">enterprise_customer_sales_flat_quote_address</document>
+    </group>
+</groups>

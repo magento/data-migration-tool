@@ -47,10 +47,10 @@ class MapFactory
     }
 
     /**
-     * Create map file specified in config option
+     * Create map from file specified in config option
      *
      * @param string $configOption
-     * @return mixed
+     * @return \Migration\Reader\Map
      */
     public function create($configOption)
     {

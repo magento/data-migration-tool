@@ -8,6 +8,7 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
@@ -29,6 +30,7 @@ class Delta extends AbstractDelta
     /**
      * @param Source $source
      * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -36,28 +38,33 @@ class Delta extends AbstractDelta
      * @param Helper $helper
      * @param Data $data
      * @param string $mapConfigOption
+     * @param string $groupName
      */
     public function __construct(
         Source $source,
         MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
         Data $data,
-        $mapConfigOption = 'sales_order_map_file'
+        $mapConfigOption = 'sales_order_map_file',
+        $groupName = 'delta_sales'
     ) {
         $this->helper = $helper;
         $this->data = $data;
         parent::__construct(
             $source,
             $mapFactory,
+            $groupsFactory,
             $logger,
             $destination,
             $recordFactory,
             $recordTransformerFactory,
-            $mapConfigOption
+            $mapConfigOption,
+            $groupName
         );
     }
 

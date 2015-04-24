@@ -25,6 +25,11 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
     protected $map;
 
     /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerGroups;
+
+    /**
      * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
@@ -64,9 +69,24 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
         $this->recordTransformerFactory = $this->getMock('\Migration\RecordTransformerFactory', [], [], '', false);
         $this->data = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
 
+        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
+            [
+                ['delta_map', ['orders' => 'order_id']]
+            ]
+        );
+
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory->expects($this->any())
+            ->method('create')
+            ->with('delta_document_groups_file')
+            ->willReturn($this->readerGroups);
+
         $this->delta = new Delta(
             $this->source,
             $mapFactory,
+            $groupsFactory,
             $this->logger,
             $this->destination,
             $this->recordFactory,

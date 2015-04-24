@@ -5,7 +5,7 @@
  */
 namespace Migration\App;
 
-use Migration\Reader\Map;
+use Migration\Reader\Groups;
 use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
 
@@ -17,9 +17,9 @@ class SetupDeltaLog implements StageInterface
     protected $source;
 
     /**
-     * @var Map
+     * @var Groups
      */
-    protected $mapReader;
+    protected $groupsReader;
 
     /**
      * @var ProgressBar
@@ -28,13 +28,13 @@ class SetupDeltaLog implements StageInterface
 
     /**
      * @param Source $source
-     * @param \Migration\Reader\MapFactory $mapFactory
+     * @param \Migration\Reader\GroupsFactory $groupsFactory
      * @param ProgressBar $progress
      */
-    public function __construct(Source $source, \Migration\Reader\MapFactory $mapFactory, ProgressBar $progress)
+    public function __construct(Source $source, \Migration\Reader\GroupsFactory $groupsFactory, ProgressBar $progress)
     {
         $this->source = $source;
-        $this->mapReader = $mapFactory->create('deltalog_map_file');
+        $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
         $this->progress = $progress;
     }
 
@@ -43,11 +43,13 @@ class SetupDeltaLog implements StageInterface
      */
     public function perform()
     {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments();
-        $this->progress->start(count($deltaDocuments));
-        foreach ($deltaDocuments as $documentName => $idKey) {
-            $this->progress->advance();
-            $this->source->createDelta($documentName, $idKey);
+        $deltaLogs = $this->groupsReader->getGroups();
+        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
+        foreach ($deltaLogs as $deltaDocuments) {
+            foreach ($deltaDocuments as $documentName => $idKey) {
+                $this->progress->advance();
+                $this->source->createDelta($documentName, $idKey);
+            }
         }
         $this->progress->finish();
         return true;

@@ -6,9 +6,9 @@
 namespace Migration\Reader;
 
 /**
- * Factory class for @see \Migration\Reader\Lists
+ * Factory class for @see \Migration\Reader\Groups
  */
-class ListsFactory
+class GroupsFactory
 {
     /**
      * Object Manager instance
@@ -41,7 +41,7 @@ class ListsFactory
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Migration\Config $config,
-        $instanceName = '\\Migration\\Reader\\Lists'
+        $instanceName = '\\Migration\\Reader\\Groups'
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;
@@ -49,14 +49,14 @@ class ListsFactory
     }
 
     /**
-     * Create lists file specified in config option
+     * Create groups from file specified in config option
      *
      * @param string $configOption
-     * @return \Migration\Reader\Lists
+     * @return \Migration\Reader\Groups
      */
     public function create($configOption)
     {
-        $listsFile = $this->config->getOption($configOption);
-        return $this->objectManager->create($this->instanceName, ['listsFile' => $listsFile]);
+        $groupsFile = $this->config->getOption($configOption);
+        return $this->objectManager->create($this->instanceName, ['groupsFile' => $groupsFile]);
     }
 }

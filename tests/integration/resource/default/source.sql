@@ -1,8 +1,7 @@
--- MySQL dump 10.13  Distrib 5.6.15, for Linux (x86_64)
---
--- Host: localhost    Database: migration_source
--- ------------------------------------------------------
--- Server version	5.6.15-56
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -118,9 +117,11 @@ DROP TABLE IF EXISTS `table_with_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `table_with_data` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
   `field1` int(11) DEFAULT NULL,
   `field2` int(11) DEFAULT NULL,
-  `field3` int(11) DEFAULT NULL
+  `field3` int(11) DEFAULT NULL,
+  PRIMARY KEY (`key`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -130,7 +131,7 @@ CREATE TABLE `table_with_data` (
 
 LOCK TABLES `table_with_data` WRITE;
 /*!40000 ALTER TABLE `table_with_data` DISABLE KEYS */;
-INSERT INTO `table_with_data` VALUES (1,2,3),(2,3,4),(3,4,5),(4,5,6),(5,5,5),(6,6,7),(7,7,7);
+INSERT INTO `table_with_data` VALUES (NULL,1,2,3),(NULL,2,3,4),(NULL,3,4,5),(NULL,4,5,6),(NULL,5,5,5),(NULL,6,6,7),(NULL,7,7,7);
 /*!40000 ALTER TABLE `table_with_data` ENABLE KEYS */;
 UNLOCK TABLES;
 

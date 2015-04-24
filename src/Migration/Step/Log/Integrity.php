@@ -6,7 +6,7 @@
 namespace Migration\Step\Log;
 
 use Migration\Logger\Logger;
-use Migration\Reader\ListsFactory;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\App\ProgressBar;
@@ -18,7 +18,7 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var \Migration\Reader\Lists
+     * @var \Migration\Reader\Groups
      */
     protected $readerList;
 
@@ -28,7 +28,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
-     * @param ListsFactory $listsFactory
+     * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -37,10 +37,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         Resource\Source $source,
         Resource\Destination $destination,
         MapFactory $mapFactory,
-        ListsFactory $listsFactory,
+        GroupsFactory $groupsFactory,
         $mapConfigOption = 'log_map_file'
     ) {
-        $this->readerList = $listsFactory->create('log_list_file');
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -50,7 +50,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $srcDocuments = $this->readerList->getList('source_documents');
+        $srcDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
 
         $dstDocuments = [];
         foreach ($srcDocuments as $sourceDocumentName) {
@@ -61,7 +61,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         $this->check($dstDocuments, MapInterface::TYPE_DEST);
 
         $dstDocumentList = array_flip($this->destination->getDocumentList());
-        foreach ($this->readerList->getList('destination_documents_to_clear') as $document) {
+        foreach (array_keys($this->readerGroups->getGroup('destination_documents_to_clear')) as $document) {
             $this->progress->advance();
             if (!isset($dstDocumentList[$document])) {
                 $this->missingDocuments[MapInterface::TYPE_DEST][$document] = true;
@@ -73,13 +73,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * Get iterations count for step
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function getIterationsCount()
     {
-        return count($this->readerList->getList('destination_documents_to_clear'))
-            + count($this->readerList->getList('source_documents')) * 2;
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents')) * 2;
     }
 }
