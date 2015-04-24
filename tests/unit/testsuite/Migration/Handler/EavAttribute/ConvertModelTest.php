@@ -23,13 +23,13 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
     protected $fieldName;
 
     /**
-     * @var \Migration\ClassMap|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\ClassMap|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $classMap;
 
     public function setUp()
     {
-        $this->classMap = $this->getMockBuilder('Migration\ClassMap')->setMethods(['convertClassName'])
+        $this->classMap = $this->getMockBuilder('Migration\Reader\ClassMap')->setMethods(['convertClassName'])
             ->disableOriginalConstructor()
             ->getMock();
 

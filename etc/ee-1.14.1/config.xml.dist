@@ -86,7 +86,7 @@
         <settings_map_file>etc/ee-1.14.1/settings.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ee-1.14.1/map-sales.xml.dist</sales_order_map_file>
         <deltalog_map_file>etc/ee-1.14.1/deltalog.xml.dist</deltalog_map_file>
-        <class_map>etc/class_map_ee.php</class_map>
+        <class_map>etc/ee-1.14.1/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
