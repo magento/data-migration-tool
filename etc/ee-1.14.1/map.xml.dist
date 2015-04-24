@@ -1525,6 +1525,9 @@
     <destination>
         <document_rules>
             <ignore>
+                <document>migration_backup_*</document>
+            </ignore>
+            <ignore>
                 <document>googleoptimizer_code</document>
             </ignore>
             <ignore>

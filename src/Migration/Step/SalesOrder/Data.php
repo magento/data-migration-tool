@@ -12,6 +12,7 @@ use Migration\MapReaderInterface;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
@@ -88,10 +89,14 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocumentList()));
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progress->start(count($this->helper->getDocumentList()));
+        }
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+                $this->progress->advance();
+            }
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
             $destinationDocumentName = $this->mapReader->getDocumentMap(
@@ -116,13 +121,18 @@ class Data implements StageInterface
                 ]
             );
             $recordTransformer->init();
-
             $pageNumber = 0;
+            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                $this->progress->start($this->source->getRecordsCount($sourceDocName));
+            }
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
                 $destinationCollection = $destDocument->getRecords();
                 $destEavCollection = $eavDocumentResource->getRecords();
                 foreach ($bulk as $recordData) {
+                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                        $this->progress->advance();
+                    }
                     /** @var Record $sourceRecord */
                     $sourceRecord = $this->recordFactory->create(
                         ['document' => $sourceDocument, 'data' => $recordData]
@@ -136,9 +146,14 @@ class Data implements StageInterface
                 }
                 $this->destination->saveRecords($destinationDocumentName, $destinationCollection);
                 $this->destination->saveRecords($eavDocumentName, $destEavCollection);
+                if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                    $this->progress->finish();
+                }
             }
         }
-        $this->progress->finish();
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progress->finish();
+        }
         return true;
     }
 

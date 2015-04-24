@@ -24,7 +24,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */
@@ -53,7 +53,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */

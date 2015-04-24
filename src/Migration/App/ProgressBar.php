@@ -6,6 +6,8 @@
 namespace Migration\App;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Output\NullOutput;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class ProgressBar
@@ -18,10 +20,16 @@ class ProgressBar extends \Symfony\Component\Console\Helper\ProgressBar
     protected $output;
 
     /**
-     * @param ConsoleOutput $output
+     * @param ConsoleOutput $consoleOutput
+     * @param NullOutput $nullOutput
      */
-    public function __construct(ConsoleOutput $output)
+    public function __construct(ConsoleOutput $consoleOutput, NullOutput $nullOutput)
     {
-        parent::__construct($output);
+        if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_ERROR) {
+            parent::__construct($nullOutput);
+        } else {
+            parent::__construct($consoleOutput);
+        }
+        $this->setFormat('%percent%% [%bar%]');
     }
 }

@@ -14,7 +14,12 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Symfony\Component\Console\Output\ConsoleOutput
      */
-    protected $output;
+    protected $consoleOutput;
+
+    /**
+     * @var \Symfony\Component\Console\Output\NullOutput
+     */
+    protected $nullOutput;
 
     /**
      * @var \Migration\App\ProgressBar
@@ -23,12 +28,13 @@ class ProgressBarTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->output = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', [], [], '', false);
+        $this->consoleOutput = $this->getMock('\Symfony\Component\Console\Output\ConsoleOutput', [], [], '', false);
+        $this->nullOutput = $this->getMock('\Symfony\Component\Console\Output\NullOutput', [], [], '', false);
     }
 
     public function testCreate()
     {
-        $this->progressBar = new ProgressBar($this->output);
+        $this->progressBar = new ProgressBar($this->consoleOutput, $this->nullOutput);
         $this->assertInstanceOf('\Migration\App\ProgressBar', $this->progressBar);
     }
 }

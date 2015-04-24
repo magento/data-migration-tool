@@ -33,7 +33,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
 
         $data = $objectManager->create(
             '\Migration\Step\Map\Data',

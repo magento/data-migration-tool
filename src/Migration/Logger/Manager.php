@@ -12,7 +12,7 @@ namespace Migration\Logger;
 class Manager
 {
     /** Log levels */
-    const LOG_LEVEL_NONE = 'none';
+    const LOG_LEVEL_ERROR = 'error';
 
     const LOG_LEVEL_INFO = 'info';
 
@@ -29,10 +29,15 @@ class Manager
     protected $consoleHandler;
 
     /**
+     * @var string|null
+     */
+    static protected $logLevel = null;
+
+    /**
      * @var array
      */
     protected $logLevels = [
-        self::LOG_LEVEL_NONE => Logger::ERROR,
+        self::LOG_LEVEL_ERROR => Logger::ERROR,
         self::LOG_LEVEL_INFO => Logger::INFO,
         self::LOG_LEVEL_DEBUG => Logger::DEBUG
     ];
@@ -58,8 +63,17 @@ class Manager
             $this->logger->error("Invalid log level '$logLevel' provided.");
             $logLevel = self::LOG_LEVEL_INFO;
         }
+        self::$logLevel = $logLevel;
         $this->consoleHandler->setLevel($this->logLevels[$logLevel]);
         $this->logger->pushHandler($this->consoleHandler);
         return $this;
+    }
+
+    /**
+     * @return null|string
+     */
+    static public function getLogLevel()
+    {
+        return self::$logLevel;
     }
 }

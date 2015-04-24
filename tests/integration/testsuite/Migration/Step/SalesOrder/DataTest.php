@@ -73,7 +73,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
         $destination = $objectManager->get('\Migration\Resource\Destination');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         $salesOrder = $objectManager->create(

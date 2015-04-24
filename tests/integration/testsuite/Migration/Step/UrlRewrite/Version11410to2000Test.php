@@ -43,7 +43,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $this->logger = $this->objectManager->create('\Migration\Logger\Logger');
         $this->config = $this->objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
     }
 

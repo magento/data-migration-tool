@@ -36,7 +36,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         return [
             ['logLevel' => 'info', 'logLevelCode' => 200],
             ['logLevel' => 'debug', 'logLevelCode' => 100],
-            ['logLevel' => 'NONE', 'logLevelCode' => 400],
+            ['logLevel' => 'ERROR', 'logLevelCode' => 400],
             ['logLevel' => 'InFo', 'logLevelCode' => 200],
             ['logLevel' => 'Debug', 'logLevelCode' => 100],
         ];
@@ -52,6 +52,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->consoleHandler->expects($this->once())->method('setLevel')->with($logLevelCode);
         $this->logger->expects($this->once())->method('pushHandler')->with($this->consoleHandler);
         $this->assertSame($this->manager, $this->manager->process($logLevel));
+        $this->assertSame(Manager::getLogLevel(), strtolower($logLevel));
     }
 
     /**

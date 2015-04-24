@@ -13,6 +13,7 @@ use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
@@ -90,13 +91,17 @@ class Data implements RollbackInterface
      */
     public function perform()
     {
-        $this->progressBar->start(count($this->source->getDocumentList()));
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progressBar->start(count($this->source->getDocumentList()));
+        }
         $sourceDocuments = $this->source->getDocumentList();
         // TODO: during steps refactoring MAGETWO-35749 stage will be removed
         $stage = 'run';
         $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progressBar->advance();
+            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+                $this->progressBar->advance();
+            }
             if (in_array($sourceDocName, $processedDocuments)) {
                 continue;
             }
@@ -110,10 +115,16 @@ class Data implements RollbackInterface
 
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
             $pageNumber = 0;
+            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                $this->progressBar->start($this->source->getRecordsCount($sourceDocName));
+            }
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($items as $data) {
+                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                        $this->progressBar->advance();
+                    }
                     if ($recordTransformer) {
                         /** @var Record $record */
                         $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
@@ -128,8 +139,13 @@ class Data implements RollbackInterface
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
             $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
+            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                $this->progressBar->finish();
+            }
         }
-        $this->progressBar->finish();
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progressBar->finish();
+        }
         return true;
     }
 

@@ -12,6 +12,7 @@ use Migration\App\ProgressBar;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
@@ -54,9 +55,13 @@ class Data extends CustomCustomerAttributes implements \Migration\App\Step\Rollb
         /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
 
-        $this->progress->start(count($this->getDocumentList()));
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progress->start(count($this->getDocumentList()));
+        }
         foreach ($this->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
-            $this->progress->advance();
+            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+                $this->progress->advance();
+            }
 
             $sourceTable =  $sourceAdapter->getTableDdlCopy(
                 $this->source->addDocumentPrefix($sourceDocumentName),
@@ -73,10 +78,16 @@ class Data extends CustomCustomerAttributes implements \Migration\App\Step\Rollb
 
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
             $pageNumber = 0;
+            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                $this->progress->start($this->source->getRecordsCount($sourceDocumentName));
+            }
             while (!empty($sourceRecords = $this->source->getRecords($sourceDocumentName, $pageNumber))) {
                 $pageNumber++;
                 $recordsToSave = $destinationDocument->getRecords();
                 foreach ($sourceRecords as $recordData) {
+                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                        $this->progress->advance();
+                    }
                     /** @var Record $destinationRecord */
                     $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
                     $destinationRecord->setData($recordData);
@@ -84,8 +95,13 @@ class Data extends CustomCustomerAttributes implements \Migration\App\Step\Rollb
                 }
                 $this->destination->saveRecords($destinationDocument->getName(), $recordsToSave);
             };
+            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
+                $this->progress->finish();
+            }
         }
-        $this->progress->finish();
+        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
+            $this->progress->finish();
+        }
         return true;
     }
 
