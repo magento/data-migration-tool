@@ -78,7 +78,7 @@ USAGE;
      * @throws Exception
      * @return void
      */
-    public function runIntegrity(StepList $steps)
+    protected function runIntegrity(StepList $steps)
     {
         $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
@@ -96,7 +96,7 @@ USAGE;
      * @throws Exception
      * @return void
      */
-    public function setupDeltalog()
+    protected function setupDeltalog()
     {
         if (!$this->runStage($this->setupDeltaLog, 'Stage', 'setup triggers')) {
             throw new Exception('Setup triggers failed');
@@ -109,7 +109,7 @@ USAGE;
      * @throws Exception
      * @return void
      */
-    public function runData(array $step, $stepName)
+    protected function runData(array $step, $stepName)
     {
         if (!$this->runStage($step['data'], $stepName, 'data migration')) {
             $this->rollback($step['data'], $stepName);
@@ -123,7 +123,7 @@ USAGE;
      * @throws Exception
      * @return void
      */
-    public function runVolume(array $step, $stepName)
+    protected function runVolume(array $step, $stepName)
     {
         if (empty($step['volume'])) {
             return;
