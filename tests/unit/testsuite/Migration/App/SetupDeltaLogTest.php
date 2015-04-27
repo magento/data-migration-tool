@@ -16,37 +16,43 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     {
         /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */
         $source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        $source->expects($this->exactly(2))
+        $source->expects($this->exactly(4))
             ->method('createDelta')
             ->withConsecutive(
                 ['orders', 'order_id'],
-                ['invoices', 'invoice_id']
+                ['invoices', 'invoice_id'],
+                ['reports', 'report_id'],
+                ['shipments', 'shipment_id']
             );
 
-        /** @var \Migration\Reader\Map|\PHPUnit_Framework_MockObject_MockObject $readerMap */
-        $readerMap = $this->getMock('\Migration\Reader\Map', [], [], '', false);
-        $readerMap->expects($this->any())
-            ->method('getDeltaDocuments')
+        /** @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject $readerGroups */
+        $readerGroups = $this->getMock('\Migration\Reader\Groups', [], [], '', false);
+        $readerGroups->expects($this->any())
+            ->method('getGroups')
             ->with()
             ->willReturn(
-                ['orders' => 'order_id', 'invoices' => 'invoice_id']
+                [
+                    'firstGroup' => ['orders' => 'order_id', 'invoices' => 'invoice_id'],
+                    'secondGroup' => ['reports' => 'report_id', 'shipments' => 'shipment_id']
+                ]
             );
 
-        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
-        $mapFactory->expects($this->any())->method('create')->with('deltalog_map_file')->willReturn($readerMap);
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', [], [], '', false);
+        $groupsFactory->expects($this->any())->method('create')->with('delta_document_groups_file')
+            ->willReturn($readerGroups);
 
         /** @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
         $progress = $this->getMock('\Migration\App\ProgressBar', [], [], '', false);
         $progress->expects($this->once())
             ->method('start')
-            ->with(2);
-        $progress->expects($this->exactly(2))
+            ->with(4);
+        $progress->expects($this->exactly(4))
             ->method('advance');
         $progress->expects($this->once())
             ->method('finish');
 
-        $deltalog = new SetupDeltaLog($source, $mapFactory, $progress);
-        $this->assertTrue($deltalog->perform());
+        $deltaLog = new SetupDeltaLog($source, $groupsFactory, $progress);
+        $this->assertTrue($deltaLog->perform());
     }
 }

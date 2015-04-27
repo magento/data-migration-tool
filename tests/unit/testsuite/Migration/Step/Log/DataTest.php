@@ -40,9 +40,9 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
     protected $map;
 
     /**
-     * @var \Migration\Reader\ListsFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $readerLists;
+    protected $readerGroups;
 
     /**
      * @var \Migration\RecordTransformerFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -87,20 +87,20 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('log_map_file')->willReturn($this->map);
 
-        $this->readerLists = $this->getMock('\Migration\Reader\Lists', ['getList'], [], '', false);
-        $this->readerLists->expects($this->any())->method('getList')->willReturnMap(
+        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['source_documents', ['document1']],
                 ['destination_documents_to_clear', ['document_to_clear']]
             ]
         );
 
-        /** @var \Migration\Reader\ListsFactory|\PHPUnit_Framework_MockObject_MockObject $listsFactory */
-        $listsFactory = $this->getMock('\Migration\Reader\ListsFactory', ['create'], [], '', false);
-        $listsFactory->expects($this->any())
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('log_list_file')
-            ->willReturn($this->readerLists);
+            ->with('log_document_groups_file')
+            ->willReturn($this->readerGroups);
 
         $this->data = new Data(
             $this->progress,
@@ -109,7 +109,7 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
             $this->recordFactory,
             $this->recordTransformerFactory,
             $mapFactory,
-            $listsFactory
+            $groupsFactory
         );
     }
 

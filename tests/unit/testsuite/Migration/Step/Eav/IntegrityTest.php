@@ -38,9 +38,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var \Migration\Reader\ListsFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $readerLists;
+    protected $readerGroups;
 
     /**
      * @var \Migration\Reader\Map|\PHPUnit_Framework_MockObject_MockObject
@@ -69,25 +69,26 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
-        $this->readerLists = $this->getMockBuilder('\Migration\Reader\Lists')
+        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $listsFactory = $this->getMockBuilder('\Migration\Reader\ListsFactory')
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $listsFactory->expects($this->any())
+        $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('eav_list_file')
-            ->willReturn($this->readerLists);
+            ->with('eav_document_groups_file')
+            ->willReturn($this->readerGroups);
         $this->integrity = new Integrity(
             $this->progress,
             $this->logger,
             $this->source,
             $this->destination,
             $mapFactory,
-            $listsFactory
+            $groupsFactory
         );
     }
 
@@ -118,7 +119,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->will($this->returnValue($document));
 
         $this->logger->expects($this->never())->method('error');
-        $this->readerLists->expects($this->any())->method('getList')->with('documents')->willReturn(['document_2']);
+        $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
+            ->willReturn(['document_2' => '']);
 
         $this->assertTrue($this->integrity->perform());
     }
@@ -141,7 +143,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document_1']));
 
         $this->logger->expects($this->exactly(2))->method('error');
-        $this->readerLists->expects($this->any())->method('getList')->with('documents')->willReturn(['document_2']);
+        $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')->willReturn(['document_2']);
 
         $this->assertFalse($this->integrity->perform());
     }

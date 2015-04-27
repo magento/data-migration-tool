@@ -8,7 +8,7 @@ namespace Migration\Step\Log;
 use Migration\App\Step\StageInterface;
 use Migration\Handler;
 use Migration\Reader\MapInterface;
-use Migration\Reader\ListsFactory;
+use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Resource;
@@ -53,7 +53,7 @@ class Data implements StageInterface
     protected $progress;
 
     /**
-     * @var \Migration\Reader\Lists
+     * @var \Migration\Reader\Groups
      */
     protected $readerList;
 
@@ -64,7 +64,7 @@ class Data implements StageInterface
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
-     * @param ListsFactory $listsFactory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -73,7 +73,7 @@ class Data implements StageInterface
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
-        ListsFactory $listsFactory
+        GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -81,7 +81,7 @@ class Data implements StageInterface
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->map = $mapFactory->create('log_map_file');
         $this->progress = $progress;
-        $this->readerList = $listsFactory->create('log_list_file');
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
     }
 
     /**
@@ -90,7 +90,7 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $sourceDocuments = $this->readerList->getList('source_documents');
+        $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
@@ -126,7 +126,7 @@ class Data implements StageInterface
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
         }
-        $this->clearLog($this->readerList->getList('destination_documents_to_clear'));
+        $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
         $this->progress->finish();
         return true;
     }
@@ -150,7 +150,7 @@ class Data implements StageInterface
      */
     protected function getIterationsCount()
     {
-        return count($this->readerList->getList('destination_documents_to_clear'))
-            + count($this->readerList->getList('source_documents'));
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents'));
     }
 }

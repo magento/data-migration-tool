@@ -6,40 +6,79 @@
 namespace Migration\Step\CustomCustomerAttributes;
 
 use Migration\Config;
+use Migration\Reader\Groups;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
 use Migration\Resource\Destination;
 use Migration\App\ProgressBar;
 use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
+use Migration\Step\DatabaseStage;
 
 /**
  * Class Data
  */
-class Data extends CustomCustomerAttributes implements \Migration\App\Step\RollbackInterface
+class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterface
 {
     /**
      * @var RecordFactory
      */
-    protected $factory;
+    protected $recordFactory;
+
+    /**
+     * @var Map
+     */
+    protected $map;
+
+    /**
+     * @var Groups
+     */
+    protected $groups;
+
+    /**
+     * @var Source
+     */
+    protected $source;
+
+    /**
+     * @var Destination
+     */
+    protected $destination;
+
+    /**
+     * @var ProgressBar
+     */
+    protected $progress;
 
     /**
      * @param Config $config
      * @param Source $source
      * @param Destination $destination
      * @param ProgressBar $progress
-     * @param RecordFactory $factory
-     * @throws \Migration\Exception
+     * @param RecordFactory $recordFactory
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Config $config,
         Source $source,
         Destination $destination,
         ProgressBar $progress,
-        RecordFactory $factory
+        RecordFactory $recordFactory,
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory
     ) {
-        parent::__construct($config, $source, $destination, $progress);
-        $this->factory = $factory;
+        parent::__construct($config);
+        $this->source = $source;
+        $this->destination = $destination;
+        $this->progress = $progress;
+        $this->recordFactory = $recordFactory;
+        $this->groups = $groupsFactory->create('customer_attr_document_groups_file');
+        $this->map = $mapFactory->create('customer_attr_map_file');
     }
 
     /**
@@ -54,10 +93,12 @@ class Data extends CustomCustomerAttributes implements \Migration\App\Step\Rollb
         /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
 
-        $this->progress->start(count($this->getDocumentList()));
-        foreach ($this->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
+        $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
+        $this->progress->start(count($sourceDocuments));
+        foreach ($sourceDocuments as $sourceDocumentName) {
             $this->progress->advance();
 
+            $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $sourceTable =  $sourceAdapter->getTableDdlCopy(
                 $this->source->addDocumentPrefix($sourceDocumentName),
                 $this->destination->addDocumentPrefix($destinationDocumentName)
@@ -78,7 +119,7 @@ class Data extends CustomCustomerAttributes implements \Migration\App\Step\Rollb
                 $recordsToSave = $destinationDocument->getRecords();
                 foreach ($sourceRecords as $recordData) {
                     /** @var Record $destinationRecord */
-                    $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+                    $destinationRecord = $this->recordFactory->create(['document' => $destinationDocument]);
                     $destinationRecord->setData($recordData);
                     $recordsToSave->addRecord($destinationRecord);
                 }

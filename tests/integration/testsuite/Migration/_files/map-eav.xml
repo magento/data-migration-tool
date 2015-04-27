@@ -133,12 +133,6 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
-
-            <transform>
-                <field>enterprise_rma_item_eav_attribute.input_filter</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
-            </transform>
-
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>

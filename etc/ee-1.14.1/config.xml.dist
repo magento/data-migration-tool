@@ -80,13 +80,15 @@
     <options>
         <map_file>etc/ee-1.14.1/map.xml.dist</map_file>
         <eav_map_file>etc/ee-1.14.1/map-eav.xml.dist</eav_map_file>
-        <eav_list_file>etc/ee-1.14.1/list-eav.xml.dist</eav_list_file>
+        <eav_document_groups_file>etc/ee-1.14.1/eav-document-groups.xml.dist</eav_document_groups_file>
         <log_map_file>etc/ee-1.14.1/map-log.xml.dist</log_map_file>
-        <log_list_file>etc/ee-1.14.1/list-log.xml.dist</log_list_file>
+        <log_document_groups_file>etc/ee-1.14.1/log-document-groups.xml.dist</log_document_groups_file>
         <settings_map_file>etc/ee-1.14.1/settings.xml.dist</settings_map_file>
         <sales_order_map_file>etc/ee-1.14.1/map-sales.xml.dist</sales_order_map_file>
-        <deltalog_map_file>etc/ee-1.14.1/deltalog.xml.dist</deltalog_map_file>
-        <class_map>etc/class_map_ee.php</class_map>
+        <delta_document_groups_file>etc/ee-1.14.1/deltalog.xml.dist</delta_document_groups_file>
+        <customer_attr_map_file>etc/ee-1.14.1/customer-attr-map.xml.dist</customer_attr_map_file>
+        <customer_attr_document_groups_file>etc/ee-1.14.1/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
+        <class_map>etc/ee-1.14.1/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />

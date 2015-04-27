@@ -90,6 +90,7 @@ abstract class AbstractIntegrity implements StageInterface
 
     /**
      * Returns number of iterations for integrity check
+     *
      * @return mixed
      */
     abstract protected function getIterationsCount();
@@ -133,7 +134,7 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * Process missing entities and log them in to the file
      *
-     * @return $this
+     * @return bool
      */
     protected function checkForErrors()
     {

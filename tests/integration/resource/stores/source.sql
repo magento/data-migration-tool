@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
 CREATE TABLE `core_store` (
 	`store_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Store Id',
 	`code` VARCHAR(32) NULL DEFAULT NULL COMMENT 'Code',

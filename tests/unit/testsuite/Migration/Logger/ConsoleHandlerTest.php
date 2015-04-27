@@ -1,8 +1,8 @@
 <?php
 /**
- * @copyright Copyright (c) 2014 X.commerce, Inc. (http://www.magentocommerce.com)
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
  */
-
 namespace Migration\Logger;
 
 class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
@@ -28,7 +28,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
             ['recordLevel' => 200, 'handlerLevel' => 'debug'],
             ['recordLevel' => 200, 'handlerLevel' => 200],
             ['recordLevel' => 100, 'handlerLevel' => 100],
-            ['recordLevel' => 200, 'handlerLevel' => 100],
+            ['recordLevel' => 200, 'handlerLevel' => 100]
         ];
     }
 
@@ -92,5 +92,19 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $this->consoleHandler->setLevel($handlerLevel);
         $result = $this->consoleHandler->handle($record);
         $this->assertFalse($result);
+    }
+
+    public function testHandleRed()
+    {
+        $message = 'Colorized message';
+        $record = ['message' => $message, 'level' => 400];
+        $this->consoleHandler->setLevel(100);
+        ob_start();
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertTrue($result);
+        $expectedString = "\x1b[0;31mColorized message\x1b[0m" . PHP_EOL;
+        $this->assertEquals($expectedString, $output);
     }
 }
