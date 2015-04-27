@@ -13,15 +13,15 @@ use Migration\Resource\Record;
 class Placeholder extends AbstractHandler implements HandlerInterface
 {
     /**
-     * @var \Migration\ClassMap
+     * @var \Migration\Reader\ClassMap
      */
     protected $classMap;
 
     /**
-     * @param \Migration\ClassMap $classMap
+     * @param \Migration\Reader\ClassMap $classMap
      */
     public function __construct(
-        \Migration\ClassMap $classMap
+        \Migration\Reader\ClassMap $classMap
     ) {
         $this->classMap = $classMap;
     }

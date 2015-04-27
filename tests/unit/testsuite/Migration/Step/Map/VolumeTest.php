@@ -6,13 +6,13 @@
 namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderMain;
+use Migration\Reader\Map;
 use Migration\Resource;
 
 class VolumeTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -32,19 +32,19 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var MapReaderMain|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Volume
      */
-    protected $map;
+    protected $volume;
 
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('\Migration\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocumentList', 'getRecordsCount'],
@@ -60,14 +60,19 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
-        $this->map = new Volume(
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
+
+        $this->volume = new Volume(
             $this->logger,
             $this->source,
             $this->destination,
-            $this->mapReader,
+            $mapFactory,
             $this->progress
         );
     }
@@ -77,10 +82,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $dstDocName = 'config_data';
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
-        $this->assertTrue($this->map->perform());
+        $this->assertTrue($this->volume->perform());
     }
 
     public function testPerformIgnored()
@@ -88,10 +93,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $dstDocName = false;
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('getRecordsCount');
-        $this->assertTrue($this->map->perform());
+        $this->assertTrue($this->volume->perform());
     }
 
     public function testPerformFailed()
@@ -99,12 +104,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $dstDocName = 'config_data';
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->logger->expects($this->once())->method('error')->with(
             PHP_EOL . 'Volume check failed for the destination document: ' . $dstDocName
         );
-        $this->assertFalse($this->map->perform());
+        $this->assertFalse($this->volume->perform());
     }
 }

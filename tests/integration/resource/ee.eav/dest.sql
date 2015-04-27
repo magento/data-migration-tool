@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
 DROP TABLE IF EXISTS `eav_entity_type`;
 CREATE TABLE `eav_entity_type` (
 	`entity_type_id` SMALLINT(5) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Type Id',

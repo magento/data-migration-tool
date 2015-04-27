@@ -28,9 +28,9 @@ class Shell extends \Magento\Framework\App\AbstractShell
     protected $modeFactory;
 
     /**
-     * @var Step\Progress
+     * @var Progress
      */
-    protected $progressStep;
+    protected $progress;
 
     /**
      * @var \Migration\Config
@@ -48,7 +48,7 @@ class Shell extends \Magento\Framework\App\AbstractShell
      * @param Mode\ModeFactory $modeFactory
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Logger\Manager $logManager
-     * @param Step\Progress $progressStep
+     * @param Progress $progress
      * @param string $entryPoint
      */
     public function __construct(
@@ -57,13 +57,13 @@ class Shell extends \Magento\Framework\App\AbstractShell
         Mode\ModeFactory $modeFactory,
         \Migration\Logger\Logger $logger,
         \Migration\Logger\Manager $logManager,
-        Step\Progress $progressStep,
+        Progress $progress,
         $entryPoint
     ) {
         $this->logger = $logger;
         $this->logManager = $logManager;
         $this->modeFactory = $modeFactory;
-        $this->progressStep = $progressStep;
+        $this->progress = $progress;
         parent::__construct($filesystem, $entryPoint);
         $this->config = $config;
         set_time_limit(0);
@@ -200,7 +200,7 @@ USAGE;
     {
         if ($this->getArg('reset') === true) {
             $this->logger->info('Reset the current position of migration to start from the beginning');
-            $this->progressStep->clearLockFile();
+            $this->progress->reset();
         }
     }
 }

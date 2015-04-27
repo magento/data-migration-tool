@@ -5,6 +5,8 @@
  */
 namespace Migration\Step\Map;
 
+use Migration\Reader\MapInterface;
+
 class DeltaTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -18,9 +20,14 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\MapReader\MapReaderMain|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
+
+    /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerGroups;
 
     /**
      * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -51,15 +58,35 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
     {
         $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
         $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
-        $this->mapReader = $this->getMock('\Migration\MapReader\MapReaderMain', [], [], '', false);
+        $this->map = $this->getMock('\Migration\Reader\Map', [], [], '', false);
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
+
         $this->destination = $this->getMock('\Migration\Resource\Destination', [], [], '', false);
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', [], [], '', false);
         $this->recordTransformerFactory = $this->getMock('\Migration\RecordTransformerFactory', [], [], '', false);
         $this->data = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
 
+        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
+            [
+                ['delta_map', ['orders' => 'order_id']]
+            ]
+        );
+
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory->expects($this->any())
+            ->method('create')
+            ->with('delta_document_groups_file')
+            ->willReturn($this->readerGroups);
+
         $this->delta = new Delta(
             $this->source,
-            $this->mapReader,
+            $mapFactory,
+            $groupsFactory,
             $this->logger,
             $this->destination,
             $this->recordFactory,
@@ -84,12 +111,12 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->with($sourceDeltaName, false)
             ->willReturn(1);
 
-        $this->mapReader->expects($this->any())
+        $this->map->expects($this->any())
             ->method('getDeltaDocuments')
             ->willReturn([$sourceDocName => 'order_id']);
-        $this->mapReader->expects($this->any())
+        $this->map->expects($this->any())
             ->method('getDocumentMap')
-            ->with($sourceDocName, 'source')
+            ->with($sourceDocName, MapInterface::TYPE_SOURCE)
             ->willReturn($sourceDocName);
 
         $this->logger->expects($this->any())

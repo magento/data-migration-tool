@@ -18,7 +18,7 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->once())->method('setValue')->with($fieldName, $classNewStyle);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
         $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
-        $classMap = $this->getMock('Migration\ClassMap', ['convertClassName'], [], '', false);
+        $classMap = $this->getMock('Migration\Reader\ClassMap', ['convertClassName'], [], '', false);
         $classMap->expects($this->once())
             ->method('convertClassName')
             ->with($classOldFashion)

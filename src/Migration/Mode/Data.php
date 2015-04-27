@@ -7,7 +7,7 @@ namespace Migration\Mode;
 
 use Migration\App\SetupDeltaLog;
 use Migration\App\Mode\StepList;
-use Migration\App\Step\Progress;
+use Migration\App\Progress;
 use Migration\App\Step\RollbackInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;

@@ -1,3 +1,8 @@
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
 CREATE TABLE `eav_entity_type` (
 	`entity_type_id` SMALLINT(5) UNSIGNED NOT NULL COMMENT 'Entity Type Id',
 	`entity_type_code` VARCHAR(50) NOT NULL COMMENT 'Entity Type Code',

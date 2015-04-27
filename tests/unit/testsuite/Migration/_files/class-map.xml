@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/class-map.xsd">
+    <rename>
+        <from>catalog/product_widget_new</from>
+        <to>Magento\Catalog\Block\Product\Widget\NewWidget</to>
+    </rename>
+</classmap>

@@ -29,7 +29,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\App\Step\Progress|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -47,8 +47,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['info'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\App\Step\Progress')->disableOriginalConstructor()
-            ->setMethods(['saveResult', 'isCompleted', 'clearLockFile', 'reset'])
+        $this->progress = $this->getMockBuilder('\Migration\App\Progress')->disableOriginalConstructor()
+            ->setMethods(['saveResult', 'isCompleted', 'reset'])
             ->getMock();
         /** @var \Migration\App\SetupDeltaLog|\PHPUnit_Framework_MockObject_MockObject $setupDeltaLog */
         $setupDeltaLog = $this->getMockBuilder('\Migration\App\SetupDeltaLog')->disableOriginalConstructor()

@@ -7,11 +7,12 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\App\Step\StageInterface;
 use Migration\Handler;
-use Migration\MapReader\MapReaderSalesOrder;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\Map;
+use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\Resource\Record;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 /**
  * Class Data
@@ -34,9 +35,9 @@ class Data implements StageInterface
     protected $recordFactory;
 
     /**
-     * @var MapReaderSalesOrder
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory
@@ -61,7 +62,7 @@ class Data implements StageInterface
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReaderSalesOrder $mapReader
+     * @param MapFactory $mapFactory
      * @param Helper $helper
      */
     public function __construct(
@@ -70,14 +71,14 @@ class Data implements StageInterface
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderSalesOrder $mapReader,
+        MapFactory $mapFactory,
         Helper $helper
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('sales_order_map_file');
         $this->progress = $progress;
         $this->helper = $helper;
     }
@@ -94,9 +95,9 @@ class Data implements StageInterface
             $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
-            $destinationDocumentName = $this->mapReader->getDocumentMap(
+            $destinationDocumentName = $this->map->getDocumentMap(
                 $sourceDocName,
-                MapReaderInterface::TYPE_SOURCE
+                MapInterface::TYPE_SOURCE
             );
             if (!$destinationDocumentName) {
                 continue;
@@ -112,7 +113,7 @@ class Data implements StageInterface
                 [
                     'sourceDocument' => $sourceDocument,
                     'destDocument' => $destDocument,
-                    'mapReader' => $this->mapReader
+                    'mapReader' => $this->map
                 ]
             );
             $recordTransformer->init();

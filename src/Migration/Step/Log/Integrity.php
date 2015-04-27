@@ -6,9 +6,10 @@
 namespace Migration\Step\Log;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderLog;
-use Migration\MapReaderInterface;
-use Migration\ProgressBar;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
+use Migration\App\ProgressBar;
 use Migration\Resource;
 
 /**
@@ -17,25 +18,30 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var MapReaderLog
+     * @var \Migration\Reader\Groups
      */
-    protected $map;
+    protected $readerList;
 
     /**
      * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderLog $mapReader
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderLog $mapReader
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
+        $mapConfigOption = 'log_map_file'
     ) {
-        parent::__construct($progress, $logger, $source, $destination, $mapReader);
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
+        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**
@@ -44,19 +50,34 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->map->getDocumentList()), MapReaderInterface::TYPE_SOURCE);
-        $this->check(array_values($this->map->getDocumentList()), MapReaderInterface::TYPE_DEST);
+        $srcDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
+
+        $dstDocuments = [];
+        foreach ($srcDocuments as $sourceDocumentName) {
+            $dstDocuments[] = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
+        }
+
+        $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
+        $this->check($dstDocuments, MapInterface::TYPE_DEST);
+
+        $dstDocumentList = array_flip($this->destination->getDocumentList());
+        foreach (array_keys($this->readerGroups->getGroup('destination_documents_to_clear')) as $document) {
+            $this->progress->advance();
+            if (!isset($dstDocumentList[$document])) {
+                $this->missingDocuments[MapInterface::TYPE_DEST][$document] = true;
+            }
+        }
+
         $this->progress->finish();
         return $this->checkForErrors();
     }
 
     /**
-     * Get iterations count for step
-     *
-     * @return int
+     * {@inheritdoc}
      */
     protected function getIterationsCount()
     {
-        return count($this->map->getDestDocumentsToClear()) + count($this->map->getDocumentList());
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents')) * 2;
     }
 }

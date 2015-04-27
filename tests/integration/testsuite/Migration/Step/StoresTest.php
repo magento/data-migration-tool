@@ -42,7 +42,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $objectManager = $helper->getObjectManager();
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $this->progress = $objectManager->create('Migration\ProgressBar');
+        $this->progress = $objectManager->create('Migration\App\ProgressBar');
         $this->logger = $objectManager->create('Migration\Logger\Logger');
         $this->source = $objectManager->create('Migration\Resource\Source');
         $this->destination = $objectManager->create('Migration\Resource\Destination');

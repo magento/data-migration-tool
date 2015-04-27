@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
+    <group name="source_documents">
+        <document>entity_type_id</document>
+    </group>
+    <group name="destination_documents_to_clear">
+        <document>log_customer</document>
+        <document>log_quote</document>
+        <document>log_summary</document>
+        <document>log_summary_type</document>
+        <document>log_url</document>
+        <document>log_url_info</document>
+        <document>log_visitor</document>
+        <document>log_visitor_info</document>
+        <document>log_visitor_online</document>
+    </group>
+</groups>

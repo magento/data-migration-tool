@@ -5,7 +5,8 @@
  */
 namespace Migration\Handler\Rule;
 
-use Migration\MapReader;
+use Migration\Reader\Map;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Record;
 use Migration\Resource\Source;
 
@@ -24,19 +25,25 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
      */
     protected $source;
 
-    /** @var  MapReader|\PHPUnit_Framework_MockObject_MockObject */
+    /** @var  Map|\PHPUnit_Framework_MockObject_MockObject */
     protected $map;
 
     public function setUp()
     {
-        /** @var MapReader|\PHPUnit_Framework_MockObject_MockObject $map */
-        $this->map = $this->getMockBuilder('Migration\MapReader\MapReaderMain')->disableOriginalConstructor()
+        /** @var Map|\PHPUnit_Framework_MockObject_MockObject $map */
+        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
+
         /** @var Source|\PHPUnit_Framework_MockObject_MockObject $source */
         $this->source = $this->getMockBuilder('Migration\Resource\Source')->disableOriginalConstructor()
             ->setMethods(['getDocumentList', 'addDocumentPrefix'])
             ->getMock();
+        /** @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
         $destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
             ->setMethods(['addDocumentPrefix'])
             ->getMock();
@@ -44,7 +51,7 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
             return 'pfx_' . $value;
         }));
 
-        $this->handler = new ConditionSql($this->map, $this->source, $destination);
+        $this->handler = new ConditionSql($mapFactory, $this->source, $destination);
     }
 
     public function testHandle()
@@ -64,17 +71,13 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('setValue')
             ->with($fieldName, 'SELECT * FROM `pfx_dest_some_document` LEFT JOIN `pfx_dest_other_document`');
 
-        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnCallback(function ($name) {
-            if ($name == 'source_some_document') {
-                return 'dest_some_document';
-            }
-            if ($name == 'source_other_document') {
-                return 'dest_other_document';
-            }
-            if ($name == 'source_ignored_document') {
-                return false;
-            }
-        }));
+        $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(
+            [
+                ['source_some_document', MapInterface::TYPE_SOURCE, 'dest_some_document'],
+                ['source_other_document', MapInterface::TYPE_SOURCE, 'dest_other_document'],
+                ['source_ignored_document', MapInterface::TYPE_SOURCE, false]
+            ]
+        );
 
         $this->source->expects($this->once())->method('getDocumentList')
             ->will($this->returnValue(['source_some_document', 'source_other_document', 'source_ignored_document']));

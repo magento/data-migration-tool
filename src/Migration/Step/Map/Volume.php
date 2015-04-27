@@ -7,10 +7,11 @@ namespace Migration\Step\Map;
 
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderMain;
+use Migration\Reader\MapInterface;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
 use Migration\Resource;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 
 class Volume implements StageInterface
 {
@@ -25,9 +26,9 @@ class Volume implements StageInterface
     protected $destination;
 
     /**
-     * @var MapReaderMain
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Logger
@@ -50,19 +51,19 @@ class Volume implements StageInterface
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderMain $mapReader
+     * @param MapFactory $mapFactory
      * @param ProgressBar $progressBar
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderMain $mapReader,
+        MapFactory $mapFactory,
         ProgressBar $progressBar
     ) {
         $this->source = $source;
         $this->destination = $destination;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('map_file');
         $this->logger = $logger;
         $this->progressBar = $progressBar;
     }
@@ -77,7 +78,7 @@ class Volume implements StageInterface
         $this->progressBar->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progressBar->advance();
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }

@@ -1,8 +1,7 @@
--- MySQL dump 10.13  Distrib 5.6.15, for Linux (x86_64)
---
--- Host: localhost    Database: migration_destination
--- ------------------------------------------------------
--- Server version	5.6.15-56
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;

@@ -5,10 +5,9 @@
  */
 namespace Migration\App;
 
-use Migration\MapReader\MapReaderDeltalog;
+use Migration\Reader\Groups;
 use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
-use Migration\ProgressBar;
 
 class SetupDeltaLog implements StageInterface
 {
@@ -18,9 +17,9 @@ class SetupDeltaLog implements StageInterface
     protected $source;
 
     /**
-     * @var MapReaderDeltalog
+     * @var Groups
      */
-    protected $mapReader;
+    protected $groupsReader;
 
     /**
      * @var ProgressBar
@@ -29,13 +28,13 @@ class SetupDeltaLog implements StageInterface
 
     /**
      * @param Source $source
-     * @param MapReaderDeltalog $mapReader
+     * @param \Migration\Reader\GroupsFactory $groupsFactory
      * @param ProgressBar $progress
      */
-    public function __construct(Source $source, MapReaderDeltalog $mapReader, ProgressBar $progress)
+    public function __construct(Source $source, \Migration\Reader\GroupsFactory $groupsFactory, ProgressBar $progress)
     {
         $this->source = $source;
-        $this->mapReader = $mapReader;
+        $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
         $this->progress = $progress;
     }
 
@@ -44,11 +43,13 @@ class SetupDeltaLog implements StageInterface
      */
     public function perform()
     {
-        $deltaDocuments = $this->mapReader->getDeltaDocuments();
-        $this->progress->start(count($deltaDocuments));
-        foreach ($deltaDocuments as $documentName => $idKey) {
-            $this->progress->advance();
-            $this->source->createDelta($documentName, $idKey);
+        $deltaLogs = $this->groupsReader->getGroups();
+        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
+        foreach ($deltaLogs as $deltaDocuments) {
+            foreach ($deltaDocuments as $documentName => $idKey) {
+                $this->progress->advance();
+                $this->source->createDelta($documentName, $idKey);
+            }
         }
         $this->progress->finish();
         return true;

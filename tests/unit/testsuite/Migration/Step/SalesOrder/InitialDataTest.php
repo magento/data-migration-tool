@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\MapReader;
+use Migration\Reader;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
 
