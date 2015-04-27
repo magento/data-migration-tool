@@ -6,7 +6,7 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderSalesOrder;
+use Migration\Reader\Map;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
 use Migration\App\ProgressBar;
@@ -29,9 +29,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var MapReaderSalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Source|\PHPUnit_Framework_MockObject_MockObject
@@ -85,13 +85,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMock('Migration\MapReader\MapReaderSalesOrder', ['getDocumentMap'], [], '', false);
+        $this->map = $this->getMock('Migration\Reader\Map', ['getDocumentMap'], [], '', false);
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
+
         $this->salesOrder = new Volume(
             $this->source,
             $this->destination,
             $this->initialData,
             $this->helper,
-            $this->mapReader,
+            $mapFactory,
             $this->progress,
             $this->logger
         );
@@ -114,7 +119,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->at(4))->method('getSourceAttributes')->willReturn(0);
         $this->progress->expects($this->any())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
+        $this->map->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
             ->willReturn($destDocumentName);
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(
@@ -145,7 +150,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->at(4))->method('getSourceAttributes')->willReturn(0);
         $this->progress->expects($this->any())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
+        $this->map->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
             ->willReturn($destDocumentName);
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(
@@ -179,7 +184,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->at(4))->method('getSourceAttributes')->willReturn(0);
         $this->progress->expects($this->any())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
+        $this->map->expects($this->any())->method('getDocumentMap')->with($sourceDocumentName)
             ->willReturn($destDocumentName);
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(

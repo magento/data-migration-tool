@@ -30,7 +30,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\MapReader\MapReaderMain');
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
@@ -39,7 +38,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             '\Migration\Step\Map\Data',
             [
                 'logger' => $logger,
-                'map' => $mapReader,
                 'config' => $config,
                 'progress' => $progress
             ]
@@ -48,7 +46,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             '\Migration\Step\Map\Volume',
             [
                 'logger' => $logger,
-                'map' => $mapReader,
                 'config' => $config,
             ]
         );

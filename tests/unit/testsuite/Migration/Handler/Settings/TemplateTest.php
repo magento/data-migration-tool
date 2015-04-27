@@ -9,8 +9,8 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
 {
     public function testHandle()
     {
-        $templateOldFashion = 'enterprise_giftregistry_update_email_template';
-        $templateNewStyle = 'magento_giftregistry_update_email_template';
+        $templateOldFashion = 'old_update_email_template';
+        $templateNewStyle = 'new_update_email_template';
         $fieldName = 'value';
         /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMock(

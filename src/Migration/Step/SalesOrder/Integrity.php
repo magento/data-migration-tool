@@ -6,8 +6,8 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderSalesOrder;
-use Migration\MapReaderInterface;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\App\ProgressBar;
 
@@ -26,18 +26,20 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderSalesOrder $mapReader
+     * @param MapFactory $mapFactory
      * @param Helper $helper
+     * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderSalesOrder $mapReader,
-        Helper $helper
+        MapFactory $mapFactory,
+        Helper $helper,
+        $mapConfigOption = 'sales_order_map_file'
     ) {
-        parent::__construct($progress, $logger, $source, $destination, $mapReader);
+        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
         $this->helper = $helper;
     }
 
@@ -47,8 +49,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check(array_keys($this->helper->getDocumentList()), MapReaderInterface::TYPE_SOURCE);
-        $this->check(array_values($this->helper->getDocumentList()), MapReaderInterface::TYPE_DEST);
+        $this->check(array_keys($this->helper->getDocumentList()), MapInterface::TYPE_SOURCE);
+        $this->check(array_values($this->helper->getDocumentList()), MapInterface::TYPE_DEST);
         $this->checkEavEntities();
         $this->progress->finish();
         return $this->checkForErrors();

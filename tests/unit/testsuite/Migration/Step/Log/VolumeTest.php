@@ -6,7 +6,7 @@
 namespace Migration\Step\Log;
 
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderLog;
+use Migration\Reader\Map;
 use Migration\Resource;
 
 /**
@@ -35,14 +35,19 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
-     * @var MapReaderLog|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Volume
      */
     protected $volume;
+
+    /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerGroups;
 
     public function setUp()
     {
@@ -63,50 +68,61 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
 
-        $this->mapReader = $this->getMockBuilder('Migration\MapReader\MapReaderLog')->disableOriginalConstructor()
-            ->setMethods(['getDocumentMap', 'init', 'getDestDocumentsToClear', 'getDocumentList'])
+        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('log_map_file')->willReturn($this->map);
+
+        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
+            [
+                ['source_documents', ['document1' => '']],
+                ['destination_documents_to_clear', ['document_to_clear' => '']]
+            ]
+        );
+
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory->expects($this->any())
+            ->method('create')
+            ->with('log_document_groups_file')
+            ->willReturn($this->readerGroups);
+
         $this->volume = new Volume(
             $this->logger,
             $this->source,
             $this->destination,
-            $this->mapReader,
-            $this->progress
+            $mapFactory,
+            $this->progress,
+            $groupsFactory
         );
     }
 
     public function testPerform()
     {
         $dstDocName = 'config_data';
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, null]]);
-        $this->mapReader->expects($this->any())->method('getDocumentList')
-            ->will($this->returnValue(['document1' => 'document2']));
-        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->assertTrue($this->volume->perform());
     }
 
     public function testPerformIgnored()
     {
         $dstDocName = false;
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(null);
-        $this->mapReader->expects($this->any())->method('getDocumentList')
-            ->will($this->returnValue(['document1' => 'document2']));
-        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
         $this->assertTrue($this->volume->perform());
     }
 
     public function testPerformFailed()
     {
         $dstDocName = 'config_data';
-        $this->mapReader->expects($this->any())->method('getDocumentList')
-            ->will($this->returnValue(['document1' => 'document2']));
-        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', 3], ['document_to_clear', null]]);
@@ -119,10 +135,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function testPerformCheckLogsClearFailed()
     {
         $dstDocName = 'config_data';
-        $this->mapReader->expects($this->any())->method('getDocumentList')
-            ->will($this->returnValue(['document1' => 'document2']));
-        $this->mapReader->expects($this->any())->method('getDestDocumentsToClear')->willReturn(['document_to_clear']);
-        $this->mapReader->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
+        $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, 1]]);

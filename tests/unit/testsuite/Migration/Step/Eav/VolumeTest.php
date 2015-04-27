@@ -31,14 +31,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var \Migration\MapReader\MapReaderEav|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
-
-    /**
-     * @var \Migration\ListsReaderFactory|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $listsReader;
+    protected $readerGroups;
 
     /**
      * @var \Migration\Step\Eav\Volume
@@ -59,38 +54,31 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
-        $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderEav')->disableOriginalConstructor()
-            ->setMethods(['getDocumentMap', 'getJustCopyDocuments'])
-            ->getMock();
-        $this->listsReader = $this->getMockBuilder('\Migration\ListsReader')
+        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $listsReaderFactory = $this->getMockBuilder('\Migration\ListsReaderFactory')
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $listsReaderFactory->expects($this->any())
+        $groupsFactory->expects($this->any())
             ->method('create')
-            ->with(['optionName' => 'eav_list_file'])
-            ->willReturn($this->listsReader);
+            ->with('eav_document_groups_file')
+            ->willReturn($this->readerGroups);
 
         $this->volume = new Volume(
             $this->helper,
             $this->initialData,
             $this->logger,
             $this->progress,
-            $this->mapReader,
-            $listsReaderFactory
+            $groupsFactory
         );
     }
 
     public function testPerform()
     {
-        $documentsMap = [
-            'source_document_1' => 'destination_document_1',
-            'source_document_2' => 'destination_document_2'
-        ];
         $eavAttributes = [
             'eav_attribute_1' => [
                 'attribute_id' => '1',
@@ -116,7 +104,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
         $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
             [
@@ -136,8 +123,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
-        $justCopyDocuments = ['copy_document_1', 'copy_document_2'];
-        $this->mapReader->expects($this->any())->method('getJustCopyDocuments')->willReturn($justCopyDocuments);
         $this->logger->expects($this->never())->method('log');
 
         $this->assertTrue($this->volume->perform());
@@ -145,10 +130,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
     public function testPerformWithError()
     {
-        $documentsMap = [
-            'source_document_1' => 'destination_document_1',
-            'source_document_2' => 'destination_document_2'
-        ];
         $eavAttributes = [
             'eav_attribute_1' => [
                 'attribute_id' => '1',
@@ -172,9 +153,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
         $this->progress->expects($this->any())->method('advance');
-        $this->mapReader->expects($this->any())->method('getDocumentMap')->willReturn($documentsMap);
 
-        $this->initialData->expects($this->any())->method('getAttributes')->willReturnMap(
+        $this->initialData->expects($this->atLeastOnce())->method('getAttributes')->willReturnMap(
             [
                 ['source', $eavAttributes],
                 ['destination', $eavAttributes]
@@ -192,8 +172,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(1);
-        $justCopyDocuments = ['copy_document_1', 'copy_document_2'];
-        $this->mapReader->expects($this->any())->method('getJustCopyDocuments')->willReturn($justCopyDocuments);
         $this->logger->expects($this->atLeastOnce())->method('log');
 
         $this->assertFalse($this->volume->perform());

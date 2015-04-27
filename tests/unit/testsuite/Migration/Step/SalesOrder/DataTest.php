@@ -6,7 +6,7 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Handler;
-use Migration\MapReader\MapReaderSalesOrder;
+use Migration\Reader\Map;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
@@ -29,9 +29,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var MapReaderSalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -80,7 +80,12 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMock('Migration\MapReader\MapReaderSalesOrder', ['getDocumentMap'], [], '', false);
+        $this->map = $this->getMock('Migration\Reader\Map', ['getDocumentMap'], [], '', false);
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
+
         $this->helper = $this->getMock(
             'Migration\Step\SalesOrder\Helper',
             ['getDocumentList', 'getDestEavDocument', 'getEavAttributes'],
@@ -94,7 +99,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
-            $this->mapReader,
+            $mapFactory,
             $this->helper
         );
     }
@@ -117,7 +122,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->any())->method('getDocumentList')->willReturn($documentList);
         $this->helper->expects($this->once())->method('getDestEavDocument')->willReturn('eav_document');
         $this->helper->expects($this->at(3))->method('getEavAttributes')->willReturn($eavAttributes);
-        $this->mapReader->expects($this->once())->method('getDocumentMap')
+        $this->map->expects($this->once())->method('getDocumentMap')
             ->willReturn($documentList['source_document']);
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);

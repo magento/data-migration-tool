@@ -7,8 +7,10 @@ namespace Migration\Step\Log;
 
 use Migration\App\Step\StageInterface;
 use Migration\Handler;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderLog;
+use Migration\Reader\MapInterface;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
@@ -35,9 +37,9 @@ class Data implements StageInterface
     protected $recordFactory;
 
     /**
-     * @var MapReaderLog
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory
@@ -52,12 +54,18 @@ class Data implements StageInterface
     protected $progress;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerList;
+
+    /**
      * @param ProgressBar $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReaderLog $mapReader
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         ProgressBar $progress,
@@ -65,14 +73,16 @@ class Data implements StageInterface
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderLog $mapReader
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('log_map_file');
         $this->progress = $progress;
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
     }
 
     /**
@@ -83,13 +93,13 @@ class Data implements StageInterface
         if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
             $this->progress->start($this->getIterationsCount());
         }
-        $sourceDocuments = array_keys($this->mapReader->getDocumentList());
+        $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($sourceDocuments as $sourceDocName) {
             if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
                 $this->progress->advance();
             }
             $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -101,7 +111,7 @@ class Data implements StageInterface
                 [
                     'sourceDocument' => $sourceDocument,
                     'destDocument' => $destDocument,
-                    'mapReader' => $this->mapReader
+                    'mapReader' => $this->map
                 ]
             );
             $recordTransformer->init();
@@ -129,7 +139,7 @@ class Data implements StageInterface
                 $this->progress->finish();
             }
         }
-        $this->clearLog($this->mapReader->getDestDocumentsToClear());
+        $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
         if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
             $this->progress->finish();
         }
@@ -155,6 +165,7 @@ class Data implements StageInterface
      */
     protected function getIterationsCount()
     {
-        return count($this->mapReader->getDestDocumentsToClear()) + count($this->mapReader->getDocumentList());
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents'));
     }
 }

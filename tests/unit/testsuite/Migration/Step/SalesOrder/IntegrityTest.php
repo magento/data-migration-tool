@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\MapReader\MapReaderSalesOrder;
+use Migration\Reader\Map;
 
 /**
  * Class IntegrityTest
@@ -38,9 +38,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $salesOrder;
 
     /**
-     * @var MapReaderSalesOrder|\PHPUnit_Framework_MockObject_MockObject
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -71,10 +71,15 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->mapReader = $this->getMockBuilder('\Migration\MapReader\MapReaderSalesOrder')
+        $this->map = $this->getMockBuilder('\Migration\Reader\Map')
             ->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap'])
             ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
+
         $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
             ->setMethods([])->getMock();
         $this->salesOrder = new Integrity(
@@ -82,7 +87,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             $this->logger,
             $this->source,
             $this->destination,
-            $this->mapReader,
+            $mapFactory,
             $this->helper
         );
     }
@@ -111,9 +116,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
         $this->destination->expects($this->at(3))->method('getRecords')->willReturn([0 => $destinationRecord]);
         $this->destination->expects($this->at(4))->method('getRecords')->willReturn(null);
-        $this->mapReader->expects($this->at(0))->method('getDocumentMap')->willReturn('dest_doc');
-        $this->mapReader->expects($this->at(2))->method('getDocumentMap')->willReturn('source_doc');
-        $this->mapReader->expects($this->any())->method('getFieldMap')->willReturn('field1');
+        $this->map->expects($this->at(0))->method('getDocumentMap')->willReturn('dest_doc');
+        $this->map->expects($this->at(2))->method('getDocumentMap')->willReturn('source_doc');
+        $this->map->expects($this->any())->method('getFieldMap')->willReturn('field1');
         $this->source->expects($this->any())->method('getDocument')->willReturn($document);
 
         $this->logger->expects($this->never())->method('error');

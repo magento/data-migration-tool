@@ -3,29 +3,123 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Migration\Step\CustomCustomerAttributes;
 
-use Migration\Step\CustomCustomerAttributesTest;
+use Migration\Reader\Map;
+use Migration\Reader\MapInterface;
 
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends CustomCustomerAttributesTest
+class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
-    public function testPerform()
+    /**
+     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $progress;
+
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
+    /**
+     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $source;
+
+    /**
+     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $destination;
+
+    /**
+     * @var Integrity
+     */
+    protected $log;
+
+    /**
+     * @var Map|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $map;
+
+    /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerGroups;
+
+    public function setUp()
     {
-        $this->step = new Integrity(
-            $this->config,
+        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
+        $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->destination = $this->getMock(
+            '\Migration\Resource\Destination',
+            ['getDocumentList', 'getDocument'],
+            [],
+            '',
+            false
+        );
+        $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
+            ->getMock();
+
+        /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
+        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory->expects($this->any())->method('create')->with('customer_attr_map_file')->willReturn($this->map);
+
+        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
+            [
+                ['source_documents', ['document1' => '']]
+            ]
+        );
+
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory->expects($this->any())
+            ->method('create')
+            ->with('customer_attr_document_groups_file')
+            ->willReturn($this->readerGroups);
+
+        $this->log = new Integrity(
+            $this->progress,
+            $this->logger,
             $this->source,
             $this->destination,
-            $this->progress
+            $mapFactory,
+            $groupsFactory
         );
-        $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+    }
 
-        $this->source->expects($this->exactly(4))->method('getDocument')->will($this->returnValue($document));
-        $this->destination->expects($this->exactly(4))->method('getDocument')->will($this->returnValue($document));
+    /**
+     * @covers \Migration\Step\Log\Integrity::getIterationsCount
+     */
+    public function testPerform()
+    {
+        $fields = ['field1' => []];
 
-        $this->assertTrue($this->step->perform());
+        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+            ->disableOriginalConstructor()->setMethods([])->getMock();
+        $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
+        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document1']));
+        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document2']));
+        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+
+        $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(
+            [
+                ['document1', MapInterface::TYPE_SOURCE, 'document2'],
+                ['document2', MapInterface::TYPE_DEST, 'document1']
+            ]
+        ) ;
+
+        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
+        $this->logger->expects($this->never())->method('error');
+
+        $this->assertTrue($this->log->perform());
     }
 }

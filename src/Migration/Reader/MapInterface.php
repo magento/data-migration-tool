@@ -3,12 +3,12 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration;
+namespace Migration\Reader;
 
 /**
- * Interface MapReaderInterface
+ * Interface MapInterface
  */
-interface MapReaderInterface
+interface MapInterface
 {
     const TYPE_SOURCE = 'source';
     const TYPE_DEST = 'destination';
@@ -33,7 +33,7 @@ interface MapReaderInterface
      * @param string $type
      * @return mixed
      */
-    public function isDocumentMaped($document, $type);
+    public function isDocumentMapped($document, $type);
 
     /**
      * @param string $document
@@ -65,9 +65,4 @@ interface MapReaderInterface
      * @return mixed
      */
     public function getHandlerConfig($document, $field, $type);
-
-    /**
-     * @return array
-     */
-    public function getDeltaDocuments();
 }

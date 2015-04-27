@@ -3,16 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\MapReader;
+namespace Migration\Reader;
 
-use Migration\Config;
 use Migration\Exception;
-use Migration\MapReaderInterface;
 
 /**
- * Class MapReaderAbstract
+ * Class Map
  */
-abstract class MapReaderAbstract implements MapReaderInterface
+class Map implements MapInterface
 {
     const CONFIGURATION_SCHEMA = 'map.xsd';
 
@@ -47,16 +45,12 @@ abstract class MapReaderAbstract implements MapReaderInterface
     protected $wildcards;
 
     /**
-     * @var Config
+     * @param string $mapFile
+     * @throws Exception
      */
-    protected $config;
-
-    /**
-     * @param Config $config
-     */
-    public function __construct(Config $config)
+    public function __construct($mapFile)
     {
-        $this->config = $config;
+        $this->init($mapFile);
     }
 
     /**
@@ -156,7 +150,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
     /**
      * @inheritdoc
      */
-    public function isDocumentMaped($document, $type)
+    public function isDocumentMapped($document, $type)
     {
         if ($this->isDocumentIgnored($document, $type)) {
             return false;
@@ -195,7 +189,7 @@ abstract class MapReaderAbstract implements MapReaderInterface
             return $this->documentsMap[$key];
         }
         $result = $document;
-        if ($this->isDocumentMaped($document, $type)) {
+        if ($this->isDocumentMapped($document, $type)) {
             $queryResult = $this->xml->query(sprintf('//source/document_rules/rename/*[text()="%s"]', $document));
             if ($queryResult->length > 0) {
                 /** @var \DOMElement $node */
@@ -282,31 +276,13 @@ abstract class MapReaderAbstract implements MapReaderInterface
     }
 
     /**
-     * @return array
-     */
-    public function getDeltaDocuments()
-    {
-        $result = [];
-        $queryResult = $this->xml
-            ->query('//source/document_rules/log_changes/document');
-        if (!$queryResult->length) {
-            return $result;
-        }
-        foreach ($queryResult as $document) {
-            /** @var \DOMElement $document */
-            $result[$document->nodeValue] = $document->attributes->getNamedItem('key')->nodeValue;
-        }
-        return $result;
-    }
-
-    /**
      * @param string $type
      * @return bool
      * @throws Exception
      */
     protected function validateType($type)
     {
-        if (!in_array($type, [MapReaderInterface::TYPE_SOURCE, MapReaderInterface::TYPE_DEST])) {
+        if (!in_array($type, [MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST])) {
             throw new Exception('Unknown resource type: ' . $type);
         }
         return true;
@@ -319,9 +295,9 @@ abstract class MapReaderAbstract implements MapReaderInterface
     protected function getOppositeType($type)
     {
         $this->validateType($type);
-        return $type == MapReaderInterface::TYPE_SOURCE
-            ? MapReaderInterface::TYPE_DEST
-            : MapReaderInterface::TYPE_SOURCE;
+        return $type == MapInterface::TYPE_SOURCE
+            ? MapInterface::TYPE_DEST
+            : MapInterface::TYPE_SOURCE;
     }
 
     /**

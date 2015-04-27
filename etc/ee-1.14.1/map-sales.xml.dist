@@ -12,9 +12,6 @@
                 <document>sales_flat_order</document>
                 <to>sales_order</to>
             </rename>
-            <log_changes>
-                <document key="entity_id">sales_flat_order</document>
-            </log_changes>
         </document_rules>
         <field_rules>
             <ignore>
@@ -25,5 +22,11 @@
             </ignore>
         </field_rules>
     </source>
-    <destination />
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>sales_order.send_email</field>
+            </ignore>
+        </field_rules>
+    </destination>
 </map>

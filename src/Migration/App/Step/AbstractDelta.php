@@ -6,7 +6,9 @@
 namespace Migration\App\Step;
 
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\Resource\Source;
 use Migration\Resource;
 
@@ -18,9 +20,14 @@ abstract class AbstractDelta implements StageInterface
     protected $source;
 
     /**
-     * @var MapReaderInterface
+     * @var MapInterface
      */
     protected $mapReader;
+
+    /**
+     * @var []
+     */
+    protected $deltaDocuments;
 
     /**
      * @var Logger
@@ -44,22 +51,29 @@ abstract class AbstractDelta implements StageInterface
 
     /**
      * @param Source $source
-     * @param MapReaderInterface $mapReader
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param string $mapConfigOption
+     * @param string $groupName
      */
     public function __construct(
         Source $source,
-        MapReaderInterface $mapReader,
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory
+        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        $mapConfigOption,
+        $groupName
     ) {
         $this->source = $source;
-        $this->mapReader = $mapReader;
+        $this->mapReader = $mapFactory->create($mapConfigOption);
+        $this->deltaDocuments = $groupsFactory->create('delta_document_groups_file')->getGroup($groupName);
         $this->logger = $logger;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
@@ -73,14 +87,13 @@ abstract class AbstractDelta implements StageInterface
     public function perform()
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
-        $deltaDocuments = $this->mapReader->getDeltaDocuments();
-        foreach ($deltaDocuments as $documentName => $idKey) {
+        foreach ($this->deltaDocuments as $documentName => $idKey) {
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
 
-            $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -125,7 +138,7 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
-        $destinationName = $this->mapReader->getDocumentMap($documentName, MapReaderInterface::TYPE_SOURCE);
+        $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);

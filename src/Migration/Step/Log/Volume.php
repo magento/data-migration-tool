@@ -7,8 +7,10 @@ namespace Migration\Step\Log;
 
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderLog;
+use Migration\Reader\MapInterface;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
+use Migration\Reader\Map;
 use Migration\Resource;
 use Migration\App\ProgressBar;
 
@@ -28,9 +30,9 @@ class Volume implements StageInterface
     protected $destination;
 
     /**
-     * @var MapReaderLog
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var Logger
@@ -50,24 +52,32 @@ class Volume implements StageInterface
     protected $errors = [];
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerList;
+
+    /**
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderLog $mapReader
+     * @param MapFactory $mapFactory
      * @param ProgressBar $progress
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderLog $mapReader,
-        ProgressBar $progress
+        MapFactory $mapFactory,
+        ProgressBar $progress,
+        GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
         $this->destination = $destination;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('log_map_file');
         $this->logger = $logger;
         $this->progress = $progress;
+        $this->readerGroups = $groupsFactory->create('log_document_groups_file');
     }
 
     /**
@@ -76,11 +86,11 @@ class Volume implements StageInterface
     public function perform()
     {
         $isSuccess = true;
-        $sourceDocuments = array_keys($this->mapReader->getDocumentList());
+        $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         $this->progress->start($this->getIterationsCount());
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progress->advance();
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -91,7 +101,7 @@ class Volume implements StageInterface
                 $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
-        if (!$this->checkCleared($this->mapReader->getDestDocumentsToClear())) {
+        if (!$this->checkCleared(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')))) {
             $isSuccess = false;
             $this->errors[] = 'Destination log documents are not cleared';
         }
@@ -126,7 +136,8 @@ class Volume implements StageInterface
      */
     protected function getIterationsCount()
     {
-        return count($this->mapReader->getDestDocumentsToClear()) + count($this->mapReader->getDocumentList());
+        return count($this->readerGroups->getGroup('destination_documents_to_clear'))
+            + count($this->readerGroups->getGroup('source_documents'));
     }
 
     /**

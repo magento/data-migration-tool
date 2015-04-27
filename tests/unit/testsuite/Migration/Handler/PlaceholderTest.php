@@ -21,7 +21,7 @@ class PlaceholderTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->once())->method('getValue')->with($fieldName)->willReturn($content);
         $record->expects($this->once())->method('setValue')->with($fieldName, $contentConverted);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $classMap = $this->getMock('Migration\ClassMap', ['getMap'], [], '', false);
+        $classMap = $this->getMock('Migration\Reader\ClassMap', ['getMap'], [], '', false);
         $classMap->expects($this->once())->method('getMap')->willReturn($classMapData);
         $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
         $handler = new \Migration\Handler\Placeholder($classMap);

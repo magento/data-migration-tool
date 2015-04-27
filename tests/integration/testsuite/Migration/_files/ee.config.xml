@@ -6,14 +6,70 @@
  */
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
-    <steps mode="migration">
-        <step>Migration\Step\Eav</step>
-        <step>Migration\Step\CustomCustomerAttributes</step>
-        <step>Migration\Step\Map</step>
-        <step>Migration\Step\UrlRewrite</step>
-        <step>Migration\Step\Log</step>
-        <step>Migration\Step\Ratings</step>
-        <step>Migration\Step\SalesOrder</step>
+    <steps mode="settings">
+        <step title="Settings step">
+            <integrity>Migration\Step\Settings</integrity>
+            <data>Migration\Step\Settings</data>
+        </step>
+        <step title="Stores step">
+            <integrity>Migration\Step\Stores</integrity>
+            <data>Migration\Step\Stores</data>
+            <volume>Migration\Step\Stores</volume>
+        </step>
+    </steps>
+    <steps mode="data">
+        <step title="EAV Step">
+            <integrity>Migration\Step\Eav\Integrity</integrity>
+            <data>Migration\Step\Eav\Data</data>
+            <volume>Migration\Step\Eav\Volume</volume>
+        </step>
+        <step title="Custom Customer Attributes Step">
+            <integrity>Migration\Step\CustomCustomerAttributes\Integrity</integrity>
+            <data>Migration\Step\CustomCustomerAttributes\Data</data>
+            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
+        </step>
+        <step title="Map step">
+            <integrity>Migration\Step\Map\Integrity</integrity>
+            <data>Migration\Step\Map\Data</data>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Url Rewrite step">
+            <integrity>Migration\Step\UrlRewrite\Version11410to2000</integrity>
+            <data>Migration\Step\UrlRewrite\Version11410to2000</data>
+            <volume>Migration\Step\UrlRewrite\Version11410to2000</volume>
+        </step>
+        <step title="Log Step">
+            <integrity>Migration\Step\Log\Integrity</integrity>
+            <data>Migration\Step\Log\Data</data>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="Ratings step">
+            <integrity>Migration\Step\Ratings</integrity>
+            <data>Migration\Step\Ratings</data>
+            <volume>Migration\Step\Ratings</volume>
+        </step>
+        <step title="SalesOrder step">
+            <integrity>Migration\Step\SalesOrder\Integrity</integrity>
+            <data>Migration\Step\SalesOrder\Data</data>
+            <volume>Migration\Step\SalesOrder\Volume</volume>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Custom Customer Attributes Step">
+            <delta>Migration\Step\CustomCustomerAttributes\Delta</delta>
+            <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
+        </step>
+        <step title="Map step">
+            <delta>Migration\Step\Map\Delta</delta>
+        </step>
+        <step title="Log Step">
+            <delta>Migration\Step\Log\Delta</delta>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="SalesOrder step">
+            <delta>Migration\Step\SalesOrder\Delta</delta>
+            <volume>Migration\Step\SalesOrder\Volume</volume>
+        </step>
     </steps>
     <source version="1.14.1.0">
         <database host="localhost" name="magento1_integration" user="root" password=""/>
@@ -24,12 +80,12 @@
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
         <eav_map_file>tests/integration/testsuite/Migration/_files/ee.map-eav.xml</eav_map_file>
-        <eav_list_file>tests/integration/testsuite/Migration/_files/ee.list-eav.xml</eav_list_file>
+        <eav_document_groups_file>tests/integration/testsuite/Migration/_files/ee.eav-document-groups.xml</eav_document_groups_file>
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
         <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
-        <deltalog_map_file>tests/integration/testsuite/Migration/_files/deltalog.xml</deltalog_map_file>
-        <class_map>tests/integration/testsuite/Migration/_files/class_map.php</class_map>
+        <delta_document_groups_file>tests/integration/testsuite/Migration/_files/deltalog.xml</delta_document_groups_file>
+        <class_map>tests/integration/testsuite/Migration/_files/class-map.xml</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />

@@ -7,7 +7,8 @@ namespace Migration\Step\Log;
 
 use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
-use Migration\MapReader\MapReaderLog;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
 use Migration\Resource\Source;
 use Migration\Resource;
 
@@ -15,20 +16,36 @@ class Delta extends AbstractDelta
 {
     /**
      * @param Source $source
-     * @param MapReaderLog $mapReader
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param string $mapConfigOption
+     * @param string $groupName
      */
     public function __construct(
         Source $source,
-        MapReaderLog $mapReader,
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory
+        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        $mapConfigOption = 'log_map_file',
+        $groupName = 'delta_log'
     ) {
-        parent::__construct($source, $mapReader, $logger, $destination, $recordFactory, $recordTransformerFactory);
+        parent::__construct(
+            $source,
+            $mapFactory,
+            $groupsFactory,
+            $logger,
+            $destination,
+            $recordFactory,
+            $recordTransformerFactory,
+            $mapConfigOption,
+            $groupName
+        );
     }
 }

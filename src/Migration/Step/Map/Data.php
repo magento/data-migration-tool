@@ -6,8 +6,9 @@
 namespace Migration\Step\Map;
 
 use Migration\App\Step\RollbackInterface;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderMain;
+use Migration\Reader\MapInterface;
+use Migration\Reader\Map;
+use Migration\Reader\MapFactory;
 use Migration\Resource;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
@@ -36,9 +37,9 @@ class Data implements RollbackInterface
     protected $recordFactory;
 
     /**
-     * @var MapReaderMain
+     * @var Map
      */
-    protected $mapReader;
+    protected $map;
 
     /**
      * @var \Migration\RecordTransformerFactory
@@ -65,7 +66,7 @@ class Data implements RollbackInterface
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param MapReaderMain $mapReader
+     * @param MapFactory $mapFactory
      * @param Progress $progress
      */
     public function __construct(
@@ -74,14 +75,14 @@ class Data implements RollbackInterface
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        MapReaderMain $mapReader,
+        MapFactory $mapFactory,
         Progress $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
-        $this->mapReader = $mapReader;
+        $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
         $this->progress = $progress;
     }
@@ -106,7 +107,7 @@ class Data implements RollbackInterface
                 continue;
             }
             $sourceDocument = $this->source->getDocument($sourceDocName);
-            $destinationName = $this->mapReader->getDocumentMap($sourceDocName, MapReaderInterface::TYPE_SOURCE);
+            $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -164,7 +165,7 @@ class Data implements RollbackInterface
             [
                 'sourceDocument' => $sourceDocument,
                 'destDocument' => $destDocument,
-                'mapReader' => $this->mapReader
+                'mapReader' => $this->map
             ]
         );
         $recordTransformer->init();
@@ -179,8 +180,8 @@ class Data implements RollbackInterface
     public function canJustCopy(Document $sourceDocument, Document $destDocument)
     {
         return $this->haveEqualStructure($sourceDocument, $destDocument)
-            && !$this->hasHandlers($sourceDocument, MapReaderInterface::TYPE_SOURCE)
-            && !$this->hasHandlers($destDocument, MapReaderInterface::TYPE_DEST);
+            && !$this->hasHandlers($sourceDocument, MapInterface::TYPE_SOURCE)
+            && !$this->hasHandlers($destDocument, MapInterface::TYPE_DEST);
     }
 
     /**
@@ -206,7 +207,7 @@ class Data implements RollbackInterface
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            $handlerConfig = $this->mapReader->getHandlerConfig($document->getName(), $fieldName, $type);
+            $handlerConfig = $this->map->getHandlerConfig($document->getName(), $fieldName, $type);
             if (!empty($handlerConfig)) {
                 $result = true;
                 break;

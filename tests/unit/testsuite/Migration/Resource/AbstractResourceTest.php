@@ -3,8 +3,9 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
 namespace Migration\Resource;
+
+use Migration\Reader\MapInterface;
 
 /**
  * Class AbstractResourceTest
@@ -133,9 +134,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider getDocumentDataSource()
      * @param string $prefix
-     * @param string $type
+     * @param string $optionName
      */
-    public function testGetDocument($prefix, $type)
+    public function testGetDocument($prefix, $optionName)
     {
         $resourceName = 'core_config_data';
         $structureData = ['id' => 'int'];
@@ -143,7 +144,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
         $this->config->expects($this->any())
             ->method('getOption')
-            ->with($type)
+            ->with($optionName)
             ->will($this->returnValue($prefix));
         $this->documentFactory->expects($this->any())
             ->method('create')
@@ -161,7 +162,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->method('getDocumentList')
             ->willReturn([$prefix . $resourceName]);
 
-        $resource = ($prefix == 'source') ? $this->resourceSource : $this->resourceDestination;
+        $resource = ($prefix == MapInterface::TYPE_SOURCE) ? $this->resourceSource : $this->resourceDestination;
         $this->assertSame($document, $resource->getDocument($resourceName));
     }
 
@@ -171,8 +172,8 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     public function getDocumentDataSource()
     {
         return[
-            ['source', 'source_prefix'],
-            ['destination', 'dest_prefix']
+            [MapInterface::TYPE_SOURCE, 'source_prefix'],
+            [MapInterface::TYPE_DEST, 'dest_prefix']
         ];
     }
 

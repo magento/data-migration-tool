@@ -6,7 +6,7 @@
 namespace Migration\Step;
 
 use Migration\App\Step\StageInterface;
-use Migration\MapReader;
+use Migration\Reader\Settings as ReaderSettings;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
@@ -50,9 +50,9 @@ class Settings implements StageInterface
     protected $progress;
 
     /**
-     * @var MapReader\Settings
+     * @var ReaderSettings
      */
-    protected $mapReader;
+    protected $readerSettings;
 
     /**
      * @var Resource\RecordFactory
@@ -75,7 +75,7 @@ class Settings implements StageInterface
      * @param Logger $logger
      * @param ProgressBar $progress
      * @param Resource\RecordFactory $recordFactory
-     * @param MapReader\Settings $mapReader
+     * @param ReaderSettings $readerSettings
      * @param Handler\ManagerFactory $handlerManagerFactory
      * @param string $stage
      */
@@ -85,7 +85,7 @@ class Settings implements StageInterface
         Logger $logger,
         ProgressBar $progress,
         Resource\RecordFactory $recordFactory,
-        MapReader\Settings $mapReader,
+        ReaderSettings $readerSettings,
         Handler\ManagerFactory $handlerManagerFactory,
         $stage
     ) {
@@ -94,7 +94,7 @@ class Settings implements StageInterface
         $this->logger = $logger;
         $this->progress = $progress;
         $this->recordFactory = $recordFactory;
-        $this->mapReader = $mapReader;
+        $this->readerSettings = $readerSettings;
         $this->handlerManagerFactory = $handlerManagerFactory;
         $this->stage = $stage;
     }
@@ -164,8 +164,8 @@ class Settings implements StageInterface
         );
         foreach ($sourceRecords as $sourceRecord) {
             $this->progress->advance();
-            if (!$this->mapReader->isNodeIgnored($sourceRecord[self::CONFIG_FIELD_PATH])) {
-                $sourceRecordPathMapped = $this->mapReader->getNodeMap($sourceRecord[self::CONFIG_FIELD_PATH]);
+            if (!$this->readerSettings->isNodeIgnored($sourceRecord[self::CONFIG_FIELD_PATH])) {
+                $sourceRecordPathMapped = $this->readerSettings->getNodeMap($sourceRecord[self::CONFIG_FIELD_PATH]);
                 foreach ($destinationRecords as &$destinationRecord) {
                     if ($destinationRecord[self::CONFIG_FIELD_SCOPE] == $sourceRecord[self::CONFIG_FIELD_SCOPE]
                         && $destinationRecord[self::CONFIG_FIELD_SCOPE_ID] == $sourceRecord[self::CONFIG_FIELD_SCOPE_ID]
@@ -219,7 +219,7 @@ class Settings implements StageInterface
      */
     protected function getHandler($path)
     {
-        $handlerConfig = $this->mapReader->getValueHandler($path);
+        $handlerConfig = $this->readerSettings->getValueHandler($path);
         if (!$handlerConfig) {
             return false;
         }

@@ -6,8 +6,9 @@
 namespace Migration\Step\Eav;
 
 use Migration\Logger\Logger;
-use Migration\MapReaderInterface;
-use Migration\MapReader\MapReaderEav;
+use Migration\Reader\MapInterface;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\Resource;
 
@@ -17,33 +18,30 @@ use Migration\Resource;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var MapReaderEav
+     * @var \Migration\Reader\Groups
      */
-    protected $map;
-
-    /**
-     * @var \Migration\ListsReader
-     */
-    protected $readerSimple;
+    protected $groups;
 
     /**
      * @param ProgressBar $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapReaderEav $mapReader
-     * @param \Migration\ListsReaderFactory $listsReaderFactory
+     * @param MapFactory $mapFactory
+     * @param GroupsFactory $groupsFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapReaderEav $mapReader,
-        \Migration\ListsReaderFactory $listsReaderFactory
+        MapFactory $mapFactory,
+        GroupsFactory $groupsFactory,
+        $mapConfigOption = 'eav_map_file'
     ) {
-        parent::__construct($progress, $logger, $source, $destination, $mapReader);
-        $this->readerSimple = $listsReaderFactory->create(['optionName' => 'eav_list_file']);
+        $this->groups = $groupsFactory->create('eav_document_groups_file');
+        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**
@@ -53,11 +51,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     {
         $this->progress->start($this->getIterationsCount());
 
-        $documents = $this->readerSimple->getList('documents');
+        $documents = array_keys($this->groups->getGroup('documents'));
         foreach ($documents as $sourceDocumentName) {
-            $this->check([$sourceDocumentName], MapReaderInterface::TYPE_SOURCE);
-            $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapReaderInterface::TYPE_SOURCE);
-            $this->check([$destinationDocumentName], MapReaderInterface::TYPE_DEST);
+            $this->check([$sourceDocumentName], MapInterface::TYPE_SOURCE);
+            $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
+            $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
 
         $this->progress->finish();
@@ -70,6 +68,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->readerSimple->getList('documents')) * 2;
+        return count($this->groups->getGroup('documents')) * 2;
     }
 }
