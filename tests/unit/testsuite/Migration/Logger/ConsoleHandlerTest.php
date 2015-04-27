@@ -103,7 +103,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $result = $this->consoleHandler->handle($record);
         $output = ob_get_contents();
         ob_end_clean();
-        $this->assertTrue($result);
+        $this->assertFalse($result);
         $expectedString = "\x1b[0;31mColorized message\x1b[0m" . PHP_EOL;
         $this->assertEquals($expectedString, $output);
     }
