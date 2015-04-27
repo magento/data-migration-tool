@@ -88,7 +88,6 @@
         <delta_document_groups_file>etc/ee-1.14.1/deltalog.xml.dist</delta_document_groups_file>
         <customer_attr_map_file>etc/ee-1.14.1/customer-attr-map.xml.dist</customer_attr_map_file>
         <customer_attr_document_groups_file>etc/ee-1.14.1/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
-        <class_map>etc/class_map_ee.php</class_map>
         <class_map>etc/ee-1.14.1/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />

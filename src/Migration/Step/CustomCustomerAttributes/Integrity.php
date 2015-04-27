@@ -7,7 +7,7 @@ namespace Migration\Step\CustomCustomerAttributes;
 
 use Migration\App\Step\AbstractIntegrity;
 use Migration\Logger\Logger;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Reader\Groups;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;

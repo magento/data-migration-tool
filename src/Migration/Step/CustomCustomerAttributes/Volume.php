@@ -6,7 +6,7 @@
 namespace Migration\Step\CustomCustomerAttributes;
 
 use Migration\App\Step\StageInterface;
-use Migration\ProgressBar;
+use Migration\App\ProgressBar;
 use Migration\Reader\Groups;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
