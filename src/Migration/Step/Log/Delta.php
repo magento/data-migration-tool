@@ -15,6 +15,16 @@ use Migration\Resource;
 class Delta extends AbstractDelta
 {
     /**
+     * @var string
+     */
+    protected $mapConfigOption = 'log_map_file';
+
+    /**
+     * @var string
+     */
+    protected $groupName = 'delta_log';
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -22,8 +32,6 @@ class Delta extends AbstractDelta
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param string $mapConfigOption
-     * @param string $groupName
      */
     public function __construct(
         Source $source,
@@ -32,9 +40,7 @@ class Delta extends AbstractDelta
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
-        $mapConfigOption = 'log_map_file',
-        $groupName = 'delta_log'
+        \Migration\RecordTransformerFactory $recordTransformerFactory
     ) {
         parent::__construct(
             $source,
@@ -43,9 +49,7 @@ class Delta extends AbstractDelta
             $logger,
             $destination,
             $recordFactory,
-            $recordTransformerFactory,
-            $mapConfigOption,
-            $groupName
+            $recordTransformerFactory
         );
     }
 }
