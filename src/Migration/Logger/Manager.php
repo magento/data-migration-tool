@@ -12,7 +12,7 @@ namespace Migration\Logger;
 class Manager
 {
     /** Log levels */
-    const LOG_LEVEL_NONE = 'none';
+    const LOG_LEVEL_ERROR = 'error';
 
     const LOG_LEVEL_INFO = 'info';
 
@@ -29,10 +29,25 @@ class Manager
     protected $consoleHandler;
 
     /**
+     * @var FileHandler
+     */
+    protected $fileHandler;
+
+    /**
+     * @var MessageFormatter
+     */
+    protected $formatter;
+
+    /**
+     * @var MessageProcessor
+     */
+    protected $processor;
+
+    /**
      * @var array
      */
     protected $logLevels = [
-        self::LOG_LEVEL_NONE => Logger::ERROR,
+        self::LOG_LEVEL_ERROR => Logger::ERROR,
         self::LOG_LEVEL_INFO => Logger::INFO,
         self::LOG_LEVEL_DEBUG => Logger::DEBUG
     ];
@@ -40,11 +55,21 @@ class Manager
     /**
      * @param Logger $logger
      * @param ConsoleHandler $consoleHandler
+     * @param FileHandler $fileHandler
+     * @param MessageFormatter $formatter
+     * @param MessageProcessor $messageProcessor
      */
-    public function __construct(Logger $logger, ConsoleHandler $consoleHandler)
-    {
+    public function __construct(
+        Logger $logger,
+        ConsoleHandler $consoleHandler,
+        FileHandler $fileHandler,
+        MessageFormatter $formatter,
+        MessageProcessor $messageProcessor
+    ) {
         $this->logger = $logger;
-        $this->consoleHandler = $consoleHandler;
+        $this->handlers = [$consoleHandler, $fileHandler];
+        $this->formatter = $formatter;
+        $this->processor = $messageProcessor;
     }
 
     /**
@@ -58,8 +83,11 @@ class Manager
             $this->logger->error("Invalid log level '$logLevel' provided.");
             $logLevel = self::LOG_LEVEL_INFO;
         }
-        $this->consoleHandler->setLevel($this->logLevels[$logLevel]);
-        $this->logger->pushHandler($this->consoleHandler);
+        foreach ($this->handlers as $handler) {
+            $handler->setLevel($this->logLevels[$logLevel])->setFormatter($this->formatter);
+            $this->logger->pushHandler($handler);
+        }
+        $this->logger->pushProcessor([$this->processor, 'setExtra']);
         return $this;
     }
 }

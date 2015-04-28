@@ -18,6 +18,11 @@ use Migration\Exception;
 class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
     /**
+     * @inheritdoc
+     */
+    protected $mode = 'data';
+
+    /**
      * @var SetupDeltaLog
      */
     protected $setupDeltaLog;

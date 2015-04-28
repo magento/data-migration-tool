@@ -14,6 +14,7 @@ use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
+use Migration\Logger\Logger;
 
 /**
  * Class Data
@@ -60,6 +61,11 @@ class Data implements RollbackInterface
     protected $progress;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param ProgressBar $progressBar
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -67,6 +73,7 @@ class Data implements RollbackInterface
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param Progress $progress
+     * @param Logger $logger
      */
     public function __construct(
         ProgressBar $progressBar,
@@ -75,7 +82,8 @@ class Data implements RollbackInterface
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
-        Progress $progress
+        Progress $progress,
+        Logger $logger
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -84,6 +92,7 @@ class Data implements RollbackInterface
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
         $this->progress = $progress;
+        $this->logger = $logger;
     }
 
     /**
@@ -110,6 +119,7 @@ class Data implements RollbackInterface
             $this->destination->clearDocument($destinationName);
 
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
+            $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $pageNumber = 0;
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;

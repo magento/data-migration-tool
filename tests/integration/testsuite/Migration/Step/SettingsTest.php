@@ -26,7 +26,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $destination = $objectManager->get('\Migration\Resource\Destination');
         $source = $objectManager->get('\Migration\Resource\Source');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
         $settings = $objectManager->create(
             '\Migration\Step\Settings',

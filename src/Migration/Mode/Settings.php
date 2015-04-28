@@ -14,6 +14,11 @@ use Migration\Exception;
 class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
     /**
+     * @inheritdoc
+     */
+    protected $mode = 'settings';
+
+    /**
      * {@inheritdoc}
      */
     public function getUsageHelp()

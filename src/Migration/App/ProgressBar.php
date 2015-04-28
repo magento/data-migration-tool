@@ -6,6 +6,7 @@
 namespace Migration\App;
 
 use Symfony\Component\Console\Output\ConsoleOutput;
+use \Migration\Logger\Logger;
 
 /**
  * Class ProgressBar
@@ -23,5 +24,14 @@ class ProgressBar extends \Symfony\Component\Console\Helper\ProgressBar
     public function __construct(ConsoleOutput $output)
     {
         parent::__construct($output);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function finish()
+    {
+        parent::finish();
+        echo PHP_EOL;
     }
 }

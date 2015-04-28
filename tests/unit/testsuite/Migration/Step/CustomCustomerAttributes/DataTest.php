@@ -59,7 +59,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $groups;
 
-
     public function setUp()
     {
         $this->config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
@@ -122,6 +121,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $groupsFactory->expects($this->any())->method('create')->with('customer_attr_document_groups_file')
             ->willReturn($this->groups);
 
+        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+            ->setMethods(['debug'])
+            ->getMock();
         $this->step = new Data(
             $this->config,
             $this->source,
@@ -129,7 +131,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->progress,
             $this->recordFactory,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->logger
         );
     }
 
@@ -185,6 +188,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $recordsCollection->expects($this->any())->method('addRecord')->with($record);
 
         $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($destDocument));
+        $this->logger->expects($this->any())->method('debug')->with('migrating', ['table' => 'source_document_1'])
+            ->willReturn(true);
         $this->source->expects($this->any())->method('getRecords')->will($this->returnValueMap(
             [
                 ['source_document_1', 0, null, [['field_1' => 1, 'field_2' => 2]]]

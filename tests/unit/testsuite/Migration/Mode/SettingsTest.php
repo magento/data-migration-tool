@@ -119,9 +119,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
 
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
-        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
-        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(0))->method('info')->with("started");
+        $this->logger->expects($this->at(1))->method('info')->with("started");
+        $this->logger->expects($this->at(2))->method('info')->with("started");
         $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);
@@ -141,9 +141,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
 
         $this->progress->expects($this->never())->method('saveResult');
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(true);
-        $this->logger->expects($this->at(0))->method('info')->with(PHP_EOL . "Title: integrity check");
-        $this->logger->expects($this->at(1))->method('info')->with(PHP_EOL . "Title: data migration");
-        $this->logger->expects($this->at(2))->method('info')->with(PHP_EOL . "Title: volume check");
+        $this->logger->expects($this->at(0))->method('info')->with("started");
+        $this->logger->expects($this->at(1))->method('info')->with("started");
+        $this->logger->expects($this->at(2))->method('info')->with("started");
         $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);

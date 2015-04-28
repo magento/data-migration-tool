@@ -36,6 +36,17 @@ class Delta implements \Migration\App\Mode\ModeInterface
     protected $autoRestart;
 
     /**
+     * @inheritdoc
+     */
+    protected $mode = 'delta';
+
+    /**
+     * @var bool
+     */
+    protected $shouldComplete = false;
+
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory

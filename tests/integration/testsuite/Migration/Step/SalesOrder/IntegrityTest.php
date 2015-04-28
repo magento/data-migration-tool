@@ -20,7 +20,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $config = $objectManager->get('\Migration\Config');
         $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\SalesOrder\Integrity $salesOrder */

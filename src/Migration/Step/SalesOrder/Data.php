@@ -13,6 +13,7 @@ use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
+use Migration\Logger\Logger;
 
 /**
  * Class Data
@@ -57,6 +58,11 @@ class Data implements StageInterface
     protected $helper;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param ProgressBar $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -64,6 +70,7 @@ class Data implements StageInterface
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param Helper $helper
+     * @param Logger $logger
      */
     public function __construct(
         ProgressBar $progress,
@@ -72,7 +79,8 @@ class Data implements StageInterface
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
-        Helper $helper
+        Helper $helper,
+        Logger $logger
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -81,6 +89,7 @@ class Data implements StageInterface
         $this->map = $mapFactory->create('sales_order_map_file');
         $this->progress = $progress;
         $this->helper = $helper;
+        $this->logger = $logger;
     }
 
     /**
@@ -117,7 +126,7 @@ class Data implements StageInterface
                 ]
             );
             $recordTransformer->init();
-
+            $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $pageNumber = 0;
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;

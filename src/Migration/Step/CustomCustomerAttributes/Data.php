@@ -18,6 +18,7 @@ use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
 use Migration\Step\DatabaseStage;
+use Migration\Logger\Logger;
 
 /**
  * Class Data
@@ -55,6 +56,11 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
     protected $progress;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Config $config
      * @param Source $source
      * @param Destination $destination
@@ -62,6 +68,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
      * @param RecordFactory $recordFactory
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
+     * @param Logger $logger
      */
     public function __construct(
         Config $config,
@@ -70,7 +77,8 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
         ProgressBar $progress,
         RecordFactory $recordFactory,
         MapFactory $mapFactory,
-        GroupsFactory $groupsFactory
+        GroupsFactory $groupsFactory,
+        Logger $logger
     ) {
         parent::__construct($config);
         $this->source = $source;
@@ -79,6 +87,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
         $this->recordFactory = $recordFactory;
         $this->groups = $groupsFactory->create('customer_attr_document_groups_file');
         $this->map = $mapFactory->create('customer_attr_map_file');
+        $this->logger = $logger;
     }
 
     /**
@@ -113,6 +122,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
             $destinationAdapter->createTableByDdl($destinationTable);
 
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
+            $this->logger->debug('migrating', ['table' => $sourceDocumentName]);
             $pageNumber = 0;
             while (!empty($sourceRecords = $this->source->getRecords($sourceDocumentName, $pageNumber))) {
                 $pageNumber++;

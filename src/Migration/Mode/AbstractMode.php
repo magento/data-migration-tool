@@ -30,6 +30,16 @@ abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
     protected $progress;
 
     /**
+     * @var string
+     */
+    protected $mode;
+
+    /**
+     * @var bool
+     */
+    protected $shouldComplete = true;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
@@ -52,12 +62,13 @@ abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     protected function runStage($object, $step, $stage)
     {
-        $this->logger->info(sprintf('%s: %s', PHP_EOL . $step, $stage));
-
-        if ($this->progress->isCompleted($object, $stage)) {
+        $this->logger->info(
+            'started',
+            ['step' => $step, 'stage' => $stage, 'mode' => $this->mode]
+        );
+        if ($this->shouldComplete() && $this->progress->isCompleted($object, $stage)) {
             return true;
         }
-
         try {
             $result = $object->perform();
         } catch (\Exception $e) {
@@ -70,5 +81,13 @@ abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
         }
 
         return $result;
+    }
+
+    /**
+     * @return bool
+     */
+    public function shouldComplete()
+    {
+        return $this->shouldComplete;
     }
 }

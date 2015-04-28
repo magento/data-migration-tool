@@ -24,7 +24,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */
@@ -52,7 +52,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
         $config = $objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
-        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_NONE);
+        $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */
