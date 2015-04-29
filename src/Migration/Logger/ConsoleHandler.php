@@ -47,6 +47,6 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
             echo $record['message'];
         }
         echo PHP_EOL;
-        return true;
+        return false === $this->bubble;
     }
 }

@@ -96,7 +96,8 @@
             <xs:element name="sales_order_map_file" type="xmlFile" maxOccurs="1"/>
             <xs:element name="delta_document_groups_file" type="xmlFile" maxOccurs="1"/>
             <xs:element name="bulk_size" type="xs:int" maxOccurs="1"/>
-            <xs:element name="resource_adapter_class_name" type="xs:string" minOccurs="0" maxOccurs="1"/>
+            <xs:element name="resource_adapter_class_name" type="xs:string" maxOccurs="1"/>
+            <xs:element name="log_file" type="xs:string" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:choice>
     </xs:complexType>
