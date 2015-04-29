@@ -58,25 +58,18 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
 
     /**
      * @param string $logFile
-     * @return bool
+     * @return string
      */
     protected function getFilePath($logFile)
     {
-        if (!$realPath = $this->filesystem->getRealPath($logFile)) {
-            $createDir = [];
-            while (!$realPath) {
-                $pathArray = explode(DIRECTORY_SEPARATOR, $logFile);
-                $createDir[] = array_pop($pathArray);
-                $logFile = implode(DIRECTORY_SEPARATOR, $pathArray);
-                $realPath = $this->filesystem->getRealPath($logFile);
+        $logFileDir = dirname($logFile);
+        if (!$this->filesystem->getRealPath($logFileDir)) {
+            if (substr($logFileDir, 0, 1) != '/') {
+                $logFileDir = __DIR__ . '/../../../' . $logFileDir;
+                $logFile = $logFileDir . '/' . basename($logFile);
             }
-            $logFileName = array_shift($createDir);
-            if (!empty($createDir)) {
-                $realPath = $realPath . DIRECTORY_SEPARATOR . implode(DIRECTORY_SEPARATOR, array_reverse($createDir));
-                $this->filesystem->createDirectory($realPath, $this->permissions);
-            }
-            $realPath .= DIRECTORY_SEPARATOR . $logFileName;
+            $this->filesystem->createDirectory($logFileDir, $this->permissions);
         }
-        return $realPath;
+        return $logFile;
     }
 }
