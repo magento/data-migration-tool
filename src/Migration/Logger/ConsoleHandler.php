@@ -40,13 +40,14 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
         if (!$this->isHandling($record)) {
             return false;
         }
+        $record['formatted'] = $this->getFormatter()->format($record);
         $isError = in_array($record['level'], [Logger::ERROR, Logger::CRITICAL]);
         if ($isError) {
-            echo $this->colorize($record['message'], self::COLOR_RED);
+            echo PHP_EOL;
+            echo $this->colorize($record['formatted'], self::COLOR_RED);
         } else {
-            echo $record['message'];
+            echo $record['formatted'];
         }
-        echo PHP_EOL;
         return false === $this->bubble;
     }
 }

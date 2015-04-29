@@ -18,6 +18,7 @@ use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
 use Migration\Step\DatabaseStage;
+use Migration\Logger\Logger;
 use Migration\Logger\Manager as LogManager;
 
 /**
@@ -56,6 +57,11 @@ class Data extends DatabaseStage
     protected $progress;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Config $config
      * @param Source $source
      * @param Destination $destination
@@ -63,6 +69,7 @@ class Data extends DatabaseStage
      * @param RecordFactory $recordFactory
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
+     * @param Logger $logger
      */
     public function __construct(
         Config $config,
@@ -71,7 +78,8 @@ class Data extends DatabaseStage
         ProgressBar\LogLevelProcessor $progress,
         RecordFactory $recordFactory,
         MapFactory $mapFactory,
-        GroupsFactory $groupsFactory
+        GroupsFactory $groupsFactory,
+        Logger $logger
     ) {
         parent::__construct($config);
         $this->source = $source;
@@ -80,6 +88,7 @@ class Data extends DatabaseStage
         $this->recordFactory = $recordFactory;
         $this->groups = $groupsFactory->create('customer_attr_document_groups_file');
         $this->map = $mapFactory->create('customer_attr_map_file');
+        $this->logger = $logger;
     }
 
     /**
@@ -112,6 +121,7 @@ class Data extends DatabaseStage
             $destinationAdapter->createTableByDdl($destinationTable);
 
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
+            $this->logger->debug('migrating', ['table' => $sourceDocumentName]);
             $pageNumber = 0;
             $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
             while (!empty($sourceRecords = $this->source->getRecords($sourceDocumentName, $pageNumber))) {

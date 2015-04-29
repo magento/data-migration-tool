@@ -18,6 +18,11 @@ use Migration\Exception;
 class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
     /**
+     * @inheritdoc
+     */
+    protected $mode = 'data';
+
+    /**
      * @var SetupDeltaLog
      */
     protected $setupDeltaLog;
@@ -56,9 +61,31 @@ USAGE;
      */
     public function run()
     {
-        $result = true;
         /** @var StepList $steps */
         $steps = $this->stepListFactory->create(['mode' => 'data']);
+        $this->runIntegrity($steps);
+        $this->setupDeltalog();
+
+        foreach ($steps->getSteps() as $stepName => $step) {
+            if (empty($step['data'])) {
+                continue;
+            }
+            $this->runData($step, $stepName);
+            $this->runVolume($step, $stepName);
+        }
+
+        $this->logger->info(PHP_EOL . "Migration completed");
+        return true;
+    }
+
+    /**
+     * @param StepList $steps
+     * @throws Exception
+     * @return void
+     */
+    protected function runIntegrity(StepList $steps)
+    {
+        $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
                 $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
@@ -67,32 +94,49 @@ USAGE;
         if (!$result) {
             throw new Exception('Integrity Check failed');
         }
+    }
 
-        $result = $this->runStage($this->setupDeltaLog, 'Stage', 'setup triggers');
-        if (!$result) {
+    /**
+     * Setup triggers
+     * @throws Exception
+     * @return void
+     */
+    protected function setupDeltalog()
+    {
+        if (!$this->runStage($this->setupDeltaLog, 'Stage', 'setup triggers')) {
             throw new Exception('Setup triggers failed');
         }
+    }
 
-        foreach ($steps->getSteps() as $stepName => $step) {
-            if (empty($step['data'])) {
-                continue;
-            }
-            $result = $this->runStage($step['data'], $stepName, 'data migration');
-            if (!$result) {
-                $this->rollback($step['data'], $stepName);
-                throw new Exception('Data Migration failed');
-            }
-            if (!empty($step['volume'])) {
-                $result = $this->runStage($step['volume'], $stepName, 'volume check');
-            }
-            if (!$result) {
-                $this->rollback($step['data'], $stepName);
-                throw new Exception('Volume Check failed');
-            }
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    protected function runData(array $step, $stepName)
+    {
+        if (!$this->runStage($step['data'], $stepName, 'data migration')) {
+            $this->rollback($step['data'], $stepName);
+            throw new Exception('Data Migration failed');
         }
+    }
 
-        $this->logger->info(PHP_EOL . "Migration completed");
-        return true;
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    protected function runVolume(array $step, $stepName)
+    {
+        if (empty($step['volume'])) {
+            return;
+        }
+        if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
+            $this->rollback($step['data'], $stepName);
+            throw new Exception('Volume Check failed');
+        }
     }
 
     /**

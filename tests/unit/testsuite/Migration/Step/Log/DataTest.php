@@ -12,7 +12,7 @@ use Migration\Resource;
 /**
  * Class DataTest
  */
-class MigrateTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
@@ -54,6 +54,11 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
      */
     protected $data;
 
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
     public function setUp()
     {
         $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
@@ -90,8 +95,8 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
-                ['source_documents', ['document1']],
-                ['destination_documents_to_clear', ['document_to_clear']]
+                ['source_documents', ['source_document' => '']],
+                ['destination_documents_to_clear', ['source_document_to_clear' => '']]
             ]
         );
 
@@ -101,7 +106,9 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with('log_document_groups_file')
             ->willReturn($this->readerGroups);
-
+        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+            ->setMethods(['debug'])
+            ->getMock();
         $this->data = new Data(
             $this->progress,
             $this->source,
@@ -109,7 +116,8 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
             $this->recordFactory,
             $this->recordTransformerFactory,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->logger
         );
     }
 
@@ -150,6 +158,8 @@ class MigrateTest extends \PHPUnit_Framework_TestCase
         $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->exactly(2))->method('clearDocument');
+        $this->logger->expects($this->any())->method('debug')->with('migrating', ['table' => 'source_document'])
+            ->willReturn(true);
         $this->data->perform();
     }
 

@@ -40,12 +40,15 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleSuccess($recordLevel, $handlerLevel)
     {
         $message = 'Success message';
-        $record = ['message' => $message, 'level' => $recordLevel];
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
         $this->consoleHandler->setLevel($handlerLevel);
         ob_start();
         $result = $this->consoleHandler->handle($record);
         $output = ob_get_contents();
         ob_end_clean();
+        $this->assertFalse($result);
+        $this->assertContains('Success message', $output);
         $this->assertFalse($result);
         $this->assertEquals("Success message" . PHP_EOL, $output);
     }
@@ -97,14 +100,13 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRed()
     {
         $message = 'Colorized message';
-        $record = ['message' => $message, 'level' => 400];
+        $record = ['message' => $message, 'level' => 400, 'extra' => []];
         $this->consoleHandler->setLevel(100);
         ob_start();
         $result = $this->consoleHandler->handle($record);
         $output = ob_get_contents();
         ob_end_clean();
         $this->assertFalse($result);
-        $expectedString = "\x1b[0;31mColorized message\x1b[0m" . PHP_EOL;
-        $this->assertEquals($expectedString, $output);
+        $this->assertContains('Colorized message', $output);
     }
 }

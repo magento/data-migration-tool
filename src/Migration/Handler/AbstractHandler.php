@@ -10,6 +10,7 @@ use Migration\Exception;
 
 /**
  * Class AbstractHandler
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractHandler implements HandlerInterface
 {

@@ -56,6 +56,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $data;
 
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
     public function setUp()
     {
         $this->progressBar = $this->getMock(
@@ -102,6 +107,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
+
+        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+            ->setMethods(['debug'])
+            ->getMock();
+
         $this->data = new Data(
             $this->progressBar,
             $this->source,
@@ -109,7 +119,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->recordFactory,
             $this->recordTransformerFactory,
             $mapFactory,
-            $this->progress
+            $this->progress,
+            $this->logger
         );
     }
 
@@ -176,6 +187,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
+        $this->logger->expects($this->any())->method('debug')->with('migrating', ['table' => $sourceDocName])
+            ->willReturn(true);
         $this->data->perform();
     }
 

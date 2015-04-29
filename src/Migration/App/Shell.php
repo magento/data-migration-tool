@@ -97,8 +97,6 @@ class Shell extends \Magento\Framework\App\AbstractShell
             $this->processGeneralOptions();
 
             $mode = $this->createMode($modeName);
-            $this->logger->info('Running mode: ' . $modeName);
-
             $mode->run();
         } catch (Exception $e) {
             $this->logger->error('Migration tool exception: ' . $e->getMessage());
@@ -128,7 +126,7 @@ Possible modes:
 Available options:
   --reset             Reset the current position of migration to start from the beginning
   --config <value>    Path to main configuration file, i.e.: etc/m1_version/config.xml
-  --verbose <level>   Verbosity levels: DEBUG, INFO, NONE
+  --verbose <level>   Verbosity levels: DEBUG, INFO, ERROR
   --help              Help information
 
 USAGE;
@@ -186,7 +184,6 @@ USAGE;
     {
         $config = $this->getArg('config');
         if ($config) {
-            $this->logger->info('Loaded custom config file: ' . $config);
             $this->config->init($this->getArg('config'));
         }
 

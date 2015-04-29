@@ -5,6 +5,7 @@
  */
 namespace Migration\Mode;
 
+use Migration\App\Mode\StepList;
 use Migration\Exception;
 
 /**
@@ -12,6 +13,11 @@ use Migration\Exception;
  */
 class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
+    /**
+     * @inheritdoc
+     */
+    protected $mode = 'settings';
+
     /**
      * {@inheritdoc}
      */
@@ -30,8 +36,30 @@ USAGE;
      */
     public function run()
     {
-        $result = true;
+        /** @var StepList $steps */
         $steps = $this->stepListFactory->create(['mode' => 'settings']);
+        $this->runIntegrity($steps);
+
+        foreach ($steps->getSteps() as $stepName => $step) {
+            if (empty($step['data'])) {
+                continue;
+            }
+            $this->runData($step, $stepName);
+            $this->runVolume($step, $stepName);
+        }
+
+        $this->logger->info(PHP_EOL . "Migration completed");
+        return true;
+    }
+
+    /**
+     * @param StepList $steps
+     * @throws Exception
+     * @return void
+     */
+    private function runIntegrity(StepList $steps)
+    {
+        $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
                 $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
@@ -40,24 +68,35 @@ USAGE;
         if (!$result) {
             throw new Exception('Integrity Check failed');
         }
+    }
 
-        foreach ($steps->getSteps() as $stepName => $step) {
-            if (empty($step['data'])) {
-                continue;
-            }
-            $result = $this->runStage($step['data'], $stepName, 'data migration');
-            if (!$result) {
-                throw new Exception('Data Migration failed');
-            }
-            if (!empty($step['volume'])) {
-                $result = $this->runStage($step['volume'], $stepName, 'volume check');
-            }
-            if (!$result) {
-                throw new Exception('Volume Check failed');
-            }
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    private function runData(array $step, $stepName)
+    {
+        if (!$this->runStage($step['data'], $stepName, 'data migration')) {
+            throw new Exception('Data Migration failed');
         }
+    }
 
-        $this->logger->info(PHP_EOL . "Migration completed");
-        return true;
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    private function runVolume(array $step, $stepName)
+    {
+        $result = true;
+        if (!empty($step['volume'])) {
+            $result = $this->runStage($step['volume'], $stepName, 'volume check');
+        }
+        if (!$result) {
+            throw new Exception('Volume Check failed');
+        }
     }
 }

@@ -55,6 +55,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $salesOrder;
 
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
     public function setUp()
     {
         $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
@@ -93,6 +98,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
+
+        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+            ->setMethods(['debug'])
+            ->getMock();
+
         $this->salesOrder = new Data(
             $this->progress,
             $this->source,
@@ -100,7 +110,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->recordFactory,
             $this->recordTransformerFactory,
             $mapFactory,
-            $this->helper
+            $this->helper,
+            $this->logger
         );
     }
 
@@ -112,18 +123,20 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetMap()
     {
-        $documentList = ['source_document' => 'destination_document'];
+        $sourceDocumentName = 'source_document';
+        $destinationDocumentName = 'destination_document';
         $eavAttributes = ['eav_attr_1', 'eav_attr_2'];
         $eavAttributeData = [
             'entity_type_id' => 1,
             'attribute_id' => 2,
             'attribute_code' => 'eav_attr_1'
         ];
-        $this->helper->expects($this->any())->method('getDocumentList')->willReturn($documentList);
+        $this->helper->expects($this->any())->method('getDocumentList')
+            ->willReturn([$sourceDocumentName => $destinationDocumentName]);
         $this->helper->expects($this->once())->method('getDestEavDocument')->willReturn('eav_document');
         $this->helper->expects($this->at(3))->method('getEavAttributes')->willReturn($eavAttributes);
         $this->map->expects($this->once())->method('getDocumentMap')
-            ->willReturn($documentList['source_document']);
+            ->willReturn($destinationDocumentName);
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
         $destinationDocument = $this->getMock('\Migration\Resource\Document', [], [], '', false);
@@ -162,6 +175,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->at(6))->method('saveRecords')->with($eavDstDocName, $eavDestinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->destination->expects($this->at(3))->method('getRecords')->willReturn([0 => $eavAttributeData]);
+        $this->logger->expects($this->any())->method('debug')->with('migrating', ['table' => $sourceDocumentName])
+            ->willReturn(true);
         $this->salesOrder->perform();
     }
 }

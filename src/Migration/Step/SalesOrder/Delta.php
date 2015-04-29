@@ -18,6 +18,16 @@ use Migration\Resource;
 class Delta extends AbstractDelta
 {
     /**
+     * @var string
+     */
+    protected $mapConfigOption = 'sales_order_map_file';
+
+    /**
+     * @var string
+     */
+    protected $groupName = 'delta_sales';
+
+    /**
      * @var Helper
      */
     protected $helper;
@@ -37,8 +47,6 @@ class Delta extends AbstractDelta
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Helper $helper
      * @param Data $data
-     * @param string $mapConfigOption
-     * @param string $groupName
      */
     public function __construct(
         Source $source,
@@ -49,9 +57,7 @@ class Delta extends AbstractDelta
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
-        Data $data,
-        $mapConfigOption = 'sales_order_map_file',
-        $groupName = 'delta_sales'
+        Data $data
     ) {
         $this->helper = $helper;
         $this->data = $data;
@@ -62,9 +68,7 @@ class Delta extends AbstractDelta
             $logger,
             $destination,
             $recordFactory,
-            $recordTransformerFactory,
-            $mapConfigOption,
-            $groupName
+            $recordTransformerFactory
         );
     }
 

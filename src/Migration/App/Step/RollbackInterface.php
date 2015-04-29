@@ -14,7 +14,7 @@ interface RollbackInterface
     /**
      * Perform rollback
      *
-     * @return void
+     * @return mixed
      */
     public function rollback();
 }

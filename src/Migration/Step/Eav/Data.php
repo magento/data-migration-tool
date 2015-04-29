@@ -21,6 +21,8 @@ use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
+ * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @codeCoverageIgnoreStart
  */
 class Data implements StageInterface, RollbackInterface

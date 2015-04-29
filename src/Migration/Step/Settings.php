@@ -19,6 +19,7 @@ use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Settings
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Settings implements StageInterface
 {

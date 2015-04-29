@@ -19,6 +19,16 @@ use Migration\Logger\Logger;
 class Delta extends AbstractDelta implements StageInterface
 {
     /**
+     * @var string
+     */
+    protected $mapConfigOption = 'customer_attr_map_file';
+
+    /**
+     * @var string
+     */
+    protected $groupName = 'delta_customer_custom_attributes';
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -26,8 +36,6 @@ class Delta extends AbstractDelta implements StageInterface
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param string $mapConfigOption
-     * @param string $groupName
      */
     public function __construct(
         Source $source,
@@ -36,9 +44,7 @@ class Delta extends AbstractDelta implements StageInterface
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
-        $mapConfigOption = 'customer_attr_map_file',
-        $groupName = 'delta_customer_custom_attributes'
+        \Migration\RecordTransformerFactory $recordTransformerFactory
     ) {
         parent::__construct(
             $source,
@@ -47,9 +53,7 @@ class Delta extends AbstractDelta implements StageInterface
             $logger,
             $destination,
             $recordFactory,
-            $recordTransformerFactory,
-            $mapConfigOption,
-            $groupName
+            $recordTransformerFactory
         );
     }
 }

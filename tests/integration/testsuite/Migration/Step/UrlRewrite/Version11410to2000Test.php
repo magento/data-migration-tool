@@ -41,6 +41,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         $logManager = $this->objectManager->create('\Migration\Logger\Manager');
         $this->logger = $this->objectManager->create('\Migration\Logger\Logger');
+        $this->logger->pushHandler($this->objectManager->create('\Migration\Logger\ConsoleHandler'));
         $this->config = $this->objectManager->get('\Migration\Config');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);

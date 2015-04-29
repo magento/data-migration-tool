@@ -50,8 +50,12 @@
             <volume>Migration\Step\Map\Volume</volume>
         </step>
         <step title="Log Step">
-            <delta>Migration\Step\Log\Delta</delta>
-            <volume>Migration\Step\Log\Volume</volume>
+            <delta>Migration\Step\Log</delta>
+            <volume>Migration\Step\Log</volume>
+        </step>
+        <step title="SalesOrder step">
+            <delta>Migration\Step\SalesOrder</delta>
+            <volume>Migration\Step\SalesOrder</volume>
         </step>
     </steps>
     <source version="1.9.1">

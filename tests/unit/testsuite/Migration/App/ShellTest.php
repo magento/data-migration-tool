@@ -76,7 +76,6 @@ class ShellTest extends \PHPUnit_Framework_TestCase
     {
         $args = ['data', '--config', 'file/to/config.xml'];
         $this->shell->setRawArgs($args);
-        $this->logger->expects($this->at(1))->method('info')->with('Running mode: data');
         $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
         $mode->expects($this->any())->method('run');
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
@@ -115,11 +114,11 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $mode->expects($this->any())->method('run')->willThrowException($exception);
         $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
 
-        $this->logger->expects($this->at(2))->method('error')->with(
+        $this->logger->expects($this->at(0))->method('error')->with(
             'Application failed with exception: test error message',
             []
         );
-        $this->logger->expects($this->at(3))->method('error')->with($this->stringContains('{main}'));
+        $this->logger->expects($this->at(1))->method('error')->with($this->stringContains('{main}'));
         $this->shell->run();
     }
 

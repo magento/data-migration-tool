@@ -50,6 +50,16 @@ abstract class AbstractDelta implements StageInterface
     protected $recordTransformerFactory;
 
     /**
+     * @var string
+     */
+    protected $mapConfigOption;
+
+    /**
+     * @var string
+     */
+    protected $groupName;
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -57,8 +67,6 @@ abstract class AbstractDelta implements StageInterface
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param string $mapConfigOption
-     * @param string $groupName
      */
     public function __construct(
         Source $source,
@@ -67,13 +75,11 @@ abstract class AbstractDelta implements StageInterface
         Logger $logger,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
-        $mapConfigOption,
-        $groupName
+        \Migration\RecordTransformerFactory $recordTransformerFactory
     ) {
         $this->source = $source;
-        $this->mapReader = $mapFactory->create($mapConfigOption);
-        $this->deltaDocuments = $groupsFactory->create('delta_document_groups_file')->getGroup($groupName);
+        $this->mapReader = $mapFactory->create($this->mapConfigOption);
+        $this->deltaDocuments = $groupsFactory->create('delta_document_groups_file')->getGroup($this->groupName);
         $this->logger = $logger;
         $this->destination = $destination;
         $this->recordFactory = $recordFactory;

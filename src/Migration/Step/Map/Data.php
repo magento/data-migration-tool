@@ -15,6 +15,7 @@ use Migration\Resource\Record;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
+use Migration\Logger\Logger;
 
 /**
  * Class Data
@@ -59,6 +60,11 @@ class Data implements StageInterface
     protected $progress;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -66,6 +72,7 @@ class Data implements StageInterface
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param Progress $progress
+     * @param Logger $logger
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
@@ -74,7 +81,8 @@ class Data implements StageInterface
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
-        Progress $progress
+        Progress $progress,
+        Logger $logger
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -83,6 +91,7 @@ class Data implements StageInterface
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
         $this->progress = $progress;
+        $this->logger = $logger;
     }
 
     /**
@@ -110,6 +119,7 @@ class Data implements StageInterface
 
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
             $pageNumber = 0;
+            $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progressBar->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;

@@ -34,6 +34,16 @@ class Manager
     protected $fileHandler;
 
     /**
+     * @var MessageFormatter
+     */
+    protected $formatter;
+
+    /**
+     * @var MessageProcessor
+     */
+    protected $processor;
+
+    /**
      * @var string|null
      */
     protected $logLevel = null;
@@ -51,11 +61,20 @@ class Manager
      * @param Logger $logger
      * @param ConsoleHandler $consoleHandler
      * @param FileHandler $fileHandler
+     * @param MessageFormatter $formatter
+     * @param MessageProcessor $messageProcessor
      */
-    public function __construct(Logger $logger, ConsoleHandler $consoleHandler, FileHandler $fileHandler)
-    {
+    public function __construct(
+        Logger $logger,
+        ConsoleHandler $consoleHandler,
+        FileHandler $fileHandler,
+        MessageFormatter $formatter,
+        MessageProcessor $messageProcessor
+    ) {
         $this->logger = $logger;
         $this->handlers = [$consoleHandler, $fileHandler];
+        $this->formatter = $formatter;
+        $this->processor = $messageProcessor;
     }
 
     /**
@@ -70,9 +89,10 @@ class Manager
             $logLevel = self::LOG_LEVEL_INFO;
         }
         foreach ($this->handlers as $handler) {
-            $handler->setLevel($this->logLevels[$logLevel]);
+            $handler->setLevel($this->logLevels[$logLevel])->setFormatter($this->formatter);
             $this->logger->pushHandler($handler);
         }
+        $this->logger->pushProcessor([$this->processor, 'setExtra']);
         $this->logLevel = $logLevel;
         return $this;
     }

@@ -16,6 +16,16 @@ use Migration\Resource;
 class Delta extends AbstractDelta
 {
     /**
+     * @var string
+     */
+    protected $mapConfigOption = 'map_file';
+
+    /**
+     * @var string
+     */
+    protected $groupName = 'delta_map';
+
+    /**
      * @var Data
      */
     protected $data;
@@ -29,8 +39,6 @@ class Delta extends AbstractDelta
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Data $data
-     * @param string $mapConfigOption
-     * @param string $groupName
      */
     public function __construct(
         Source $source,
@@ -40,9 +48,7 @@ class Delta extends AbstractDelta
         Destination $destination,
         Resource\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        Data $data,
-        $mapConfigOption = 'map_file',
-        $groupName = 'delta_map'
+        Data $data
     ) {
         $this->data = $data;
         parent::__construct(
@@ -52,9 +58,7 @@ class Delta extends AbstractDelta
             $logger,
             $destination,
             $recordFactory,
-            $recordTransformerFactory,
-            $mapConfigOption,
-            $groupName
+            $recordTransformerFactory
         );
     }
 
