@@ -386,4 +386,8 @@
         <from>tax/class_source_product</from>
         <to>Magento\Tax\Model\TaxClass\Source\Product</to>
     </rename>
+    <rename>
+        <from>weee/attribute_backend_weee_tax</from>
+        <to>Magento\Weee\Model\Attribute\Backend\Weee\Tax</to>
+    </rename>
 </classmap>
