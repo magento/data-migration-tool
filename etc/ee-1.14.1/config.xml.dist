@@ -93,5 +93,6 @@
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
+        <progress_bar_format>%percent%% [%bar%]</progress_bar_format>
     </options>
 </config>

@@ -6,6 +6,7 @@
 namespace Migration\Step\Eav;
 
 use Migration\App\Step\StageInterface;
+use Migration\App\Step\RollbackInterface;
 use Migration\Reader\MapInterface;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
@@ -16,12 +17,13 @@ use Migration\Resource\Record;
 use Migration\Resource\Document;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
  * @codeCoverageIgnoreStart
  */
-class Data implements StageInterface
+class Data implements StageInterface, RollbackInterface
 {
     /**
      * @var array;
@@ -84,7 +86,7 @@ class Data implements StageInterface
     protected $initialData;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -101,7 +103,7 @@ class Data implements StageInterface
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      */
     public function __construct(
         Source $source,
@@ -111,7 +113,7 @@ class Data implements StageInterface
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
-        ProgressBar $progress
+        ProgressBar\LogLevelProcessor $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -129,13 +131,13 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $this->initialData->init();
         $this->migrateAttributeSetsAndGroups();
         $this->migrateAttributes();
         $this->migrateEntityAttributes();
         $this->migrateMappedTables();
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -146,7 +148,7 @@ class Data implements StageInterface
     protected function migrateAttributeSetsAndGroups()
     {
         foreach (['eav_attribute_set', 'eav_attribute_group'] as $documentName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
@@ -212,7 +214,7 @@ class Data implements StageInterface
      */
     protected function migrateAttributes()
     {
-        $this->progress->advance();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         $sourceDocName = 'eav_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -261,7 +263,7 @@ class Data implements StageInterface
      */
     protected function migrateEntityAttributes()
     {
-        $this->progress->advance();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         $sourceDocName = 'eav_entity_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -308,7 +310,7 @@ class Data implements StageInterface
         $documents = $this->readerGroups->getGroup('mapped_documents');
 
         foreach ($documents as $documentName => $mappingFields) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)

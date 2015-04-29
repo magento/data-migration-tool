@@ -15,6 +15,7 @@ use Migration\Resource;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\Handler;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Settings
@@ -45,7 +46,7 @@ class Settings implements StageInterface
     protected $source;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -73,7 +74,7 @@ class Settings implements StageInterface
      * @param Destination $destination
      * @param Source $source
      * @param Logger $logger
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Resource\RecordFactory $recordFactory
      * @param ReaderSettings $readerSettings
      * @param Handler\ManagerFactory $handlerManagerFactory
@@ -83,7 +84,7 @@ class Settings implements StageInterface
         Destination $destination,
         Source $source,
         Logger $logger,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Resource\RecordFactory $recordFactory,
         ReaderSettings $readerSettings,
         Handler\ManagerFactory $handlerManagerFactory,
@@ -116,8 +117,8 @@ class Settings implements StageInterface
      */
     protected function integrity()
     {
-        $this->progress->start(1);
-        $this->progress->advance();
+        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         $documents = $this->source->getDocumentList();
         if (!in_array(self::CONFIG_TABLE_NAME_SOURCE, $documents)) {
             $this->logger->error(
@@ -138,7 +139,7 @@ class Settings implements StageInterface
             );
             return false;
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -151,7 +152,7 @@ class Settings implements StageInterface
         $destinationDocument = $this->destination->getDocument(self::CONFIG_TABLE_NAME_DESTINATION);
         $recordsCountSource = $this->source->getRecordsCount(self::CONFIG_TABLE_NAME_SOURCE);
         $recordsCountDestination = $this->destination->getRecordsCount(self::CONFIG_TABLE_NAME_DESTINATION);
-        $this->progress->start($recordsCountSource);
+        $this->progress->start($recordsCountSource, LogManager::LOG_LEVEL_INFO);
         $sourceRecords = $this->source->getRecords(
             self::CONFIG_TABLE_NAME_SOURCE,
             0,
@@ -163,7 +164,7 @@ class Settings implements StageInterface
             $recordsCountDestination
         );
         foreach ($sourceRecords as $sourceRecord) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             if (!$this->readerSettings->isNodeIgnored($sourceRecord[self::CONFIG_FIELD_PATH])) {
                 $sourceRecordPathMapped = $this->readerSettings->getNodeMap($sourceRecord[self::CONFIG_FIELD_PATH]);
                 foreach ($destinationRecords as &$destinationRecord) {
@@ -186,7 +187,7 @@ class Settings implements StageInterface
         }
         $this->destination->clearDocument(self::CONFIG_TABLE_NAME_DESTINATION);
         $this->destination->saveRecords(self::CONFIG_TABLE_NAME_DESTINATION, $destinationRecords);
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 

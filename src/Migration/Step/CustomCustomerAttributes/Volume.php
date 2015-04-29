@@ -14,6 +14,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume
@@ -31,7 +32,7 @@ class Volume implements StageInterface
     protected $destination;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -48,14 +49,14 @@ class Volume implements StageInterface
     /**
      * @param Source $source
      * @param Destination $destination
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Source $source,
         Destination $destination,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory
     ) {
@@ -75,9 +76,9 @@ class Volume implements StageInterface
     {
         $result = true;
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
-        $this->progress->start(count($sourceDocuments));
+        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
         foreach ($sourceDocuments as $sourceName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $destinationName = $this->map->getDocumentMap($sourceName, MapInterface::TYPE_SOURCE);
 
             $sourceFields = $this->source->getDocument($sourceName)->getStructure()->getFields();
@@ -87,7 +88,7 @@ class Volume implements StageInterface
             $result &= $this->source->getRecordsCount($sourceName) ==
                 $this->destination->getRecordsCount($destinationName);
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return (bool)$result;
     }
 }

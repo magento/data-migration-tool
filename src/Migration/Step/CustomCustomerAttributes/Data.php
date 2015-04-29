@@ -23,7 +23,7 @@ use Migration\Logger\Manager as LogManager;
 /**
  * Class Data
  */
-class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterface
+class Data extends DatabaseStage
 {
     /**
      * @var RecordFactory
@@ -51,7 +51,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
     protected $destination;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -59,7 +59,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
      * @param Config $config
      * @param Source $source
      * @param Destination $destination
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param RecordFactory $recordFactory
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -68,7 +68,7 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
         Config $config,
         Source $source,
         Destination $destination,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         RecordFactory $recordFactory,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory
@@ -94,14 +94,9 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
         /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progress->start(count($sourceDocuments));
-        }
+        $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocumentName) {
-            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-                $this->progress->advance();
-            }
-
+            $this->progress->advance();
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $sourceTable =  $sourceAdapter->getTableDdlCopy(
                 $this->source->addDocumentPrefix($sourceDocumentName),
@@ -118,16 +113,12 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
 
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
             $pageNumber = 0;
-            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                $this->progress->start($this->source->getRecordsCount($sourceDocumentName));
-            }
+            $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
             while (!empty($sourceRecords = $this->source->getRecords($sourceDocumentName, $pageNumber))) {
                 $pageNumber++;
                 $recordsToSave = $destinationDocument->getRecords();
                 foreach ($sourceRecords as $recordData) {
-                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                        $this->progress->advance();
-                    }
+                    $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $destinationRecord */
                     $destinationRecord = $this->recordFactory->create(['document' => $destinationDocument]);
                     $destinationRecord->setData($recordData);
@@ -135,21 +126,9 @@ class Data extends DatabaseStage implements \Migration\App\Step\RollbackInterfac
                 }
                 $this->destination->saveRecords($destinationDocument->getName(), $recordsToSave);
             };
-            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                $this->progress->finish();
-            }
+            $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progress->finish();
-        }
-        return true;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback()
-    {
+        $this->progress->finish();
         return true;
     }
 }

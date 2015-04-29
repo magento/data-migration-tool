@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\Map;
 
-use Migration\App\Step\RollbackInterface;
+use Migration\App\Step\StageInterface;
 use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
@@ -19,7 +19,7 @@ use Migration\Logger\Manager as LogManager;
 /**
  * Class Data
  */
-class Data implements RollbackInterface
+class Data implements StageInterface
 {
     /**
      * @var Resource\Source
@@ -47,9 +47,7 @@ class Data implements RollbackInterface
     protected $recordTransformerFactory;
 
     /**
-     * ProgressBar instance
-     *
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progressBar;
 
@@ -61,7 +59,7 @@ class Data implements RollbackInterface
     protected $progress;
 
     /**
-     * @param ProgressBar $progressBar
+     * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -70,7 +68,7 @@ class Data implements RollbackInterface
      * @param Progress $progress
      */
     public function __construct(
-        ProgressBar $progressBar,
+        ProgressBar\LogLevelProcessor $progressBar,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
@@ -92,17 +90,13 @@ class Data implements RollbackInterface
      */
     public function perform()
     {
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progressBar->start(count($this->source->getDocumentList()));
-        }
+        $this->progressBar->start(count($this->source->getDocumentList()));
         $sourceDocuments = $this->source->getDocumentList();
         // TODO: during steps refactoring MAGETWO-35749 stage will be removed
         $stage = 'run';
         $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
         foreach ($sourceDocuments as $sourceDocName) {
-            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-                $this->progressBar->advance();
-            }
+            $this->progressBar->advance();
             if (in_array($sourceDocName, $processedDocuments)) {
                 continue;
             }
@@ -116,16 +110,12 @@ class Data implements RollbackInterface
 
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
             $pageNumber = 0;
-            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                $this->progressBar->start($this->source->getRecordsCount($sourceDocName));
-            }
+            $this->progressBar->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($items as $data) {
-                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                        $this->progressBar->advance();
-                    }
+                    $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
                     if ($recordTransformer) {
                         /** @var Record $record */
                         $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
@@ -140,13 +130,9 @@ class Data implements RollbackInterface
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
             $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
-            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                $this->progressBar->finish();
-            }
+            $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
         }
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progressBar->finish();
-        }
+        $this->progressBar->finish();
         return true;
     }
 
@@ -214,13 +200,5 @@ class Data implements RollbackInterface
             }
         }
         return $result;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function rollback()
-    {
-        return true;
     }
 }

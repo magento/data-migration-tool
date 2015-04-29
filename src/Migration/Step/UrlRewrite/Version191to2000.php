@@ -12,6 +12,7 @@ use Migration\Resource\Record;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
 use Migration\Reader\MapInterface;
+use Migration\Logger\Manager as LogManager;
 
 class Version191to2000 extends \Migration\Step\DatabaseStage
 {
@@ -31,7 +32,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
     protected $destination;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -93,7 +94,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
      * @param \Migration\Config $config
      * @param Source $source
      * @param Destination $destination
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param RecordFactory $factory
      * @param string $stage
      * @throws \Migration\Exception
@@ -102,7 +103,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
         \Migration\Config $config,
         Source $source,
         Destination $destination,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         RecordFactory $factory,
         $stage
     ) {
@@ -122,13 +123,13 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
     protected function integrity()
     {
         $result = true;
-        $this->progress->start(1);
+        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
         $result &= array_keys($this->source->getStructure(self::SOURCE)->getFields())
             == $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE];
         $result &= array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
             == $this->structure[MapInterface::TYPE_DEST][self::DESTINATION];
-        $this->progress->advance();
-        $this->progress->finish();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return (bool)$result;
     }
 
@@ -139,7 +140,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
      */
     protected function data()
     {
-        $this->progress->start($this->source->getRecordsCount(self::SOURCE));
+        $this->progress->start($this->source->getRecordsCount(self::SOURCE), LogManager::LOG_LEVEL_INFO);
 
         $sourceDocument = $this->source->getDocument(self::SOURCE);
         $destDocument = $this->destination->getDocument(self::DESTINATION);
@@ -154,7 +155,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
             $destinationRecords = $destDocument->getRecords();
             $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($bulk as $recordData) {
-                $this->progress->advance();
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                 /** @var Record $record */
                 $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destRecord */
@@ -177,7 +178,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -201,11 +202,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStage
     protected function volume()
     {
         $result = true;
-        $this->progress->start(1);
+        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
         $result &= $this->source->getRecordsCount(self::SOURCE) ==
             $this->destination->getRecordsCount(self::DESTINATION);
-        $this->progress->advance();
-        $this->progress->finish();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return (bool)$result;
     }
 

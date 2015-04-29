@@ -9,6 +9,7 @@ use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\GroupsFactory;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume
@@ -31,7 +32,7 @@ class Volume implements StageInterface
     protected $logger;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -49,14 +50,14 @@ class Volume implements StageInterface
      * @param Helper $helper
      * @param InitialData $initialData
      * @param Logger $logger
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Helper $helper,
         InitialData $initialData,
         Logger $logger,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         GroupsFactory $groupsFactory
     ) {
         $this->initialData = $initialData;
@@ -71,9 +72,9 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->groups->getGroup('documents')));
+        $this->progress->start(count($this->groups->getGroup('documents')), LogManager::LOG_LEVEL_INFO);
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         $this->printErrors();
         return (bool)$result;
     }

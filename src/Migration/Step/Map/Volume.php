@@ -12,6 +12,7 @@ use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Resource;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 class Volume implements StageInterface
 {
@@ -36,9 +37,9 @@ class Volume implements StageInterface
     protected $logger;
 
     /**
-     * ProgressBar instance
+     * LogLevelProcessor instance
      *
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progressBar;
 
@@ -52,14 +53,14 @@ class Volume implements StageInterface
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
-     * @param ProgressBar $progressBar
+     * @param ProgressBar\LogLevelProcessor $progressBar
      */
     public function __construct(
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
         MapFactory $mapFactory,
-        ProgressBar $progressBar
+        ProgressBar\LogLevelProcessor $progressBar
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -75,9 +76,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = $this->source->getDocumentList();
-        $this->progressBar->start(count($sourceDocuments));
+        $this->progressBar->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progressBar->advance();
+            $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -89,7 +90,7 @@ class Volume implements StageInterface
                 $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
-        $this->progressBar->finish();
+        $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         $this->printErrors();
         return $isSuccess;
     }

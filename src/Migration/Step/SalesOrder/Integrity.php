@@ -10,6 +10,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity
@@ -22,7 +23,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $helper;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -31,7 +32,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -48,11 +49,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $this->check(array_keys($this->helper->getDocumentList()), MapInterface::TYPE_SOURCE);
         $this->check(array_values($this->helper->getDocumentList()), MapInterface::TYPE_DEST);
         $this->checkEavEntities();
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return $this->checkForErrors();
     }
 
@@ -61,7 +62,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function checkEavEntities()
     {
-        $this->progress->advance();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         $eavAttributes = $this->helper->getEavAttributes();
         $destEavEntities = $this->getEavEntities($eavAttributes);
         foreach ($eavAttributes as $field) {

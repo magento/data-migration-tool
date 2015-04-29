@@ -31,7 +31,7 @@ class Manager
     /**
      * @var string|null
      */
-    static protected $logLevel = null;
+    protected $logLevel = null;
 
     /**
      * @var array
@@ -63,7 +63,7 @@ class Manager
             $this->logger->error("Invalid log level '$logLevel' provided.");
             $logLevel = self::LOG_LEVEL_INFO;
         }
-        self::$logLevel = $logLevel;
+        $this->logLevel = $logLevel;
         $this->consoleHandler->setLevel($this->logLevels[$logLevel]);
         $this->logger->pushHandler($this->consoleHandler);
         return $this;
@@ -72,8 +72,8 @@ class Manager
     /**
      * @return null|string
      */
-    static public function getLogLevel()
+    public function getLogLevel()
     {
-        return self::$logLevel;
+        return $this->logLevel;
     }
 }

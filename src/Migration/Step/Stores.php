@@ -10,6 +10,7 @@ use Migration\Resource;
 use Migration\RecordTransformerFactory;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity
@@ -42,7 +43,7 @@ class Stores implements StageInterface
     protected $recordTransformerFactory;
 
     /**
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -57,7 +58,7 @@ class Stores implements StageInterface
     protected $stage;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -66,7 +67,7 @@ class Stores implements StageInterface
      * @param string $stage
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -104,13 +105,13 @@ class Stores implements StageInterface
     protected function integrity()
     {
         $result = true;
-        $this->progress->start(count($this->getDocumentList()));
+        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         foreach ($this->getDocumentList() as $sourceName => $destinationName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $result &= (bool)$this->source->getDocument($sourceName);
             $result &= (bool)$this->destination->getDocument($destinationName);
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return (bool)$result;
     }
 
@@ -119,10 +120,10 @@ class Stores implements StageInterface
      */
     protected function data()
     {
-        $this->progress->start(count($this->getDocumentList()));
+        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         $documents = $this->getDocumentList();
         foreach ($documents as $sourceDocName => $destDocName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationDocument = $this->destination->getDocument($destDocName);
             $this->destination->clearDocument($destDocName);
@@ -143,7 +144,7 @@ class Stores implements StageInterface
                  $this->destination->saveRecords($destinationDocument->getName(), $recordsToSave);
             };
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -155,13 +156,13 @@ class Stores implements StageInterface
     protected function volume()
     {
         $result = true;
-        $this->progress->start(count($this->getDocumentList()));
+        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         foreach ($this->getDocumentList() as $sourceName => $destinationName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $result &= $this->source->getRecordsCount($sourceName) ==
                 $this->destination->getRecordsCount($destinationName);
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return (bool)$result;
     }
 

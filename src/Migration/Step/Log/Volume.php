@@ -13,6 +13,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\Resource;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume
@@ -40,9 +41,7 @@ class Volume implements StageInterface
     protected $logger;
 
     /**
-     * ProgressBar instance
-     *
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -61,7 +60,7 @@ class Volume implements StageInterface
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
      */
     public function __construct(
@@ -69,7 +68,7 @@ class Volume implements StageInterface
         Resource\Source $source,
         Resource\Destination $destination,
         MapFactory $mapFactory,
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
@@ -87,9 +86,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -105,7 +104,7 @@ class Volume implements StageInterface
             $isSuccess = false;
             $this->errors[] = 'Destination log documents are not cleared';
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         $this->printErrors();
         return $isSuccess;
     }
@@ -118,7 +117,7 @@ class Volume implements StageInterface
     {
         $documentsAreEmpty = true;
         foreach ($documents as $documentName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $destinationCount = $this->destination->getRecordsCount($documentName);
             if ($destinationCount > 0) {
                 $documentsAreEmpty = false;

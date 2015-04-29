@@ -10,6 +10,7 @@ use Migration\App\ProgressBar;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class AbstractIntegrity
@@ -59,14 +60,14 @@ abstract class AbstractIntegrity implements StageInterface
     protected $map;
 
     /**
-     * ProgressBar instance
+     * LogLevelProcessor instance
      *
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -74,7 +75,7 @@ abstract class AbstractIntegrity implements StageInterface
      * @param string $mapConfigOption
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -110,7 +111,7 @@ abstract class AbstractIntegrity implements StageInterface
 
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($documents as $document) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {

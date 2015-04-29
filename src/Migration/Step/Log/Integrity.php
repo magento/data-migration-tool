@@ -11,6 +11,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\App\ProgressBar;
 use Migration\Resource;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity
@@ -23,7 +24,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $readerList;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -32,7 +33,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -49,7 +50,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $srcDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
 
         $dstDocuments = [];
@@ -62,13 +63,13 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
         $dstDocumentList = array_flip($this->destination->getDocumentList());
         foreach (array_keys($this->readerGroups->getGroup('destination_documents_to_clear')) as $document) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             if (!isset($dstDocumentList[$document])) {
                 $this->missingDocuments[MapInterface::TYPE_DEST][$document] = true;
             }
         }
 
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return $this->checkForErrors();
     }
 

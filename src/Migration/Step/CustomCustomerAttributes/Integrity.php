@@ -13,6 +13,7 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity
@@ -25,7 +26,7 @@ class Integrity extends AbstractIntegrity
     protected $groups;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -34,7 +35,7 @@ class Integrity extends AbstractIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -51,7 +52,7 @@ class Integrity extends AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $srcDocuments = array_keys($this->groups->getGroup('source_documents'));
 
         $dstDocuments = [];
@@ -61,7 +62,7 @@ class Integrity extends AbstractIntegrity
 
         $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
         $this->check($dstDocuments, MapInterface::TYPE_DEST);
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return $this->checkForErrors();
     }
 

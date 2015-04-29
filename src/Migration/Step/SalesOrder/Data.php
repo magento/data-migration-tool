@@ -46,9 +46,7 @@ class Data implements StageInterface
     protected $recordTransformerFactory;
 
     /**
-     * ProgressBar instance
-     *
-     * @var ProgressBar
+     * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -58,7 +56,7 @@ class Data implements StageInterface
     protected $helper;
 
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
@@ -67,7 +65,7 @@ class Data implements StageInterface
      * @param Helper $helper
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
@@ -90,14 +88,10 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progress->start(count($this->helper->getDocumentList()));
-        }
+        $this->progress->start(count($this->helper->getDocumentList()));
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
-            if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-                $this->progress->advance();
-            }
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
             $destinationDocumentName = $this->map->getDocumentMap(
@@ -123,17 +117,13 @@ class Data implements StageInterface
             );
             $recordTransformer->init();
             $pageNumber = 0;
-            if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                $this->progress->start($this->source->getRecordsCount($sourceDocName));
-            }
+            $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
                 $destinationCollection = $destDocument->getRecords();
                 $destEavCollection = $eavDocumentResource->getRecords();
                 foreach ($bulk as $recordData) {
-                    if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                        $this->progress->advance();
-                    }
+                    $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $sourceRecord */
                     $sourceRecord = $this->recordFactory->create(
                         ['document' => $sourceDocument, 'data' => $recordData]
@@ -147,14 +137,10 @@ class Data implements StageInterface
                 }
                 $this->destination->saveRecords($destinationDocumentName, $destinationCollection);
                 $this->destination->saveRecords($eavDocumentName, $destEavCollection);
-                if (LogManager::getLogLevel() == LogManager::LOG_LEVEL_DEBUG) {
-                    $this->progress->finish();
-                }
+                $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
             }
         }
-        if (LogManager::getLogLevel() != LogManager::LOG_LEVEL_DEBUG) {
-            $this->progress->finish();
-        }
+        $this->progress->finish();
         return true;
     }
 

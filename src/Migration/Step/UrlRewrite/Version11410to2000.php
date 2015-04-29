@@ -8,6 +8,7 @@ namespace Migration\Step\UrlRewrite;
 use Migration\App\Step\StageInterface;
 use Migration\Reader\MapInterface;
 use Migration\Step\DatabaseStage;
+use Migration\Logger\Manager as LogManager;
 
 class Version11410to2000 extends DatabaseStage implements StageInterface
 {
@@ -57,9 +58,9 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     protected $recordCollectionFactory;
 
     /**
-     * ProgressBar instance
+     * LogLevelProcessor instance
      *
-     * @var \Migration\App\ProgressBar
+     * @var \Migration\App\ProgressBar\LogLevelProcessor
      */
     protected $progress;
 
@@ -160,7 +161,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     ];
 
     /**
-     * @param \Migration\App\ProgressBar $progress
+     * @param \Migration\App\ProgressBar\LogLevelProcessor $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
      * @param \Migration\Resource\Source $source
@@ -171,7 +172,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      * @throws \Migration\Exception
      */
     public function __construct(
-        \Migration\App\ProgressBar $progress,
+        \Migration\App\ProgressBar\LogLevelProcessor $progress,
         \Migration\Logger\Logger $logger,
         \Migration\Config $config,
         \Migration\Resource\Source $source,
@@ -212,7 +213,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     protected function data()
     {
         $this->getRewritesSelect();
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
 
         $sourceDocument = $this->source->getDocument($this->tableName);
         $destinationDocument = $this->destination->getDocument('url_rewrite');
@@ -231,7 +232,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
             $pageNumber++;
             $records = $this->recordCollectionFactory->create();
             foreach ($data as $row) {
-                $this->progress->advance();
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
             }
             $destinationRecords = $destinationDocument->getRecords();
@@ -240,7 +241,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
         }
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -363,7 +364,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
             $pageNumber++;
             $records = $destinationDocument->getRecords();
             foreach ($recordsData as $row) {
-                $this->progress->advance();
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                 unset($row['value_id']);
                 unset($row['entity_type_id']);
                 if (!empty($this->resolvedDuplicates[$type][$row['entity_id']][$row['store_id']])) {
@@ -394,12 +395,13 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
     {
         $errors = false;
         $this->progress->start(
-            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST])
+            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST]),
+            LogManager::LOG_LEVEL_INFO
         );
         foreach ($this->structure as $resourceName => $documentList) {
             $resource = $resourceName == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
-                $this->progress->advance();
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
                     $message = sprintf('%s table does not exist: %s', ucfirst($resourceName), $documentName);
@@ -422,7 +424,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
             }
         }
         $data = $this->getDuplicatesList();
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         if (!empty($data)) {
             $duplicates = [];
             foreach ($data as $row) {
@@ -458,12 +460,12 @@ class Version11410to2000 extends DatabaseStage implements StageInterface
      */
     protected function volume()
     {
-        $this->progress->start(1);
+        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
         $this->getRewritesSelect();
-        $this->progress->advance();
+        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite');
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return $result;
     }
 

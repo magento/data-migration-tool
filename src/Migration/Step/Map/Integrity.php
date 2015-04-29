@@ -10,6 +10,7 @@ use Migration\Resource;
 use Migration\Reader\MapInterface;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity
@@ -17,7 +18,7 @@ use Migration\App\ProgressBar;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @param ProgressBar $progress
+     * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -25,7 +26,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
-        ProgressBar $progress,
+        ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
@@ -40,10 +41,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $this->check($this->source->getDocumentList(), MapInterface::TYPE_SOURCE);
         $this->check($this->destination->getDocumentList(), MapInterface::TYPE_DEST);
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return $this->checkForErrors();
     }
 
