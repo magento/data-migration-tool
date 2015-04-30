@@ -24,7 +24,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -56,7 +56,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
         $this->initialData = $this->getMock(
             '\Migration\Step\SalesOrder\InitialData',
             ['getDestEavAttributesCount'],
@@ -162,7 +162,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')
             ->with('eav_entity_int')->willReturn(1);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Volume check failed for the destination document ' . $eavDocumentName
+            'Volume check failed for the destination document ' . $eavDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
     }
@@ -196,7 +196,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')->with('eav_entity_int')
             ->willReturn(0);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Volume check failed for the destination document ' . $destDocumentName
+            'Volume check failed for the destination document ' . $destDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
     }

@@ -15,7 +15,7 @@ use Migration\Resource;
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -61,10 +61,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
-            ['getDocument', 'getDocumentList', 'getRecords'],
+            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount'],
             [],
             '',
             false
@@ -146,8 +146,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
         $recordTransformer->expects($this->once())->method('init');
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(1))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(2))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->at(2))->method('getRecords')->will($this->returnValue($bulk));
+        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->any())->method('getRecordsCount')->will($this->returnValue(2));
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')
             ->will($this->returnValue($destinationRecords));

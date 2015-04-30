@@ -121,7 +121,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
 
         $this->logger->expects($this->any())
             ->method('debug')
-            ->with(PHP_EOL . $sourceDocName . ' has changes');
+            ->with($sourceDocName . ' has changes');
 
         $this->assertTrue($this->delta->perform());
     }

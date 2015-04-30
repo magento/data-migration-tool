@@ -26,7 +26,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -49,9 +49,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getDestinationRecords', 'getSourceRecordsCount', 'getDestinationRecordsCount'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['log'])
+            ->setMethods(['error'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
@@ -123,7 +123,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
-        $this->logger->expects($this->never())->method('log');
+        $this->logger->expects($this->never())->method('error');
 
         $this->assertTrue($this->volume->perform());
     }
@@ -172,7 +172,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(1);
-        $this->logger->expects($this->atLeastOnce())->method('log');
+        $this->logger->expects($this->atLeastOnce())->method('error');
 
         $this->assertFalse($this->volume->perform());
     }

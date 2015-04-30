@@ -49,8 +49,6 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         ob_end_clean();
         $this->assertFalse($result);
         $this->assertContains('Success message', $output);
-        $this->assertFalse($result);
-        $this->assertEquals("Success message" . PHP_EOL, $output);
     }
 
     /**
@@ -61,7 +59,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleSuccessWithoutBubble($recordLevel, $handlerLevel)
     {
         $message = 'Success message';
-        $record = ['message' => $message, 'level' => $recordLevel];
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
         $this->consoleHandler->setLevel($handlerLevel);
         ob_start();
         $this->consoleHandler->setBubble(false);
@@ -69,7 +68,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $output = ob_get_contents();
         ob_end_clean();
         $this->assertTrue($result);
-        $this->assertEquals("Success message" . PHP_EOL, $output);
+        $this->assertContains('Success message', $output);
     }
 
     /**
@@ -91,7 +90,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleError($recordLevel, $handlerLevel)
     {
         $message = 'Error message';
-        $record = ['message' => $message, 'level' => $recordLevel];
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
         $this->consoleHandler->setLevel($handlerLevel);
         $result = $this->consoleHandler->handle($record);
         $this->assertFalse($result);

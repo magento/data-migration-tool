@@ -42,8 +42,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $groupsFactory->expects($this->any())->method('create')->with('delta_document_groups_file')
             ->willReturn($readerGroups);
 
-        /** @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject $progress */
-        $progress = $this->getMock('\Migration\App\ProgressBar', [], [], '', false);
+        /** @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject $progress */
+        $progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', [], [], '', false);
         $progress->expects($this->once())
             ->method('start')
             ->with(4);

@@ -39,7 +39,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
     protected $recordTransformerFactory;
 
     /**
-     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -50,7 +50,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar')
+        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();

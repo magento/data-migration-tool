@@ -8,26 +8,26 @@ namespace Migration\TestFramework;
 /**
  * Class ProgressBar
  */
-class ProgressBar extends \Migration\App\ProgressBar
+class ProgressBar extends \Migration\App\ProgressBar\LogLevelProcessor
 {
     /**
      * @inheritdoc
      */
-    public function start($max = null)
+    public function start($max = null, $forceLogLevel = false)
     {
     }
 
     /**
      * @inheritdoc
      */
-    public function finish()
+    public function finish($forceLogLevel = false)
     {
     }
 
     /**
      * @inheritdoc
      */
-    public function advance($step = 1)
+    public function advance($forceLogLevel = false)
     {
     }
 }

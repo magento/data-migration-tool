@@ -74,11 +74,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function testRunStepsVolumeFail()
     {
         $this->setExpectedException('Migration\Exception', 'Volume Check failed');
-        $stepData = $this->getMockBuilder('\Migration\App\Step\RollbackInterface')->getMock();
+        $stepData = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepData->expects($this->once())->method('perform')->will($this->returnValue(true));
-        $stepData->expects($this->once())->method('rollback');
 
-        $stepVolume = $this->getMockBuilder('\Migration\App\Step\RollbackInterface')->getMock();
+        $stepVolume = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepVolume->expects($this->once())->method('perform')->will($this->returnValue(false));
 
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
@@ -95,9 +94,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->setExpectedException('Migration\Exception', 'Data Migration failed');
         $stageIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stageIntegrity->expects($this->once())->method('perform')->will($this->returnValue(true));
-        $stageData = $this->getMockBuilder('\Migration\App\Step\RollbackInterface')->getMock();
+        $stageData = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stageData->expects($this->once())->method('perform')->will($this->returnValue(false));
-        $stageData->expects($this->once())->method('rollback');
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
         $this->progress->expects($this->any())->method('isCompleted')->willReturn(false);
         $this->progress->expects($this->any())->method('reset')->with($stageData);
@@ -121,7 +119,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(1))->method('info')->with("started");
         $this->logger->expects($this->at(2))->method('info')->with("started");
         $this->logger->expects($this->at(3))->method('info')->with("started");
-        $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(4))->method('info')->with("Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')->willReturn(
             [
                 'Title' => [
@@ -148,7 +146,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(1))->method('info')->with("started");
         $this->logger->expects($this->at(2))->method('info')->with("started");
         $this->logger->expects($this->at(3))->method('info')->with("started");
-        $this->logger->expects($this->at(4))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(4))->method('info')->with("Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')->willReturn(
             [
                 'Title' => [

@@ -122,7 +122,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(0))->method('info')->with("started");
         $this->logger->expects($this->at(1))->method('info')->with("started");
         $this->logger->expects($this->at(2))->method('info')->with("started");
-        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(3))->method('info')->with("Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);
         $this->assertTrue($this->settings->run());
@@ -144,7 +144,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->at(0))->method('info')->with("started");
         $this->logger->expects($this->at(1))->method('info')->with("started");
         $this->logger->expects($this->at(2))->method('info')->with("started");
-        $this->logger->expects($this->at(3))->method('info')->with(PHP_EOL . "Migration completed");
+        $this->logger->expects($this->at(3))->method('info')->with("Migration completed");
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);
         $this->assertTrue($this->settings->run());

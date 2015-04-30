@@ -103,7 +103,7 @@ class Helper
             $this->objectManager = $this->initObjectManager();
         }
         $this->objectManager->configure([
-            'preferences' => ['\Migration\App\ProgressBar' => '\Migration\TestFramework\ProgressBar']
+            'preferences' => ['\Migration\App\ProgressBar\LogLevelProcessor' => '\Migration\TestFramework\ProgressBar']
         ]);
         return $this->objectManager;
     }

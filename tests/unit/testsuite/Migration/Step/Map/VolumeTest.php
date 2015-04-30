@@ -12,7 +12,7 @@ use Migration\Resource;
 class VolumeTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -44,7 +44,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocumentList', 'getRecordsCount'],
@@ -108,7 +108,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->logger->expects($this->once())->method('error')->with(
-            PHP_EOL . 'Volume check failed for the destination document: ' . $dstDocName
+            'Volume check failed for the destination document: ' . $dstDocName
         );
         $this->assertFalse($this->volume->perform());
     }

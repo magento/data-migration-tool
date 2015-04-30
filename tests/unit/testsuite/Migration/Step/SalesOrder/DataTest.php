@@ -41,7 +41,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     /**
      * ProgressBar instance
      *
-     * @var ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -62,10 +62,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\App\ProgressBar', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
         $this->source = $this->getMock(
             'Migration\Resource\Source',
-            ['getDocument', 'getDocumentList', 'getRecords'],
+            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount'],
             [],
             '',
             false
@@ -139,6 +139,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->willReturn($destinationDocumentName);
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords'], [], '', false);
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
+        $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $destinationDocument = $this->getMock('\Migration\Resource\Document', [], [], '', false);
         $eavDestinationDocument = $this->getMock('\Migration\Resource\Document', [], [], '', false);
         $dstDocName = 'destination_document';
@@ -159,8 +160,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->recordTransformerFactory->expects($this->once())->method('create')->willReturn($recordTransformer);
         $recordTransformer->expects($this->once())->method('init');
         $bulk = [['eav_attr_1' => 'attribute_value', 'store_id' => '1', 'entity_id' => '2']];
-        $this->source->expects($this->at(1))->method('getRecords')->willReturn($bulk);
-        $this->source->expects($this->at(2))->method('getRecords')->willReturn([]);
+        $this->source->expects($this->at(2))->method('getRecords')->willReturn($bulk);
+        $this->source->expects($this->at(3))->method('getRecords')->willReturn([]);
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $eavDestinationRecords = $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')->willReturn($destinationRecords);

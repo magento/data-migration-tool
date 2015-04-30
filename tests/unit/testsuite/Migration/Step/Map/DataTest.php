@@ -15,7 +15,7 @@ use Migration\Resource;
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\App\ProgressBar|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progressBar;
 
@@ -64,7 +64,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->progressBar = $this->getMock(
-            '\Migration\App\ProgressBar',
+            '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
             [],
             '',
@@ -72,7 +72,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
-            ['getDocument', 'getDocumentList', 'getRecords'],
+            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount'],
             [],
             '',
             false
@@ -136,6 +136,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
+        $this->source->expects($this->any())->method('getRecordsCount')->will($this->returnValue(2));
         $dstDocName = 'config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
@@ -172,8 +173,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $recordTransformer->expects($this->once())->method('init');
 
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue($bulk));
+        $this->source->expects($this->at(5))->method('getRecords')->will($this->returnValue([]));
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')->will(
             $this->returnValue($destinationRecords)
@@ -196,6 +197,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->any())->method('getDocumentList')->will($this->returnValue([$sourceDocName]));
+        $this->source->expects($this->any())->method('getRecordsCount')->will($this->returnValue(2));
         $dstDocName = 'config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
@@ -203,8 +205,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue($bulk));
+        $this->source->expects($this->at(5))->method('getRecords')->will($this->returnValue([]));
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
 
         $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()
@@ -232,10 +234,5 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->data->perform();
-    }
-
-    public function testRollback()
-    {
-        $this->assertTrue($this->data->rollback());
     }
 }
