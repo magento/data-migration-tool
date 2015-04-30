@@ -72,6 +72,9 @@ class LogLevelProcessor
 
     }
 
+    /**
+     * @return void
+     */
     protected function initProgressBar()
     {
         $this->progressBar = $this->progressBarFactory->create($this->getOutputInstance());
@@ -92,6 +95,7 @@ class LogLevelProcessor
     /**
      * @param int $max
      * @param bool $forceLogLevel
+     * @return void
      */
     public function start($max, $forceLogLevel = false)
     {
@@ -104,6 +108,7 @@ class LogLevelProcessor
 
     /**
      * @param bool $forceLogLevel
+     * @return void
      */
     public function advance($forceLogLevel = false)
     {
@@ -114,6 +119,7 @@ class LogLevelProcessor
 
     /**
      * @param bool $forceLogLevel
+     * @return void
      */
     public function finish($forceLogLevel = false)
     {

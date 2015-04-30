@@ -23,6 +23,7 @@ use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Data extends DatabaseStage
 {

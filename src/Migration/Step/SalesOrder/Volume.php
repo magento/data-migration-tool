@@ -17,6 +17,7 @@ use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Volume implements StageInterface
 {
