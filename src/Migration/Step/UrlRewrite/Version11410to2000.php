@@ -221,7 +221,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     protected function data()
     {
         $this->getRewritesSelect();
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
 
         $sourceDocument = $this->source->getDocument($this->tableName);
         $destinationDocument = $this->destination->getDocument('url_rewrite');
@@ -242,7 +242,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             $records = $this->recordCollectionFactory->create();
             $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($data as $row) {
-                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance();
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
                 $productCategoryRecord = $this->getProductCategoryRecord($destProductCategory, $row);
                 if ($productCategoryRecord) {
@@ -256,7 +256,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
         }
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -397,7 +397,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             $pageNumber++;
             $records = $destinationDocument->getRecords();
             foreach ($recordsData as $row) {
-                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance();
                 unset($row['value_id']);
                 unset($row['entity_type_id']);
                 if (!empty($this->resolvedDuplicates[$type][$row['entity_id']][$row['store_id']])) {
@@ -428,13 +428,12 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     {
         $errors = false;
         $this->progress->start(
-            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST]),
-            LogManager::LOG_LEVEL_INFO
+            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST])
         );
         foreach ($this->structure as $resourceName => $documentList) {
             $resource = $resourceName == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
-                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
                     $message = sprintf('%s table does not exist: %s', ucfirst($resourceName), $documentName);
@@ -456,7 +455,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
                 }
             }
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
 
         return !$errors && !$this->processDuplicatesList();
     }
@@ -503,12 +502,12 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function volume()
     {
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
         $this->getRewritesSelect();
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
         $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite');
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $result;
     }
 

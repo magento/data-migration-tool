@@ -50,7 +50,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
 
         $documents = array_keys($this->groups->getGroup('documents'));
         foreach ($documents as $sourceDocumentName) {
@@ -59,7 +59,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
 
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 

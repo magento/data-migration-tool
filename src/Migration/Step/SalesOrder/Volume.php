@@ -90,9 +90,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = array_keys($this->helper->getDocumentList());
-        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -104,7 +104,7 @@ class Volume implements StageInterface
                 break;
             }
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return (bool)$isSuccess;
     }
 

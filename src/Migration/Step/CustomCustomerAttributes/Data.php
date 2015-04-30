@@ -104,9 +104,9 @@ class Data extends DatabaseStage
         /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
-        $this->progress->start(count($sourceDocuments));
+        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
         foreach ($sourceDocuments as $sourceDocumentName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $sourceTable =  $sourceAdapter->getTableDdlCopy(
                 $this->source->addDocumentPrefix($sourceDocumentName),
@@ -139,7 +139,7 @@ class Data extends DatabaseStage
             };
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 }

@@ -52,7 +52,7 @@ class Integrity extends AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         $srcDocuments = array_keys($this->groups->getGroup('source_documents'));
 
         $dstDocuments = [];
@@ -62,7 +62,7 @@ class Integrity extends AbstractIntegrity
 
         $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
         $this->check($dstDocuments, MapInterface::TYPE_DEST);
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 

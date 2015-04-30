@@ -139,11 +139,10 @@ class LogLevelProcessor
             && $this->logManager->getLogLevel() == LogManager::LOG_LEVEL_DEBUG
         ) {
             $canRun = true;
-        } else if ($forceLogLevel == LogManager::LOG_LEVEL_INFO) {
+        } else if ($forceLogLevel == LogManager::LOG_LEVEL_INFO
+            && $this->logManager->getLogLevel() == LogManager::LOG_LEVEL_INFO) {
             $canRun = true;
-        } else if ($forceLogLevel != LogManager::LOG_LEVEL_DEBUG
-            && $this->logManager->getLogLevel() != LogManager::LOG_LEVEL_DEBUG
-        ) {
+        } else if ($forceLogLevel === false) {
             $canRun = true;
         }
         return $canRun;

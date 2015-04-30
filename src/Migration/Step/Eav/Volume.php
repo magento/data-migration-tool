@@ -72,9 +72,9 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->groups->getGroup('documents')), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($this->groups->getGroup('documents')));
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         $this->logErrors();
         return (bool)$result;
     }

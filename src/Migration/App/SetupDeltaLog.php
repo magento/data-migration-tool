@@ -48,14 +48,14 @@ class SetupDeltaLog implements StageInterface
     public function perform()
     {
         $deltaLogs = $this->groupsReader->getGroups();
-        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
         foreach ($deltaLogs as $deltaDocuments) {
             foreach ($deltaDocuments as $documentName => $idKey) {
-                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance();
                 $this->source->createDelta($documentName, $idKey);
             }
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 }

@@ -111,7 +111,7 @@ abstract class AbstractIntegrity implements StageInterface
 
         $destDocuments = array_flip($destination->getDocumentList());
         foreach ($documents as $document) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
                 if (!isset($destDocuments[$mappedDocument])) {

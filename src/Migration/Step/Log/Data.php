@@ -98,10 +98,10 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
@@ -139,7 +139,7 @@ class Data implements StageInterface
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
         $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 

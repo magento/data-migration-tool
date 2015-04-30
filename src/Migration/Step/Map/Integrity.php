@@ -41,10 +41,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         $this->check($this->source->getDocumentList(), MapInterface::TYPE_SOURCE);
         $this->check($this->destination->getDocumentList(), MapInterface::TYPE_DEST);
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 

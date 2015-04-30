@@ -86,9 +86,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -104,7 +104,7 @@ class Volume implements StageInterface
             $isSuccess = false;
             $this->errors[] = 'Destination log documents are not cleared';
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         $this->logErrors();
         return $isSuccess;
     }
@@ -117,7 +117,7 @@ class Volume implements StageInterface
     {
         $documentsAreEmpty = true;
         foreach ($documents as $documentName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $destinationCount = $this->destination->getRecordsCount($documentName);
             if ($destinationCount > 0) {
                 $documentsAreEmpty = false;

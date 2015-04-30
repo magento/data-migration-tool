@@ -50,7 +50,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         $srcDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
 
         $dstDocuments = [];
@@ -63,13 +63,13 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
         $dstDocumentList = array_flip($this->destination->getDocumentList());
         foreach (array_keys($this->readerGroups->getGroup('destination_documents_to_clear')) as $document) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             if (!isset($dstDocumentList[$document])) {
                 $this->missingDocuments[MapInterface::TYPE_DEST][$document] = true;
             }
         }
 
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 

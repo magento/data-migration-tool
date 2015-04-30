@@ -98,10 +98,10 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocumentList()));
+        $this->progress->start(count($this->helper->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance();
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
             $destinationDocumentName = $this->map->getDocumentMap(
@@ -151,7 +151,7 @@ class Data implements StageInterface
                 $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
             }
         }
-        $this->progress->finish();
+        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 

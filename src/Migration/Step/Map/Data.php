@@ -100,13 +100,13 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progressBar->start(count($this->source->getDocumentList()));
+        $this->progressBar->start(count($this->source->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = $this->source->getDocumentList();
         // TODO: during steps refactoring MAGETWO-35749 stage will be removed
         $stage = 'run';
         $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progressBar->advance();
+            $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
             if (in_array($sourceDocName, $processedDocuments)) {
                 continue;
             }
@@ -143,7 +143,7 @@ class Data implements StageInterface
             $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
             $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
         }
-        $this->progressBar->finish();
+        $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 

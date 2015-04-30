@@ -49,11 +49,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         $this->check(array_keys($this->helper->getDocumentList()), MapInterface::TYPE_SOURCE);
         $this->check(array_values($this->helper->getDocumentList()), MapInterface::TYPE_DEST);
         $this->checkEavEntities();
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return $this->checkForErrors();
     }
 
@@ -62,7 +62,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function checkEavEntities()
     {
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
         $eavAttributes = $this->helper->getEavAttributes();
         $destEavEntities = $this->getEavEntities($eavAttributes);
         foreach ($eavAttributes as $field) {

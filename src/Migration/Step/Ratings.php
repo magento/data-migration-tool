@@ -67,8 +67,8 @@ class Ratings extends DatabaseStage
      */
     protected function integrity()
     {
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
+        $this->progress->advance();
         $documents = $this->destination->getDocumentList();
         if (!in_array(self::RATING_TABLE_NAME, $documents)
             || !in_array(self::RATING_STORE_TABLE_NAME, $documents)
@@ -94,7 +94,7 @@ class Ratings extends DatabaseStage
             );
             return false;
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -103,8 +103,8 @@ class Ratings extends DatabaseStage
      */
     protected function data()
     {
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
+        $this->progress->advance();
         $ratingsIsActive = [];
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->destination->getAdapter();
@@ -122,7 +122,7 @@ class Ratings extends DatabaseStage
                 sprintf('rating_id IN (%s)', implode(',', $ratingsIsActive))
             );
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -143,8 +143,8 @@ class Ratings extends DatabaseStage
      */
     protected function volume()
     {
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
+        $this->progress->advance();
         $ratingsShouldBeActive = [];
         $ratingsIsActive = [];
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
@@ -175,7 +175,7 @@ class Ratings extends DatabaseStage
             );
             return false;
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 

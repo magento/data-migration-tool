@@ -76,9 +76,9 @@ class Volume implements StageInterface
     {
         $result = true;
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
-        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $destinationName = $this->map->getDocumentMap($sourceName, MapInterface::TYPE_SOURCE);
 
             $sourceFields = $this->source->getDocument($sourceName)->getStructure()->getFields();
@@ -88,7 +88,7 @@ class Volume implements StageInterface
             $result &= $this->source->getRecordsCount($sourceName) ==
                 $this->destination->getRecordsCount($destinationName);
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return (bool)$result;
     }
 }

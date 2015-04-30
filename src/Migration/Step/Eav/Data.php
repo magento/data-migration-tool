@@ -133,13 +133,13 @@ class Data implements StageInterface, RollbackInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount());
         $this->initialData->init();
         $this->migrateAttributeSetsAndGroups();
         $this->migrateAttributes();
         $this->migrateEntityAttributes();
         $this->migrateMappedTables();
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -150,7 +150,7 @@ class Data implements StageInterface, RollbackInterface
     protected function migrateAttributeSetsAndGroups()
     {
         foreach (['eav_attribute_set', 'eav_attribute_group'] as $documentName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
@@ -216,7 +216,7 @@ class Data implements StageInterface, RollbackInterface
      */
     protected function migrateAttributes()
     {
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
         $sourceDocName = 'eav_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -265,7 +265,7 @@ class Data implements StageInterface, RollbackInterface
      */
     protected function migrateEntityAttributes()
     {
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
         $sourceDocName = 'eav_entity_attribute';
         $sourceDocument = $this->source->getDocument($sourceDocName);
         $destinationDocument = $this->destination->getDocument(
@@ -312,7 +312,7 @@ class Data implements StageInterface, RollbackInterface
         $documents = $this->readerGroups->getGroup('mapped_documents');
 
         foreach ($documents as $documentName => $mappingFields) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($documentName);
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)

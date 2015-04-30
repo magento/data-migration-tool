@@ -105,13 +105,13 @@ class Stores implements StageInterface
     protected function integrity()
     {
         $result = true;
-        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($this->getDocumentList()));
         foreach ($this->getDocumentList() as $sourceName => $destinationName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $result &= (bool)$this->source->getDocument($sourceName);
             $result &= (bool)$this->destination->getDocument($destinationName);
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return (bool)$result;
     }
 
@@ -120,10 +120,10 @@ class Stores implements StageInterface
      */
     protected function data()
     {
-        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($this->getDocumentList()));
         $documents = $this->getDocumentList();
         foreach ($documents as $sourceDocName => $destDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationDocument = $this->destination->getDocument($destDocName);
             $this->destination->clearDocument($destDocName);
@@ -144,7 +144,7 @@ class Stores implements StageInterface
                  $this->destination->saveRecords($destinationDocument->getName(), $recordsToSave);
             };
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -156,13 +156,13 @@ class Stores implements StageInterface
     protected function volume()
     {
         $result = true;
-        $this->progress->start(count($this->getDocumentList()), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(count($this->getDocumentList()));
         foreach ($this->getDocumentList() as $sourceName => $destinationName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progress->advance();
             $result &= $this->source->getRecordsCount($sourceName) ==
                 $this->destination->getRecordsCount($destinationName);
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return (bool)$result;
     }
 

@@ -127,13 +127,13 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     protected function integrity()
     {
         $result = true;
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
         $result &= array_keys($this->source->getStructure(self::SOURCE)->getFields())
             == $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE];
         $result &= array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
             == $this->structure[MapInterface::TYPE_DEST][self::DESTINATION];
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
+        $this->progress->finish();
         return (bool)$result;
     }
 
@@ -144,7 +144,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      */
     protected function data()
     {
-        $this->progress->start($this->source->getRecordsCount(self::SOURCE), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->source->getRecordsCount(self::SOURCE));
 
         $sourceDocument = $this->source->getDocument(self::SOURCE);
         $destDocument = $this->destination->getDocument(self::DESTINATION);
@@ -159,7 +159,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $destinationRecords = $destDocument->getRecords();
             $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($bulk as $recordData) {
-                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance();
                 /** @var Record $record */
                 $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destRecord */
@@ -182,7 +182,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->finish();
         return true;
     }
 
@@ -206,11 +206,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     protected function volume()
     {
         $result = true;
-        $this->progress->start(1, LogManager::LOG_LEVEL_INFO);
+        $this->progress->start(1);
         $result &= $this->source->getRecordsCount(self::SOURCE) ==
             $this->destination->getRecordsCount(self::DESTINATION);
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progress->advance();
+        $this->progress->finish();
         return (bool)$result;
     }
 

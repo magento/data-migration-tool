@@ -76,9 +76,9 @@ class Volume implements StageInterface
     {
         $isSuccess = true;
         $sourceDocuments = $this->source->getDocumentList();
-        $this->progressBar->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        $this->progressBar->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progressBar->advance();
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
@@ -90,7 +90,7 @@ class Volume implements StageInterface
                 $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
             }
         }
-        $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progressBar->finish();
         $this->logErrors();
         return $isSuccess;
     }
