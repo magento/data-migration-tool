@@ -42,8 +42,8 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
         }
         $record['formatted'] = $this->getFormatter()->format($record);
         $isError = in_array($record['level'], [Logger::ERROR, Logger::CRITICAL]);
+        echo PHP_EOL;
         if ($isError) {
-            echo PHP_EOL;
             echo $this->colorize($record['formatted'], self::COLOR_RED);
         } else {
             echo $record['formatted'];

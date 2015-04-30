@@ -52,7 +52,7 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
         $record['formatted'] = $this->getFormatter()->format($record);
         if ($logFile) {
             $filePath = $this->getFilePath($logFile);
-            $this->filesystem->filePutContents($filePath, $record['formatted'], FILE_APPEND);
+            $this->filesystem->filePutContents($filePath, $record['formatted'] . PHP_EOL, FILE_APPEND);
         }
         return false === $this->bubble;
     }

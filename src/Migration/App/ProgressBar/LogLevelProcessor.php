@@ -90,12 +90,16 @@ class LogLevelProcessor
     }
 
     /**
-     * @param $max
+     * @param int $max
      * @param bool $forceLogLevel
      */
     public function start($max, $forceLogLevel = false)
     {
-        $this->runWithLogLevelConditions('start', [$max], $forceLogLevel);
+        if ($this->canRun($forceLogLevel)) {
+            echo PHP_EOL;
+            $max = ($max == 0) ? 1: $max;
+            $this->progressBar->start($max);
+        }
     }
 
     /**
@@ -103,7 +107,9 @@ class LogLevelProcessor
      */
     public function advance($forceLogLevel = false)
     {
-        $this->runWithLogLevelConditions('advance', [], $forceLogLevel);
+        if ($this->canRun($forceLogLevel)) {
+            $this->progressBar->advance();
+        }
     }
 
     /**
@@ -111,26 +117,29 @@ class LogLevelProcessor
      */
     public function finish($forceLogLevel = false)
     {
-        $this->runWithLogLevelConditions('finish', [], $forceLogLevel);
+        if ($this->canRun($forceLogLevel)) {
+            $this->progressBar->finish();
+        }
     }
 
     /**
-     * @param string $method
-     * @param array $params
-     * @param bool|string $forceLogLevel
+     * @param mixed $forceLogLevel
+     * @return bool
      */
-    protected function runWithLogLevelConditions($method, array $params, $forceLogLevel)
+    protected function canRun($forceLogLevel)
     {
+        $canRun = false;
         if ($forceLogLevel == LogManager::LOG_LEVEL_DEBUG
             && $this->logManager->getLogLevel() == LogManager::LOG_LEVEL_DEBUG
         ) {
-            call_user_func_array([$this->progressBar, $method], $params);
+            $canRun = true;
         } else if ($forceLogLevel == LogManager::LOG_LEVEL_INFO) {
-            call_user_func_array([$this->progressBar, $method], $params);
+            $canRun = true;
         } else if ($forceLogLevel != LogManager::LOG_LEVEL_DEBUG
             && $this->logManager->getLogLevel() != LogManager::LOG_LEVEL_DEBUG
         ) {
-            call_user_func_array([$this->progressBar, $method], $params);
+            $canRun = true;
         }
+        return $canRun;
     }
 }

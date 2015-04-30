@@ -45,10 +45,12 @@ USAGE;
                 continue;
             }
             $this->runData($step, $stepName);
-            $this->runVolume($step, $stepName);
+            if (!empty($step['volume'])) {
+                $this->runVolume($step, $stepName);
+            }
         }
 
-        $this->logger->info(PHP_EOL . "Migration completed");
+        $this->logger->info('Migration completed');
         return true;
     }
 
@@ -91,11 +93,7 @@ USAGE;
      */
     private function runVolume(array $step, $stepName)
     {
-        $result = true;
-        if (!empty($step['volume'])) {
-            $result = $this->runStage($step['volume'], $stepName, 'volume check');
-        }
-        if (!$result) {
+        if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
             throw new Exception('Volume Check failed');
         }
     }

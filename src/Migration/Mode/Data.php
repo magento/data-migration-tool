@@ -71,10 +71,12 @@ USAGE;
                 continue;
             }
             $this->runData($step, $stepName);
-            $this->runVolume($step, $stepName);
+            if (!empty($step['volume'])) {
+                $this->runVolume($step, $stepName);
+            }
         }
 
-        $this->logger->info(PHP_EOL . "Migration completed");
+        $this->logger->info('Migration completed');
         return true;
     }
 
@@ -130,9 +132,6 @@ USAGE;
      */
     protected function runVolume(array $step, $stepName)
     {
-        if (empty($step['volume'])) {
-            return;
-        }
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
             $this->rollback($step['data'], $stepName);
             throw new Exception('Volume Check failed');
@@ -147,15 +146,15 @@ USAGE;
     protected function rollback($stage, $stepName)
     {
         if ($stage instanceof RollbackInterface) {
-            $this->logger->info(PHP_EOL . 'Error occurred. Rollback.');
-            $this->logger->info(sprintf('%s: rollback', PHP_EOL . $stepName));
+            $this->logger->info('Error occurred. Rollback.');
+            $this->logger->info(sprintf('%s: rollback', $stepName));
             try {
                 $stage->rollback();
             } catch (\Exception $e) {
-                $this->logger->error(PHP_EOL . $e->getMessage());
+                $this->logger->error($e->getMessage());
             }
             $this->progress->reset($stage);
-            $this->logger->info(PHP_EOL . 'Please fix errors and run Migration Tool again');
+            $this->logger->info('Please fix errors and run Migration Tool again');
         }
     }
 }

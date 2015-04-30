@@ -480,7 +480,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             }
 
             $message = sprintf(
-                PHP_EOL . 'There are duplicates in URL rewrites:%s',
+                'There are duplicates in URL rewrites:%s',
                 PHP_EOL . implode(PHP_EOL, $duplicates)
             );
 

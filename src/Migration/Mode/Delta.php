@@ -9,11 +9,12 @@ use Migration\App\Progress;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
+use Migration\App\Mode\StepList;
 
 /**
  * Class Delta
  */
-class Delta implements \Migration\App\Mode\ModeInterface
+class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
     /**
      * @var \Migration\App\Mode\StepList
@@ -43,7 +44,7 @@ class Delta implements \Migration\App\Mode\ModeInterface
     /**
      * @var bool
      */
-    protected $shouldComplete = false;
+    protected $canBeCompleted = false;
 
 
     /**
@@ -84,6 +85,7 @@ USAGE;
     public function run()
     {
         do {
+            /** @var StepList $steps */
             $steps = $this->stepListFactory->create(['mode' => 'delta']);
             /**
              * @var string $stepName
@@ -93,33 +95,43 @@ USAGE;
                 if (empty($step['delta'])) {
                     continue;
                 }
-                $this->logger->info(sprintf('%s: %s', PHP_EOL . $stepName, 'delta'));
-                try {
-                    $result = $step['delta']->perform();
-                } catch (\Exception $e) {
-                    $this->logger->error(PHP_EOL . $e->getMessage());
-                    $result = false;
-                }
-                if ($result) {
-                    $this->progress->saveResult($step['delta'], 'delta', $result);
-                } else {
-                    throw new Exception('Delta delivering failed');
-                }
-
+                $this->runDelta($step, $stepName);
                 if (!empty($step['volume'])) {
-                    $this->logger->info(sprintf('%s: %s', PHP_EOL . $stepName, 'volume'));
-                    $result = $step['volume']->perform();
-                    if (!$result) {
-                        throw new Exception('Volume check failed');
-                    }
+                    $this->runVolume($step, $stepName);
                 }
             }
-            $this->logger->info(PHP_EOL . 'Migration completed successfully');
+            $this->logger->info('Migration completed successfully');
             if ($this->autoRestart) {
-                $this->logger->info(PHP_EOL . "Automatic restart in {$this->autoRestart} sec. Use CTRL-C to abort");
+                $this->logger->info("Automatic restart in {$this->autoRestart} sec. Use CTRL-C to abort");
                 sleep($this->autoRestart);
             }
         } while ($this->autoRestart);
         return true;
+    }
+
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    private function runDelta(array $step, $stepName)
+    {
+        if (!$this->runStage($step['delta'], $stepName, 'delta delivering')) {
+            throw new Exception('Delta delivering failed');
+        }
+    }
+
+    /**
+     * @param array $step
+     * @param string $stepName
+     * @throws Exception
+     * @return void
+     */
+    private function runVolume(array $step, $stepName)
+    {
+        if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
+            throw new Exception('Volume Check failed');
+        }
     }
 }

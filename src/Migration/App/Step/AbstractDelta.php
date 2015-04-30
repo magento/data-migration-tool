@@ -107,7 +107,7 @@ abstract class AbstractDelta implements StageInterface
             if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
                 continue;
             }
-            $this->logger->debug(sprintf(PHP_EOL . '%s has changes', $documentName));
+            $this->logger->debug(sprintf('%s has changes', $documentName));
 
             $this->processDeletedRecords($documentName, $idKey, $destinationName);
             $this->processChangedRecords($documentName, $idKey);
@@ -144,6 +144,7 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
+        echo PHP_EOL;
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);

@@ -75,7 +75,7 @@ class Volume implements StageInterface
         $this->progress->start(count($this->groups->getGroup('documents')), LogManager::LOG_LEVEL_INFO);
         $result = $this->validateAttributes() & $this->validateAttributeSetsAndGroups();
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
-        $this->printErrors();
+        $this->logErrors();
         return (bool)$result;
     }
 
@@ -195,22 +195,13 @@ class Volume implements StageInterface
     }
 
     /**
-     * @param string $message
+     * Log Volume check errors
      * @return void
      */
-    protected function logError($message)
-    {
-        $this->logger->log(Logger::ERROR, $message);
-    }
-
-    /**
-     * Print Volume check errors
-     * @return void
-     */
-    protected function printErrors()
+    protected function logErrors()
     {
         foreach ($this->errors as $error) {
-            $this->logError(PHP_EOL . $error);
+            $this->logger->error($error);
         }
     }
 }

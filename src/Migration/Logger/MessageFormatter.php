@@ -32,14 +32,16 @@ class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Mono
     {
         switch ($levelName) {
             case 'INFO':
-                $format = "[%datetime%][INFO]%extra.mode%%extra.stage%%extra.step%: %message%\n";
+                $format = "[%datetime%][INFO]%extra.mode%%extra.stage%%extra.step%: %message%";
                 break;
             case 'DEBUG':
-                $format = "[%datetime%][DEBUG]%extra.mode%%extra.stage%%extra.step%%extra.table%: %message%\n";
+                $format = "[%datetime%][DEBUG]%extra.mode%%extra.stage%%extra.step%%extra.table%: %message%";
                 break;
             case 'ERROR':
-                $format = "[%datetime%][ERROR]: %message%\n";
+                $format = "[%datetime%][ERROR]: %message%";
                 break;
+            default:
+                $format = "%message%";
         }
         return $format;
     }

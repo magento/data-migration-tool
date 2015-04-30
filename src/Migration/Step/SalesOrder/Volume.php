@@ -120,7 +120,7 @@ class Volume implements StageInterface
         if ($sourceCount != $destinationCount) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                PHP_EOL . 'Volume check failed for the destination document %s',
+                'Volume check failed for the destination document %s',
                 $destinationName
             ));
         }
@@ -142,7 +142,7 @@ class Volume implements StageInterface
         if (($countBeforeRun + $countEavAttributes) != $countAfterRun) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                PHP_EOL . 'Volume check failed for the destination document %s',
+                'Volume check failed for the destination document %s',
                 $this->helper->getDestEavDocument()
             ));
         }

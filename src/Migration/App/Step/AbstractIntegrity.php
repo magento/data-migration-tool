@@ -143,14 +143,14 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                PHP_EOL . 'Next documents from source are not mapped:%s',
+                'Next documents from source are not mapped:%s',
                 PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
             ));
         }
         if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                PHP_EOL . 'Next documents from destination are not mapped:%s',
+                'Next documents from destination are not mapped:%s',
                 PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
@@ -159,27 +159,25 @@ abstract class AbstractIntegrity implements StageInterface
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $errorMsgFields .= sprintf(
-                    PHP_EOL . 'Document name: %s; Fields: %s',
+                    'Document name: %s; Fields: %s',
                     $document,
                     implode(',', $fields)
                 );
             }
-            $this->logger->error(
-                PHP_EOL . 'Next fields from source are not mapped:' . $errorMsgFields
-            );
+            $this->logger->error('Next fields from source are not mapped:' . $errorMsgFields);
         }
         $errorMsgFields = '';
         if (isset($this->missingDocumentFields[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
                 $errorMsgFields .= sprintf(
-                    PHP_EOL . 'Document name: %s; Fields: %s',
+                    'Document name: %s; Fields: %s',
                     $document,
                     implode(',', $fields)
                 );
             }
             $this->logger->error(
-                PHP_EOL . 'Next fields from destination are not mapped:' . $errorMsgFields
+                'Next fields from destination are not mapped:' . $errorMsgFields
             );
         }
         return $isSuccess;

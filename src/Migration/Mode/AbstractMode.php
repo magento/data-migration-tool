@@ -12,7 +12,7 @@ use Migration\Logger\Logger;
 /**
  * Abstract Mode
  */
-abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
+abstract class AbstractMode
 {
     /**
      * @var \Migration\App\Mode\StepListFactory
@@ -37,7 +37,7 @@ abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
     /**
      * @var bool
      */
-    protected $shouldComplete = true;
+    protected $canBeCompleted = true;
 
     /**
      * @param Progress $progress
@@ -66,28 +66,20 @@ abstract class AbstractMode implements \Migration\App\Mode\ModeInterface
             'started',
             ['step' => $step, 'stage' => $stage, 'mode' => $this->mode]
         );
-        if ($this->shouldComplete() && $this->progress->isCompleted($object, $stage)) {
+        if ($this->progress->isCompleted($object, $stage)) {
             return true;
         }
         try {
             $result = $object->perform();
         } catch (\Exception $e) {
-            $this->logger->error(PHP_EOL . $e->getMessage());
+            $this->logger->error($e->getMessage());
             return false;
         }
 
-        if ($result) {
+        if ($result && $this->canBeCompleted) {
             $this->progress->saveResult($object, $stage, $result);
         }
 
         return $result;
-    }
-
-    /**
-     * @return bool
-     */
-    public function shouldComplete()
-    {
-        return $this->shouldComplete;
     }
 }

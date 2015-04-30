@@ -105,7 +105,7 @@ class Volume implements StageInterface
             $this->errors[] = 'Destination log documents are not cleared';
         }
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
-        $this->printErrors();
+        $this->logErrors();
         return $isSuccess;
     }
 
@@ -140,13 +140,13 @@ class Volume implements StageInterface
     }
 
     /**
-     * Print Volume check errors
+     * Log Volume check errors
      * @return void
      */
-    protected function printErrors()
+    protected function logErrors()
     {
         foreach ($this->errors as $error) {
-            $this->logger->error(PHP_EOL . $error);
+            $this->logger->error($error);
         }
     }
 }

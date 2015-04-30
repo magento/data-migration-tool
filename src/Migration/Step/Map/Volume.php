@@ -91,18 +91,18 @@ class Volume implements StageInterface
             }
         }
         $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
-        $this->printErrors();
+        $this->logErrors();
         return $isSuccess;
     }
 
     /**
-     * Print Volume check errors
+     * Log Volume check errors
      * @return void
      */
-    protected function printErrors()
+    protected function logErrors()
     {
         foreach ($this->errors as $error) {
-            $this->logger->error(PHP_EOL . $error);
+            $this->logger->error($error);
         }
     }
 }
