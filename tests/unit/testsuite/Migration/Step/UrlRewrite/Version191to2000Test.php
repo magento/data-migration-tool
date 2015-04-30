@@ -49,7 +49,13 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock(
+            '\Migration\App\ProgressBar\LogLevelProcessor',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->config = $this->getMock('\Migration\Config', [], [], '', false);
         $this->config->expects($this->any())->method('getSource')->willReturn([

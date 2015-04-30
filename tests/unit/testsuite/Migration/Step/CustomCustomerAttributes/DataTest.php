@@ -80,7 +80,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('addDocumentPrefix')->willReturnCallback(function ($name) {
             return 'destination_suffix_' . $name;
         });
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
+            ->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->progress->expects($this->any())->method('start');

@@ -73,7 +73,13 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->recordFactory = $this->getMock('Migration\Resource\RecordFactory', ['create'], [], '', false);
         $this->handlerManagerFactory = $this->getMock('Migration\Handler\ManagerFactory', ['create'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('Migration\App\ProgressBar\LogLevelProcessor', ['start', 'advance', 'finish'], [], '', false);
+        $this->progress = $this->getMock(
+            'Migration\App\ProgressBar\LogLevelProcessor',
+            ['start', 'advance', 'finish'],
+            [],
+            '',
+            false
+        );
     }
 
 

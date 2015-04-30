@@ -49,7 +49,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')->disableOriginalConstructor()
+        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')
+            ->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()

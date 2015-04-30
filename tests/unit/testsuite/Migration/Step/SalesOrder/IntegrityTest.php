@@ -56,7 +56,13 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
-        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock(
+            '\Migration\App\ProgressBar\LogLevelProcessor',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->helper = $this->getMock(
             '\Migration\Step\SalesOrder\Helper',
             ['getDocumentList', 'getEavAttributes', 'getDestEavDocument'],

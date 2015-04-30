@@ -61,7 +61,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock(
+            '\Migration\App\ProgressBar\LogLevelProcessor',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
             ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount'],

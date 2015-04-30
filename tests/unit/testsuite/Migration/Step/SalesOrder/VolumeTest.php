@@ -56,7 +56,13 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock('\Migration\App\ProgressBar\LogLevelProcessor', ['start', 'finish', 'advance'], [], '', false);
+        $this->progress = $this->getMock(
+            '\Migration\App\ProgressBar\LogLevelProcessor',
+            ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
         $this->initialData = $this->getMock(
             '\Migration\Step\SalesOrder\InitialData',
             ['getDestEavAttributesCount'],
