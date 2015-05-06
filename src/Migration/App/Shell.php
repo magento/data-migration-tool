@@ -138,8 +138,11 @@ USAGE;
     protected function getMode()
     {
         $mode = array_keys($this->_args);
-        $mode = array_shift($mode);
-        return $mode;
+        $modeName = array_shift($mode);
+        if ($modeName == 'migrate') {
+            $modeName = array_shift($mode);
+        }
+        return $modeName;
     }
 
     /**

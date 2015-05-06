@@ -120,7 +120,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
                 ['document1', MapInterface::TYPE_SOURCE, 'document2'],
                 ['document2', MapInterface::TYPE_DEST, 'document1']
             ]
-        ) ;
+        );
 
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));

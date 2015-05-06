@@ -135,6 +135,22 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    public function testPerformWithDocNotExists()
+    {
+        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document1']));
+        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document2']));
+        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
+        $this->logger->expects($this->any())->method('error')
+            ->withConsecutive(
+                ['Next documents from source are not mapped:' . PHP_EOL . 'document1', []],
+                ['Next documents from destination are not mapped:' . PHP_EOL . 'document2', []]
+            );
+
+        $this->integrity->perform();
+    }
+
     public function testPerformWithSourceFieldErrors()
     {
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
@@ -153,8 +169,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
             ->will($this->returnValue(['document']));
 
-        $this->source->expects($this->exactly(2))->method('getDocument')->will($this->returnValue($document));
-        $this->destination->expects($this->exactly(2))->method('getDocument')->with('document')
+        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->destination->expects($this->any())->method('getDocument')->with('document')
             ->will($this->returnValue($document));
 
         $this->map->expects($this->exactly(2))->method('getDocumentMap')->with('document')

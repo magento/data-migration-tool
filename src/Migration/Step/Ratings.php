@@ -8,7 +8,6 @@ namespace Migration\Step;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Resource\Destination;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Ratings

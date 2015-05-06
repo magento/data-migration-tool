@@ -120,8 +120,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocumentList')->willReturn(['source_doc']);
         $this->destination->expects($this->once())->method('getDocumentList')->willReturn(['dest_doc']);
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
-        $this->destination->expects($this->at(3))->method('getRecords')->willReturn([0 => $destinationRecord]);
-        $this->destination->expects($this->at(4))->method('getRecords')->willReturn(null);
+        $this->destination->expects($this->at(4))->method('getRecords')->willReturn([0 => $destinationRecord]);
+        $this->destination->expects($this->at(5))->method('getRecords')->willReturn(null);
         $this->map->expects($this->at(0))->method('getDocumentMap')->willReturn('dest_doc');
         $this->map->expects($this->at(2))->method('getDocumentMap')->willReturn('source_doc');
         $this->map->expects($this->any())->method('getFieldMap')->willReturn('field1');

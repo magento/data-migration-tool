@@ -11,7 +11,6 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\Resource;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity

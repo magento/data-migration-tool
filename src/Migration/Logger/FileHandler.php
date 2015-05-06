@@ -69,7 +69,9 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
                 $logFileDir = __DIR__ . '/../../../' . $logFileDir;
                 $logFile = $logFileDir . '/' . basename($logFile);
             }
-            $this->filesystem->createDirectory($logFileDir, $this->permissions);
+            if (!$this->filesystem->isExists($logFileDir)) {
+                $this->filesystem->createDirectory($logFileDir, $this->permissions);
+            }
         }
         return $logFile;
     }

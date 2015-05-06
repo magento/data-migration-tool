@@ -24,14 +24,9 @@ class Manager
     protected $logger;
 
     /**
-     * @var ConsoleHandler
+     * @var \Monolog\Handler\AbstractHandler[]
      */
-    protected $consoleHandler;
-
-    /**
-     * @var FileHandler
-     */
-    protected $fileHandler;
+    protected $handlers;
 
     /**
      * @var MessageFormatter

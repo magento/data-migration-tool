@@ -125,7 +125,7 @@ class Helper
      *
      * @param string $fixturePath
      * @throws \Exception
-     * @throws \Magento\Framework\Exception
+     * @throws \Magento\Framework\Exception\LocalizedException
      */
     protected function reinstallDb($fixturePath)
     {

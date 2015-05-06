@@ -117,7 +117,7 @@ class Data implements StageInterface
             $eavDocumentName = $this->helper->getDestEavDocument();
             $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
 
-            /** @var \Migration\RecordTransformer $recordTranformer */
+            /** @var \Migration\RecordTransformer $recordTransformer */
             $recordTransformer = $this->recordTransformerFactory->create(
                 [
                     'sourceDocument' => $sourceDocument,

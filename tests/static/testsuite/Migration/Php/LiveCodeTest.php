@@ -5,7 +5,6 @@
  */
 namespace Migration\Test\Php;
 
-use Magento\Framework\Test\Utility;
 use Magento\TestFramework\CodingStandard\Tool\CodeMessDetector;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;

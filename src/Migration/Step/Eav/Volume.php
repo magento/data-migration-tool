@@ -9,7 +9,6 @@ use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\GroupsFactory;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume

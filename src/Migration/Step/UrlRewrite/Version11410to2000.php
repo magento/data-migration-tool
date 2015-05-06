@@ -9,7 +9,6 @@ use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StageInterface;
 use Migration\Reader\MapInterface;
 use Migration\Step\DatabaseStage;
-use Migration\Logger\Manager as LogManager;
 use Migration\Resource\Document;
 
 /**

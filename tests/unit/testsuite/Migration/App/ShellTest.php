@@ -83,6 +83,17 @@ class ShellTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->shell, $result);
     }
 
+    public function testRunFromBin()
+    {
+        $args = ['migrate', 'data', '--config', 'file/to/config.xml'];
+        $this->shell->setRawArgs($args);
+        $mode = $this->getMock('\Migration\Mode\Data', [], [], '', false);
+        $mode->expects($this->any())->method('run');
+        $this->modeFactory->expects($this->once())->method('create')->with('data')->willReturn($mode);
+        $result = $this->shell->run();
+        $this->assertSame($this->shell, $result);
+    }
+
     public function testRunVerboseValid()
     {
         $level = 'DEBUG';

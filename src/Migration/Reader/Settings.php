@@ -49,7 +49,7 @@ class Settings
      *
      * @var array
      */
-    protected $mapedNodes = [];
+    protected $mappedNodes = [];
 
     /**
      * Saving handlers for nodes
@@ -169,23 +169,23 @@ class Settings
      */
     public function getNodeMap($path)
     {
-        if (isset($this->mapedNodes[$path])) {
-            return $this->mapedNodes[$path];
+        if (isset($this->mappedNodes[$path])) {
+            return $this->mappedNodes[$path];
         }
-        $this->mapedNodes[$path] = $path;
+        $this->mappedNodes[$path] = $path;
         if ($this->isNodeMapped($path)) {
             $queryResult = $this->xml->query(sprintf('//key/rename/path[text()="%s"]', $path));
             if ($queryResult->length > 0) {
                 /** @var \DOMElement $node */
                 foreach ($queryResult->item(0)->parentNode->childNodes as $node) {
                     if (($node->nodeType == XML_ELEMENT_NODE) && ($node->nodeName == 'to')) {
-                        $this->mapedNodes[$path] = $node->nodeValue;
+                        $this->mappedNodes[$path] = $node->nodeValue;
                         break;
                     }
                 }
             }
         }
-        return $this->mapedNodes[$path];
+        return $this->mappedNodes[$path];
     }
 
     /**

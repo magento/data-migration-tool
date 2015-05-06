@@ -10,7 +10,6 @@ use Migration\App\ProgressBar;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class AbstractIntegrity
@@ -114,22 +113,37 @@ abstract class AbstractIntegrity implements StageInterface
             $this->progress->advance();
             $mappedDocument = $this->map->getDocumentMap($document, $type);
             if ($mappedDocument !== false) {
-                if (!isset($destDocuments[$mappedDocument])) {
+                if (!isset($destDocuments[$mappedDocument])
+                    || !($source->getDocument($document) instanceof Resource\Document)
+                ) {
                     $this->missingDocuments[$type][$document] = true;
                 } else {
-                    $fields = array_keys($source->getDocument($document)->getStructure()->getFields());
-                    $destFields = $destination->getDocument($mappedDocument)->getStructure()->getFields();
-                    foreach ($fields as $field) {
-                        $mappedField = $this->map->getFieldMap($document, $field, $type);
-                        if ($mappedField && !isset($destFields[$mappedField])) {
-                            $this->missingDocumentFields[$type][$document][] = $mappedField;
-                        }
-                    }
+                    $this->checkFields($type, $document, $mappedDocument);
                 }
             }
         }
 
         return $this;
+    }
+
+    /**
+     * @param string $type
+     * @param string $document
+     * @param string $mappedDocument
+     * @return void
+     */
+    protected function checkFields($type, $document, $mappedDocument)
+    {
+        $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
+        $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
+        $fields = array_keys($source->getDocument($document)->getStructure()->getFields());
+        $destFields = $destination->getDocument($mappedDocument)->getStructure()->getFields();
+        foreach ($fields as $field) {
+            $mappedField = $this->map->getFieldMap($document, $field, $type);
+            if ($mappedField && !isset($destFields[$mappedField])) {
+                $this->missingDocumentFields[$type][$document][] = $mappedField;
+            }
+        }
     }
 
     /**
