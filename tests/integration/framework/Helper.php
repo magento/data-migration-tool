@@ -103,7 +103,16 @@ class Helper
             $this->objectManager = $this->initObjectManager();
         }
         $this->objectManager->configure([
-            'preferences' => ['\Migration\App\ProgressBar\LogLevelProcessor' => '\Migration\TestFramework\ProgressBar']
+            'preferences' => ['Migration\App\ProgressBar\LogLevelProcessor' => 'Migration\TestFramework\ProgressBar'],
+            'Migration\Logger\Logger' => [
+                'arguments' => [
+                    'handlers' => [
+                        'quiet' => [
+                            'instance' => '\Migration\TestFramework\QuietLogHandler'
+                        ]
+                    ]
+                ]
+            ]
         ]);
         return $this->objectManager;
     }
