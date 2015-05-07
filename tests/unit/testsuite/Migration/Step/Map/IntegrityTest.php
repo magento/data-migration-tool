@@ -118,7 +118,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->exactly(1))->method('error')
-            ->with('Next documents from source are not mapped:' . PHP_EOL . 'document');
+            ->with('Source documents not mapped: document');
 
         $this->integrity->perform();
     }
@@ -130,7 +130,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document']));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->once())->method('error')
-            ->with('Next documents from destination are not mapped:' . PHP_EOL . 'document');
+            ->with('Destination documents not mapped: document');
 
         $this->integrity->perform();
     }
@@ -165,12 +165,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('field2'));
 
         $this->logger->expects($this->at(0))->method('error')->with(
-            'Next fields from source are not mapped:' .
-            'Document name: document; Fields: field1'
+            'Source fields not mapped. Document: document. Fields: field1'
         );
         $this->logger->expects($this->at(1))->method('error')->with(
-            'Next fields from destination are not mapped:'.
-            'Document name: document; Fields: field2'
+            'Destination fields not mapped. Document: document. Fields: field2'
         );
 
         $this->integrity->perform();

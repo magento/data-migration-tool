@@ -143,42 +143,39 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Next documents from source are not mapped:%s',
-                PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
+                'Source documents not mapped: %s',
+                implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
             ));
         }
+
         if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Next documents from destination are not mapped:%s',
-                PHP_EOL . implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
+                'Destination documents not mapped: %s',
+                implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
-        $errorMsgFields = '';
+
         if (isset($this->missingDocumentFields[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
-                $errorMsgFields .= sprintf(
-                    'Document name: %s; Fields: %s',
+                $this->logger->error(sprintf(
+                    'Source fields not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
-                );
+                ));
             }
-            $this->logger->error('Next fields from source are not mapped:' . $errorMsgFields);
         }
-        $errorMsgFields = '';
+
         if (isset($this->missingDocumentFields[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
-                $errorMsgFields .= sprintf(
-                    'Document name: %s; Fields: %s',
+                $this->logger->error(sprintf(
+                    'Destination fields not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
-                );
+                ));
             }
-            $this->logger->error(
-                'Next fields from destination are not mapped:' . $errorMsgFields
-            );
         }
         return $isSuccess;
     }

@@ -160,11 +160,11 @@ class Data implements StageInterface, RollbackInterface
 
             $sourceRecords = $this->source->getRecords($documentName, 0, $this->source->getRecordsCount($documentName));
             $recordsToSave = $destinationDocument->getRecords();
+            $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
             foreach ($sourceRecords as $recordData) {
                 $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-                $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                    ->transform($sourceRecord, $destinationRecord);
+                $recordTransformer->transform($sourceRecord, $destinationRecord);
                 $recordsToSave->addRecord($destinationRecord);
             }
 
