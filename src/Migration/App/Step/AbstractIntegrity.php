@@ -67,6 +67,11 @@ abstract class AbstractIntegrity implements StageInterface
     protected $progress;
 
     /**
+     * @var bool
+     */
+    protected $hasMappedDocuments = true;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
@@ -106,30 +111,64 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function check($documents, $type)
     {
-        $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
-        $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
+        $documents = $this->filterIgnoredDocuments($documents, $type);
+        if (!empty($documents)) {
+            $this->hasMappedDocuments = false;
 
-        $destDocuments = array_flip($destination->getDocumentList());
-        foreach ($documents as $document) {
-            $this->progress->advance();
-            $mappedDocument = $this->map->getDocumentMap($document, $type);
-            if ($mappedDocument !== false) {
-                if (!isset($destDocuments[$mappedDocument])) {
-                    $this->missingDocuments[$type][$document] = true;
+            $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
+            $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
+            $destDocuments = array_flip($destination->getDocumentList());
+
+            foreach ($documents as $sourceDocumentName) {
+                $this->progress->advance();
+                $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, $type);
+
+                $sourceDocument = $source->getDocument($sourceDocumentName);
+                $destinationDocument = $destination->getDocument($destinationDocumentName);
+
+                if (!isset($destDocuments[$destinationDocumentName]) || !$sourceDocument || !$destinationDocument) {
+                    $this->missingDocuments[$type][$sourceDocumentName] = true;
                 } else {
-                    $fields = array_keys($source->getDocument($document)->getStructure()->getFields());
-                    $destFields = $destination->getDocument($mappedDocument)->getStructure()->getFields();
-                    foreach ($fields as $field) {
-                        $mappedField = $this->map->getFieldMap($document, $field, $type);
-                        if ($mappedField && !isset($destFields[$mappedField])) {
-                            $this->missingDocumentFields[$type][$document][] = $mappedField;
-                        }
-                    }
+                    $this->hasMappedDocuments = true;
+                    $this->verifyFields($sourceDocument, $destinationDocument, $type);
                 }
             }
         }
-
         return $this;
+    }
+
+    /**
+     * @param array $documents
+     * @param string $type
+     * @return array
+     */
+    protected function filterIgnoredDocuments($documents, $type)
+    {
+        $result = [];
+        foreach ($documents as $document) {
+            if (!$this->map->isDocumentIgnored($document, $type)) {
+                $result[] = $document;
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * @param Resource\Document $sourceDocument
+     * @param Resource\Document $destinationDocument
+     * @param string $type
+     * @return void
+     */
+    protected function verifyFields($sourceDocument, $destinationDocument, $type)
+    {
+        $sourceFields = array_keys($sourceDocument->getStructure()->getFields());
+        $destFields = $destinationDocument->getStructure()->getFields();
+        foreach ($sourceFields as $field) {
+            $mappedField = $this->map->getFieldMap($sourceDocument->getName(), $field, $type);
+            if ($mappedField && !isset($destFields[$mappedField])) {
+                $this->missingDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
+            }
+        }
     }
 
     /**
@@ -140,6 +179,11 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkForErrors()
     {
         $isSuccess = true;
+        if (!$this->hasMappedDocuments) {
+            $this->logger->error('Mapped documents not found. Check your configuration.');
+            return false;
+        }
+
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(

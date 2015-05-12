@@ -63,7 +63,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])
             ->getMock();
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
-            ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap'])
+            ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap', 'isDocumentIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
@@ -98,11 +98,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $fields = ['field1' => []];
         $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(
             [
-                ['document_2', MapInterface::TYPE_SOURCE, 'document_1'],
-                ['document_1', MapInterface::TYPE_DEST, 'document_2']
+                ['source_document', MapInterface::TYPE_SOURCE, 'destination_document'],
+                ['destination_document', MapInterface::TYPE_DEST, 'source_document']
             ]
         ) ;
-        $this->map->expects($this->atLeastOnce())->method('getFieldMap')->will($this->returnValue('field1'));
+        $this->map->expects($this->atLeastOnce())->method('getFieldMap')->willReturn('field1');
+        $this->map->expects($this->atLeastOnce())->method('isDocumentIgnored')->willReturn(false);
 
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
@@ -113,15 +114,15 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_2']));
+            ->will($this->returnValue(['source_document']));
 
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_1']));
+            ->will($this->returnValue(['destination_document']));
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->will($this->returnValue($document));
 
         $this->logger->expects($this->never())->method('error');
         $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
-            ->willReturn(['document_2' => '']);
+            ->willReturn(['source_document' => 0]);
 
         $this->assertTrue($this->integrity->perform());
     }
@@ -131,20 +132,31 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $fields = ['field1' => []];
         $this->map->expects($this->atLeastOnce())->method('getDocumentMap')->willReturnMap(
             [
-                ['document_2', MapInterface::TYPE_SOURCE, 'document_2'],
-                ['document_1', MapInterface::TYPE_DEST, 'document_1']
+                ['source_document', MapInterface::TYPE_SOURCE, 'source_document'],
+                ['common_document', MapInterface::TYPE_SOURCE, 'common_document'],
+                ['source_document', MapInterface::TYPE_DEST, 'source_document'],
+                ['common_document', MapInterface::TYPE_DEST, 'common_document'],
             ]
         ) ;
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
-        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_2']));
-        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document_1']));
 
-        $this->logger->expects($this->exactly(2))->method('error');
-        $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')->willReturn(['document_2']);
+        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+
+        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['source_document', 'common_document']));
+        $this->source->expects($this->atLeastOnce())->method('getDocument')->willReturn($document);
+
+        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['common_document']));
+        $this->destination->expects($this->atLeastOnce())->method('getDocument')->willReturn($document);
+
+        $this->logger->expects($this->once())->method('error')
+            ->with('Next documents from source are not mapped:' . PHP_EOL . 'source_document');
+        $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
+            ->willReturn(['source_document' => 0, 'common_document' => 1]);
 
         $this->assertFalse($this->integrity->perform());
     }
