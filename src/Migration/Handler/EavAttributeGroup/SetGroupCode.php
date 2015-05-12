@@ -30,6 +30,11 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     protected $productAttributeSets;
 
     /**
+     * @var Source
+     */
+    protected $source;
+
+    /**
      * @param Config $config
      * @param Source $source
      * @throws Exception
@@ -37,20 +42,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     public function __construct(Config $config, Source $source)
     {
         $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
-        if ($this->canStart) {
-            /** @var Mysql $adapter */
-            $adapter = $source->getAdapter();
-            $query = $adapter->getSelect()
-                ->from(
-                    ['as' => $source->addDocumentPrefix('eav_attribute_set')],
-                    ['attribute_set_id']
-                )->join(
-                    ['et' => $source->addDocumentPrefix('eav_entity_type')],
-                    'et.entity_type_id = as.entity_type_id',
-                    []
-                )->where('et.entity_type_code = ?', 'catalog_product');
-            $this->productAttributeSets = array_flip($query->getAdapter()->fetchCol($query));
-        }
+        $this->source = $source;
     }
 
     /**
@@ -62,7 +54,8 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
             return;
         }
         $this->validate($recordToHandle);
-        if (!isset($this->productAttributeSets[$recordToHandle->getValue('attribute_set_id')])) {
+        $productAttributeSets = $this->getProductAttributeSets();
+        if (!isset($productAttributeSets[$recordToHandle->getValue('attribute_set_id')])) {
             $recordToHandle->setValue($this->field, null);
             return;
         }
@@ -70,5 +63,28 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
         $newValue = preg_replace('/[^a-z0-9]+/', '-', strtolower($recordToHandle->getValue('attribute_group_name')));
         $newValue = ($newValue == 'migration-general') ? 'product-details' : $newValue;
         $recordToHandle->setValue($this->field, $newValue);
+    }
+
+    /**
+     * Get attribute set IDs for entity type 'catalog_product'
+     * @return array
+     */
+    protected function getProductAttributeSets()
+    {
+        if (empty($this->productAttributeSets)) {
+            /** @var Mysql $adapter */
+            $adapter = $this->source->getAdapter();
+            $query = $adapter->getSelect()
+                ->from(
+                    ['as' => $this->source->addDocumentPrefix('eav_attribute_set')],
+                    ['attribute_set_id']
+                )->join(
+                    ['et' => $this->source->addDocumentPrefix('eav_entity_type')],
+                    'et.entity_type_id = as.entity_type_id',
+                    []
+                )->where('et.entity_type_code = ?', 'catalog_product');
+            $this->productAttributeSets = array_flip($query->getAdapter()->fetchCol($query));
+        }
+        return $this->productAttributeSets;
     }
 }

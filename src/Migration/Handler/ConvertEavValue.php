@@ -39,6 +39,16 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
     protected $canStart;
 
     /**
+     * @var Source
+     */
+    protected $source;
+
+    /**
+     * @var string
+     */
+    protected $attributeCode;
+
+    /**
      * @param Config $config
      * @param Source $source
      * @param string $map
@@ -47,6 +57,8 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
      */
     public function __construct(Config $config, Source $source, $map, $attributeCode)
     {
+        $this->source = $source;
+        $this->attributeCode = $attributeCode;
         $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
         if ($this->canStart) {
             $map = rtrim($map, ']');
@@ -62,11 +74,6 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
                 $resultMap[$key] = $value;
             }
             $this->map = $resultMap;
-            /** @var Mysql $adapter */
-            $adapter = $source->getAdapter();
-            $query = $adapter->getSelect()->from($source->addDocumentPrefix('eav_attribute'), ['attribute_id'])
-                ->where('attribute_code = ?', $attributeCode);
-            $this->attributeIds = array_flip($query->getAdapter()->fetchCol($query));
         }
     }
 
@@ -79,12 +86,28 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
             return;
         }
         $this->validate($recordToHandle);
-        if (isset($this->attributeIds[$recordToHandle->getValue('attribute_id')])) {
+        $attributeIds = $this->getAttributeIds();
+        if (isset($attributeIds[$recordToHandle->getValue('attribute_id')])) {
             $value = $recordToHandle->getValue($this->field);
             if (isset($this->map[$value])) {
                 $value = $this->map[$value];
             }
             $recordToHandle->setValue($this->field, $value);
         }
+    }
+
+    /**
+     * @return array
+     */
+    protected function getAttributeIds()
+    {
+        if (empty($this->attributeIds)) {
+            /** @var Mysql $adapter */
+            $adapter = $this->source->getAdapter();
+            $query = $adapter->getSelect()->from($this->source->addDocumentPrefix('eav_attribute'), ['attribute_id'])
+                    ->where('attribute_code = ?', $this->attributeCode);
+            $this->attributeIds = array_flip($query->getAdapter()->fetchCol($query));
+        }
+        return $this->attributeIds;
     }
 }

@@ -68,18 +68,17 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         ob_end_clean();
 
         $messages = [];
-        $messages[] = 'Next documents from source are not mapped:';
-        $messages[] = 'source_table_1,source_table_2,source_table_ignored,source_table_renamed'
-            .',table_with_data';
+        $messages[] = 'Source documents not mapped: ';
+        $messages[] = 'source_table_1,source_table_2,source_table_ignored,source_table_renamed,table_with_data';
 
-        $messages[] = 'Next documents from destination are not mapped:';
+        $messages[] = 'Destination documents not mapped: ';
         $messages[] = 'dest_table_1,dest_table_2,dest_table_ignored,dest_table_renamed,table_without_data';
 
-        $messages[] = 'Next fields from source are not mapped:';
-        $messages[] = 'Document name: common_table; Fields: source_field_ignored';
+        $messages[] = 'Source fields not mapped. ';
+        $messages[] = 'Document: common_table. Fields: source_field_ignored';
 
-        $messages[] = 'Next fields from destination are not mapped:';
-        $messages[] = 'Document name: common_table; Fields: dest_field_ignored';
+        $messages[] = 'Destination fields not mapped. ';
+        $messages[] = 'Document: common_table. Fields: dest_field_ignored';
 
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertTrue(isset($logOutput[\Monolog\Logger::ERROR]));
