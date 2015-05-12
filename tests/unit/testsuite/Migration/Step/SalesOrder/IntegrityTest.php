@@ -79,7 +79,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')
             ->disableOriginalConstructor()
-            ->setMethods(['getFieldMap', 'getDocumentMap'])
+            ->setMethods(['getFieldMap', 'getDocumentMap', 'isDocumentIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
@@ -122,8 +122,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
         $this->destination->expects($this->at(3))->method('getRecords')->willReturn([0 => $destinationRecord]);
         $this->destination->expects($this->at(4))->method('getRecords')->willReturn(null);
-        $this->map->expects($this->at(0))->method('getDocumentMap')->willReturn('dest_doc');
-        $this->map->expects($this->at(2))->method('getDocumentMap')->willReturn('source_doc');
+        $this->map->expects($this->any())->method('isDocumentIgnored')->willReturn(false);
+        $this->map->expects($this->at(1))->method('getDocumentMap')->willReturn('dest_doc');
+        $this->map->expects($this->at(4))->method('getDocumentMap')->willReturn('source_doc');
         $this->map->expects($this->any())->method('getFieldMap')->willReturn('field1');
         $this->source->expects($this->any())->method('getDocument')->willReturn($document);
 
