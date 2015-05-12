@@ -216,6 +216,12 @@
                 <document>widget_instance_page_layout</document>
             </ignore>
             <ignore>
+                <document>enterprise_queue_queue</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_queue_task</document>
+            </ignore>
+            <ignore>
                 <document>find_feed_import_codes</document>
             </ignore>
             <ignore>
@@ -267,7 +273,16 @@
                 <document>paybox_api_debug</document>
             </ignore>
             <ignore>
+                <document>paybox_question_number</document>
+            </ignore>
+            <ignore>
                 <document>protx_api_debug</document>
+            </ignore>
+            <ignore>
+                <document>social_facebook_actions</document>
+            </ignore>
+            <ignore>
+                <document>strikeiron_tax_rate</document>
             </ignore>
             <ignore>
                 <document>xmlconnect_application</document>
@@ -1489,6 +1504,9 @@
             </ignore>
             <ignore>
                 <document>log_url_info</document>
+            </ignore>
+            <ignore>
+                <document>quote_id_mask</document>
             </ignore>
             <ignore>
                 <document>session</document>
