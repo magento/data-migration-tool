@@ -28,7 +28,7 @@ class ProgressBarFactory
 
     /**
      * @param OutputInterface $output
-     * @return \Migration\App\ProgressBar
+     * @return \Symfony\Component\Console\Helper\ProgressBar
      */
     public function create(OutputInterface $output)
     {

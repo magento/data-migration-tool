@@ -119,9 +119,9 @@ Usage:
   {$this->_entryPoint} --help
 
 Possible modes:
-  data                Main migration of data
-  delta               Migrate the data is added into Magento after the base migration
   settings            Migrate system configuration
+  data                Main migration of data
+  delta               Migrate the data is added into Magento after the main migration
 
 Available options:
   --reset             Reset the current position of migration to start from the beginning
