@@ -10,7 +10,7 @@ use Migration\Exception;
 /**
  * Class Shell
  */
-class Shell extends \Magento\Framework\App\AbstractShell
+class Shell extends ShellAbstract
 {
     /**
      * @var \Migration\Logger\Logger
@@ -154,6 +154,7 @@ USAGE;
     {
         return $this->modeFactory->create($modeName);
     }
+
     /**
      * @return void
      */
