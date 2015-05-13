@@ -1037,6 +1037,9 @@
                 <document>log_url_info</document>
             </ignore>
             <ignore>
+                <document>quote_id_mask</document>
+            </ignore>
+            <ignore>
                 <document>session</document>
             </ignore>
             <ignore>
