@@ -24,7 +24,7 @@ class MigrationTest extends \PHPUnit_Framework_TestCase
     protected $response;
 
     /**
-     * @var \Magento\Framework\Filesystem\Directory\WriteFactory
+     * @var \Magento\Framework\Filesystem\Directory\WriteFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $writeFactory;
 

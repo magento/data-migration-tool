@@ -13,7 +13,6 @@ use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
 use Migration\App\ProgressBar;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume

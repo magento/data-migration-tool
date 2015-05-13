@@ -14,7 +14,6 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Destination;
 use Migration\Resource\Source;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Volume

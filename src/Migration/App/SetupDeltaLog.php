@@ -8,7 +8,6 @@ namespace Migration\App;
 use Migration\Reader\Groups;
 use Migration\App\Step\StageInterface;
 use Migration\Resource\Source;
-use Migration\Logger\Manager as LogManager;
 
 class SetupDeltaLog implements StageInterface
 {

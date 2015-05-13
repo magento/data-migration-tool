@@ -10,7 +10,6 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\Resource;
 use Migration\App\ProgressBar;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity

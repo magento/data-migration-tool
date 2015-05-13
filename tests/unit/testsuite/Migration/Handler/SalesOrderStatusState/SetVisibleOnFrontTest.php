@@ -45,6 +45,7 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
                     return 'pending_payment';
                     break;
             }
+            return '';
         }));
         $this->recordToHandle->expects($this->once())->method('setValue')->with($fieldName, 0);
 
@@ -66,6 +67,7 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
                     return 'pending_payment';
                     break;
             }
+            return '';
         }));
         $this->recordToHandle->expects($this->once())->method('setValue')->with($fieldName, 0);
 
@@ -76,6 +78,7 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @dataProvider stateProvider
+     * @param string $state
      */
     public function testHandleVisibleState($state)
     {
@@ -91,6 +94,7 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
                         return $state;
                         break;
                 }
+                return '';
             }
         ));
         $this->recordToHandle->expects($this->once())->method('setValue')->with($fieldName, 1);

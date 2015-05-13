@@ -17,7 +17,6 @@ use Migration\Resource\Record;
 use Migration\Resource\Document;
 use Migration\Resource\RecordFactory;
 use Migration\Resource\Source;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Data
@@ -488,7 +487,7 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Rollback backuped documents
+     * Rollback backed up documents
      * @return void
      */
     public function rollback()
@@ -497,12 +496,14 @@ class Data implements StageInterface, RollbackInterface
             $destinationDocument = $this->destination->getDocument(
                 $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
             );
-            $this->destination->rollbackDocument($destinationDocument->getName());
+            if ($destinationDocument !== false) {
+                $this->destination->rollbackDocument($destinationDocument->getName());
+            }
         }
     }
 
     /**
-     * Delete backuped tables
+     * Delete backed up documents
      * @return void
      */
     public function deleteBackups()

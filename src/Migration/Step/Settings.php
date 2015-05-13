@@ -15,7 +15,6 @@ use Migration\Resource;
 use Migration\Resource\Document;
 use Migration\Resource\Record;
 use Migration\Handler;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Settings

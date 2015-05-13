@@ -10,7 +10,6 @@ use Migration\Resource;
 use Migration\RecordTransformerFactory;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
-use Migration\Logger\Manager as LogManager;
 
 /**
  * Class Integrity

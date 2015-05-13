@@ -80,6 +80,7 @@ class Listener implements \PHPUnit_Framework_TestListener
 
     /**
      * {@inheritdoc}
+     * @param \PHPUnit_Framework_Test|\PHPUnit_Framework_TestCase $test
      */
     public function startTest(\PHPUnit_Framework_Test $test)
     {

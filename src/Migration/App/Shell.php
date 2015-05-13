@@ -10,7 +10,7 @@ use Migration\Exception;
 /**
  * Class Shell
  */
-class Shell extends \Magento\Framework\App\AbstractShell
+class Shell extends ShellAbstract
 {
     /**
      * @var \Migration\Logger\Logger
@@ -138,8 +138,11 @@ USAGE;
     protected function getMode()
     {
         $mode = array_keys($this->_args);
-        $mode = array_shift($mode);
-        return $mode;
+        $modeName = array_shift($mode);
+        if ($modeName == 'migrate') {
+            $modeName = array_shift($mode);
+        }
+        return $modeName;
     }
 
     /**
@@ -151,6 +154,7 @@ USAGE;
     {
         return $this->modeFactory->create($modeName);
     }
+
     /**
      * @return void
      */
