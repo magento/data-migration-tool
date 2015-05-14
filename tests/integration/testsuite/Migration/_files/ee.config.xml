@@ -80,6 +80,7 @@
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
         <eav_map_file>tests/integration/testsuite/Migration/_files/ee.map-eav.xml</eav_map_file>
+        <eav_attribute_groups_file>tests/integration/testsuite/Migration/_files/eav-attribute-groups.xml</eav_attribute_groups_file>
         <eav_document_groups_file>tests/integration/testsuite/Migration/_files/ee.eav-document-groups.xml</eav_document_groups_file>
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>

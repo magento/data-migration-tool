@@ -120,6 +120,7 @@ class Data implements StageInterface, RollbackInterface
         $this->destination = $destination;
         $this->map = $mapFactory->create('eav_map_file');
         $this->readerGroups = $groupsFactory->create('eav_document_groups_file');
+        $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;
@@ -223,6 +224,9 @@ class Data implements StageInterface, RollbackInterface
         );
         $this->destination->backupDocument($destinationDocument->getName());
         $sourceRecords = $this->source->getRecords($sourceDocName, 0, $this->source->getRecordsCount($sourceDocName));
+        foreach (array_keys($this->readerAttributes->getGroup('ignore')) as $attributeToClear) {
+            $sourceRecords = $this->clearIgnoredAttributes($sourceRecords, $attributeToClear);
+        }
         $destinationRecords = $this->initialData->getAttributes('dest');
 
         $recordsToSave = $destinationDocument->getRecords();
@@ -514,6 +518,23 @@ class Data implements StageInterface, RollbackInterface
                 $this->destination->deleteDocumentBackup($documentName);
             }
         }
+    }
+
+    /**
+     * Remove ignored attributes from source records
+     *
+     * @param array $sourceRecords
+     * @param array $attributeToClear
+     * @return array
+     */
+    protected function clearIgnoredAttributes($sourceRecords, $attributeToClear)
+    {
+        foreach ($sourceRecords as $attrNum => $sourceAttribute) {
+            if ($sourceAttribute['attribute_code'] == $attributeToClear) {
+                unset($sourceRecords[$attrNum]);
+            }
+        }
+        return $sourceRecords;
     }
     // @codeCoverageIgnoreEnd
 }

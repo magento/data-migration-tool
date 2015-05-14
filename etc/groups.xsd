@@ -21,12 +21,21 @@
 
     <xs:complexType name="groupType">
         <xs:sequence>
-            <xs:element name="document" type="documentType" maxOccurs="unbounded" minOccurs="1"/>
+            <xs:element name="document" type="documentType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="attribute" type="attributeType" maxOccurs="unbounded" minOccurs="0"/>
         </xs:sequence>
         <xs:attribute name="name" type="notEmptyString" use="required"/>
     </xs:complexType>
 
     <xs:complexType name="documentType">
+        <xs:simpleContent>
+            <xs:extension base="notEmptyString">
+                <xs:attribute name="key" type="notEmptyString" use="optional"/>
+            </xs:extension>
+        </xs:simpleContent>
+    </xs:complexType>
+
+    <xs:complexType name="attributeType">
         <xs:simpleContent>
             <xs:extension base="notEmptyString">
                 <xs:attribute name="key" type="notEmptyString" use="optional"/>
