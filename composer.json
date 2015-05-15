@@ -1,0 +1,12 @@
+{
+    "name": "magento/data-migration-tool",
+    "description": "Migration Tool",
+    "version": "0.74.0-beta8",
+    "require": {
+        "symfony/console": "~2.3",
+        "magento/framework": "*"
+    },
+    "autoload": {
+        "psr-4": {"Migration\\": ["src/Migration", "tests/unit/testsuite/Migration"]}
+    }
+}

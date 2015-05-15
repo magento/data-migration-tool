@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>log_visitor</document>
+                <to>customer_visitor</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>log_visitor.first_visit_at</field>
+            </ignore>
+            <ignore>
+                <field>log_visitor.last_url_id</field>
+            </ignore>
+            <ignore>
+                <field>log_visitor.store_id</field>
+            </ignore>
+        </field_rules>
+    </source>
+    <destination>
+        <document_rules>
+            <ignore>
+                <document>log_visitor</document>
+            </ignore>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>customer_visitor.customer_id</field>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>

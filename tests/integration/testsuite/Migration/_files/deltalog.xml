@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
+    <group name="group1">
+        <document key="key">table_with_data</document>
+    </group>
+    <group name="group2">
+        <document key="key">source_table_1</document>
+        <document key="key">source_table_2</document>
+    </group>
+</groups>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>source-document</document>
+                <to>dest-document</to>
+            </rename>
+            <ignore>
+            </ignore>
+        </document_rules>
+
+        <field_rules>
+            <ignore>
+                <field>source-document.field1</field>
+            </ignore>
+            <transform>
+                <field>source-document.field-with-handler</field>
+            </transform>
+        </field_rules>
+    </source>
+</map>
