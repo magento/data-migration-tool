@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
+    <steps/>
+    <source>
+        <database host="localhost" name="magento1" user="root"/>
+    </source>
+    <destination>
+        <database host="localhost" name="magento2"/>
+    </destination>
+    <options>
+        <map_file>map-file.xml</map_file>
+        <settings_map_file>settings-map-file.xml</settings_map_file>
+        <custom_option>custom_option_value</custom_option>
+    </options>
+</config>

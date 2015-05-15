@@ -1,0 +1,16 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+
+return [
+    'source_db_name' => 'magento1_integration',
+    'source_db_host' => 'localhost',
+    'source_db_user' => 'root',
+    'source_db_pass' => '',
+    'dest_db_name' => 'magento2_integration',
+    'dest_db_host' => 'localhost',
+    'dest_db_user' => 'root',
+    'dest_db_pass' => '',
+];

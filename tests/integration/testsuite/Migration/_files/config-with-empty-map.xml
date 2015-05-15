@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
+    <steps mode="migration"/>
+    <source version="1.14.1.0">
+        <database host="localhost" name="magento1_integration" user="root"/>
+    </source>
+    <destination version="2.0.0.0">
+        <database host="localhost" name="magento2_integration" user="root"/>
+    </destination>
+    <options>
+        <map_file>tests/integration/testsuite/Migration/_files/empty-map.xml</map_file>
+        <eav_map_file>tests/integration/testsuite/Migration/_files/eav-map.xml</eav_map_file>
+        <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
+        <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
+        <sales_order_map_file>test/integration/testsuite/Migration/_files/map/sales.xml</sales_order_map_file>
+        <bulk_size>100</bulk_size>
+    </options>
+</config>

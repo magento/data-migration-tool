@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>source-document</document>
+                <to>dest-document</to>
+            </rename>
+            <ignore>
+                <document>source-document-ignored</document>
+            </ignore>
+            <ignore>
+                <document>source-document-ignored*</document>
+            </ignore>
+        </document_rules>
+
+        <field_rules>
+            <ignore>
+                <field>source-document.field1</field>
+            </ignore>
+            <move>
+                <field>source-document.field2</field>
+                <to>dest-document.field2</to>
+            </move>
+            <move>
+                <field>source-document-ignored.field3</field>
+                <to>dest-document-ignored.field3</to>
+            </move>
+            <move>
+                <field>source-document5.field3</field>
+                <to>dest-document-ignored.field3</to>
+            </move>
+            <move>
+                <field>source-document5.field4</field>
+                <to>dest-document5.field5</to>
+            </move>
+            <transform>
+                <field>source-document.field-with-handler</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="default_value" value="10"/>
+                </handler>
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <document_rules>
+            <ignore>
+                <document>dest-document-ignored</document>
+            </ignore>
+            <ignore>
+                <document>dest-document-ignored*</document>
+            </ignore>
+        </document_rules>
+
+        <field_rules>
+            <ignore>
+                <field>dest-document.field-new</field>
+            </ignore>
+            <ignore>
+                <field>dest-document5.field5</field>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>

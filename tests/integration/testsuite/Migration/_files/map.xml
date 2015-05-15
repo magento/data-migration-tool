@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <ignore>
+                <document>source_table_ignored</document>
+            </ignore>
+            <ignore>
+                <document>table_ignored</document>
+            </ignore>
+            <ignore>
+                <document>source_table_*</document>
+            </ignore>
+            <ignore>
+                <document>sales_flat_order</document>
+            </ignore>
+            <rename>
+                <document>source_table_renamed</document>
+                <to>dest_table_renamed</to>
+            </rename>
+            <rename>
+                <document>table_with_data</document>
+                <to>table_without_data</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>source_table.ignored_field</field>
+            </ignore>
+            <ignore>
+                <field>common_table.source_field_ignored</field>
+            </ignore>
+            <move>
+                <field>common_table.field1</field>
+                <to>common_table.field1_moved</to>
+            </move>
+            <move>
+                <field>source_table_renamed.moved_field</field>
+                <to>dest_table_renamed.moved_field</to>
+            </move>
+        </field_rules>
+    </source>
+    <destination>
+        <document_rules>
+            <ignore>
+                <document>dest_table_ignored</document>
+            </ignore>
+            <ignore>
+                <document>dest_table_*</document>
+            </ignore>
+            <ignore>
+                <document>sales_order</document>
+            </ignore>
+            <ignore>
+                <document>eav_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute</document>
+            </ignore>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>common_table.dest_field_ignored</field>
+            </ignore>
+            <transform>
+                <field>common_table.common_field</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="123" />
+                </handler>
+            </transform>
+        </field_rules>
+    </destination>
+</map>

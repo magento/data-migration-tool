@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
+    <steps mode="data">
+        <step title="Step1">
+            <integrity>Migration\Step\SomeStep\Integrity</integrity>
+            <volume>Migration\Step\SomeStep\Volume</volume>
+        </step>
+        <step title="Step2">
+            <integrity>Migration\Step\SomeStep\Integrity</integrity>
+            <volume>Migration\Step\SomeStep\Volume</volume>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Step1">
+            <delta>Migration\Step\SomeStep\Integrity</delta>
+        </step>
+    </steps>
+    <source version="1.14.1.0">
+        <database host="localhost" name="magento1" user="root"/>
+    </source>
+    <destination version="2.0.0.0">
+        <database host="localhost" name="magento2" user="root" password="123123q"/>
+    </destination>
+    <options>
+        <map_file>map-file.xml</map_file>
+        <eav_map_file>eav-map-file.xml</eav_map_file>
+        <log_map_file>etc/map-log.xml</log_map_file>
+        <settings_map_file>etc/settings.xml</settings_map_file>
+        <sales_order_map_file>map-sales.xml</sales_order_map_file>
+        <bulk_size>100</bulk_size>
+        <custom_option>custom_option_value</custom_option>
+        <source_prefix />
+        <dest_prefix />
+    </options>
+</config>

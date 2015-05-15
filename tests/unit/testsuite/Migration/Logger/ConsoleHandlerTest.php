@@ -1,0 +1,112 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+namespace Migration\Logger;
+
+class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
+{
+    /**
+     * @var ConsoleHandler
+     */
+    protected $consoleHandler;
+
+    protected function setUp()
+    {
+        $this->consoleHandler = new ConsoleHandler();
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderHandleSuccess()
+    {
+        return [
+            ['recordLevel' => 200, 'handlerLevel' => 'infO'],
+            ['recordLevel' => 100, 'handlerLevel' => 'deBug'],
+            ['recordLevel' => 200, 'handlerLevel' => 'debug'],
+            ['recordLevel' => 200, 'handlerLevel' => 200],
+            ['recordLevel' => 100, 'handlerLevel' => 100],
+            ['recordLevel' => 200, 'handlerLevel' => 100]
+        ];
+    }
+
+    /**
+     * @param string $recordLevel
+     * @param string|int $handlerLevel
+     * @dataProvider dataProviderHandleSuccess
+     */
+    public function testHandleSuccess($recordLevel, $handlerLevel)
+    {
+        $message = 'Success message';
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $this->consoleHandler->setLevel($handlerLevel);
+        ob_start();
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertFalse($result);
+        $this->assertContains('Success message', $output);
+    }
+
+    /**
+     * @param string $recordLevel
+     * @param string|int $handlerLevel
+     * @dataProvider dataProviderHandleSuccess
+     */
+    public function testHandleSuccessWithoutBubble($recordLevel, $handlerLevel)
+    {
+        $message = 'Success message';
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $this->consoleHandler->setLevel($handlerLevel);
+        ob_start();
+        $this->consoleHandler->setBubble(false);
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertTrue($result);
+        $this->assertContains('Success message', $output);
+    }
+
+    /**
+     * @return array
+     */
+    public function dataProviderHandleError()
+    {
+        return [
+            ['recordLevel' => 100, 'handlerLevel' => 200],
+            ['recordLevel' => 100, 'handlerLevel' => 'info']
+        ];
+    }
+
+    /**
+     * @param string $recordLevel
+     * @param string|int $handlerLevel
+     * @dataProvider dataProviderHandleError
+     */
+    public function testHandleError($recordLevel, $handlerLevel)
+    {
+        $message = 'Error message';
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $this->consoleHandler->setLevel($handlerLevel);
+        $result = $this->consoleHandler->handle($record);
+        $this->assertFalse($result);
+    }
+
+    public function testHandleRed()
+    {
+        $message = 'Colorized message';
+        $record = ['message' => $message, 'level' => 400, 'extra' => []];
+        $this->consoleHandler->setLevel(100);
+        ob_start();
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertFalse($result);
+        $this->assertContains('Colorized message', $output);
+    }
+}
