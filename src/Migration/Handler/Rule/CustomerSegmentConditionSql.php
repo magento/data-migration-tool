@@ -75,7 +75,7 @@ class CustomerSegmentConditionSql extends AbstractHandler
 
     /**
      * @param string $sourceDocumentName
-     * @return bool
+     * @return mixed
      */
     protected function getDestDocumentName($sourceDocumentName)
     {

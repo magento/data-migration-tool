@@ -4,6 +4,7 @@
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Rule;
+
 use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
 use Migration\Resource\Record;

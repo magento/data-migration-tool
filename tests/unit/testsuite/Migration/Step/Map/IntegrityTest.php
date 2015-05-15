@@ -141,10 +141,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->any())->method('error')
-            ->withConsecutive(
-                ['Next documents from source are not mapped:' . PHP_EOL . 'document1', []],
-                ['Next documents from destination are not mapped:' . PHP_EOL . 'document2', []]
-            );
+            ->with('Mapped documents not found. Check your configuration.');
 
         $this->integrity->perform();
     }
