@@ -75,13 +75,13 @@ class Manager
     /**
      * @param string $logLevel
      * @return $this
+     * @throws \Migration\Exception
      */
     public function process($logLevel = self::LOG_LEVEL_INFO)
     {
         $logLevel = strtolower($logLevel);
         if (empty($this->logLevels[$logLevel])) {
-            $this->logger->error("Invalid log level '$logLevel' provided.");
-            $logLevel = self::LOG_LEVEL_INFO;
+            throw new \Migration\Exception("Invalid log level '$logLevel' provided.");
         }
         foreach ($this->handlers as $handler) {
             $handler->setLevel($this->logLevels[$logLevel])->setFormatter($this->formatter);

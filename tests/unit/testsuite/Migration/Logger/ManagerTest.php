@@ -121,16 +121,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessInvalidLevel($logLevel)
     {
-        $this->logger->expects($this->once())->method('error');
-        $this->logger->expects($this->any())->method('pushHandler')->willReturnSelf();
-        $this->logger->expects($this->once())->method('pushProcessor')->with([$this->messageProcessor, 'setExtra'])
-            ->willReturnSelf();
-        $this->consoleHandler->expects($this->once())->method('setLevel')->willReturnSelf();
-        $this->consoleHandler->expects($this->once())->method('setFormatter')->with($this->messageFormatter)
-            ->willReturnSelf();
-        $this->fileHandler->expects($this->once())->method('setLevel')->willReturnSelf();
-        $this->fileHandler->expects($this->once())->method('setFormatter')->with($this->messageFormatter)
-            ->willReturnSelf();
+        $this->setExpectedException('Migration\Exception', "Invalid log level '$logLevel' provided.");
         $this->manager->process($logLevel);
     }
 }
