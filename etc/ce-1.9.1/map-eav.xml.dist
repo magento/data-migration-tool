@@ -134,6 +134,10 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
+            <transform>
+                <field>catalog_eav_attribute.apply_to</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
+            </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
