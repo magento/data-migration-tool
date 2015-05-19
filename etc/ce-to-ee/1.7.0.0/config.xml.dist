@@ -54,10 +54,10 @@
             <volume>Migration\Step\Log\Volume</volume>
         </step>
     </steps>
-    <source version="1.9.1">
+    <source>
         <database host="localhost" name="magento1" user="root"/>
     </source>
-    <destination version="2.0.0.0">
+    <destination>
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>

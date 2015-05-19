@@ -677,37 +677,34 @@
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
-                    <param name="map"
-                           value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
+                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
                     <param name="attributeCode" value="page_layout"/>
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
-                    <param name="map"
-                           value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
+                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
                     <param name="attributeCode" value="page_layout"/>
                 </handler>
             </transform>
             <transform>
                 <field>cms_page.root_template</field>
                 <handler class="\Migration\Handler\Convert">
-                    <param name="map"
-                           value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
+                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
                 </handler>
             </transform>
             <transform>
                 <field>cms_block.content</field>
-                <handler class="\Migration\Handler\Placeholder"/>
+                <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
                 <field>cms_page.content</field>
-                <handler class="\Migration\Handler\Placeholder"/>
+                <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
                 <field>widget_instance.instance_type</field>
-                <handler class="\Migration\Handler\ClassMap"/>
+                <handler class="\Migration\Handler\ClassMap" />
             </transform>
 
             <transform>
@@ -1061,6 +1058,9 @@
                 <document>sequence_shipment*</document>
             </ignore>
             <ignore>
+                <document>sequence_rma_item_*</document>
+            </ignore>
+            <ignore>
                 <document>catalogsearch_recommendations</document>
             </ignore>
             <ignore>
@@ -1332,7 +1332,7 @@
             <transform>
                 <field>admin_user.interface_locale</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="en_US"/>
+                    <param name="value" value="en_US" />
                 </handler>
             </transform>
             <transform>
@@ -1346,55 +1346,55 @@
             <transform>
                 <field>rating.is_active</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0"/>
+                    <param name="value" value="0" />
                 </handler>
             </transform>
             <transform>
                 <field>authorization_role.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="2"/>
+                    <param name="value" value="2" />
                 </handler>
             </transform>
             <transform>
                 <field>sales_order_tax_item.amount</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000"/>
+                    <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
                 <field>sales_order_tax_item.base_amount</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000"/>
+                    <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
                 <field>sales_order_tax_item.real_amount</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000"/>
+                    <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
                 <field>sales_order_tax_item.real_base_amount</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000"/>
+                    <param name="value" value="0.0000" />
                 </handler>
             </transform>
             <transform>
                 <field>sales_order_tax_item.taxable_item_type</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="product"/>
+                    <param name="value" value="product" />
                 </handler>
             </transform>
             <transform>
                 <field>oauth_token.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="1"/>
+                    <param name="value" value="1" />
                 </handler>
             </transform>
             <transform>
                 <field>widget_instance.theme_id</field>
                 <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="3"/>
+                    <param name="value" value="3" />
                 </handler>
             </transform>
             <transform>
@@ -1496,6 +1496,597 @@
             </ignore>
             <ignore>
                 <field>sales_order.send_email</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.failures_num</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.first_failure</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.lock_expires</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.published_revision_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.website_root</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.under_version_control</field>
+            </ignore>
+            <ignore>
+                <field>paypal_settlement_report_row.store_id</field>
+            </ignore>
+            <ignore>
+                <field>quote.customer_balance_amount_used</field>
+            </ignore>
+            <ignore>
+                <field>quote.base_customer_bal_amount_used</field>
+            </ignore>
+            <ignore>
+                <field>quote.use_customer_balance</field>
+            </ignore>
+            <ignore>
+                <field>quote.gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>quote.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gift_cards_amount_used</field>
+            </ignore>
+            <ignore>
+                <field>quote.base_gift_cards_amount_used</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_allow_gift_receipt</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_add_card</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.use_reward_points</field>
+            </ignore>
+            <ignore>
+                <field>quote.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>quote.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.used_gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_allow_gift_receipt</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_add_card</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.event_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.discount_description</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.bs_customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_points_balance_refund</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.discount_description</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.bs_customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_allow_gift_receipt</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_add_card</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_rwrd_crrncy_amt_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.rwrd_currency_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_rwrd_crrncy_amnt_refnded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.rwrd_crrncy_amnt_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_points_balance_refund</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.qty_returned</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.event_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>tax_calculation_rule.calculate_subtotal</field>
+            </ignore>
+            <ignore>
+                <field>translation.crc_string</field>
+            </ignore>
+            <ignore>
+                <field>wishlist.name</field>
+            </ignore>
+            <ignore>
+                <field>wishlist.visibility</field>
             </ignore>
         </field_rules>
     </destination>

@@ -7,10 +7,10 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps mode="migration"/>
-    <source version="1.14.1.0">
+    <source>
         <database host="localhost" name="magento1_integration" user="root"/>
     </source>
-    <destination version="2.0.0.0">
+    <destination>
         <database host="localhost" name="magento2_integration" user="root"/>
     </destination>
     <options>

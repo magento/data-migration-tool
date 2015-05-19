@@ -153,7 +153,9 @@
             <ignore>
                 <field>catalog_eav_attribute.search_weight</field>
             </ignore>
-
+            <ignore>
+                <field>customer_eav_attribute.is_used_for_customer_segment</field>
+            </ignore>
             <transform>
                 <field>eav_attribute_group.attribute_group_code</field>
                 <handler class="\Migration\Handler\EavAttributeGroup\SetGroupCode" />

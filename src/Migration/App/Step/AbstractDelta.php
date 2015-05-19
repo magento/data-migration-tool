@@ -94,6 +94,9 @@ abstract class AbstractDelta implements StageInterface
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
         foreach ($this->deltaDocuments as $documentName => $idKey) {
+            if (!$this->source->getDocument($documentName)) {
+                continue;
+            }
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));

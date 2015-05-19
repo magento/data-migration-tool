@@ -126,7 +126,8 @@ class Helper
     {
         $dirList = new \Magento\Framework\App\Filesystem\DirectoryList($this->magentoDir);
         $driverPool = new \Magento\Framework\Filesystem\DriverPool;
-        return (new \Magento\Framework\App\ObjectManagerFactory($dirList, $driverPool))->create([]);
+        $configFilePool = new \Magento\Framework\Config\File\ConfigFilePool;
+        return (new \Magento\Framework\App\ObjectManagerFactory($dirList, $driverPool, $configFilePool))->create([]);
     }
 
     /**
