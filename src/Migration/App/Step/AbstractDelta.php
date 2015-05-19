@@ -60,6 +60,11 @@ abstract class AbstractDelta implements StageInterface
     protected $groupName;
 
     /**
+     * @var bool
+     */
+    protected $eolOnce = false;
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -147,7 +152,10 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
-        echo PHP_EOL;
+        if (!$this->eolOnce) {
+            $this->eolOnce = true;
+            echo PHP_EOL;
+        }
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);
