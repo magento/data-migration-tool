@@ -25,7 +25,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->source = $this->getMock('\Migration\Resource\Source', ['getAdapter'], [], '', false);
+        $this->source = $this->getMockBuilder('\Migration\Resource\Source')
+            ->setMethods(['getAdapter', 'addDocumentPrefix'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->helper = new Helper($this->source);
     }
 
@@ -47,6 +50,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $dbSelect = $this->getMock('\Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
         $mySqlAdapter->expects($this->any())->method('getSelect')->willReturn($dbSelect);
         $this->source->expects($this->any())->method('getAdapter')->willReturn($mySqlAdapter);
+        $this->source->expects($this->any())->method('addDocumentPrefix')->willReturnArgument(0);
         $dbSelect->expects($this->any())->method('from')->willReturnSelf();
         $dbSelect->expects($this->any())->method('where')->willReturnSelf();
         $mySqlAdapter->expects($this->once())->method('loadDataFromSelect')->willReturn($entity);

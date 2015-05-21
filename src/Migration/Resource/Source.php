@@ -58,7 +58,11 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta($documentName, $this->getDeltaLogName($documentName), $idKey);
+        $this->adapter->createDelta(
+            $this->addDocumentPrefix($documentName),
+            $this->getDeltaLogName($documentName),
+            $idKey
+        );
     }
 
     /**
@@ -103,7 +107,7 @@ class Source extends AbstractResource
     public function getDeltaLogName($documentName)
     {
         $maximumNameLength = 64;
-        $documentName = 'm2_cl_' . $documentName;
+        $documentName = $this->addDocumentPrefix('m2_cl_' . $documentName);
 
         if (strlen($documentName) > $maximumNameLength) {
             $documentName = substr($documentName, 0, $maximumNameLength);
