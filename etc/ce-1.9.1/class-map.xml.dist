@@ -120,11 +120,11 @@
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_startdate</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Startdate</to>
+        <to>Magento\Catalog\Model\Attribute\Backend\Startdate</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_startdate_specialprice</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Startdate</to>
+        <to>Magento\Catalog\Model\Attribute\Backend\Startdate</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_tierprice</from>
