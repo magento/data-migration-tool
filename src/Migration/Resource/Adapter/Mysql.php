@@ -280,7 +280,9 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $this->deleteAllRecords($deltaLogName);
         }
         foreach (Trigger::getListOfEvents() as $event) {
-            $triggerName = 'trg_' . $documentName . '_after_' . strtolower($event);
+            $triggerName = $this->resourceAdapter->getTableName(
+                'trg_' . $documentName . '_after_' . strtolower($event)
+            );
             $statement = $this->buildStatement($event, $idKey, $deltaLogName);
             $trigger = $this->triggerFactory->create()
                 ->setTime(Trigger::TIME_AFTER)

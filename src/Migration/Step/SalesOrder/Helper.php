@@ -45,7 +45,11 @@ class Helper
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->from(array_keys($this->getDocumentList()))->where($eavAttribute . ' is not null');
+        $tables = [];
+        foreach (array_keys($this->getDocumentList()) as $sourceDocument) {
+            $tables[] = $this->source->addDocumentPrefix($sourceDocument);
+        }
+        $select->from($tables)->where($eavAttribute . ' is not null');
         return $select;
     }
 

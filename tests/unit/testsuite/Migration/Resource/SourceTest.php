@@ -53,6 +53,13 @@ class SourceTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
+        $adapterConfigs = ['config' => [
+            'host' => 'localhost',
+            'dbname' => 'dbname',
+            'username' => 'uname',
+            'password' => 'upass',
+        ]];
+        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getSource'], [], '', false);
         $config = [
             'type' => 'database',
             'version' => '1.14.1.0',
@@ -63,23 +70,12 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                 'password' => 'upass',
             ]
         ];
-        $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
-        ]];
-        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getSource'], [], '', false);
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue($this->bulkSize));
         $this->config->expects($this->once())
             ->method('getSource')
             ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\Resource\Adapter\Mysql',
-            ['select', 'fetchAll', 'query', 'loadPage'],
+            ['select', 'fetchAll', 'query', 'loadPage', 'createDelta', 'loadChangedRecords', 'loadDeletedRecords'],
             [],
             '',
             false
@@ -101,9 +97,40 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @covers getDeltaLogName
+     */
     public function testLoadPage()
     {
+        $this->config->expects($this->any())
+            ->method('getOption')
+            ->with('bulk_size')
+            ->will($this->returnValue($this->bulkSize));
         $this->adapter->expects($this->any())->method('loadPage')->with('table', 2)->willReturn(['1', '2']);
         $this->assertEquals(['1', '2'], $this->resourceSource->loadPage('table', 2));
+    }
+
+    public function testCreateDelta()
+    {
+        $this->adapter->expects($this->once())->method('createDelta')
+            ->with('spfx_document', 'spfx_m2_cl_document', 'key_field');
+        $this->config->expects($this->any())->method('getOption')
+            ->with(Source::CONFIG_DOCUMENT_PREFIX)
+            ->willReturn('spfx_');
+        $this->resourceSource->createDelta('document', 'key_field');
+    }
+
+    public function testGetChangedRecords()
+    {
+        $this->adapter->expects($this->once())->method('loadChangedRecords')
+            ->with('document', 'm2_cl_document', 'key_field', 0, 100);
+        $this->resourceSource->getChangedRecords('document', 'key_field');
+    }
+
+    public function testGetDeletedRecords()
+    {
+        $this->adapter->expects($this->once())->method('loadDeletedRecords')
+            ->with('m2_cl_document', 'key_field', 0, 100);
+        $this->resourceSource->getDeletedRecords('document', 'key_field');
     }
 }
