@@ -108,7 +108,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->willReturn($sourceDeltaName);
         $this->source->expects($this->any())
             ->method('getRecordsCount')
-            ->with($sourceDeltaName, false)
+            ->with($sourceDeltaName)
             ->willReturn(1);
 
         $this->map->expects($this->any())
