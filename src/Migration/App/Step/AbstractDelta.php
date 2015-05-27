@@ -104,7 +104,7 @@ abstract class AbstractDelta implements StageInterface
                 continue;
             }
 
-            if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
+            if ($this->source->getRecordsCount($deltaLogName) == 0) {
                 continue;
             }
             $this->logger->debug(sprintf('%s has changes', $documentName));
@@ -129,7 +129,9 @@ abstract class AbstractDelta implements StageInterface
                 $idKey,
                 $items
             );
-            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $items);
+            $documentNameDelta = $this->source->getDeltaLogName($documentName);
+            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+            $this->source->deleteRecords($documentNameDelta, $idKey, $items);
         }
     }
 
@@ -170,7 +172,9 @@ abstract class AbstractDelta implements StageInterface
             }
 
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
-            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $ids);
+            $documentNameDelta = $this->source->getDeltaLogName($documentName);
+            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+            $this->source->deleteRecords($documentNameDelta, $idKey, $ids);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 
