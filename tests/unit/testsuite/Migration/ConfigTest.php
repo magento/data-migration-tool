@@ -58,7 +58,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetSource()
     {
         $source = [
-            'version' => '1.14.1.0',
             'type' => 'database',
             'database' => [
                 'host' => 'localhost',
@@ -72,7 +71,6 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testGetDestination()
     {
         $destination = [
-            'version' => '2.0.0.0',
             'type' => 'database',
             'database' => [
                 'host' => 'localhost',

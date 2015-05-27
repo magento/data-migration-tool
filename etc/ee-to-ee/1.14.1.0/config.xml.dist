@@ -5,7 +5,7 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../config.xsd">
     <steps mode="settings">
         <step title="Settings step">
             <integrity>Migration\Step\Settings</integrity>
@@ -72,24 +72,29 @@
         </step>
     </steps>
     <source>
-        <database host="localhost" name="magento1_integration" user="root" password=""/>
+        <database host="localhost" name="magento1" user="root"/>
     </source>
     <destination>
-        <database host="localhost" name="magento2_integration" user="root" password=""/>
+        <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
-        <eav_map_file>tests/integration/testsuite/Migration/_files/ee.map-eav.xml</eav_map_file>
-        <eav_attribute_groups_file>tests/integration/testsuite/Migration/_files/eav-attribute-groups.xml</eav_attribute_groups_file>
-        <eav_document_groups_file>tests/integration/testsuite/Migration/_files/ee.eav-document-groups.xml</eav_document_groups_file>
-        <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
-        <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
-        <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
-        <delta_document_groups_file>tests/integration/testsuite/Migration/_files/deltalog.xml</delta_document_groups_file>
-        <class_map>tests/integration/testsuite/Migration/_files/class-map.xml</class_map>
+        <map_file>etc/ee-to-ee/1.14.1.0/map.xml.dist</map_file>
+        <eav_map_file>etc/ee-to-ee/map-eav.xml.dist</eav_map_file>
+        <eav_document_groups_file>etc/ee-to-ee/eav-document-groups.xml.dist</eav_document_groups_file>
+        <eav_attribute_groups_file>etc/ee-to-ee/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
+        <log_map_file>etc/ee-to-ee/map-log.xml.dist</log_map_file>
+        <log_document_groups_file>etc/ee-to-ee/log-document-groups.xml.dist</log_document_groups_file>
+        <settings_map_file>etc/ee-to-ee/settings.xml.dist</settings_map_file>
+        <sales_order_map_file>etc/ee-to-ee/map-sales.xml.dist</sales_order_map_file>
+        <delta_document_groups_file>etc/ee-to-ee/deltalog.xml.dist</delta_document_groups_file>
+        <customer_attr_map_file>etc/ee-to-ee/customer-attr-map.xml.dist</customer_attr_map_file>
+        <customer_attr_document_groups_file>etc/ee-to-ee/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
+        <class_map>etc/ee-to-ee/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
+        <log_file>var/migration.log</log_file>
+        <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
     </options>
 </config>

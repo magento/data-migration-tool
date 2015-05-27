@@ -60,6 +60,11 @@ abstract class AbstractDelta implements StageInterface
     protected $groupName;
 
     /**
+     * @var bool
+     */
+    protected $eolOnce = false;
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -94,6 +99,9 @@ abstract class AbstractDelta implements StageInterface
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
         foreach ($this->deltaDocuments as $documentName => $idKey) {
+            if (!$this->source->getDocument($documentName)) {
+                continue;
+            }
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
@@ -146,7 +154,10 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
-        echo PHP_EOL;
+        if (!$this->eolOnce) {
+            $this->eolOnce = true;
+            echo PHP_EOL;
+        }
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);
