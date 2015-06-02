@@ -9,6 +9,9 @@
     <source>
         <document_rules>
             <ignore>
+                <document>paypal_cert</document>
+            </ignore>
+            <ignore>
                 <document>paypal_payment_transaction</document>
             </ignore>
             <ignore>
