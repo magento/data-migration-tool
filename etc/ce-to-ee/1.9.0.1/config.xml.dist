@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../config.xsd">
+    <steps mode="settings">
+        <step title="Settings Step">
+            <integrity>Migration\Step\Settings</integrity>
+            <data>Migration\Step\Settings</data>
+        </step>
+        <step title="Stores Step">
+            <integrity>Migration\Step\Stores</integrity>
+            <data>Migration\Step\Stores</data>
+            <volume>Migration\Step\Stores</volume>
+        </step>
+    </steps>
+    <steps mode="data">
+        <step title="EAV Step">
+            <integrity>Migration\Step\Eav\Integrity</integrity>
+            <data>Migration\Step\Eav\Data</data>
+            <volume>Migration\Step\Eav\Volume</volume>
+        </step>
+        <step title="Map Step">
+            <integrity>Migration\Step\Map\Integrity</integrity>
+            <data>Migration\Step\Map\Data</data>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Url Rewrite Step">
+            <integrity>Migration\Step\UrlRewrite\Version191to2000</integrity>
+            <data>Migration\Step\UrlRewrite\Version191to2000</data>
+            <volume>Migration\Step\UrlRewrite\Version191to2000</volume>
+        </step>
+        <step title="Log Step">
+            <integrity>Migration\Step\Log\Integrity</integrity>
+            <data>Migration\Step\Log\Data</data>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="Ratings Step">
+            <integrity>Migration\Step\Ratings</integrity>
+            <data>Migration\Step\Ratings</data>
+            <volume>Migration\Step\Ratings</volume>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Map Step">
+            <delta>Migration\Step\Map\Delta</delta>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Log Step">
+            <delta>Migration\Step\Log\Delta</delta>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+    </steps>
+    <source>
+        <database host="localhost" name="magento1" user="root"/>
+    </source>
+    <destination>
+        <database host="localhost" name="magento2" user="root"/>
+    </destination>
+    <options>
+        <map_file>etc/ce-to-ee/1.9.0.1/map.xml.dist</map_file>
+        <eav_map_file>etc/ce-to-ee/map-eav.xml.dist</eav_map_file>
+        <eav_document_groups_file>etc/ce-to-ee/eav-document-groups.xml.dist</eav_document_groups_file>
+        <eav_attribute_groups_file>etc/ce-to-ee/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
+        <log_map_file>etc/ce-to-ee/map-log.xml.dist</log_map_file>
+        <log_document_groups_file>etc/ce-to-ee/log-document-groups.xml.dist</log_document_groups_file>
+        <settings_map_file>etc/ce-to-ee/settings.xml.dist</settings_map_file>
+        <delta_document_groups_file>etc/ce-to-ee/deltalog.xml.dist</delta_document_groups_file>
+        <class_map>etc/ce-to-ee/class-map.xml.dist</class_map>
+        <bulk_size>100</bulk_size>
+        <source_prefix />
+        <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
+        <log_file>var/migration.log</log_file>
+        <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
+    </options>
+</config>
