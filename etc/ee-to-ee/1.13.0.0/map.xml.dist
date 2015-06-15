@@ -1577,6 +1577,9 @@
                 <document>magento_catalogpermissions_index_tmp</document>
             </ignore>
             <ignore>
+                <document>catalogsearch_fulltext_index_default</document>
+            </ignore>
+            <ignore>
                 <document>magento_customercustomattributes_sales_flat_order</document>
             </ignore>
             <ignore>
@@ -1699,6 +1702,51 @@
             </ignore>
             <ignore>
                 <field>admin_user.interface_locale</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.prefix</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.firstname</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.middlename</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.lastname</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.suffix</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.dob</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.password_hash</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.rp_token</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.rp_token_created_at</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.default_billing</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.default_shipping</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.taxvat</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.confirmation</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.gender</field>
             </ignore>
             <ignore>
                 <field>rating.is_active</field>

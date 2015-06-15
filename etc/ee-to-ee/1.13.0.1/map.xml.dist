@@ -1475,6 +1475,9 @@
                 <document>catalog_category_product_index_tmp</document>
             </ignore>
             <ignore>
+                <document>catalogsearch_fulltext_index_default</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute</document>
             </ignore>
             <ignore>

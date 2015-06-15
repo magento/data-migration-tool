@@ -951,7 +951,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         );
         $select->join(
             ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            's.value_id = p.value_id',
+            's.value_id = p.value_id and `p`.`store_id` = ecpr.store_id',
             []
         );
         $select->join(
@@ -961,7 +961,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         );
         $select->join(
             ['cu' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-            'cu.entity_id = c.category_id',
+            'cu.entity_id = c.category_id and cu.store_id = ecpr.store_id',
             []
         );
         $query = $select
