@@ -1746,6 +1746,51 @@
                 <field>cataloginventory_stock_item.website_id</field>
             </ignore>
             <ignore>
+                <field>customer_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.prefix</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.firstname</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.middlename</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.lastname</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.suffix</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.dob</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.password_hash</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.rp_token</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.rp_token_created_at</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.default_billing</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.default_shipping</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.taxvat</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.confirmation</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.gender</field>
+            </ignore>
+            <ignore>
                 <field>oauth_nonce.consumer_id</field>
             </ignore>
             <ignore>
