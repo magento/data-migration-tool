@@ -20,6 +20,71 @@
             <ignore>
                 <field>sales_flat_order.reward_salesrule_points</field>
             </ignore>
+            <ignore>
+                <field>sales_flat_order.currency_base_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.currency_rate</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.is_hold</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.is_multi_payment</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.real_order_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.tax_percent</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.tracking_numbers</field>
+            </ignore>
+            <move>
+                <field>sales_flat_order.currency_code</field>
+                <to>sales_order.order_currency_code</to>
+            </move>
+            <move>
+                <field>sales_flat_order.custbalance_amount</field>
+                <to>sales_order.customer_balance_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_custbalance_amount</field>
+                <to>sales_order.base_customer_balance_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_amount</field>
+                <to>sales_order.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_amount</field>
+                <to>sales_order.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.shipping_hidden_tax_amount</field>
+                <to>sales_order.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_shipping_hidden_tax_amnt</field>
+                <to>sales_order.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_invoiced</field>
+                <to>sales_order.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_invoiced</field>
+                <to>sales_order.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_refunded</field>
+                <to>sales_order.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_refunded</field>
+                <to>sales_order.base_discount_tax_compensation_refunded</to>
+            </move>
         </field_rules>
     </source>
     <destination>
