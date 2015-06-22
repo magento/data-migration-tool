@@ -6,7 +6,6 @@
 namespace Migration\App\Mode;
 
 use Magento\Framework\ObjectManagerInterface;
-use Migration\Exception;
 
 /**
  * Class ModeFactory
@@ -29,16 +28,16 @@ class ModeFactory
     /**
      * @param string $mode
      * @return ModeInterface
-     * @throws Exception
+     * @throws \Migration\Exception
      */
     public function create($mode)
     {
         if (!class_exists('\\Migration\\Mode\\' . ucfirst($mode))) {
-            throw new \InvalidArgumentException(sprintf("Mode '%s' does not exist.", $mode));
+            throw new \Migration\Exception(sprintf("Mode '%s' does not exist.", $mode));
         }
         $mode = $this->objectManager->create('\\Migration\\Mode\\' . ucfirst($mode), ['mode' => $mode]);
         if (!($mode instanceof \Migration\App\Mode\ModeInterface)) {
-            throw new \InvalidArgumentException('Mode class must implement ModeInterface.');
+            throw new \Migration\Exception('Mode class must implement ModeInterface.');
         }
         return $mode;
     }

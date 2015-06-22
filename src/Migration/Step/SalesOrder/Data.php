@@ -246,6 +246,6 @@ class Data implements StageInterface
      */
     public function rollback()
     {
-        throw new \Exception('Rollback is impossible');
+        throw new \Migration\Exception('Rollback is impossible');
     }
 }

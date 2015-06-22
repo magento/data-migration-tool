@@ -87,7 +87,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Migration\Exception
      * @expectedExceptionMessage Record structure does not contain field wrongField
      */
     public function testSetValueWithException()
@@ -104,7 +104,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException \Exception
+     * @expectedException \Migration\Exception
      * @expectedExceptionMessage Record structure does not match provided Data
      */
     public function testSetDataWithException()

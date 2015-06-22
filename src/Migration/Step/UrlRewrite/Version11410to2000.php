@@ -205,7 +205,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     public function perform()
     {
         if (!method_exists($this, $this->stage)) {
-            throw new \Exception('Invalid step configuration');
+            throw new \Migration\Exception('Invalid step configuration');
         }
 
         return call_user_func([$this, $this->stage]);

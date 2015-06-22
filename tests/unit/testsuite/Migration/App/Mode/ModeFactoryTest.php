@@ -46,7 +46,7 @@ class ModeFactoryTest extends \PHPUnit_Framework_TestCase
         $mode = $this->getMock('Migration\Mode\Unknown', [], [], '', false);
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($mode));
 
-        $this->setExpectedException('\InvalidArgumentException', 'Mode class must implement ModeInterface.');
+        $this->setExpectedException('\Migration\Exception', 'Mode class must implement ModeInterface.');
         $this->modeFactory->create('unknown');
     }
 }
