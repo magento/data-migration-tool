@@ -150,7 +150,7 @@ USAGE;
             $this->logger->info(sprintf('%s: rollback', $stepName));
             try {
                 $stage->rollback();
-            } catch (\Exception $e) {
+            } catch (\Migration\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
             $this->progress->reset($stage);

@@ -71,7 +71,7 @@ abstract class AbstractMode
         }
         try {
             $result = $object->perform();
-        } catch (\Exception $e) {
+        } catch (\Migration\Exception $e) {
             $this->logger->error($e->getMessage());
             return false;
         }
