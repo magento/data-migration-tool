@@ -41,18 +41,15 @@
             <ignore>
                 <field>sales_flat_order.tracking_numbers</field>
             </ignore>
-            <move>
-                <field>sales_flat_order.currency_code</field>
-                <to>sales_order.order_currency_code</to>
-            </move>
-            <move>
-                <field>sales_flat_order.custbalance_amount</field>
-                <to>sales_order.customer_balance_amount</to>
-            </move>
-            <move>
+            <ignore>
+                <field>sales_flat_order.order_currency_code</field>
+            </ignore>
+            <ignore>
                 <field>sales_flat_order.base_custbalance_amount</field>
-                <to>sales_order.base_customer_balance_amount</to>
-            </move>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.custbalance_amount</field>
+            </ignore>
             <move>
                 <field>sales_flat_order.hidden_tax_amount</field>
                 <to>sales_order.discount_tax_compensation_amount</to>
@@ -91,6 +88,12 @@
         <field_rules>
             <ignore>
                 <field>sales_order.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_custbalance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.custbalance_amount</field>
             </ignore>
         </field_rules>
     </destination>

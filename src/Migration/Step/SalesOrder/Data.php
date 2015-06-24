@@ -98,10 +98,9 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocumentList()), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
             $destinationDocumentName = $this->map->getDocumentMap(
@@ -134,6 +133,7 @@ class Data implements StageInterface
                 $destinationCollection = $destDocument->getRecords();
                 $destEavCollection = $eavDocumentResource->getRecords();
                 foreach ($bulk as $recordData) {
+                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $sourceRecord */
                     $sourceRecord = $this->recordFactory->create(
@@ -153,6 +153,20 @@ class Data implements StageInterface
         }
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $iterations = 0;
+        foreach (array_keys($this->helper->getDocumentList()) as $document) {
+            $iterations += $this->source->getRecordsCount($document);
+        }
+        return $iterations;
     }
 
     /**
