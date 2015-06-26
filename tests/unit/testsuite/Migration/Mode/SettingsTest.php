@@ -45,7 +45,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $stepListFactory->expects($this->any())->method('create')->with(['mode' => 'settings'])
             ->willReturn($this->stepList);
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['info'])
+            ->setMethods(['info', 'error'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted'])
@@ -68,7 +68,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
 
     public function testRunStepsVolumeFail()
     {
-        $this->setExpectedException('Migration\Exception', 'Volume Check failed');
+        $this->logger->expects($this->once())->method('error')->with('Volume Check failed');
         $stepIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepIntegrity->expects($this->once())->method('perform')->will($this->returnValue(true));
 
@@ -83,7 +83,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->any())->method('info');
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);
-        $this->assertSame($this->settings, $this->settings->run());
+        $this->assertTrue($this->settings->run());
     }
 
     public function testRunStepsDataMigrationFail()

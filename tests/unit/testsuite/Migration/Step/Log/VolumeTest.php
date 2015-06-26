@@ -133,7 +133,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', 3], ['document_to_clear', null]]);
         $this->logger->expects($this->once())->method('error')->with(
-            'Volume check failed for the destination document: ' . $dstDocName
+            'Mismatch of entities in the document: ' . $dstDocName
         );
         $this->assertFalse($this->volume->perform());
     }
@@ -146,7 +146,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, 1]]);
         $this->logger->expects($this->once())->method('error')->with(
-            'Destination log documents are not cleared'
+            'Log documents in the destination resource are not cleared'
         );
         $this->assertFalse($this->volume->perform());
     }

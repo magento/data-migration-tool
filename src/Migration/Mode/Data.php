@@ -133,8 +133,8 @@ USAGE;
     protected function runVolume(array $step, $stepName)
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
+            $this->logger->error('Volume Check failed');
             $this->rollback($step['data'], $stepName);
-            throw new Exception('Volume Check failed');
         }
     }
 
