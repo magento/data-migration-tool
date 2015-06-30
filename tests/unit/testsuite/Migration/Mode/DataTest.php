@@ -45,7 +45,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $stepListFactory->expects($this->any())->method('create')->with(['mode' => 'data'])
             ->willReturn($this->stepList);
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['info'])
+            ->setMethods(['info', 'error'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'reset'])
@@ -73,7 +73,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
     public function testRunStepsVolumeFail()
     {
-        $this->setExpectedException('Migration\Exception', 'Volume Check failed');
+        $this->logger->expects($this->once())->method('error')->with('Volume Check failed');
         $stepData = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepData->expects($this->once())->method('perform')->will($this->returnValue(true));
 
@@ -86,7 +86,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->any())->method('info');
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Step1' => ['data' => $stepData, 'volume' => $stepVolume]]);
-        $this->assertSame($this->data, $this->data->run());
+        $this->assertTrue($this->data->run());
     }
 
     public function testRunStepsDataMigrationFail()

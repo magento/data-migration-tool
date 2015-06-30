@@ -100,7 +100,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->progress,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->logger
         );
     }
 

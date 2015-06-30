@@ -45,6 +45,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     protected $recordFactory;
 
     /**
+     * @var \Migration\Logger\Logger
+     */
+    protected $logger;
+
+    /**
      * @var string
      */
     protected $stage;
@@ -99,6 +104,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      * @param Destination $destination
      * @param ProgressBar\LogLevelProcessor $progress
      * @param RecordFactory $factory
+     * @param \Migration\Logger\Logger $logger
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -108,6 +114,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         Destination $destination,
         ProgressBar\LogLevelProcessor $progress,
         RecordFactory $factory,
+        \Migration\Logger\Logger $logger,
         $stage
     ) {
         parent::__construct($config);
@@ -116,6 +123,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $this->progress = $progress;
         $this->recordFactory = $factory;
         $this->stage = $stage;
+        $this->logger = $logger;
     }
 
     /**
@@ -208,6 +216,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $this->progress->start(1);
         $result &= $this->source->getRecordsCount(self::SOURCE) ==
             $this->destination->getRecordsCount(self::DESTINATION);
+        if (!$result) {
+            $this->logger->error('Mismatch of entities in the document: url_rewrite');
+        }
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;

@@ -196,7 +196,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->ratings = new Ratings($this->destination, $this->logger, $this->progress, 'volume');
         $this->progress->expects($this->once())->method('start')->with(1);
         $this->progress->expects($this->once())->method('advance');
-        $this->progress->expects($this->never())->method('finish');
+        $this->progress->expects($this->once())->method('finish');
         $this->destination->expects($this->once())->method('getAdapter')->willReturn($this->adapter);
         $this->adapter->expects($this->exactly(2))->method('getSelect')->willReturn($this->select);
         $this->select
@@ -232,10 +232,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         $this->logger
             ->expects($this->once())
             ->method('error')
-            ->with(
-                'Volume check failed due to discrepancy in "rating" and "rating_store" documents in the'
-                . ' destination resource'
-            );
+            ->with('Mismatch of entities in the documents: rating, rating_store');
         $this->assertFalse($this->ratings->perform());
     }
 }

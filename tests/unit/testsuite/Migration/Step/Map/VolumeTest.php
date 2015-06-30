@@ -114,7 +114,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->logger->expects($this->once())->method('error')->with(
-            'Volume check failed for the destination document: ' . $dstDocName
+            'Mismatch of entities in the document: ' . $dstDocName
         );
         $this->assertFalse($this->volume->perform());
     }

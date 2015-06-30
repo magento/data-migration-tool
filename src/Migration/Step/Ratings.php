@@ -142,6 +142,7 @@ class Ratings extends DatabaseStage
      */
     protected function volume()
     {
+        $result = true;
         $this->progress->start(1);
         $this->progress->advance();
         $ratingsShouldBeActive = [];
@@ -167,15 +168,15 @@ class Ratings extends DatabaseStage
         if (count(array_intersect($ratingsShouldBeActive, $ratingsIsActive)) != count($ratingsShouldBeActive)) {
             $this->logger->error(
                 sprintf(
-                    'Volume check failed due to discrepancy in "%s" and "%s" documents in the destination resource',
+                    'Mismatch of entities in the documents: %s, %s',
                     self::RATING_TABLE_NAME,
                     self::RATING_STORE_TABLE_NAME
                 )
             );
-            return false;
+            $result = false;
         }
         $this->progress->finish();
-        return true;
+        return $result;
     }
 
     /**
