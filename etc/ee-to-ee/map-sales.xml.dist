@@ -20,36 +20,6 @@
             <ignore>
                 <field>sales_flat_order.reward_salesrule_points</field>
             </ignore>
-            <ignore>
-                <field>sales_flat_order.currency_base_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.currency_rate</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.is_hold</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.is_multi_payment</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.real_order_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.tax_percent</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.tracking_numbers</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.order_currency_code</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.base_custbalance_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order.custbalance_amount</field>
-            </ignore>
             <move>
                 <field>sales_flat_order.hidden_tax_amount</field>
                 <to>sales_order.discount_tax_compensation_amount</to>
@@ -88,12 +58,6 @@
         <field_rules>
             <ignore>
                 <field>sales_order.send_email</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.base_custbalance_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.custbalance_amount</field>
             </ignore>
         </field_rules>
     </destination>

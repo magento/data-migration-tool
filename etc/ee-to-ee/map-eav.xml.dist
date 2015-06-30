@@ -167,6 +167,9 @@
             <ignore>
                 <field>catalog_eav_attribute.search_weight</field>
             </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.additional_data</field>
+            </ignore>
 
             <transform>
                 <field>eav_attribute_group.attribute_group_code</field>
