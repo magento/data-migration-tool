@@ -656,6 +656,9 @@
             <ignore>
                 <document>enterprise_index_multiplier</document>
             </ignore>
+            <ignore>
+                <document>catalogrule_affected_product</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1147,10 +1150,6 @@
                 <to>sales_invoice_item.base_discount_tax_compensation_amount</to>
             </move>
             <move>
-                <field>sales_flat_order_address.address_id</field>
-                <to>sales_order_address.entity_id</to>
-            </move>
-            <move>
                 <field>sales_flat_order_item.hidden_tax_amount</field>
                 <to>sales_order_item.discount_tax_compensation_amount</to>
             </move>
@@ -1185,10 +1184,6 @@
             <move>
                 <field>sales_flat_quote_payment.cc_last4</field>
                 <to>quote_payment.cc_last_4</to>
-            </move>
-            <move>
-                <field>sales_flat_invoice_item.shipment_id</field>
-                <to>sales_invoice_item.parent_id</to>
             </move>
             <move>
                 <field>sales_flat_quote_address.hidden_tax_amount</field>
@@ -1334,49 +1329,10 @@
                 <field>sales_flat_order.reward_salesrule_points</field>
             </ignore>
             <ignore>
-                <field>sales_flat_invoice.customer_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.invoice_status_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.invoice_type</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.is_virtual</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.real_order_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.total_due</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.total_paid</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_address.gift_message_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_address.tax_id</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_order_item.is_nominal</field>
             </ignore>
             <ignore>
                 <field>sales_flat_order_payment.paybox_request_number</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.cc_raw_request</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.cc_raw_response</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_order_payment.customer_payment_id</field>
             </ignore>
             <ignore>
                 <field>weee_tax.entity_type_id</field>
@@ -1554,6 +1510,9 @@
             </ignore>
             <ignore>
                 <field>enterprise_cms_page_revision.custom_layout_update_xml</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_template.template_text_preprocessed</field>
             </ignore>
         </field_rules>
     </source>
@@ -1792,6 +1751,12 @@
             </ignore>
             <ignore>
                 <document>quote_id_mask</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_option_swatch</document>
+            </ignore>
+            <ignore>
+                <document>import_history</document>
             </ignore>
         </document_rules>
         <field_rules>
