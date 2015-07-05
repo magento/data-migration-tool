@@ -1511,6 +1511,9 @@
             <ignore>
                 <field>enterprise_cms_page_revision.custom_layout_update_xml</field>
             </ignore>
+            <ignore>
+                <field>newsletter_template.template_text_preprocessed</field>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1751,6 +1754,9 @@
             </ignore>
             <ignore>
                 <document>eav_attribute_option_swatch</document>
+            </ignore>
+            <ignore>
+                <document>import_history</document>
             </ignore>
         </document_rules>
         <field_rules>
