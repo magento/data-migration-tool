@@ -9,21 +9,6 @@
     <source>
         <document_rules>
             <ignore>
-                <document>enterprise_queue_queue</document>
-            </ignore>
-            <ignore>
-                <document>enterprise_queue_task</document>
-            </ignore>
-            <ignore>
-                <document>paybox_question_number</document>
-            </ignore>
-            <ignore>
-                <document>social_facebook_actions</document>
-            </ignore>
-            <ignore>
-                <document>strikeiron_tax_rate</document>
-            </ignore>
-            <ignore>
                 <document>m2_cl_*</document>
             </ignore>
             <ignore>
