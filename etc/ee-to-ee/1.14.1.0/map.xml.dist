@@ -9,6 +9,42 @@
     <source>
         <document_rules>
             <ignore>
+                <document>customer_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
+            </ignore>
+            <ignore>
                 <document>m2_cl_*</document>
             </ignore>
             <ignore>
@@ -1360,48 +1396,6 @@
             </ignore>
             <ignore>
                 <field>catalog_product_entity_varchar.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.attribute_set_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_datetime.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_decimal.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_int.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_text.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_varchar.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.attribute_set_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_datetime.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_decimal.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_int.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_text.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
                 <field>sales_flat_creditmemo.cybersource_token</field>
