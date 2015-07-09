@@ -9,6 +9,18 @@
     <source>
         <document_rules>
             <ignore>
+                <document>sales_flat_creditmemo_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_flat_invoice_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_flat_order_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_flat_shipment_grid</document>
+            </ignore>
+            <ignore>
                 <document>customer_entity</document>
             </ignore>
             <ignore>
@@ -606,10 +618,6 @@
                 <to>sales_creditmemo_comment</to>
             </rename>
             <rename>
-                <document>sales_flat_creditmemo_grid</document>
-                <to>sales_creditmemo_grid</to>
-            </rename>
-            <rename>
                 <document>sales_flat_creditmemo_item</document>
                 <to>sales_creditmemo_item</to>
             </rename>
@@ -622,20 +630,12 @@
                 <to>sales_invoice_comment</to>
             </rename>
             <rename>
-                <document>sales_flat_invoice_grid</document>
-                <to>sales_invoice_grid</to>
-            </rename>
-            <rename>
                 <document>sales_flat_invoice_item</document>
                 <to>sales_invoice_item</to>
             </rename>
             <rename>
                 <document>sales_flat_order_address</document>
                 <to>sales_order_address</to>
-            </rename>
-            <rename>
-                <document>sales_flat_order_grid</document>
-                <to>sales_order_grid</to>
             </rename>
             <rename>
                 <document>sales_flat_order_item</document>
@@ -684,10 +684,6 @@
             <rename>
                 <document>sales_flat_shipment_comment</document>
                 <to>sales_shipment_comment</to>
-            </rename>
-            <rename>
-                <document>sales_flat_shipment_grid</document>
-                <to>sales_shipment_grid</to>
             </rename>
             <rename>
                 <document>sales_flat_shipment_item</document>
@@ -1224,6 +1220,18 @@
             </ignore>
             <ignore>
                 <document>import_history</document>
+            </ignore>
+            <ignore>
+                <document>sales_creditmemo_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_invoice_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_order_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_shipment_grid</document>
             </ignore>
         </document_rules>
         <field_rules>
