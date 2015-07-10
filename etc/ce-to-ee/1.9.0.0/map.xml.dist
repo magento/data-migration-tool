@@ -1503,6 +1503,9 @@
             <ignore>
                 <document>import_history</document>
             </ignore>
+            <ignore>
+                <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
