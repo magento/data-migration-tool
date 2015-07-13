@@ -33,36 +33,49 @@ class Data extends \Migration\Step\OrderGrids\Data
         parent::__construct($progress, $source, $destination, $recordFactory, $logger);
     }
 
-    protected function getSelectSalesOrderGrid($sourceDocument)
+    protected function getSelectSalesOrderGridArchive(array $columns)
     {
-        $select = parent::getSelectSalesOrderGrid($sourceDocument);
-        $select->joinLeft(['sfoee' => 'sales_flat_order'],
-            'sfoee.entity_id = ' . $sourceDocument . '.entity_id',
-            'sfoee.customer_bal_total_refunded as refunded_to_store_credit');
+        return parent::getSelectSalesOrderGrid($columns);
+    }
 
-        return $select;
+    protected function getSelectSalesInvoiceGridArchive(array $columns)
+    {
+        return parent::getSelectSalesInvoiceGrid($columns);
+    }
+
+    protected function getSelectSalesShipmentGridArchive(array $columns)
+    {
+        return parent::getSelectSalesShipmentGrid($columns);
+    }
+
+    protected function getSelectSalesCreditmemoGridArchive(array $columns)
+    {
+        return parent::getSelectSalesCreditmemoGrid($columns);
     }
 
     protected function getDocumentList()
     {
-        return parent::getDocumentList() /*+ [
-            [
-                'source' => 'sales_flat_order_grid_archive',
-                'destination' => 'sales_order_grid_archive',
-                'method' => 'getSelectSalesOrderGrid'
-            ], [
-                'source' => 'sales_flat_invoice_grid_archive',
-                'destination' => 'sales_invoice_grid_archive',
-                'method' => 'getSelectSalesInvoiceGrid'
-            ], [
-                'source' => 'sales_flat_shipment_grid_archive',
-                'destination' => 'sales_shipment_grid_archive',
-                'method' => 'getSelectSalesShipmentGrid'
-            ], [
-                'source' => 'sales_flat_creditmemo_grid_archive',
-                'destination' => 'sales_creditmemo_grid_archive',
-                'method' => 'getSelectSalesCreditmemoGrid'
+        $documentList = parent::getDocumentList();
+        $documentListEE = [
+            'getSelectSalesOrderGridArchive' => [
+                'source' => 'enterprise_sales_order_grid_archive',
+                'destination' => 'magento_sales_order_grid_archive',
+                'columns' => $documentList['getSelectSalesOrderGrid']['columns']
+                    + ['refunded_to_store_credit' => 'sales_order.customer_bal_total_refunded']
+            ], 'getSelectSalesInvoiceGridArchive'=> [
+                'source' => 'enterprise_sales_invoice_grid_archive',
+                'destination' => 'magento_sales_invoice_grid_archive',
+                'columns' => $documentList['getSelectSalesInvoiceGrid']['columns']
+            ], 'getSelectSalesShipmentGridArchive' => [
+                'source' => 'enterprise_sales_shipment_grid_archive',
+                'destination' => 'magento_sales_shipment_grid_archive',
+                'columns' => $documentList['getSelectSalesShipmentGrid']['columns']
+            ], 'getSelectSalesCreditmemoGridArchive' => [
+                'source' => 'enterprise_sales_creditmemo_grid_archive',
+                'destination' => 'magento_sales_creditmemo_grid_archive',
+                'columns' => $documentList['getSelectSalesCreditmemoGrid']['columns']
             ]
-        ]*/;
+        ];
+        return $documentList;
     }
 }
