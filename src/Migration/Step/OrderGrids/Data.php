@@ -77,17 +77,17 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
-        foreach ($this->getDocumentList() as $document) {
+        foreach ($this->getDocumentList() as $methodToExecute => $document) {
             $sourceDocumentName = $document['source'];
             $destinationDocumentName = $document['destination'];
-            $methodToExecute = $document['method'];
+            $columns = $document['columns'];
             $destinationDocument = $this->destination->getDocument($destinationDocumentName);
             $this->destination->clearDocument($destinationDocumentName);
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocumentName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
             /** @var \Magento\Framework\DB\Select $select */
-            $select = call_user_func_array([$this, $methodToExecute], [$sourceDocumentName]);
+            $select = call_user_func_array([$this, $methodToExecute], [$columns]);
             while (!empty($bulk = $this->getRecords($select, $pageNumber))) {
                 $pageNumber++;
                 $destinationCollection = $destinationDocument->getRecords();
@@ -126,114 +126,205 @@ class Data implements StageInterface
         return $this->sourceAdapter->loadDataFromSelect($select);
     }
 
-    protected function getSelectSalesOrderGrid($sourceDocument)
+    protected function getSelectSalesOrderGrid(array $columns)
     {
-        $orderCondition = 'sfo.entity_id = ' . $sourceDocument . '.entity_id';
-        $orderFields = 'sfo.shipping_description as shipping_information,'
-            . 'sfo.customer_email,'
-            . 'sfo.customer_group_id as customer_group,'
-            . 'sfo.base_subtotal as subtotal,'
-            . 'sfo.base_shipping_amount as shipping_and_handling,'
-            . "trim(concat(ifnull(sfo.customer_firstname, ''), ' ' ,ifnull(sfo.customer_lastname, '')))"
-            . ' as customer_name,'
-            . 'sfo.total_refunded as total_refunded';
-        $billingAddressCondition = 'sfoa1.parent_id = sfo.entity_id AND sfoa1.entity_id = sfo.billing_address_id';
-        $billingAddressFields = "trim(concat(ifnull(sfoa1.street, ''), ', ' ,ifnull(sfoa1.city, ''),"
-            . " ', ' ,ifnull(sfoa1.region, ''), ', ' ,ifnull(sfoa1.postcode, ''))) as billing_address";
-        $shippingAddressCondition = 'sfoa2.parent_id = sfo.entity_id AND sfoa2.entity_id = sfo.shipping_address_id';
-        $shippingAddressFields = "trim(concat(ifnull(sfoa2.street, ''), ', ' ,ifnull(sfoa2.city, ''), "
-            . " ', ' ,ifnull(sfoa2.region, ''), ', ' ,ifnull(sfoa2.postcode, ''))) as shipping_address";
-        $paymentMethodCondition = 'sfop.parent_id = sfo.entity_id';
-        $paymentMethodFields = 'sfop.method as payment_method';
-
+        foreach ($columns as $key => $value) {
+            $columns[$key] = new \Zend_Db_Expr($value);
+        }
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
-        $select->from($sourceDocument)
-            ->joinLeft(['sfo' => 'sales_flat_order'],
-                $orderCondition,
-                $orderFields)
-            ->joinLeft(['sfoa1' => 'sales_flat_order_address'],
-                $billingAddressCondition,
-                $billingAddressFields)
-            ->joinLeft(['sfoa2' => 'sales_flat_order_address'],
-                $shippingAddressCondition,
-                $shippingAddressFields)
-            ->joinLeft(['sfop' => 'sales_flat_order_payment'],
-                $paymentMethodCondition,
-                $paymentMethodFields);
-
+        $select->from(['sales_order' => 'sales_flat_order'], [])
+            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                'sales_order.shipping_address_id = sales_shipping_address.entity_id',
+                [])
+            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                'sales_order.billing_address_id = sales_billing_address.entity_id',
+                []);
+        $select->columns($columns);
         return $select;
     }
 
-    protected function getSelectSalesInvoiceGrid($sourceDocument)
+    protected function getSelectSalesInvoiceGrid(array $columns)
     {
+        foreach ($columns as $key => $value) {
+            $columns[$key] = new \Zend_Db_Expr($value);
+        }
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
-
+        $select->from(['sales_invoice' => 'sales_flat_invoice'], [])
+            ->joinLeft(['sales_order' => 'sales_flat_order'],
+                'sales_invoice.order_id = sales_order.entity_id',
+                [])
+            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                'sales_invoice.shipping_address_id = sales_shipping_address.entity_id',
+                [])
+            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                'sales_invoice.billing_address_id = sales_billing_address.entity_id',
+                []);
+        $select->columns($columns);
         return $select;
     }
 
-    protected function getSelectSalesShipmentGrid($sourceDocument)
+    protected function getSelectSalesShipmentGrid(array $columns)
     {
-        $orderCondition = 'sfo.entity_id = ' . $sourceDocument . '.entity_id';
-        $orderFields = 'sfo.shipping_description as shipping_information,'
-            . 'sfo.customer_email,'
-            . 'sfo.customer_group_id as customer_group,'
-            . 'sfo.base_subtotal as subtotal,'
-            . 'sfo.base_shipping_amount as shipping_and_handling,'
-            . "trim(concat(ifnull(sfo.customer_firstname, ''), ' ' ,ifnull(sfo.customer_lastname, '')))"
-            . ' as customer_name,'
-            . 'sfo.total_refunded as total_refunded';
-        $billingAddressCondition = 'sfoa1.parent_id = sfo.entity_id AND sfoa1.entity_id = sfo.billing_address_id';
-        $billingAddressFields = "trim(concat(ifnull(sfoa1.street, ''), ', ' ,ifnull(sfoa1.city, ''),"
-            . " ', ' ,ifnull(sfoa1.region, ''), ', ' ,ifnull(sfoa1.postcode, ''))) as billing_address";
-        $shippingAddressCondition = 'sfoa2.parent_id = sfo.entity_id AND sfoa2.entity_id = sfo.shipping_address_id';
-        $shippingAddressFields = "trim(concat(ifnull(sfoa2.street, ''), ', ' ,ifnull(sfoa2.city, ''), "
-            . " ', ' ,ifnull(sfoa2.region, ''), ', ' ,ifnull(sfoa2.postcode, ''))) as shipping_address";
-
+        foreach ($columns as $key => $value) {
+            $columns[$key] = new \Zend_Db_Expr($value);
+        }
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
-        $select->from($sourceDocument)
-            ->joinLeft(['sfo' => 'sales_flat_order'],
-                $orderCondition,
-                $orderFields)
-            ->joinLeft(['sfoa1' => 'sales_flat_order_address'],
-                $billingAddressCondition,
-                $billingAddressFields)
-            ->joinLeft(['sfoa2' => 'sales_flat_order_address'],
-                $shippingAddressCondition,
-                $shippingAddressFields);
-
+        $select->from(['sales_shipment' => 'sales_flat_shipment'], [])
+            ->joinLeft(['sales_order' => 'sales_flat_order'],
+                'sales_shipment.order_id = sales_order.entity_id',
+                [])
+            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                'sales_shipment.shipping_address_id = sales_shipping_address.entity_id',
+                [])
+            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                'sales_shipment.billing_address_id = sales_billing_address.entity_id',
+                []);
+        $select->columns($columns);
         return $select;
     }
 
-    protected function getSelectSalesCreditmemoGrid($sourceDocument)
+    protected function getSelectSalesCreditmemoGrid(array $columns)
     {
+        foreach ($columns as $key => $value) {
+            $columns[$key] = new \Zend_Db_Expr($value);
+        }
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
-
+        $select->from(['sales_creditmemo' => 'sales_flat_creditmemo'], [])
+            ->joinLeft(['sales_order' => 'sales_flat_order'],
+                'sales_creditmemo.order_id = sales_order.entity_id',
+                [])
+            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                'sales_creditmemo.shipping_address_id = sales_shipping_address.entity_id',
+                [])
+            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                'sales_creditmemo.billing_address_id = sales_billing_address.entity_id',
+                []);
+        $select->columns($columns);
         return $select;
     }
 
     protected function getDocumentList()
     {
         return [
-            [
+            'getSelectSalesOrderGrid' => [
                 'source' => 'sales_flat_order_grid',
                 'destination' => 'sales_order_grid',
-                'method' => 'getSelectSalesOrderGrid'
-//            ], [
-//                'source' => 'sales_flat_invoice_grid',
-//                'destination' => 'sales_invoice_grid',
-//                'method' => 'getSelectSalesInvoiceGrid'
-//            ], [
-//                'source' => 'sales_flat_shipment_grid',
-//                'destination' => 'sales_shipment_grid',
-//                'method' => 'getSelectSalesShipmentGrid'
-//            ], [
-//                'source' => 'sales_flat_creditmemo_grid',
-//                'destination' => 'sales_creditmemo_grid',
-//                'method' => 'getSelectSalesCreditmemoGrid'
+                'columns' => [
+                    'entity_id' => 'sales_order.entity_id',
+                    'status' => 'sales_order.status',
+                    'store_id' => 'sales_order.store_id',
+                    'store_name' => 'sales_order.store_name',
+                    'customer_id' => 'sales_order.customer_id',
+                    'base_grand_total' => 'sales_order.base_grand_total',
+                    'base_total_paid' => 'sales_order.base_total_paid',
+                    'grand_total' => 'sales_order.grand_total',
+                    'total_paid' => 'sales_order.total_paid',
+                    'increment_id' => 'sales_order.increment_id',
+                    'base_currency_code' => 'sales_order.base_currency_code',
+                    'order_currency_code' => 'sales_order.order_currency_code',
+                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' ,ifnull(sales_shipping_address.lastname, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'created_at' => 'sales_order.created_at',
+                    'updated_at' => 'sales_order.updated_at',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'shipping_information' => 'sales_order.shipping_description',
+                    'customer_email' => 'sales_order.customer_email',
+                    'customer_group' => 'sales_order.customer_group_id',
+                    'subtotal' => 'sales_order.base_subtotal',
+                    'shipping_and_handling' => 'sales_order.base_shipping_amount',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'total_refunded' => 'sales_order.total_refunded',
+                ]
+            ], 'getSelectSalesInvoiceGrid' => [
+                'source' => 'sales_flat_invoice_grid',
+                'destination' => 'sales_invoice_grid',
+                'columns' => [
+                    'entity_id' => 'sales_invoice.entity_id',
+                    'increment_id' => 'sales_invoice.increment_id',
+                    'state' => 'sales_invoice.state',
+                    'store_id' => 'sales_invoice.store_id',
+                    'store_name' => 'sales_order.store_name',
+                    'order_id' => 'sales_invoice.order_id',
+                    'order_increment_id' => 'sales_order.increment_id',
+                    'order_created_at' => 'sales_order.created_at',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'customer_email' => 'sales_order.customer_email',
+                    'customer_group_id' => 'sales_order.customer_group_id',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'store_currency_code' => 'sales_invoice.store_currency_code',
+                    'order_currency_code' => 'sales_invoice.order_currency_code',
+                    'base_currency_code' => 'sales_invoice.base_currency_code',
+                    'global_currency_code' => 'sales_invoice.global_currency_code',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'shipping_information' => 'sales_order.shipping_description',
+                    'subtotal' => 'sales_order.base_subtotal',
+                    'shipping_and_handling' => 'sales_order.base_shipping_amount',
+                    'grand_total' => 'sales_invoice.grand_total',
+                    'created_at' => 'sales_invoice.created_at',
+                    'updated_at' => 'sales_invoice.updated_at',
+                ]
+            ], 'getSelectSalesShipmentGrid' => [
+                'source' => 'sales_flat_shipment_grid',
+                'destination' => 'sales_shipment_grid',
+                'columns' => [
+                    'entity_id' => 'sales_shipment.entity_id',
+                    'increment_id' => 'sales_shipment.increment_id',
+                    'store_id' => 'sales_shipment.store_id',
+                    'order_increment_id' => 'sales_order.increment_id',
+                    'order_created_at' => 'sales_order.created_at',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'total_qty' => 'sales_shipment.total_qty',
+                    'shipment_status' => 'sales_shipment.shipment_status',
+                    'order_status' => 'sales_order.status',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' ,ifnull(sales_shipping_address.lastname, \'\')))',
+                    'customer_email' => 'sales_order.customer_email',
+                    'customer_group_id' => 'sales_order.customer_group_id',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'created_at' => 'sales_shipment.created_at',
+                    'updated_at' => 'sales_shipment.updated_at',
+                    'order_id' => 'sales_shipment.order_id',
+                    'shipping_information' => 'sales_order.shipping_description'
+                ]
+            ], 'getSelectSalesCreditmemoGrid' => [
+                'source' => 'sales_flat_creditmemo_grid',
+                'destination' => 'sales_creditmemo_grid',
+                'columns' => [
+                    'entity_id' => 'sales_creditmemo.entity_id',
+                    'increment_id' => 'sales_creditmemo.increment_id',
+                    'created_at' => 'sales_creditmemo.created_at',
+                    'updated_at' => 'sales_creditmemo.updated_at',
+                    'order_id' => 'sales_order.entity_id',
+                    'order_increment_id' => 'sales_order.increment_id',
+                    'order_created_at' => 'sales_order.created_at',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'state' => 'sales_creditmemo.state',
+                    'base_grand_total' => 'sales_creditmemo.base_grand_total',
+                    'order_status' => 'sales_order.status',
+                    'store_id' => 'sales_creditmemo.store_id',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'customer_email' => 'sales_order.customer_email',
+                    'customer_group_id' => 'sales_order.customer_group_id',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'shipping_information' => 'sales_order.shipping_description',
+                    'subtotal' => 'sales_creditmemo.subtotal',
+                    'shipping_and_handling' => 'sales_creditmemo.shipping_amount',
+                    'adjustment_positive' => 'sales_creditmemo.adjustment_positive',
+                    'adjustment_negative' => 'sales_creditmemo.adjustment_negative',
+                    'order_base_grand_total' => 'sales_order.base_grand_total',
+                ]
             ]
         ];
     }
