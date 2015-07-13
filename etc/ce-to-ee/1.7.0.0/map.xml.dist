@@ -557,6 +557,9 @@
             <ignore>
                 <document>catalogrule_affected_product</document>
             </ignore>
+            <ignore>
+                <document>catalog_product_super_attribute_pricing</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
