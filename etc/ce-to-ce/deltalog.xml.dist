@@ -66,4 +66,18 @@
     <group name="delta_log">
         <document key="visitor_id">log_visitor</document>
     </group>
+    <group name="delta_customer">
+        <document key="entity_id">customer_entity</document>
+        <document key="value_id">customer_entity_datetime</document>
+        <document key="value_id">customer_entity_decimal</document>
+        <document key="value_id">customer_entity_int</document>
+        <document key="value_id">customer_entity_text</document>
+        <document key="value_id">customer_entity_varchar</document>
+        <document key="entity_id">customer_address_entity</document>
+        <document key="value_id">customer_address_entity_datetime</document>
+        <document key="value_id">customer_address_entity_decimal</document>
+        <document key="value_id">customer_address_entity_int</document>
+        <document key="value_id">customer_address_entity_text</document>
+        <document key="value_id">customer_address_entity_varchar</document>
+    </group>
 </groups>

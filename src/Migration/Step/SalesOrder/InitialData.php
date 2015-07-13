@@ -74,7 +74,7 @@ class InitialData
     {
         $attributesCount = null;
         if (isset($this->destEavAttributesCount[$eavEntity])) {
-            $attributesCount =  $this->destEavAttributesCount[$eavEntity];
+            $attributesCount = $this->destEavAttributesCount[$eavEntity];
         }
         return $attributesCount;
     }
