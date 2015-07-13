@@ -34,9 +34,9 @@
             <volume>Migration\Step\Map\Volume</volume>
         </step>
         <step title="Url Rewrite step">
-            <integrity>Migration\Step\UrlRewrite\Version11300to2000</integrity>
-            <data>Migration\Step\UrlRewrite\Version11300to2000</data>
-            <volume>Migration\Step\UrlRewrite\Version11300to2000</volume>
+            <integrity>Migration\Step\UrlRewrite\Version11410to2000</integrity>
+            <data>Migration\Step\UrlRewrite\Version11410to2000</data>
+            <volume>Migration\Step\UrlRewrite\Version11410to2000</volume>
         </step>
         <step title="Log Step">
             <integrity>Migration\Step\Log\Integrity</integrity>
