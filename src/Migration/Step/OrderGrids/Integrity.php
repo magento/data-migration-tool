@@ -32,7 +32,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         MapFactory $mapFactory,
         $mapConfigOption = 'map_file'
     ) {
-//        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**
@@ -50,5 +49,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
+        return 0;
     }
 }

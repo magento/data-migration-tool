@@ -75,26 +75,8 @@ class Data extends \Migration\Step\OrderGrids\Data
     protected function getDocumentList()
     {
         $documentList = parent::getDocumentList();
-        $documentListEE = [
-            'getSelectSalesOrderGridArchive' => [
-                'source' => 'enterprise_sales_order_grid_archive',
-                'destination' => 'magento_sales_order_grid_archive',
-                'columns' => $documentList['getSelectSalesOrderGrid']['columns']
-                    + ['refunded_to_store_credit' => 'sales_order.customer_bal_total_refunded']
-            ], 'getSelectSalesInvoiceGridArchive'=> [
-                'source' => 'enterprise_sales_invoice_grid_archive',
-                'destination' => 'magento_sales_invoice_grid_archive',
-                'columns' => $documentList['getSelectSalesInvoiceGrid']['columns']
-            ], 'getSelectSalesShipmentGridArchive' => [
-                'source' => 'enterprise_sales_shipment_grid_archive',
-                'destination' => 'magento_sales_shipment_grid_archive',
-                'columns' => $documentList['getSelectSalesShipmentGrid']['columns']
-            ], 'getSelectSalesCreditmemoGridArchive' => [
-                'source' => 'enterprise_sales_creditmemo_grid_archive',
-                'destination' => 'magento_sales_creditmemo_grid_archive',
-                'columns' => $documentList['getSelectSalesCreditmemoGrid']['columns']
-            ]
-        ];
+        $documentList['getSelectSalesOrderGrid']['columns'] +=
+            ['refunded_to_store_credit' => 'sales_order.customer_bal_total_refunded'];
         return $documentList;
     }
 }

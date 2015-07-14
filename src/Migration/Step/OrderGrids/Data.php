@@ -120,12 +120,21 @@ class Data implements StageInterface
         return $iterations;
     }
 
+    /**
+     * @param \Magento\Framework\DB\Select $select
+     * @param int $pageNumber
+     * @return array
+     */
     protected function getRecords(\Magento\Framework\DB\Select $select, $pageNumber)
     {
         $select->limit($this->source->getPageSize(), $pageNumber * $this->source->getPageSize());
         return $this->sourceAdapter->loadDataFromSelect($select);
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesOrderGrid(array $columns)
     {
         foreach ($columns as $key => $value) {
@@ -147,6 +156,10 @@ class Data implements StageInterface
         return $select;
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesInvoiceGrid(array $columns)
     {
         foreach ($columns as $key => $value) {
@@ -172,6 +185,10 @@ class Data implements StageInterface
         return $select;
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesShipmentGrid(array $columns)
     {
         foreach ($columns as $key => $value) {
@@ -188,13 +205,19 @@ class Data implements StageInterface
                 ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_shipment.shipping_address_id = sales_shipping_address.entity_id',
                 []
-            )->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+            )->joinLeft(
+                ['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_shipment.billing_address_id = sales_billing_address.entity_id',
-                []);
+                []
+            );
         $select->columns($columns);
         return $select;
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesCreditmemoGrid(array $columns)
     {
         foreach ($columns as $key => $value) {
@@ -220,6 +243,9 @@ class Data implements StageInterface
         return $select;
     }
 
+    /**
+     * @return array
+     */
     protected function getDocumentList()
     {
         return [
@@ -239,19 +265,27 @@ class Data implements StageInterface
                     'increment_id' => 'sales_order.increment_id',
                     'base_currency_code' => 'sales_order.base_currency_code',
                     'order_currency_code' => 'sales_order.order_currency_code',
-                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' ,ifnull(sales_shipping_address.lastname, \'\')))',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_shipping_address.lastname, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_billing_address.lastname, \'\')))',
                     'created_at' => 'sales_order.created_at',
                     'updated_at' => 'sales_order.updated_at',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
+                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
+                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
                     'shipping_information' => 'sales_order.shipping_description',
                     'customer_email' => 'sales_order.customer_email',
                     'customer_group' => 'sales_order.customer_group_id',
                     'subtotal' => 'sales_order.base_subtotal',
                     'shipping_and_handling' => 'sales_order.base_shipping_amount',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
+                        .',ifnull(sales_order.customer_lastname, \'\')))',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
+                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
                     'total_refunded' => 'sales_order.total_refunded',
                 ]
             ], 'getSelectSalesInvoiceGrid' => [
@@ -266,17 +300,24 @@ class Data implements StageInterface
                     'order_id' => 'sales_invoice.order_id',
                     'order_increment_id' => 'sales_order.increment_id',
                     'order_created_at' => 'sales_order.created_at',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
+                        .',ifnull(sales_order.customer_lastname, \'\')))',
                     'customer_email' => 'sales_order.customer_email',
                     'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
+                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
                     'store_currency_code' => 'sales_invoice.store_currency_code',
                     'order_currency_code' => 'sales_invoice.order_currency_code',
                     'base_currency_code' => 'sales_invoice.base_currency_code',
                     'global_currency_code' => 'sales_invoice.global_currency_code',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_billing_address.lastname, \'\')))',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
+                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, '
+                        .'\'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
+                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, '
+                        .'\'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
                     'shipping_information' => 'sales_order.shipping_description',
                     'subtotal' => 'sales_order.base_subtotal',
                     'shipping_and_handling' => 'sales_order.base_shipping_amount',
@@ -293,17 +334,25 @@ class Data implements StageInterface
                     'store_id' => 'sales_shipment.store_id',
                     'order_increment_id' => 'sales_order.increment_id',
                     'order_created_at' => 'sales_order.created_at',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
+                        .',ifnull(sales_order.customer_lastname, \'\')))',
                     'total_qty' => 'sales_shipment.total_qty',
                     'shipment_status' => 'sales_shipment.shipment_status',
                     'order_status' => 'sales_order.status',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
-                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' ,ifnull(sales_shipping_address.lastname, \'\')))',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
+                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
+                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_billing_address.lastname, \'\')))',
+                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_shipping_address.lastname, \'\')))',
                     'customer_email' => 'sales_order.customer_email',
                     'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
+                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
                     'created_at' => 'sales_shipment.created_at',
                     'updated_at' => 'sales_shipment.updated_at',
                     'order_id' => 'sales_shipment.order_id',
@@ -320,17 +369,24 @@ class Data implements StageInterface
                     'order_id' => 'sales_order.entity_id',
                     'order_increment_id' => 'sales_order.increment_id',
                     'order_created_at' => 'sales_order.created_at',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' ,ifnull(sales_billing_address.lastname, \'\')))',
+                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
+                        .',ifnull(sales_billing_address.lastname, \'\')))',
                     'state' => 'sales_creditmemo.state',
                     'base_grand_total' => 'sales_creditmemo.base_grand_total',
                     'order_status' => 'sales_order.status',
                     'store_id' => 'sales_creditmemo.store_id',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' ,ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' ,ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' ,ifnull(sales_order.customer_lastname, \'\')))',
+                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
+                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
+                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
+                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
+                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
+                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
+                        .',ifnull(sales_order.customer_lastname, \'\')))',
                     'customer_email' => 'sales_order.customer_email',
                     'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
+                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
                     'shipping_information' => 'sales_order.shipping_description',
                     'subtotal' => 'sales_creditmemo.subtotal',
                     'shipping_and_handling' => 'sales_creditmemo.shipping_amount',
