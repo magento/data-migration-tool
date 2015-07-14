@@ -1334,6 +1334,10 @@
                 <field>enterprise_customersegment_segment.condition_sql</field>
                 <handler class="Migration\Handler\Rule\CustomerSegmentConditionSql"/>
             </transform>
+            <transform>
+                <field>sales_flat_order_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>

@@ -923,6 +923,10 @@
                 <field>salesrule.actions_serialized</field>
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
             </transform>
+            <transform>
+                <field>sales_flat_order_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>

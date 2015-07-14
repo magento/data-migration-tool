@@ -56,6 +56,7 @@ class Volume extends AbstractVolume
      * @param MapFactory $mapFactory
      * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
+     * @param Helper $helper
      */
     public function __construct(
         Logger $logger,

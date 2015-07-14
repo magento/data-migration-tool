@@ -38,6 +38,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param MapFactory $mapFactory
+     * @param Helper $helper
      * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
      */
