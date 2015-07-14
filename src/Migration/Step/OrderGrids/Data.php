@@ -205,9 +205,11 @@ class Data implements StageInterface
                 ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_shipment.shipping_address_id = sales_shipping_address.entity_id',
                 []
-            )->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+            )->joinLeft(
+                ['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_shipment.billing_address_id = sales_billing_address.entity_id',
-                []);
+                []
+            );
         $select->columns($columns);
         return $select;
     }
