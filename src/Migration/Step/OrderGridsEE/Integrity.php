@@ -32,7 +32,7 @@ class Integrity extends \Migration\Step\OrderGrids\Integrity
         MapFactory $mapFactory,
         $mapConfigOption = 'map_file'
     ) {
-//        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+
     }
 
     /**

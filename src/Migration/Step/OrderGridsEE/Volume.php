@@ -55,7 +55,6 @@ class Volume extends \Migration\Step\OrderGrids\Volume
         $this->destination = $destination;
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
-//        parent::__construct($logger);
     }
 
     /**

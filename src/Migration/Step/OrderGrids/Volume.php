@@ -7,7 +7,6 @@ namespace Migration\Step\OrderGrids;
 
 use Migration\App\Step\AbstractVolume;
 use Migration\Logger\Logger;
-use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Resource;
@@ -55,7 +54,6 @@ class Volume extends AbstractVolume
         $this->destination = $destination;
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
-//        parent::__construct($logger);
     }
 
     /**

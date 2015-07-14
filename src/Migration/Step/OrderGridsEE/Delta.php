@@ -51,14 +51,5 @@ class Delta extends AbstractDelta
         Data $data
     ) {
         $this->data = $data;
-//        parent::__construct(
-//            $source,
-//            $mapFactory,
-//            $groupsFactory,
-//            $logger,
-//            $destination,
-//            $recordFactory,
-//            $recordTransformerFactory
-//        );
     }
 }
