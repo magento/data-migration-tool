@@ -134,12 +134,15 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_order' => 'sales_flat_order'], [])
-            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+            ->joinLeft(
+                ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_order.shipping_address_id = sales_shipping_address.entity_id',
-                [])
-            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_order.billing_address_id = sales_billing_address.entity_id',
-                []);
+                []
+            );
         $select->columns($columns);
         return $select;
     }
@@ -152,15 +155,19 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_invoice' => 'sales_flat_invoice'], [])
-            ->joinLeft(['sales_order' => 'sales_flat_order'],
+            ->joinLeft(
+                ['sales_order' => 'sales_flat_order'],
                 'sales_invoice.order_id = sales_order.entity_id',
-                [])
-            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_invoice.shipping_address_id = sales_shipping_address.entity_id',
-                [])
-            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_invoice.billing_address_id = sales_billing_address.entity_id',
-                []);
+                []
+            );
         $select->columns($columns);
         return $select;
     }
@@ -173,13 +180,15 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_shipment' => 'sales_flat_shipment'], [])
-            ->joinLeft(['sales_order' => 'sales_flat_order'],
+            ->joinLeft(
+                ['sales_order' => 'sales_flat_order'],
                 'sales_shipment.order_id = sales_order.entity_id',
-                [])
-            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_shipment.shipping_address_id = sales_shipping_address.entity_id',
-                [])
-            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_shipment.billing_address_id = sales_billing_address.entity_id',
                 []);
         $select->columns($columns);
@@ -194,15 +203,19 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_creditmemo' => 'sales_flat_creditmemo'], [])
-            ->joinLeft(['sales_order' => 'sales_flat_order'],
+            ->joinLeft(
+                ['sales_order' => 'sales_flat_order'],
                 'sales_creditmemo.order_id = sales_order.entity_id',
-                [])
-            ->joinLeft(['sales_shipping_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_creditmemo.shipping_address_id = sales_shipping_address.entity_id',
-                [])
-            ->joinLeft(['sales_billing_address' => 'sales_flat_order_address'],
+                []
+            )->joinLeft(
+                ['sales_billing_address' => 'sales_flat_order_address'],
                 'sales_creditmemo.billing_address_id = sales_billing_address.entity_id',
-                []);
+                []
+            );
         $select->columns($columns);
         return $select;
     }

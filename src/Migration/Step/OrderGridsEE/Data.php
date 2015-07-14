@@ -33,26 +33,45 @@ class Data extends \Migration\Step\OrderGrids\Data
         parent::__construct($progress, $source, $destination, $recordFactory, $logger);
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesOrderGridArchive(array $columns)
     {
         return parent::getSelectSalesOrderGrid($columns);
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesInvoiceGridArchive(array $columns)
     {
         return parent::getSelectSalesInvoiceGrid($columns);
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesShipmentGridArchive(array $columns)
     {
         return parent::getSelectSalesShipmentGrid($columns);
     }
 
+    /**
+     * @param array $columns
+     * @return \Magento\Framework\DB\Select
+     */
     protected function getSelectSalesCreditmemoGridArchive(array $columns)
     {
         return parent::getSelectSalesCreditmemoGrid($columns);
     }
 
+    /**
+     * @return array
+     */
     protected function getDocumentList()
     {
         $documentList = parent::getDocumentList();
