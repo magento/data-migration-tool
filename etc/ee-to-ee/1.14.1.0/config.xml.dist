@@ -58,6 +58,11 @@
             <data>Migration\Step\OrderGridsEE\Data</data>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>
         </step>
+        <step title="ConfigurablePrices step">
+            <integrity>Migration\Step\ConfigurablePrices\Integrity</integrity>
+            <data>Migration\Step\ConfigurablePrices\Data</data>
+            <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Custom Customer Attributes Step">
