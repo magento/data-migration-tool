@@ -23,6 +23,11 @@ class Helper
     protected $source;
 
     /**
+     * @var Resource\Destination
+     */
+    protected $destination;
+
+    /**
      * @var \Migration\Reader\Groups
      */
     protected $readerGroups;
@@ -48,13 +53,17 @@ class Helper
     protected $sourceDocuments;
 
     /**
-     * Helper constructor.
+     * @param Resource\Source $source
+     * @param Resource\Destination $destination
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Resource\Source $source,
+        Resource\Destination $destination,
         GroupsFactory $groupsFactory
     ) {
         $this->source = $source;
+        $this->destination = $destination;
         $this->readerAttributes = $groupsFactory->create('customer_attribute_groups_file');
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->sourceDocuments = $this->readerGroups->getGroup('source_documents');
@@ -101,6 +110,7 @@ class Helper
      * @param string $attributeType
      * @param string $sourceDocName
      * @param Record\Collection $destinationRecords
+     * @return void
      */
     public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords)
     {
@@ -173,6 +183,7 @@ class Helper
      * @param string $attributeType
      * @param string $document
      * @param string $key
+     * @return void
      * @throws \Migration\Exception
      */
     protected function initEavEntity($attributeType, $document, $key)
@@ -191,16 +202,18 @@ class Helper
                 throw new \Migration\Exception($message);
             }
             $attributeId = $this->eavAttributes[$attributeType][$attribute]['attribute_id'];
-            $this->skipAttributes[$attributeType][$attributeId] = true;
+            $attributeCode = $this->eavAttributes[$attributeType][$attribute]['attribute_code'];
+            $this->skipAttributes[$attributeType][$attributeId] = $attributeCode;
         }
     }
 
     /**
      * @param string $attributeType
+     * @return void
      */
     protected function initEavAttributes($attributeType)
     {
-        if (isset( $this->eavAttributes[$attributeType])) {
+        if (isset($this->eavAttributes[$attributeType])) {
             return;
         }
 
@@ -228,6 +241,44 @@ class Helper
         foreach ($attributes as $attribute) {
             $this->eavAttributes[$attributeType][$attribute['attribute_code']] = $attribute;
             $this->eavAttributes[$attributeType][$attribute['attribute_id']] = $attribute;
+        }
+    }
+
+    /**
+     * @throws \Zend_Db_Adapter_Exception
+     * @return void
+     */
+    public function updateEavAttributes()
+    {
+        /** @var Mysql $adapter */
+        $adapter = $this->destination->getAdapter();
+        $query = $adapter->getSelect()
+            ->from($this->destination->addDocumentPrefix('eav_entity_type'), ['entity_type_id', 'entity_type_code']);
+        $entityTypes = $query->getAdapter()->fetchAll($query);
+        $entityTypesByCode = [];
+        foreach ($entityTypes as $entityType) {
+            $entityTypesByCode[$entityType['entity_type_code']] = $entityType['entity_type_id'];
+        }
+
+        $entities = array_keys($this->readerGroups->getGroup('eav_entities'));
+        foreach ($entities as $entity) {
+            $documents = $this->readerGroups->getGroup($entity);
+            foreach ($documents as $document => $key) {
+                if ($key != 'entity_id') {
+                    continue;
+                }
+
+                $codes = implode("','", array_keys($this->readerAttributes->getGroup($document)));
+                $where = [
+                    sprintf("attribute_code IN ('%s')", $codes),
+                    sprintf("entity_type_id = '%s'", $entityTypesByCode[$entity])
+                ];
+                $adapter->getSelect()->getAdapter()->update(
+                    $this->source->addDocumentPrefix('eav_attribute'),
+                    ['backend_type' => 'static'],
+                    $where
+                );
+            }
         }
     }
 }

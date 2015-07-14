@@ -84,7 +84,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Helper $helper
-     * @throws \Migration\Exception
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         \Migration\Config $config,
@@ -168,6 +168,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
             }
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
+        $this->helper->updateEavAttributes();
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }

@@ -31,7 +31,6 @@ class Delta extends AbstractDelta
     protected $helper;
 
     /**
-     * @param Helper $helper
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -39,6 +38,7 @@ class Delta extends AbstractDelta
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param Helper $helper
      */
     public function __construct(
         Source $source,
