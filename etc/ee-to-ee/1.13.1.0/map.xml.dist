@@ -9,6 +9,15 @@
     <source>
         <document_rules>
             <ignore>
+                <document>googleshopping_attributes</document>
+            </ignore>
+            <ignore>
+                <document>googleshopping_items</document>
+            </ignore>
+            <ignore>
+                <document>googleshopping_types</document>
+            </ignore>
+            <ignore>
                 <document>enterprise_sales_creditmemo_grid_archive</document>
             </ignore>
             <ignore>
@@ -1504,15 +1513,6 @@
                 <document>googleoptimizer_code</document>
             </ignore>
             <ignore>
-                <document>googleshopping_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googleshopping_items</document>
-            </ignore>
-            <ignore>
-                <document>googleshopping_types</document>
-            </ignore>
-            <ignore>
                 <document>indexer_state</document>
             </ignore>
             <ignore>
@@ -1761,6 +1761,42 @@
             <ignore>
                 <document>catalogsearch_fulltext_scope*</document>
             </ignore>
+            <ignore>
+                <document>customer_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1848,108 +1884,6 @@
             </ignore>
             <ignore>
                 <field>admin_user.interface_locale</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.created_in</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.prefix</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.firstname</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.middlename</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.lastname</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.suffix</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.dob</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.password_hash</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.rp_token</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.rp_token_created_at</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.default_billing</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.default_shipping</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.taxvat</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.confirmation</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.gender</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.city</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.company</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.country_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.fax</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.firstname</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.lastname</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.middlename</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.postcode</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.prefix</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.region</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.region_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.street</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.suffix</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.telephone</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.vat_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.vat_is_valid</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.vat_request_date</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.vat_request_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.vat_request_success</field>
             </ignore>
             <ignore>
                 <field>rating.is_active</field>

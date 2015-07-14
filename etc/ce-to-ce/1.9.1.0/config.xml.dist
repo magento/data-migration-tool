@@ -23,6 +23,11 @@
             <data>Migration\Step\Eav\Data</data>
             <volume>Migration\Step\Eav\Volume</volume>
         </step>
+        <step title="Customer Attributes Step">
+            <integrity>Migration\Step\Customer\Integrity</integrity>
+            <data>Migration\Step\Customer\Data</data>
+            <volume>Migration\Step\Customer\Volume</volume>
+        </step>
         <step title="Map Step">
             <integrity>Migration\Step\Map\Integrity</integrity>
             <data>Migration\Step\Map\Data</data>
@@ -45,6 +50,10 @@
         </step>
     </steps>
     <steps mode="delta">
+        <step title="Customer Attributes Step">
+            <delta>Migration\Step\Customer\Delta</delta>
+            <volume>Migration\Step\Customer\Volume</volume>
+        </step>
         <step title="Map Step">
             <delta>Migration\Step\Map\Delta</delta>
             <volume>Migration\Step\Map\Volume</volume>
@@ -68,6 +77,9 @@
         <log_map_file>etc/ce-to-ce/map-log.xml.dist</log_map_file>
         <log_document_groups_file>etc/ce-to-ce/log-document-groups.xml.dist</log_document_groups_file>
         <settings_map_file>etc/ce-to-ce/settings.xml.dist</settings_map_file>
+        <customer_map_file>etc/ce-to-ce/map-customer.xml.dist</customer_map_file>
+        <customer_document_groups_file>etc/ce-to-ce/customer-document-groups.xml.dist</customer_document_groups_file>
+        <customer_attribute_groups_file>etc/ce-to-ce/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
         <delta_document_groups_file>etc/ce-to-ce/deltalog.xml.dist</delta_document_groups_file>
         <class_map>etc/ce-to-ce/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
