@@ -24,7 +24,10 @@ class Helper extends \Migration\Step\OrderGrids\Helper
             'getSelectSalesShipmentGridArchive' =>
                 $this->getDocumentData('enterprise_sales_shipment_grid_archive', 'magento_sales_shipment_grid_archive'),
             'getSelectSalesCreditmemoGridArchive' =>
-                $this->getDocumentData('enterprise_sales_creditmemo_grid_archive', 'magento_sales_creditmemo_grid_archive')
+                $this->getDocumentData(
+                    'enterprise_sales_creditmemo_grid_archive',
+                    'magento_sales_creditmemo_grid_archive'
+                )
         ];
 
         return array_merge($selectedData, $documentListArchive);
@@ -33,7 +36,8 @@ class Helper extends \Migration\Step\OrderGrids\Helper
     /**
      * @inheritdoc
      */
-    protected function getColumnsData($gridName) {
+    protected function getColumnsData($gridName)
+    {
         $columnsData = parent::getColumnsData($gridName);
         if (!$columnsData) {
             switch ($gridName){
