@@ -5,34 +5,44 @@
  */
 namespace Migration\Step\OrderGrids;
 
+use Migration\Resource;
+
 /**
  * Class Helper
  */
 class Helper
 {
+    protected $destination;
+
+    /**
+     * @param Resource\Destination $destination
+     */
+    public function __construct(Resource\Destination $destination)
+    {
+        $this->destination = $destination;
+    }
+
     /**
      * @return array
      */
     public function getSelectData()
     {
         return [
-            'getSelectSalesOrderGrid' => $this->getDocumentData('sales_flat_order_grid', 'sales_order_grid'),
-            'getSelectSalesInvoiceGrid' => $this->getDocumentData('sales_flat_invoice_grid', 'sales_invoice_grid'),
-            'getSelectSalesShipmentGrid' => $this->getDocumentData('sales_flat_shipment_grid', 'sales_shipment_grid'),
+            'getSelectSalesOrderGrid' => $this->getDocumentData('sales_order_grid'),
+            'getSelectSalesInvoiceGrid' => $this->getDocumentData('sales_invoice_grid'),
+            'getSelectSalesShipmentGrid' => $this->getDocumentData('sales_shipment_grid'),
             'getSelectSalesCreditmemoGrid'=>
-                $this->getDocumentData('sales_flat_creditmemo_grid', 'sales_creditmemo_grid')
+                $this->getDocumentData('sales_creditmemo_grid')
         ];
     }
 
     /**
-     * @param string $sourceDocument
      * @param string $destinationDocument
      * @return array
      */
-    protected function getDocumentData($sourceDocument, $destinationDocument)
+    protected function getDocumentData($destinationDocument)
     {
         return [
-            'source' => $sourceDocument,
             'destination' => $destinationDocument,
             'columns' => $this->getColumnsData($destinationDocument)
         ];
@@ -62,6 +72,11 @@ class Helper
      */
     protected function getSalesOrderColumnsGrid()
     {
+        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+            FROM `%s` as sales_order_payment
+            WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            $this->destination->addDocumentPrefix('sales_order_payment')
+        );
         return [
             'entity_id' => 'sales_order.entity_id',
             'status' => 'sales_order.status',
@@ -94,8 +109,7 @@ class Helper
             'shipping_and_handling' => 'sales_order.base_shipping_amount',
             'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
                 . ',ifnull(sales_order.customer_lastname, \'\')))',
-            'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                . 'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            'payment_method' => $paymentSelect,
             'total_refunded' => 'sales_order.total_refunded'
         ];
     }
@@ -105,6 +119,11 @@ class Helper
      */
     protected function getSalesInvoiceColumnsGrid()
     {
+        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+            FROM `%s` as sales_order_payment
+            WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            $this->destination->addDocumentPrefix('sales_order_payment')
+        );
         return [
             'entity_id' => 'sales_invoice.entity_id',
             'increment_id' => 'sales_invoice.increment_id',
@@ -118,8 +137,7 @@ class Helper
                 . ',ifnull(sales_order.customer_lastname, \'\')))',
             'customer_email' => 'sales_order.customer_email',
             'customer_group_id' => 'sales_order.customer_group_id',
-            'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                . 'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            'payment_method' => $paymentSelect,
             'store_currency_code' => 'sales_invoice.store_currency_code',
             'order_currency_code' => 'sales_invoice.order_currency_code',
             'base_currency_code' => 'sales_invoice.base_currency_code',
@@ -146,6 +164,11 @@ class Helper
      */
     protected function getSalesShipmentColumnsGrid()
     {
+        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+            FROM `%s` as sales_order_payment
+            WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            $this->destination->addDocumentPrefix('sales_order_payment')
+        );
         return [
             'entity_id' => 'sales_shipment.entity_id',
             'increment_id' => 'sales_shipment.increment_id',
@@ -169,8 +192,7 @@ class Helper
                 . ',ifnull(sales_shipping_address.lastname, \'\')))',
             'customer_email' => 'sales_order.customer_email',
             'customer_group_id' => 'sales_order.customer_group_id',
-            'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                . 'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            'payment_method' => $paymentSelect,
             'created_at' => 'sales_shipment.created_at',
             'updated_at' => 'sales_shipment.updated_at',
             'order_id' => 'sales_shipment.order_id',
@@ -183,6 +205,11 @@ class Helper
      */
     protected function getSalesCreditMemoColumnsGrid()
     {
+        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+            FROM `%s` as sales_order_payment
+            WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            $this->destination->addDocumentPrefix('sales_order_payment')
+        );
         return [
             'entity_id' => 'sales_creditmemo.entity_id',
             'increment_id' => 'sales_creditmemo.increment_id',
@@ -207,8 +234,7 @@ class Helper
                 . ',ifnull(sales_order.customer_lastname, \'\')))',
             'customer_email' => 'sales_order.customer_email',
             'customer_group_id' => 'sales_order.customer_group_id',
-            'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                . 'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
+            'payment_method' => $paymentSelect,
             'shipping_information' => 'sales_order.shipping_description',
             'subtotal' => 'sales_creditmemo.subtotal',
             'shipping_and_handling' => 'sales_creditmemo.shipping_amount',

@@ -18,13 +18,13 @@ class Helper extends \Migration\Step\OrderGrids\Helper
         $selectedData = parent::getSelectData();
         $documentListArchive = [
             'getSelectSalesOrderGridArchive' =>
-                $this->getDocumentData('enterprise_sales_order_grid_archive', 'magento_sales_order_grid_archive'),
+                $this->getDocumentData('magento_sales_order_grid_archive'),
             'getSelectSalesInvoiceGridArchive' =>
-                $this->getDocumentData('enterprise_sales_invoice_grid_archive', 'magento_sales_invoice_grid_archive'),
+                $this->getDocumentData('magento_sales_invoice_grid_archive'),
             'getSelectSalesShipmentGridArchive' =>
-                $this->getDocumentData('enterprise_sales_shipment_grid_archive', 'magento_sales_shipment_grid_archive'),
+                $this->getDocumentData('magento_sales_shipment_grid_archive'),
             'getSelectSalesCreditmemoGridArchive' =>
-                $this->getDocumentData('enterprise_sales_creditmemo_grid_archive', 'magento_sales_creditmemo_grid_archive')
+                $this->getDocumentData('magento_sales_creditmemo_grid_archive')
         ];
 
         return array_merge($selectedData, $documentListArchive);

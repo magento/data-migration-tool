@@ -36,42 +36,38 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
-     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesOrderGridArchive($sourceGridDocument, array $columns)
+    protected function getSelectSalesOrderGridArchive(array $columns)
     {
-        return parent::getSelectSalesOrderGrid($sourceGridDocument, $columns);
+        return parent::getSelectSalesOrderGrid($columns);
     }
 
     /**
-     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesInvoiceGridArchive($sourceGridDocument, array $columns)
+    protected function getSelectSalesInvoiceGridArchive(array $columns)
     {
-        return parent::getSelectSalesInvoiceGrid($sourceGridDocument, $columns);
+        return parent::getSelectSalesInvoiceGrid($columns);
     }
 
     /**
-     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesShipmentGridArchive($sourceGridDocument, array $columns)
+    protected function getSelectSalesShipmentGridArchive(array $columns)
     {
-        return parent::getSelectSalesShipmentGrid($sourceGridDocument, $columns);
+        return parent::getSelectSalesShipmentGrid($columns);
     }
 
     /**
-     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesCreditmemoGridArchive($sourceGridDocument, array $columns)
+    protected function getSelectSalesCreditmemoGridArchive(array $columns)
     {
-        return parent::getSelectSalesCreditmemoGrid($sourceGridDocument, $columns);
+        return parent::getSelectSalesCreditmemoGrid($columns);
     }
 }

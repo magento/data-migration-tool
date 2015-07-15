@@ -35,6 +35,11 @@ class Volume extends AbstractVolume
     protected $helper;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -52,6 +57,7 @@ class Volume extends AbstractVolume
         $this->destination = $destination;
         $this->progressBar = $progressBar;
         $this->helper = $helper;
+        $this->logger = $logger;
     }
 
     /**

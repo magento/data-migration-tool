@@ -109,6 +109,15 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
+    public function insertFromSelect(\Magento\Framework\DB\Select $select, $table, array $fields = [], $mode = false)
+    {
+        $query = $this->resourceAdapter->insertFromSelect($select, $table, $fields, $mode);
+        $this->resourceAdapter->query($query);
+    }
+
+    /**
+     * @inheritdoc
+     */
     public function deleteAllRecords($documentName)
     {
         $this->resourceAdapter->truncateTable($documentName);

@@ -138,4 +138,13 @@ interface AdapterInterface
      * @return void
      */
     public function createDelta($documentName, $deltaLogName, $idKey);
+
+    /**
+     * @param \Magento\Framework\DB\Select $select
+     * @param string $table
+     * @param array $fields
+     * @param bool|false $mode
+     * @return mixed
+     */
+    public function insertFromSelect(\Magento\Framework\DB\Select $select, $table, array $fields = [], $mode = false);
 }
