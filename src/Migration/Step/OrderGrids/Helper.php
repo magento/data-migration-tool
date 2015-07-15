@@ -175,6 +175,7 @@ class Helper
             'increment_id' => 'sales_shipment.increment_id',
             'store_id' => 'sales_shipment.store_id',
             'order_increment_id' => 'sales_order.increment_id',
+            'order_id' => 'sales_shipment.order_id',
             'order_created_at' => 'sales_order.created_at',
             'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
                 . ',ifnull(sales_order.customer_lastname, \'\')))',
@@ -194,10 +195,9 @@ class Helper
             'customer_email' => 'sales_order.customer_email',
             'customer_group_id' => 'sales_order.customer_group_id',
             'payment_method' => $paymentSelect,
+                'shipping_information' => 'sales_order.shipping_description',
             'created_at' => 'sales_shipment.created_at',
-            'updated_at' => 'sales_shipment.updated_at',
-            'order_id' => 'sales_shipment.order_id',
-            'shipping_information' => 'sales_order.shipping_description'
+            'updated_at' => 'sales_shipment.updated_at'
         ];
     }
 
