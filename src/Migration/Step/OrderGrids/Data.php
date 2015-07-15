@@ -50,18 +50,25 @@ class Data implements StageInterface
     protected $recordFactory;
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param Logger $logger
+     * @param Helper $helper
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        Logger $logger
+        Logger $logger,
+        Helper $helper
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
@@ -69,6 +76,7 @@ class Data implements StageInterface
         $this->progress = $progress;
         $this->recordFactory = $recordFactory;
         $this->logger = $logger;
+        $this->helper = $helper;
     }
 
     /**
@@ -256,153 +264,6 @@ class Data implements StageInterface
      */
     protected function getDocumentList()
     {
-        return [
-            'getSelectSalesOrderGrid' => [
-                'source' => 'sales_flat_order_grid',
-                'destination' => 'sales_order_grid',
-                'columns' => [
-                    'entity_id' => 'sales_order.entity_id',
-                    'status' => 'sales_order.status',
-                    'store_id' => 'sales_order.store_id',
-                    'store_name' => 'sales_order.store_name',
-                    'customer_id' => 'sales_order.customer_id',
-                    'base_grand_total' => 'sales_order.base_grand_total',
-                    'base_total_paid' => 'sales_order.base_total_paid',
-                    'grand_total' => 'sales_order.grand_total',
-                    'total_paid' => 'sales_order.total_paid',
-                    'increment_id' => 'sales_order.increment_id',
-                    'base_currency_code' => 'sales_order.base_currency_code',
-                    'order_currency_code' => 'sales_order.order_currency_code',
-                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_shipping_address.lastname, \'\')))',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_billing_address.lastname, \'\')))',
-                    'created_at' => 'sales_order.created_at',
-                    'updated_at' => 'sales_order.updated_at',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
-                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
-                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'shipping_information' => 'sales_order.shipping_description',
-                    'customer_email' => 'sales_order.customer_email',
-                    'customer_group' => 'sales_order.customer_group_id',
-                    'subtotal' => 'sales_order.base_subtotal',
-                    'shipping_and_handling' => 'sales_order.base_shipping_amount',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
-                        .',ifnull(sales_order.customer_lastname, \'\')))',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
-                    'total_refunded' => 'sales_order.total_refunded',
-                ]
-            ], 'getSelectSalesInvoiceGrid' => [
-                'source' => 'sales_flat_invoice_grid',
-                'destination' => 'sales_invoice_grid',
-                'columns' => [
-                    'entity_id' => 'sales_invoice.entity_id',
-                    'increment_id' => 'sales_invoice.increment_id',
-                    'state' => 'sales_invoice.state',
-                    'store_id' => 'sales_invoice.store_id',
-                    'store_name' => 'sales_order.store_name',
-                    'order_id' => 'sales_invoice.order_id',
-                    'order_increment_id' => 'sales_order.increment_id',
-                    'order_created_at' => 'sales_order.created_at',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
-                        .',ifnull(sales_order.customer_lastname, \'\')))',
-                    'customer_email' => 'sales_order.customer_email',
-                    'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
-                    'store_currency_code' => 'sales_invoice.store_currency_code',
-                    'order_currency_code' => 'sales_invoice.order_currency_code',
-                    'base_currency_code' => 'sales_invoice.base_currency_code',
-                    'global_currency_code' => 'sales_invoice.global_currency_code',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_billing_address.lastname, \'\')))',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
-                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region, '
-                        .'\'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
-                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region, '
-                        .'\'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'shipping_information' => 'sales_order.shipping_description',
-                    'subtotal' => 'sales_order.base_subtotal',
-                    'shipping_and_handling' => 'sales_order.base_shipping_amount',
-                    'grand_total' => 'sales_invoice.grand_total',
-                    'created_at' => 'sales_invoice.created_at',
-                    'updated_at' => 'sales_invoice.updated_at',
-                ]
-            ], 'getSelectSalesShipmentGrid' => [
-                'source' => 'sales_flat_shipment_grid',
-                'destination' => 'sales_shipment_grid',
-                'columns' => [
-                    'entity_id' => 'sales_shipment.entity_id',
-                    'increment_id' => 'sales_shipment.increment_id',
-                    'store_id' => 'sales_shipment.store_id',
-                    'order_increment_id' => 'sales_order.increment_id',
-                    'order_created_at' => 'sales_order.created_at',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
-                        .',ifnull(sales_order.customer_lastname, \'\')))',
-                    'total_qty' => 'sales_shipment.total_qty',
-                    'shipment_status' => 'sales_shipment.shipment_status',
-                    'order_status' => 'sales_order.status',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
-                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
-                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_billing_address.lastname, \'\')))',
-                    'shipping_name' => 'trim(concat(ifnull(sales_shipping_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_shipping_address.lastname, \'\')))',
-                    'customer_email' => 'sales_order.customer_email',
-                    'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
-                    'created_at' => 'sales_shipment.created_at',
-                    'updated_at' => 'sales_shipment.updated_at',
-                    'order_id' => 'sales_shipment.order_id',
-                    'shipping_information' => 'sales_order.shipping_description'
-                ]
-            ], 'getSelectSalesCreditmemoGrid' => [
-                'source' => 'sales_flat_creditmemo_grid',
-                'destination' => 'sales_creditmemo_grid',
-                'columns' => [
-                    'entity_id' => 'sales_creditmemo.entity_id',
-                    'increment_id' => 'sales_creditmemo.increment_id',
-                    'created_at' => 'sales_creditmemo.created_at',
-                    'updated_at' => 'sales_creditmemo.updated_at',
-                    'order_id' => 'sales_order.entity_id',
-                    'order_increment_id' => 'sales_order.increment_id',
-                    'order_created_at' => 'sales_order.created_at',
-                    'billing_name' => 'trim(concat(ifnull(sales_billing_address.firstname, \'\'), \' \' '
-                        .',ifnull(sales_billing_address.lastname, \'\')))',
-                    'state' => 'sales_creditmemo.state',
-                    'base_grand_total' => 'sales_creditmemo.base_grand_total',
-                    'order_status' => 'sales_order.status',
-                    'store_id' => 'sales_creditmemo.store_id',
-                    'billing_address' => 'trim(concat(ifnull(sales_billing_address.street, \'\'), \', \' '
-                        .',ifnull(sales_billing_address.city, \'\'), \', \' ,ifnull(sales_billing_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_billing_address.postcode, \'\')))',
-                    'shipping_address' => 'trim(concat(ifnull(sales_shipping_address.street, \'\'), \', \' '
-                        .',ifnull(sales_shipping_address.city, \'\'), \', \' ,ifnull(sales_shipping_address.region,'
-                        .' \'\'), \', \' ,ifnull(sales_shipping_address.postcode, \'\')))',
-                    'customer_name' => 'trim(concat(ifnull(sales_order.customer_firstname, \'\'), \' \' '
-                        .',ifnull(sales_order.customer_lastname, \'\')))',
-                    'customer_email' => 'sales_order.customer_email',
-                    'customer_group_id' => 'sales_order.customer_group_id',
-                    'payment_method' => '(SELECT `sales_order_payment`.`method` FROM `sales_flat_order_payment` '
-                        .'as sales_order_payment WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
-                    'shipping_information' => 'sales_order.shipping_description',
-                    'subtotal' => 'sales_creditmemo.subtotal',
-                    'shipping_and_handling' => 'sales_creditmemo.shipping_amount',
-                    'adjustment_positive' => 'sales_creditmemo.adjustment_positive',
-                    'adjustment_negative' => 'sales_creditmemo.adjustment_negative',
-                    'order_base_grand_total' => 'sales_order.base_grand_total',
-                ]
-            ]
-        ];
+        return $this->helper->getSelectData();
     }
 }

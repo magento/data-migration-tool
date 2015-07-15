@@ -22,15 +22,17 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param Logger $logger
+     * @param Helper $helper
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        Logger $logger
+        Logger $logger,
+        Helper $helper
     ) {
-        parent::__construct($progress, $source, $destination, $recordFactory, $logger);
+        parent::__construct($progress, $source, $destination, $recordFactory, $logger, $helper);
     }
 
     /**
@@ -71,35 +73,5 @@ class Data extends \Migration\Step\OrderGrids\Data
     protected function getSelectSalesCreditmemoGridArchive($sourceGridDocument, array $columns)
     {
         return parent::getSelectSalesCreditmemoGrid($sourceGridDocument, $columns);
-    }
-
-    /**
-     * @return array
-     */
-    protected function getDocumentList()
-    {
-        $documentList = parent::getDocumentList();
-        $documentList['getSelectSalesOrderGrid']['columns'] +=
-            ['refunded_to_store_credit' => 'sales_order.customer_bal_total_refunded'];
-        $documentListArchive = [
-            'getSelectSalesOrderGridArchive' => [
-                'source' => 'enterprise_sales_order_grid_archive',
-                'destination' => 'magento_sales_order_grid_archive',
-                'columns' => $documentList['getSelectSalesOrderGrid']['columns']
-            ], 'getSelectSalesInvoiceGridArchive'=> [
-                'source' => 'enterprise_sales_invoice_grid_archive',
-                'destination' => 'magento_sales_invoice_grid_archive',
-                'columns' => $documentList['getSelectSalesInvoiceGrid']['columns']
-            ], 'getSelectSalesShipmentGridArchive' => [
-                'source' => 'enterprise_sales_shipment_grid_archive',
-                'destination' => 'magento_sales_shipment_grid_archive',
-                'columns' => $documentList['getSelectSalesShipmentGrid']['columns']
-            ], 'getSelectSalesCreditmemoGridArchive' => [
-                'source' => 'enterprise_sales_creditmemo_grid_archive',
-                'destination' => 'magento_sales_creditmemo_grid_archive',
-                'columns' => $documentList['getSelectSalesCreditmemoGrid']['columns']
-            ]
-        ];
-        return $documentList + $documentListArchive;
     }
 }

@@ -5,9 +5,7 @@
  */
 namespace Migration\Step\OrderGrids;
 
-use Migration\Reader\MapFactory;
 use Migration\Resource;
-use Migration\Reader\MapInterface;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 
@@ -17,21 +15,49 @@ use Migration\App\ProgressBar;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
+     * @var ProgressBar\LogLevelProcessor
+     */
+    protected $progress;
+
+    /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var Resource\Source
+     */
+    protected $source;
+
+    /**
+     * @var Resource\Destination
+     */
+    protected $destination;
+
+    /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source
      * @param Resource\Destination $destination
-     * @param MapFactory $mapFactory
-     * @param string $mapConfigOption
+     * @param Helper $helper
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
         Resource\Source $source,
         Resource\Destination $destination,
-        MapFactory $mapFactory,
-        $mapConfigOption = 'map_file'
+        Helper $helper
     ) {
+        $this->progress = $progress;
+        $this->logger = $logger;
+        $this->source = $source;
+        $this->destination = $destination;
+        $this->helper = $helper;
     }
 
     /**
@@ -39,7 +65,22 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        return true;
+        $this->progress->start($this->getIterationsCount());
+        foreach ($this->helper->getDocumentList() as $documentName) {
+            $this->progress->advance();
+            $documentColumns = $this->helper->getDocumentColumns($documentName);
+            $destinationDocumentStructure = array_keys($this->destination->getStructure($documentName)->getFields());
+            foreach (array_diff($documentColumns, $destinationDocumentStructure) as $columnDiff) {
+                $message = sprintf(
+                    '%s table does not contain field: %s',
+                    $documentName,
+                    $columnDiff
+                );
+                $this->logger->error($message);
+            }
+        }
+        $this->progress->finish();
+        return $this->checkForErrors();
     }
 
     /**
@@ -49,6 +90,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return 0;
+        return count($this->helper->getDocumentList());
     }
 }
