@@ -72,12 +72,12 @@ class Helper extends \Migration\Step\OrderGrids\Helper
     public function getDocumentList()
     {
         $documentList = parent::getDocumentList();
-        $eeDocumentList = [
+        $documentListArchive = [
             'enterprise_sales_order_grid_archive' => 'magento_sales_order_grid_archive',
             'enterprise_sales_invoice_grid_archive' => 'magento_sales_invoice_grid_archive',
             'enterprise_sales_shipment_grid_archive' => 'magento_sales_shipment_grid_archive',
             'enterprise_sales_creditmemo_grid_archive' => 'magento_sales_creditmemo_grid_archive'
         ];
-        return array_merge($documentList, $eeDocumentList);
+        return array_merge($documentList, $documentListArchive);
     }
 }
