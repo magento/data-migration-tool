@@ -44,7 +44,7 @@ class Volume extends AbstractVolume
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param ProgressBar\LogLevelProcessor $progressBar
-     * @param Helper
+     * @param Helper $helper
      */
     public function __construct(
         Logger $logger,
@@ -72,7 +72,7 @@ class Volume extends AbstractVolume
             $destinationRecordsCount = $this->destination->getRecordsCount($destinationDocumentName);
             if ($sourceRecordsCount != $destinationRecordsCount) {
                 $message = 'Mismatch of entities in the document: ' . $destinationDocumentName;
-            $this->logger->error($message);
+                $this->logger->error($message);
             }
         }
 

@@ -33,7 +33,8 @@ class Helper extends \Migration\Step\OrderGrids\Helper
     /**
      * @inheritdoc
      */
-    protected function getColumnsData($gridName) {
+    protected function getColumnsData($gridName)
+    {
         $columnsData = parent::getColumnsData($gridName);
         if (!$columnsData) {
             switch ($gridName){

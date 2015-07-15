@@ -52,7 +52,8 @@ class Helper
      * @param string $gridName
      * @return array|null
      */
-    protected function getColumnsData($gridName) {
+    protected function getColumnsData($gridName)
+    {
         switch ($gridName){
             case 'sales_order_grid':
                 return $this->getSalesOrderColumnsGrid();
