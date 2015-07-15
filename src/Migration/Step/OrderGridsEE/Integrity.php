@@ -15,31 +15,6 @@ use Migration\App\ProgressBar;
 class Integrity extends \Migration\Step\OrderGrids\Integrity
 {
     /**
-     * @var ProgressBar\LogLevelProcessor
-     */
-    protected $progress;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var Resource\Source
-     */
-    protected $source;
-
-    /**
-     * @var Resource\Destination
-     */
-    protected $destination;
-
-    /**
-     * @var Helper
-     */
-    protected $helper;
-
-    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param Resource\Source $source

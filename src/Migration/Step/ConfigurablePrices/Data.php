@@ -142,6 +142,7 @@ class Data implements StageInterface
      */
     protected function getConfigurablePrice($sourceDocument)
     {
+        $sourceDocumentName = $this->source->addDocumentPrefix($sourceDocument);
         $fields = [
             'store_id' => 'website_id',
             'value' => 'pricing_value',
@@ -151,36 +152,36 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
 
-        $select->from($sourceDocument, $fields)
+        $select->from($sourceDocumentName, $fields)
             ->joinInner(
-                ['cpsa' => 'catalog_product_super_attribute'],
-                'cpsa.product_super_attribute_id = ' . $sourceDocument . '.product_super_attribute_id',
+                ['cpsa' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
+                'cpsa.product_super_attribute_id = ' . $sourceDocumentName . '.product_super_attribute_id',
                 []
             )
             ->joinInner(
-                ['l' => 'catalog_product_super_link'],
+                ['l' => $this->source->addDocumentPrefix('catalog_product_super_link')],
                 'cpsa.product_id = l.parent_id',
                 []
             )
             ->joinInner(
-                ['a' => 'catalog_product_super_attribute'],
+                ['a' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
                 'l.parent_id = a.product_id',
                 []
             )
             ->joinInner(
-                ['cp' => 'catalog_product_entity_int'],
+                ['cp' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
                 'l.product_id = cp.entity_id AND cp.attribute_id = a.attribute_id AND cp.store_id = '
-                . $sourceDocument . '.website_id',
+                . $sourceDocumentName . '.website_id',
                 []
             )
             ->joinInner(
-                ['apd' => 'catalog_product_super_attribute_pricing'],
+                ['apd' => $this->source->addDocumentPrefix('catalog_product_super_attribute_pricing')],
                 'a.product_super_attribute_id = apd.product_super_attribute_id AND apd.pricing_value = '
-                . $sourceDocument .'.pricing_value AND cp.value = apd.value_index',
+                . $sourceDocumentName .'.pricing_value AND cp.value = apd.value_index',
                 []
             )
             ->joinInner(
-                ['le' => 'catalog_product_entity'],
+                ['le' => $this->source->addDocumentPrefix('catalog_product_entity')],
                 'le.entity_id = l.product_id',
                 []
             );
