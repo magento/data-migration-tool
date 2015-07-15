@@ -74,7 +74,9 @@ class Helper
     public function init()
     {
         if (!$this->getDestinationRecordsCount()) {
-            $this->destinationRecordsCount = $this->destination->getRecordsCount($this->getDocumentList()['destination']);
+            $this->destinationRecordsCount = $this->destination->getRecordsCount(
+                $this->getDocumentList()['destination']
+            );
         }
     }
 
