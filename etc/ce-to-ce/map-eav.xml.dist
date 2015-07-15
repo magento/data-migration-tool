@@ -104,8 +104,7 @@
                     sales/quote_address:quote_address;
                     sales/quote_entity:quote_entity;
                     sales/quote_item:quote_item;
-                    sales/invoice:sales_invoice;
-                    enterprise_rma/item_entity:magento_rma_item_entity
+                    sales/invoice:sales_invoice
                     ]"/>
                 </handler>
             </transform>
