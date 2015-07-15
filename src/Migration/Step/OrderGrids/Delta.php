@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\OrderGrids;
 
-use Migration\App\Step\AbstractDelta;
+use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
@@ -13,17 +13,27 @@ use Migration\Resource\Source;
 use Migration\Resource\Destination;
 use Migration\Resource;
 
-class Delta extends AbstractDelta
+class Delta implements StageInterface
 {
     /**
-     * @var string
+     * @var Resource\Source
      */
-    protected $mapConfigOption = 'map_file';
+    protected $source;
 
     /**
-     * @var string
+     * @var Logger
      */
-    protected $groupName = 'delta_map';
+    protected $logger;
+
+    /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerGroups;
+
+    /**
+     * @var Helper
+     */
+    protected $helper;
 
     /**
      * @var Data
@@ -31,25 +41,86 @@ class Delta extends AbstractDelta
     protected $data;
 
     /**
+     * @var bool
+     */
+    protected $eolOnce = false;
+
+    /**
      * @param Source $source
-     * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
-     * @param Destination $destination
-     * @param Resource\RecordFactory $recordFactory
-     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param Helper $helper
      * @param Data $data
      */
     public function __construct(
         Source $source,
-        MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Destination $destination,
-        Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        Helper $helper,
         Data $data
     ) {
+        $this->source = $source;
+        $this->readerGroups = $groupsFactory->create('order_grids_document_groups_file');
+        $this->logger = $logger;
+        $this->helper = $helper;
         $this->data = $data;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function perform()
+    {
+        $updateData = $this->helper->getUpdateData();
+        $selectData = $this->helper->getSelectData();
+        $sourceDocuments = $this->readerGroups->getGroup('source_documents');
+        foreach ($sourceDocuments as $sourceDocName => $idKey) {
+            if ($this->source->getRecordsCount($this->source->getDeltaLogName($sourceDocName)) == 0) {
+                continue;
+            }
+            $items = $this->source->getChangedRecords($sourceDocName, $idKey, 0, true);
+            if (empty($items)) {
+                continue;
+            }
+            $this->logger->debug(sprintf('%s has changes', $sourceDocName));
+
+            if (!$this->eolOnce) {
+                $this->eolOnce = true;
+                echo PHP_EOL;
+            }
+            $gridIdKey = $updateData[$sourceDocName]['idKey'];
+            $page = 1;
+            do {
+                $ids = [];
+                foreach ($items as $data) {
+                    echo('.');
+                    $ids[] = $data[$gridIdKey];
+                }
+                foreach ($updateData[$sourceDocName]['methods'] as $method) {
+                    echo('.');
+                    call_user_func_array([$this->data, $method], [$selectData[$method]['columns'], $ids]);
+                }
+                $documentNameDelta = $this->source->getDeltaLogName($sourceDocName);
+                $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+                $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
+            } while (!empty($items = $this->source->getChangedRecords($sourceDocName, $idKey, $page++)));
+        }
+        return true;
+    }
+
+    /**
+     * Mark processed records for deletion
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @param [] $ids
+     * @return void
+     */
+    protected function markRecordsProcessed($documentName, $idKey, $ids)
+    {
+        $ids = implode("','", $ids);
+        /** @var Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
     }
 }

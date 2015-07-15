@@ -12,6 +12,9 @@ use Migration\Resource;
  */
 class Helper
 {
+    /**
+     * @var Resource\Destination
+     */
     protected $destination;
 
     /**
@@ -73,7 +76,8 @@ class Helper
      */
     protected function getSalesOrderColumnsGrid()
     {
-        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+        $paymentSelect = sprintf(
+            '(SELECT `sales_order_payment`.`method`
             FROM `%s` as sales_order_payment
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
@@ -120,7 +124,8 @@ class Helper
      */
     protected function getSalesInvoiceColumnsGrid()
     {
-        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+        $paymentSelect = sprintf(
+            '(SELECT `sales_order_payment`.`method`
             FROM `%s` as sales_order_payment
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
@@ -165,7 +170,8 @@ class Helper
      */
     protected function getSalesShipmentColumnsGrid()
     {
-        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+        $paymentSelect = sprintf(
+            '(SELECT `sales_order_payment`.`method`
             FROM `%s` as sales_order_payment
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
@@ -206,7 +212,8 @@ class Helper
      */
     protected function getSalesCreditMemoColumnsGrid()
     {
-        $paymentSelect = sprintf('(SELECT `sales_order_payment`.`method`
+        $paymentSelect = sprintf(
+            '(SELECT `sales_order_payment`.`method`
             FROM `%s` as sales_order_payment
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
@@ -266,5 +273,59 @@ class Helper
     {
         $columnsData = $this->getColumnsData($documentName);
         return array_keys($columnsData);
+    }
+
+    /**
+     * @return array
+     */
+    public function getUpdateData()
+    {
+        return [
+            'sales_flat_order' => [
+                'idKey' => 'entity_id',
+                'methods' => [
+                    'getSelectSalesOrderGrid',
+                    'getSelectSalesInvoiceGrid',
+                    'getSelectSalesShipmentGrid',
+                    'getSelectSalesCreditmemoGrid'
+                ]
+            ],
+            'sales_flat_invoice' => [
+                'idKey' => 'entity_id',
+                'methods' => [
+                    'getSelectSalesInvoiceGrid',
+                ]
+            ],
+            'sales_flat_shipment' => [
+                'idKey' => 'entity_id',
+                'methods' => [
+                    'getSelectSalesShipmentGrid',
+                ]
+            ],
+            'sales_flat_creditmemo' => [
+                'idKey' => 'entity_id',
+                'methods' => [
+                    'getSelectSalesCreditmemoGrid'
+                ]
+            ],
+            'sales_flat_order_address' => [
+                'idKey' => 'parent_id',
+                'methods' => [
+                    'getSelectSalesOrderGrid',
+                    'getSelectSalesInvoiceGrid',
+                    'getSelectSalesShipmentGrid',
+                    'getSelectSalesCreditmemoGrid'
+                ]
+            ],
+            'sales_flat_order_payment' => [
+                'idKey' => 'parent_id',
+                'methods' => [
+                    'getSelectSalesOrderGrid',
+                    'getSelectSalesInvoiceGrid',
+                    'getSelectSalesShipmentGrid',
+                    'getSelectSalesCreditmemoGrid'
+                ]
+            ]
+        ];
     }
 }

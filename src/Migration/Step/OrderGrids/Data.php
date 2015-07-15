@@ -16,6 +16,7 @@ use Migration\Resource\Adapter\Mysql;
 
 /**
  * Class Data
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Data implements StageInterface
 {
@@ -116,10 +117,10 @@ class Data implements StageInterface
 
     /**
      * @param array $columns
-     * @param array $entitiyIds
+     * @param array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesOrderGrid(array $columns, $entitiyIds = [])
+    public function getSelectSalesOrderGrid(array $columns, $entityIds = [])
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -135,17 +136,17 @@ class Data implements StageInterface
                 ['sales_billing_address' => $this->destination->addDocumentPrefix('sales_order_address')],
                 'sales_order.billing_address_id = sales_billing_address.entity_id',
                 []
-            )->where('sales_order.entity_id in (?)', $entitiyIds);
+            )->where('sales_order.entity_id in (?)', $entityIds);
         $select->columns($columns);
         return $select;
     }
 
     /**
      * @param array $columns
-     * @param array $entitiyIds
+     * @param array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesInvoiceGrid(array $columns, $entitiyIds = [])
+    public function getSelectSalesInvoiceGrid(array $columns, $entityIds = [])
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -165,17 +166,17 @@ class Data implements StageInterface
                 ['sales_billing_address' => $this->destination->addDocumentPrefix('sales_order_address')],
                 'sales_invoice.billing_address_id = sales_billing_address.entity_id',
                 []
-            )->where('sales_invoice.entity_id in (?)', $entitiyIds);
+            )->where('sales_invoice.entity_id in (?)', $entityIds);
         $select->columns($columns);
         return $select;
     }
 
     /**
      * @param array $columns
-     * @param array $entitiyIds
+     * @param array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesShipmentGrid(array $columns, $entitiyIds = [])
+    public function getSelectSalesShipmentGrid(array $columns, $entityIds = [])
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -195,17 +196,17 @@ class Data implements StageInterface
                 ['sales_billing_address' => $this->destination->addDocumentPrefix('sales_order_address')],
                 'sales_shipment.billing_address_id = sales_billing_address.entity_id',
                 []
-            )->where('sales_shipment.entity_id in (?)', $entitiyIds);
+            )->where('sales_shipment.entity_id in (?)', $entityIds);
         $select->columns($columns);
         return $select;
     }
 
     /**
      * @param array $columns
-     * @param array $entitiyIds
+     * @param array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesCreditmemoGrid(array $columns, $entitiyIds = [])
+    public function getSelectSalesCreditmemoGrid(array $columns, $entityIds = [])
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -225,7 +226,7 @@ class Data implements StageInterface
                 ['sales_billing_address' => $this->destination->addDocumentPrefix('sales_order_address')],
                 'sales_creditmemo.billing_address_id = sales_billing_address.entity_id',
                 []
-            )->where('sales_creditmemo.entity_id in (?)', $entitiyIds);
+            )->where('sales_creditmemo.entity_id in (?)', $entityIds);
         $select->columns($columns);
         return $select;
     }

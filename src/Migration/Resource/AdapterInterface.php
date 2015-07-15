@@ -85,9 +85,17 @@ interface AdapterInterface
      * @param string $idKey
      * @param int $pageNumber
      * @param int $pageSize
+     * @param bool|false $getProcessed
      * @return array
      */
-    public function loadChangedRecords($documentName, $deltaLogName, $idKey, $pageNumber, $pageSize);
+    public function loadChangedRecords(
+        $documentName,
+        $deltaLogName,
+        $idKey,
+        $pageNumber,
+        $pageSize,
+        $getProcessed = false
+    );
 
     /**
      * Load page with changed records from the document
@@ -96,9 +104,10 @@ interface AdapterInterface
      * @param string $idKey
      * @param int $pageNumber
      * @param int $pageSize
+     * @param bool|false $getProcessed
      * @return array
      */
-    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize);
+    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false);
 
     /**
      * Updates document records with specified data or insert if this is a new record

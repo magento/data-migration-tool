@@ -10,27 +10,15 @@ use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
 use Migration\App\Mode\StepList;
+use Migration\Reader\Groups;
+use Migration\Resource\Adapter\Mysql;
+use Migration\Resource\Source;
 
 /**
  * Class Delta
  */
 class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
 {
-    /**
-     * @var \Migration\App\Mode\StepList
-     */
-    protected $stepListFactory;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
-     * @var Progress
-     */
-    protected $progress;
-
     /**
      * @var int
      */
@@ -46,23 +34,36 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     protected $canBeCompleted = false;
 
+    /**
+     * @var Source
+     */
+    protected $source;
+
+    /**
+     * @var Groups
+     */
+    protected $groupsReader;
 
     /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
+     * @param Source $source
+     * @param \Migration\Reader\GroupsFactory $groupsFactory
      * @param int $autoRestart
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         \Migration\App\Mode\StepListFactory $stepListFactory,
+        Source $source,
+        \Migration\Reader\GroupsFactory $groupsFactory,
         $autoRestart = 5
     ) {
-        $this->progress = $progress;
-        $this->logger = $logger;
-        $this->stepListFactory = $stepListFactory;
+        $this->source = $source;
         $this->autoRestart = $autoRestart;
+        $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
+        parent::__construct($progress, $logger, $stepListFactory);
     }
 
     /**
@@ -100,6 +101,20 @@ USAGE;
                     $this->runVolume($step, $stepName);
                 }
             }
+
+            $deltaLogs = $this->groupsReader->getGroups();
+            foreach ($deltaLogs as $deltaDocuments) {
+                foreach (array_keys($deltaDocuments) as $documentName) {
+                    /** @var Mysql $adapter */
+                    $adapter = $this->source->getAdapter();
+                    $adapter->deleteProcessedRecords(
+                        $this->source->addDocumentPrefix(
+                            $this->source->getDeltaLogName($documentName)
+                        )
+                    );
+                }
+            }
+
             $this->logger->info('Migration completed successfully');
             if ($this->autoRestart) {
                 $this->logger->info("Automatic restart in {$this->autoRestart} sec. Use CTRL-C to abort");

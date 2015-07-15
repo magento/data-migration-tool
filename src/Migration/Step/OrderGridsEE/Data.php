@@ -39,7 +39,7 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesOrderGridArchive(array $columns)
+    public function getSelectSalesOrderGridArchive(array $columns)
     {
         return parent::getSelectSalesOrderGrid($columns);
     }
@@ -48,7 +48,7 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesInvoiceGridArchive(array $columns)
+    public function getSelectSalesInvoiceGridArchive(array $columns)
     {
         return parent::getSelectSalesInvoiceGrid($columns);
     }
@@ -57,7 +57,7 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesShipmentGridArchive(array $columns)
+    public function getSelectSalesShipmentGridArchive(array $columns)
     {
         return parent::getSelectSalesShipmentGrid($columns);
     }
@@ -66,7 +66,7 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesCreditmemoGridArchive(array $columns)
+    public function getSelectSalesCreditmemoGridArchive(array $columns)
     {
         return parent::getSelectSalesCreditmemoGrid($columns);
     }

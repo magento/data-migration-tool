@@ -108,7 +108,7 @@ class Delta extends AbstractDelta
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->source->deleteRecords($documentNameDelta, $idKey, $ids);
+            $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 }

@@ -60,8 +60,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             'field1 = 100'
         );
         $expectedData = [
-            ['key' => '8', 'operation' => 'UPDATE'],
-            ['key' => '9', 'operation' => 'INSERT']
+            ['key' => '8', 'operation' => 'UPDATE', 'processed' => 0],
+            ['key' => '9', 'operation' => 'INSERT', 'processed' => 0]
         ];
         $this->assertEquals($expectedData, $source->getRecords($source->getDeltaLogName($dataTable), 0));
     }

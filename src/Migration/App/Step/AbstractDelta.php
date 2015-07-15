@@ -124,6 +124,22 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Mark processed records for deletion
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @param [] $ids
+     * @return void
+     */
+    protected function markRecordsProcessed($documentName, $idKey, $ids)
+    {
+        $ids = implode("','", $ids);
+        /** @var Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
+    }
+
+    /**
      * @param string $documentName
      * @param string $idKey
      * @param string $destinationName
@@ -139,7 +155,7 @@ abstract class AbstractDelta implements StageInterface
             );
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->source->deleteRecords($documentNameDelta, $idKey, $items);
+            $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
         }
     }
 
@@ -185,7 +201,7 @@ abstract class AbstractDelta implements StageInterface
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->source->deleteRecords($documentNameDelta, $idKey, $ids);
+            $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 

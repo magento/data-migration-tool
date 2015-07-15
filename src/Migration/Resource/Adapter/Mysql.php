@@ -133,15 +133,35 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
+     * Delete processed records
+     *
+     * @param string $documentName
+     * @return void
+     */
+    public function deleteProcessedRecords($documentName)
+    {
+        $this->resourceAdapter->delete($documentName, "`processed` = 1");
+    }
+
+    /**
      * @inheritdoc
      */
-    public function loadChangedRecords($documentName, $deltaLogName, $idKey, $pageNumber, $pageSize)
-    {
+    public function loadChangedRecords(
+        $documentName,
+        $deltaLogName,
+        $idKey,
+        $pageNumber,
+        $pageSize,
+        $getProcessed = false
+    ) {
         $select = $this->resourceAdapter->select();
         $select->from($deltaLogName, [])
             ->join($documentName, "$documentName.$idKey = $deltaLogName.$idKey", '*')
             ->where("`operation` in ('INSERT', 'UPDATE')")
             ->limit($pageSize, $pageNumber * $pageSize);
+        if (!$getProcessed) {
+            $select->where("`processed` != 1");
+        }
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
     }
@@ -149,12 +169,15 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize)
+    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false)
     {
         $select = $this->resourceAdapter->select();
         $select->from($deltaLogName, [$idKey])
             ->where("`operation` = 'DELETE'")
             ->limit($pageSize, $pageNumber * $pageSize);
+        if (!$getProcessed) {
+            $select->where("`processed` != 1");
+        }
         $result = $this->resourceAdapter->fetchCol($select);
         return $result;
     }
@@ -283,6 +306,11 @@ class Mysql implements \Migration\Resource\AdapterInterface
                 )->addColumn(
                     'operation',
                     \Magento\Framework\DB\Ddl\Table::TYPE_TEXT
+                )->addColumn(
+                    'processed',
+                    \Magento\Framework\DB\Ddl\Table::TYPE_BOOLEAN,
+                    null,
+                    ['nullable' => false, 'default' => 0]
                 );
             $this->resourceAdapter->createTable($triggerTable);
         } else {
@@ -327,7 +355,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
     protected function buildStatement($event, $idKey, $triggerTableName)
     {
         $entityTime = ($event == Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
-        return "INSERT INTO $triggerTableName VALUES ($entityTime.$idKey, '$event')"
+        return "INSERT INTO $triggerTableName (`$idKey`, `operation`) VALUES ($entityTime.$idKey, '$event')"
             . "ON DUPLICATE KEY UPDATE operation = '$event'";
     }
 

@@ -80,4 +80,46 @@ class Helper extends \Migration\Step\OrderGrids\Helper
         ];
         return array_merge($documentList, $documentListArchive);
     }
+
+    /**
+     * @return array
+     */
+    public function getUpdateData()
+    {
+        $updateData = [
+            'sales_flat_order_grid' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesOrderGridArchive']
+            ],
+            'sales_flat_invoice_grid' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesInvoiceGridArchive']
+            ],
+            'sales_flat_shipment_grid' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesShipmentGridArchive']
+            ],
+            'sales_flat_creditmemo_grid' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesCreditmemoGridArchive']
+            ],
+            'enterprise_sales_order_grid_archive' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesOrderGridArchive']
+            ],
+            'enterprise_sales_invoice_grid_archive' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesInvoiceGridArchive']
+            ],
+            'enterprise_sales_shipment_grid_archive' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesShipmentGridArchive']
+            ],
+            'enterprise_sales_creditmemo_grid_archive' => [
+                'idKey' => 'entity_id',
+                'methods' => ['getSelectSalesCreditmemoGridArchive']
+            ]
+        ];
+        return array_merge_recursive(parent::getUpdateData(), $updateData);
+    }
 }

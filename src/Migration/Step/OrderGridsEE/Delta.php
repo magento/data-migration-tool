@@ -5,51 +5,31 @@
  */
 namespace Migration\Step\OrderGridsEE;
 
-use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
-use Migration\Reader\MapFactory;
 use Migration\Resource\Source;
-use Migration\Resource\Destination;
-use Migration\Resource;
 
-class Delta extends AbstractDelta
+class Delta extends \Migration\Step\OrderGrids\Delta
 {
     /**
-     * @var string
-     */
-    protected $mapConfigOption = 'map_file';
-
-    /**
-     * @var string
-     */
-    protected $groupName = 'delta_map';
-
-    /**
-     * @var Data
-     */
-    protected $data;
-
-    /**
      * @param Source $source
-     * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
-     * @param Destination $destination
-     * @param Resource\RecordFactory $recordFactory
-     * @param \Migration\RecordTransformerFactory $recordTransformerFactory
+     * @param Helper $helper
      * @param Data $data
      */
     public function __construct(
         Source $source,
-        MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Destination $destination,
-        Resource\RecordFactory $recordFactory,
-        \Migration\RecordTransformerFactory $recordTransformerFactory,
+        Helper $helper,
         Data $data
     ) {
+        $this->source = $source;
+        $this->readerGroups = $groupsFactory->create('order_grids_document_groups_file');
+        $this->logger = $logger;
+        $this->helper = $helper;
         $this->data = $data;
+        parent::__construct($source, $groupsFactory, $logger, $helper, $data);
     }
 }
