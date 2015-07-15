@@ -87,7 +87,7 @@ class Data implements StageInterface
             $this->logger->debug('migrating', ['table' => $sourceDocumentName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
             /** @var \Magento\Framework\DB\Select $select */
-            $select = call_user_func_array([$this, $methodToExecute], [$columns]);
+            $select = call_user_func_array([$this, $methodToExecute], [$sourceDocumentName, $columns]);
             while (!empty($bulk = $this->getRecords($select, $pageNumber))) {
                 $pageNumber++;
                 $destinationCollection = $destinationDocument->getRecords();
@@ -132,10 +132,11 @@ class Data implements StageInterface
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesOrderGrid(array $columns)
+    protected function getSelectSalesOrderGrid($sourceGridDocument, array $columns)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -143,6 +144,7 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_order' => 'sales_flat_order'], [])
+            ->joinInner($sourceGridDocument, $sourceGridDocument . '.entity_id = sales_order.entity_id', [])
             ->joinLeft(
                 ['sales_shipping_address' => 'sales_flat_order_address'],
                 'sales_order.shipping_address_id = sales_shipping_address.entity_id',
@@ -157,10 +159,11 @@ class Data implements StageInterface
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesInvoiceGrid(array $columns)
+    protected function getSelectSalesInvoiceGrid($sourceGridDocument, array $columns)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -168,6 +171,7 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_invoice' => 'sales_flat_invoice'], [])
+            ->joinInner($sourceGridDocument, $sourceGridDocument . '.entity_id = sales_invoice.entity_id', [])
             ->joinLeft(
                 ['sales_order' => 'sales_flat_order'],
                 'sales_invoice.order_id = sales_order.entity_id',
@@ -186,10 +190,11 @@ class Data implements StageInterface
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesShipmentGrid(array $columns)
+    protected function getSelectSalesShipmentGrid($sourceGridDocument, array $columns)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -197,6 +202,7 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_shipment' => 'sales_flat_shipment'], [])
+            ->joinInner($sourceGridDocument, $sourceGridDocument . '.entity_id = sales_shipment.entity_id', [])
             ->joinLeft(
                 ['sales_order' => 'sales_flat_order'],
                 'sales_shipment.order_id = sales_order.entity_id',
@@ -215,10 +221,11 @@ class Data implements StageInterface
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesCreditmemoGrid(array $columns)
+    protected function getSelectSalesCreditmemoGrid($sourceGridDocument, array $columns)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -226,6 +233,7 @@ class Data implements StageInterface
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
         $select->from(['sales_creditmemo' => 'sales_flat_creditmemo'], [])
+            ->joinInner($sourceGridDocument, $sourceGridDocument . '.entity_id = sales_creditmemo.entity_id', [])
             ->joinLeft(
                 ['sales_order' => 'sales_flat_order'],
                 'sales_creditmemo.order_id = sales_order.entity_id',

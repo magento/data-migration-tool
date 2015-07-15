@@ -34,39 +34,43 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesOrderGridArchive(array $columns)
+    protected function getSelectSalesOrderGridArchive($sourceGridDocument, array $columns)
     {
-        return parent::getSelectSalesOrderGrid($columns);
+        return parent::getSelectSalesOrderGrid($sourceGridDocument, $columns);
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesInvoiceGridArchive(array $columns)
+    protected function getSelectSalesInvoiceGridArchive($sourceGridDocument, array $columns)
     {
-        return parent::getSelectSalesInvoiceGrid($columns);
+        return parent::getSelectSalesInvoiceGrid($sourceGridDocument, $columns);
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesShipmentGridArchive(array $columns)
+    protected function getSelectSalesShipmentGridArchive($sourceGridDocument, array $columns)
     {
-        return parent::getSelectSalesShipmentGrid($columns);
+        return parent::getSelectSalesShipmentGrid($sourceGridDocument, $columns);
     }
 
     /**
+     * @param string $sourceGridDocument
      * @param array $columns
      * @return \Magento\Framework\DB\Select
      */
-    protected function getSelectSalesCreditmemoGridArchive(array $columns)
+    protected function getSelectSalesCreditmemoGridArchive($sourceGridDocument, array $columns)
     {
-        return parent::getSelectSalesCreditmemoGrid($columns);
+        return parent::getSelectSalesCreditmemoGrid($sourceGridDocument, $columns);
     }
 
     /**
@@ -77,6 +81,25 @@ class Data extends \Migration\Step\OrderGrids\Data
         $documentList = parent::getDocumentList();
         $documentList['getSelectSalesOrderGrid']['columns'] +=
             ['refunded_to_store_credit' => 'sales_order.customer_bal_total_refunded'];
-        return $documentList;
+        $documentListArchive = [
+            'getSelectSalesOrderGridArchive' => [
+                'source' => 'enterprise_sales_order_grid_archive',
+                'destination' => 'magento_sales_order_grid_archive',
+                'columns' => $documentList['getSelectSalesOrderGrid']['columns']
+            ], 'getSelectSalesInvoiceGridArchive'=> [
+                'source' => 'enterprise_sales_invoice_grid_archive',
+                'destination' => 'magento_sales_invoice_grid_archive',
+                'columns' => $documentList['getSelectSalesInvoiceGrid']['columns']
+            ], 'getSelectSalesShipmentGridArchive' => [
+                'source' => 'enterprise_sales_shipment_grid_archive',
+                'destination' => 'magento_sales_shipment_grid_archive',
+                'columns' => $documentList['getSelectSalesShipmentGrid']['columns']
+            ], 'getSelectSalesCreditmemoGridArchive' => [
+                'source' => 'enterprise_sales_creditmemo_grid_archive',
+                'destination' => 'magento_sales_creditmemo_grid_archive',
+                'columns' => $documentList['getSelectSalesCreditmemoGrid']['columns']
+            ]
+        ];
+        return $documentList + $documentListArchive;
     }
 }
