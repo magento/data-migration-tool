@@ -80,7 +80,6 @@
         </step>
         <step title="Map Step">
             <delta>Migration\Step\Map\Delta</delta>
-            <volume>Migration\Step\Map\Volume</volume>
         </step>
         <step title="Log Step">
             <delta>Migration\Step\Log\Delta</delta>
