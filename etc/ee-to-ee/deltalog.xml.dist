@@ -110,4 +110,10 @@
         <document key="value_id">customer_address_entity_text</document>
         <document key="value_id">customer_address_entity_varchar</document>
     </group>
+    <group name="delta_order_grids">
+        <document key="entity_id">enterprise_sales_order_grid_archive</document>
+        <document key="entity_id">enterprise_sales_invoice_grid_archive</document>
+        <document key="entity_id">enterprise_sales_shipment_grid_archive</document>
+        <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
+    </group>
 </groups>
