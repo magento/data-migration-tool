@@ -274,7 +274,7 @@ class Helper
                     sprintf("entity_type_id = '%s'", $entityTypesByCode[$entity])
                 ];
                 $adapter->getSelect()->getAdapter()->update(
-                    $this->source->addDocumentPrefix('eav_attribute'),
+                    $this->destination->addDocumentPrefix('eav_attribute'),
                     ['backend_type' => 'static'],
                     $where
                 );
