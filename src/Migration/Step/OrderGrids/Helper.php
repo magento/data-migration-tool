@@ -82,7 +82,10 @@ class Helper
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
         );
-        return [
+        $fields = array_keys($this->destination->getStructure('sales_order_grid')->getFields());
+        $result = [];
+        $fields = array_fill_keys($fields, null);
+        $columns = [
             'entity_id' => 'sales_order.entity_id',
             'status' => 'sales_order.status',
             'store_id' => 'sales_order.store_id',
@@ -117,6 +120,11 @@ class Helper
             'payment_method' => $paymentSelect,
             'total_refunded' => 'sales_order.total_refunded'
         ];
+        foreach ($fields as $key => $value) {
+            $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
+        }
+
+        return $result;
     }
 
     /**
@@ -130,7 +138,10 @@ class Helper
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
         );
-        return [
+        $fields = array_keys($this->destination->getStructure('sales_invoice_grid')->getFields());
+        $result = [];
+        $fields = array_fill_keys($fields, null);
+        $columns = [
             'entity_id' => 'sales_invoice.entity_id',
             'increment_id' => 'sales_invoice.increment_id',
             'state' => 'sales_invoice.state',
@@ -163,6 +174,10 @@ class Helper
             'created_at' => 'sales_invoice.created_at',
             'updated_at' => 'sales_invoice.updated_at'
         ];
+        foreach ($fields as $key => $value) {
+            $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
+        }
+        return $result;
     }
 
     /**
@@ -176,7 +191,10 @@ class Helper
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
         );
-        return [
+        $fields = array_keys($this->destination->getStructure('sales_shipment_grid')->getFields());
+        $result = [];
+        $fields = array_fill_keys($fields, null);
+        $columns = [
             'entity_id' => 'sales_shipment.entity_id',
             'increment_id' => 'sales_shipment.increment_id',
             'store_id' => 'sales_shipment.store_id',
@@ -205,6 +223,10 @@ class Helper
             'created_at' => 'sales_shipment.created_at',
             'updated_at' => 'sales_shipment.updated_at'
         ];
+        foreach ($fields as $key => $value) {
+            $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
+        }
+        return $result;
     }
 
     /**
@@ -218,7 +240,10 @@ class Helper
             WHERE (`parent_id` = sales_order.entity_id) LIMIT 1)',
             $this->destination->addDocumentPrefix('sales_order_payment')
         );
-        return [
+        $fields = array_keys($this->destination->getStructure('sales_creditmemo_grid')->getFields());
+        $result = [];
+        $fields = array_fill_keys($fields, null);
+        $columns = [
             'entity_id' => 'sales_creditmemo.entity_id',
             'increment_id' => 'sales_creditmemo.increment_id',
             'created_at' => 'sales_creditmemo.created_at',
@@ -250,6 +275,10 @@ class Helper
             'adjustment_negative' => 'sales_creditmemo.adjustment_negative',
             'order_base_grand_total' => 'sales_order.base_grand_total'
         ];
+        foreach ($fields as $key => $value) {
+            $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
+        }
+        return $result;
     }
 
     /**
