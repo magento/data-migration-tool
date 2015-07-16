@@ -426,12 +426,6 @@
                 <document>core_flag</document>
             </ignore>
             <ignore>
-                <document>core_email_queue</document>
-            </ignore>
-            <ignore>
-                <document>core_email_queue_recipients</document>
-            </ignore>
-            <ignore>
                 <document>merchandiser_category_values</document>
             </ignore>
             <ignore>
