@@ -49,6 +49,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -82,6 +83,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->progress,
             $this->recordFactory,
+            $this->logger,
             'data'
         );
         $this->assertTrue($version->rollback());
@@ -146,6 +148,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->progress,
             $this->recordFactory,
+            $this->logger,
             'integrity'
         );
 
@@ -242,6 +245,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->progress,
             $this->recordFactory,
+            $this->logger,
             'data'
         );
         $this->assertTrue($version->perform());

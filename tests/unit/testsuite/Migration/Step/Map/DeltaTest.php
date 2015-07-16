@@ -108,8 +108,13 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->willReturn($sourceDeltaName);
         $this->source->expects($this->any())
             ->method('getRecordsCount')
-            ->with($sourceDeltaName, false)
+            ->with($sourceDeltaName)
             ->willReturn(1);
+        /** @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject $source */
+        $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        $this->source->expects($this->any())
+            ->method('getDocument')
+            ->willReturn($document);
 
         $this->map->expects($this->any())
             ->method('getDeltaDocuments')

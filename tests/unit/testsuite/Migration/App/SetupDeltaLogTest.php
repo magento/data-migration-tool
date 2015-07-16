@@ -16,6 +16,11 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     {
         /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */
         $source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
+        /** @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject $source */
+        $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        $source->expects($this->any())
+            ->method('getDocument')
+            ->willReturn($document);
         $source->expects($this->exactly(4))
             ->method('createDelta')
             ->withConsecutive(

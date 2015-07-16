@@ -60,6 +60,11 @@ abstract class AbstractDelta implements StageInterface
     protected $groupName;
 
     /**
+     * @var bool
+     */
+    protected $eolOnce = false;
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -94,6 +99,9 @@ abstract class AbstractDelta implements StageInterface
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
         foreach ($this->deltaDocuments as $documentName => $idKey) {
+            if (!$this->source->getDocument($documentName)) {
+                continue;
+            }
             $deltaLogName = $this->source->getDeltaLogName($documentName);
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
@@ -104,7 +112,7 @@ abstract class AbstractDelta implements StageInterface
                 continue;
             }
 
-            if ($this->source->getRecordsCount($deltaLogName, false) == 0) {
+            if ($this->source->getRecordsCount($deltaLogName) == 0) {
                 continue;
             }
             $this->logger->debug(sprintf('%s has changes', $documentName));
@@ -113,6 +121,22 @@ abstract class AbstractDelta implements StageInterface
             $this->processChangedRecords($documentName, $idKey);
         }
         return true;
+    }
+
+    /**
+     * Mark processed records for deletion
+     *
+     * @param string $documentName
+     * @param string $idKey
+     * @param [] $ids
+     * @return void
+     */
+    protected function markRecordsProcessed($documentName, $idKey, $ids)
+    {
+        $ids = implode("','", $ids);
+        /** @var Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
     }
 
     /**
@@ -129,7 +153,9 @@ abstract class AbstractDelta implements StageInterface
                 $idKey,
                 $items
             );
-            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $items);
+            $documentNameDelta = $this->source->getDeltaLogName($documentName);
+            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+            $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
         }
     }
 
@@ -144,7 +170,10 @@ abstract class AbstractDelta implements StageInterface
         if (empty($items)) {
             return;
         }
-        echo PHP_EOL;
+        if (!$this->eolOnce) {
+            $this->eolOnce = true;
+            echo PHP_EOL;
+        }
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
         $sourceDocument = $this->source->getDocument($documentName);
@@ -170,7 +199,9 @@ abstract class AbstractDelta implements StageInterface
             }
 
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
-            $this->source->deleteRecords($this->source->getDeltaLogName($documentName), $idKey, $ids);
+            $documentNameDelta = $this->source->getDeltaLogName($documentName);
+            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+            $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
     }
 

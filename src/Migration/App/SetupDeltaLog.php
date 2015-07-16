@@ -51,7 +51,9 @@ class SetupDeltaLog implements StageInterface
         foreach ($deltaLogs as $deltaDocuments) {
             foreach ($deltaDocuments as $documentName => $idKey) {
                 $this->progress->advance();
-                $this->source->createDelta($documentName, $idKey);
+                if ($this->source->getDocument($documentName)) {
+                    $this->source->createDelta($documentName, $idKey);
+                }
             }
         }
         $this->progress->finish();

@@ -101,7 +101,6 @@ class Data implements StageInterface
         $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
@@ -126,6 +125,7 @@ class Data implements StageInterface
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
+                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $record */
                     $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
@@ -162,7 +162,12 @@ class Data implements StageInterface
      */
     protected function getIterationsCount()
     {
+        $iterations = 0;
+        foreach (array_keys($this->readerGroups->getGroup('source_documents')) as $document) {
+            $iterations += $this->source->getRecordsCount($document);
+        }
+
         return count($this->readerGroups->getGroup('destination_documents_to_clear'))
-            + count($this->readerGroups->getGroup('source_documents'));
+            + $iterations;
     }
 }

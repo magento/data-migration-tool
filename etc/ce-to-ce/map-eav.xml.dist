@@ -92,7 +92,21 @@
             </transform>
             <transform>
                 <field>eav_entity_type.entity_table</field>
-                <handler class="\Migration\Handler\GetDestinationValue"/>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[
+                    customer/entity:customer_entity;
+                    customer/address_entity:customer_address_entity;
+                    sales/order:sales_order;
+                    sales/order_entity:sales_order_entity;
+                    catalog/category:catalog_category_entity;
+                    catalog/product:catalog_product_entity;
+                    sales/quote:quote;
+                    sales/quote_address:quote_address;
+                    sales/quote_entity:quote_entity;
+                    sales/quote_item:quote_item;
+                    sales/invoice:sales_invoice
+                    ]"/>
+                </handler>
             </transform>
             <transform>
                 <field>eav_entity_type.increment_model</field>
@@ -134,6 +148,10 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
+            <transform>
+                <field>catalog_eav_attribute.apply_to</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
+            </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
@@ -153,7 +171,15 @@
             <ignore>
                 <field>catalog_eav_attribute.search_weight</field>
             </ignore>
-
+            <ignore>
+                <field>catalog_eav_attribute.is_used_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_visible_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_filterable_in_grid</field>
+            </ignore>
             <transform>
                 <field>eav_attribute_group.attribute_group_code</field>
                 <handler class="\Migration\Handler\EavAttributeGroup\SetGroupCode" />

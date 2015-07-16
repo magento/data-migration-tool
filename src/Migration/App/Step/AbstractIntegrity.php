@@ -106,7 +106,6 @@ abstract class AbstractIntegrity implements StageInterface
      * @param array $documents
      * @param string $type - allowed values: MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST
      * @return $this
-     * @throws \Exception
      */
     protected function check($documents, $type)
     {

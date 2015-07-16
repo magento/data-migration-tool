@@ -58,7 +58,11 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta($documentName, $this->getDeltaLogName($documentName), $idKey);
+        $this->adapter->createDelta(
+            $this->addDocumentPrefix($documentName),
+            $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
+            $idKey
+        );
     }
 
     /**
@@ -66,16 +70,19 @@ class Source extends AbstractResource
      *
      * @param string $documentName
      * @param string $idKey
+     * @param int $pageNumber
+     * @param bool|false $getProcessed
      * @return array
      */
-    public function getChangedRecords($documentName, $idKey)
+    public function getChangedRecords($documentName, $idKey, $pageNumber = 0, $getProcessed = false)
     {
         return $this->adapter->loadChangedRecords(
-            $documentName,
-            $this->getDeltaLogName($documentName),
+            $this->addDocumentPrefix($documentName),
+            $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
-            0,
-            $this->getPageSize()
+            $pageNumber,
+            $this->getPageSize(),
+            $getProcessed
         );
     }
 
@@ -84,15 +91,17 @@ class Source extends AbstractResource
      *
      * @param string $documentName
      * @param string $idKey
+     * @param bool|false $getProcessed
      * @return array
      */
-    public function getDeletedRecords($documentName, $idKey)
+    public function getDeletedRecords($documentName, $idKey, $getProcessed = false)
     {
         return $this->adapter->loadDeletedRecords(
-            $this->getDeltaLogName($documentName),
+            $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             0,
-            $this->getPageSize()
+            $this->getPageSize(),
+            $getProcessed
         );
     }
 

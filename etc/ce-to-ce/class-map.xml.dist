@@ -120,11 +120,11 @@
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_startdate</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Startdate</to>
+        <to>Magento\Catalog\Model\Attribute\Backend\Startdate</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_startdate_specialprice</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Startdate</to>
+        <to>Magento\Catalog\Model\Attribute\Backend\Startdate</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_tierprice</from>
@@ -389,5 +389,126 @@
     <rename>
         <from>weee/attribute_backend_weee_tax</from>
         <to>Magento\Weee\Model\Attribute\Backend\Weee\Tax</to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_shipment_attribute_backend_child</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_attribute_backend_child</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/invoice_attribute_backend_child</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_invoice_attribute_backend_child</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_attribute_backend_billing</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_attribute_backend_parent</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_attribute_backend_shipping</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_creditmemo_attribute_backend_child</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_creditmemo_attribute_backend_parent</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_invoice_attribute_backend_order</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_invoice_attribute_backend_parent</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales_entity/order_shipment_attribute_backend_parent</from>
+        <to></to>
+    </rename>
+    <rename>
+        <from>sales/quote</from>
+        <to>Magento\Quote\Model\Quote</to>
+    </rename>
+    <rename>
+        <from>sales/quote_address</from>
+        <to>Magento\Quote\Model\Quote\Address</to>
+    </rename>
+    <rename>
+        <from>sales/quote_address_rate</from>
+        <to>Magento\Quote\Model\Quote\Address\Rate</to>
+    </rename>
+    <rename>
+        <from>sales/quote_address_item</from>
+        <to>Magento\Quote\Model\Quote\Address\Item</to>
+    </rename>
+    <rename>
+        <from>sales/quote_payment</from>
+        <to>Magento\Quote\Model\Quote\Payment</to>
+    </rename>
+    <rename>
+        <from>sales/quote_item</from>
+        <to>Magento\Quote\Model\Quote\Item</to>
+    </rename>
+
+    <rename>
+        <from>sales/order_address</from>
+        <to>Magento\Sales\Model\Order\Address</to>
+    </rename>
+    <rename>
+        <from>sales/order_item</from>
+        <to>Magento\Sales\Model\Order\Item</to>
+    </rename>
+    <rename>
+        <from>sales/order_payment</from>
+        <to>Magento\Sales\Model\Order\Payment</to>
+    </rename>
+    <rename>
+        <from>sales/order_status_history</from>
+        <to>Magento\Sales\Model\Order\Status\History</to>
+    </rename>
+    <rename>
+        <from>sales/order_shipment_track</from>
+        <to>Magento\Sales\Model\Order\Shipment\Track</to>
+    </rename>
+    <rename>
+        <from>sales/order_shipment_item</from>
+        <to>Magento\Sales\Model\Order\Shipment\Item</to>
+    </rename>
+    <rename>
+        <from>sales/order_shipment_comment</from>
+        <to>Magento\Sales\Model\Order\Shipment\Comment</to>
+    </rename>
+    <rename>
+        <from>sales/order_payment</from>
+        <to>Magento\Sales\Model\Order\Payment</to>
+    </rename>
+    <rename>
+        <from>sales/order_invoice_item</from>
+        <to>Magento\Sales\Model\Order\Invoice\Item</to>
+    </rename>
+    <rename>
+        <from>sales/order_invoice_comment</from>
+        <to>Magento\Sales\Model\Order\Invoice\Comment</to>
+    </rename>
+    <rename>
+        <from>sales/order_creditmemo_item</from>
+        <to>Magento\Sales\Model\Order\Creditmemo\Item</to>
+    </rename>
+    <rename>
+        <from>sales/order_creditmemo_comment</from>
+        <to>Magento\Sales\Model\Order\Creditmemo\Comment</to>
     </rename>
 </classmap>

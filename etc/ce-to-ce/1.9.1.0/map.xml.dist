@@ -5,26 +5,65 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../map.xsd">
     <source>
         <document_rules>
             <ignore>
-                <document>paypal_cert</document>
+                <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
-                <document>paypal_payment_transaction</document>
+                <document>googleshopping_items</document>
             </ignore>
             <ignore>
-                <document>paypal_settlement_report</document>
+                <document>googleshopping_types</document>
             </ignore>
             <ignore>
-                <document>paypal_settlement_report_row</document>
+                <document>sales_flat_creditmemo_grid</document>
             </ignore>
             <ignore>
-                <document>sales_billing_agreement</document>
+                <document>sales_flat_invoice_grid</document>
             </ignore>
             <ignore>
-                <document>sales_billing_agreement_order</document>
+                <document>sales_flat_order_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_flat_shipment_grid</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
             </ignore>
             <ignore>
                 <document>m2_cl_*</document>
@@ -72,13 +111,13 @@
                 <document>log_summary_type</document>
             </ignore>
             <ignore>
+                <document>log_summary</document>
+            </ignore>
+            <ignore>
                 <document>log_url</document>
             </ignore>
             <ignore>
                 <document>log_url_info</document>
-            </ignore>
-            <ignore>
-                <document>log_summary</document>
             </ignore>
             <ignore>
                 <document>catalog_category_anc_categs_index_idx</document>
@@ -247,6 +286,27 @@
             </ignore>
             <ignore>
                 <document>ogone_api_debug</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_import</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_import_type</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_orders</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_orders_products</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_orders_status_history</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_orders_total</document>
+            </ignore>
+            <ignore>
+                <document>oscommerce_ref</document>
             </ignore>
             <ignore>
                 <document>paygate_authorizenet_debug</document>
@@ -503,6 +563,12 @@
             <ignore>
                 <document>admin_rule</document>
             </ignore>
+            <ignore>
+                <document>catalogrule_affected_product</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_super_attribute_pricing</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -564,10 +630,6 @@
                 <to>sales_creditmemo_comment</to>
             </rename>
             <rename>
-                <document>sales_flat_creditmemo_grid</document>
-                <to>sales_creditmemo_grid</to>
-            </rename>
-            <rename>
                 <document>sales_flat_creditmemo_item</document>
                 <to>sales_creditmemo_item</to>
             </rename>
@@ -580,20 +642,12 @@
                 <to>sales_invoice_comment</to>
             </rename>
             <rename>
-                <document>sales_flat_invoice_grid</document>
-                <to>sales_invoice_grid</to>
-            </rename>
-            <rename>
                 <document>sales_flat_invoice_item</document>
                 <to>sales_invoice_item</to>
             </rename>
             <rename>
                 <document>sales_flat_order_address</document>
                 <to>sales_order_address</to>
-            </rename>
-            <rename>
-                <document>sales_flat_order_grid</document>
-                <to>sales_order_grid</to>
             </rename>
             <rename>
                 <document>sales_flat_order_item</document>
@@ -644,10 +698,6 @@
                 <to>sales_shipment_comment</to>
             </rename>
             <rename>
-                <document>sales_flat_shipment_grid</document>
-                <to>sales_shipment_grid</to>
-            </rename>
-            <rename>
                 <document>sales_flat_shipment_item</document>
                 <to>sales_shipment_item</to>
             </rename>
@@ -663,11 +713,127 @@
                 <document>core_file_storage</document>
                 <to>media_storage_file_storage</to>
             </rename>
+            <rename>
+                <document>sales_billing_agreement</document>
+                <to>paypal_billing_agreement</to>
+            </rename>
+            <rename>
+                <document>sales_billing_agreement_order</document>
+                <to>paypal_billing_agreement_order</to>
+            </rename>
         </document_rules>
         <field_rules>
             <move>
                 <field>cms_page.root_template</field>
                 <to>cms_page.page_layout</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_amount</field>
+                <to>sales_order.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_amount</field>
+                <to>sales_order.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.shipping_hidden_tax_amount</field>
+                <to>sales_order.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_shipping_hidden_tax_amnt</field>
+                <to>sales_order.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_invoiced</field>
+                <to>sales_order.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_invoiced</field>
+                <to>sales_order.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_refunded</field>
+                <to>sales_order.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_refunded</field>
+                <to>sales_order.base_discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo.hidden_tax_amount</field>
+                <to>sales_creditmemo.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo.base_hidden_tax_amount</field>
+                <to>sales_creditmemo.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo.shipping_hidden_tax_amount</field>
+                <to>sales_creditmemo.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo.base_shipping_hidden_tax_amnt</field>
+                <to>sales_creditmemo.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo_item.hidden_tax_amount</field>
+                <to>sales_creditmemo_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_creditmemo_item.base_hidden_tax_amount</field>
+                <to>sales_creditmemo_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice.hidden_tax_amount</field>
+                <to>sales_invoice.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice.base_hidden_tax_amount</field>
+                <to>sales_invoice.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice.shipping_hidden_tax_amount</field>
+                <to>sales_invoice.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice.base_shipping_hidden_tax_amnt</field>
+                <to>sales_invoice.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice_item.hidden_tax_amount</field>
+                <to>sales_invoice_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_invoice_item.base_hidden_tax_amount</field>
+                <to>sales_invoice_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_amount</field>
+                <to>sales_order_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_amount</field>
+                <to>sales_order_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_invoiced</field>
+                <to>sales_order_item.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_invoiced</field>
+                <to>sales_order_item.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_refunded</field>
+                <to>sales_order_item.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.base_hidden_tax_refunded</field>
+                <to>sales_order_item.base_discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order_item.hidden_tax_canceled</field>
+                <to>sales_order_item.discount_tax_compensation_canceled</to>
             </move>
             <move>
                 <field>sales_flat_order_payment.cc_last4</field>
@@ -676,6 +842,38 @@
             <move>
                 <field>sales_flat_quote_payment.cc_last4</field>
                 <to>quote_payment.cc_last_4</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address.hidden_tax_amount</field>
+                <to>quote_address.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address.base_hidden_tax_amount</field>
+                <to>quote_address.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address.shipping_hidden_tax_amount</field>
+                <to>quote_address.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address.base_shipping_hidden_tax_amnt</field>
+                <to>quote_address.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address_item.hidden_tax_amount</field>
+                <to>quote_address_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_address_item.base_hidden_tax_amount</field>
+                <to>quote_address_item.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_item.hidden_tax_amount</field>
+                <to>quote_item.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_quote_item.base_hidden_tax_amount</field>
+                <to>quote_item.base_discount_tax_compensation_amount</to>
             </move>
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
@@ -709,7 +907,6 @@
                 <field>widget_instance.instance_type</field>
                 <handler class="\Migration\Handler\ClassMap" />
             </transform>
-
             <transform>
                 <field>catalogrule.conditions_serialized</field>
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
@@ -725,6 +922,10 @@
             <transform>
                 <field>salesrule.actions_serialized</field>
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
+            </transform>
+            <transform>
+                <field>sales_flat_order_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -743,6 +944,9 @@
             </ignore>
             <ignore>
                 <field>core_website.visibility</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_tax.hidden</field>
             </ignore>
             <ignore>
                 <field>sales_flat_order.paypal_ipn_customer_notified</field>
@@ -796,48 +1000,6 @@
                 <field>catalog_product_entity_varchar.entity_type_id</field>
             </ignore>
             <ignore>
-                <field>customer_address_entity.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity.attribute_set_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_datetime.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_decimal.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_int.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_text.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_address_entity_varchar.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity.attribute_set_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_datetime.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_decimal.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_int.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_text.entity_type_id</field>
-            </ignore>
-            <ignore>
-                <field>customer_entity_varchar.entity_type_id</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_creditmemo.cybersource_token</field>
             </ignore>
             <ignore>
@@ -888,24 +1050,57 @@
             <ignore>
                 <field>widget_instance.package_theme</field>
             </ignore>
+            <ignore>
+                <field>newsletter_template.template_text_preprocessed</field>
+            </ignore>
         </field_rules>
     </source>
     <destination>
         <document_rules>
             <ignore>
+                <document>customer_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>customer_address_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>ui_bookmark</document>
+            </ignore>
+            <ignore>
                 <document>migration_backup_*</document>
             </ignore>
             <ignore>
                 <document>googleoptimizer_code</document>
-            </ignore>
-            <ignore>
-                <document>googleshopping_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googleshopping_items</document>
-            </ignore>
-            <ignore>
-                <document>googleshopping_types</document>
             </ignore>
             <ignore>
                 <document>indexer_state</document>
@@ -954,6 +1149,9 @@
             </ignore>
             <ignore>
                 <document>catalog_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>catalogsearch_fulltext_index_default</document>
             </ignore>
             <ignore>
                 <document>customer_eav_attribute</document>
@@ -1060,6 +1258,27 @@
             <ignore>
                 <document>sequence_shipment*</document>
             </ignore>
+            <ignore>
+                <document>eav_attribute_option_swatch</document>
+            </ignore>
+            <ignore>
+                <document>import_history</document>
+            </ignore>
+            <ignore>
+                <document>sales_creditmemo_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_invoice_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_order_grid</document>
+            </ignore>
+            <ignore>
+                <document>sales_shipment_grid</document>
+            </ignore>
+            <ignore>
+                <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1163,9 +1382,6 @@
             </ignore>
             <ignore>
                 <field>sales_shipment.send_email</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.send_email</field>
             </ignore>
             <ignore>
                 <field>sales_shipment.customer_note</field>

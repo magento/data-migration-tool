@@ -133,8 +133,8 @@ USAGE;
     protected function runVolume(array $step, $stepName)
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
+            $this->logger->error('Volume Check failed');
             $this->rollback($step['data'], $stepName);
-            throw new Exception('Volume Check failed');
         }
     }
 
@@ -150,7 +150,7 @@ USAGE;
             $this->logger->info(sprintf('%s: rollback', $stepName));
             try {
                 $stage->rollback();
-            } catch (\Exception $e) {
+            } catch (\Migration\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
             $this->progress->reset($stage);

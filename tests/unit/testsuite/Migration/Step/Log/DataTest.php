@@ -152,8 +152,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
         $recordTransformer->expects($this->once())->method('init');
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(2))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->at(3))->method('getRecords')->will($this->returnValue($bulk));
+        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue([]));
         $this->source->expects($this->any())->method('getRecordsCount')->will($this->returnValue(2));
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')
