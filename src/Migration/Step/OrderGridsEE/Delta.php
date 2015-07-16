@@ -7,12 +7,14 @@ namespace Migration\Step\OrderGridsEE;
 
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
+use Migration\Resource\Destination;
 use Migration\Resource\Source;
 
 class Delta extends \Migration\Step\OrderGrids\Delta
 {
     /**
      * @param Source $source
+     * @param Destination $destination
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Helper $helper
@@ -20,6 +22,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
      */
     public function __construct(
         Source $source,
+        Destination $destination,
         GroupsFactory $groupsFactory,
         Logger $logger,
         Helper $helper,
@@ -30,6 +33,6 @@ class Delta extends \Migration\Step\OrderGrids\Delta
         $this->logger = $logger;
         $this->helper = $helper;
         $this->data = $data;
-        parent::__construct($source, $groupsFactory, $logger, $helper, $data);
+        parent::__construct($source, $destination, $groupsFactory, $logger, $helper, $data);
     }
 }

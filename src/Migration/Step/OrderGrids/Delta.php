@@ -21,6 +21,11 @@ class Delta implements StageInterface
     protected $source;
 
     /**
+     * @var Resource\Destination
+     */
+    protected $destination;
+
+    /**
      * @var Logger
      */
     protected $logger;
@@ -47,6 +52,7 @@ class Delta implements StageInterface
 
     /**
      * @param Source $source
+     * @param Destination $destination
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Helper $helper
@@ -54,12 +60,14 @@ class Delta implements StageInterface
      */
     public function __construct(
         Source $source,
+        Destination $destination,
         GroupsFactory $groupsFactory,
         Logger $logger,
         Helper $helper,
         Data $data
     ) {
         $this->source = $source;
+        $this->destination = $destination;
         $this->readerGroups = $groupsFactory->create('order_grids_document_groups_file');
         $this->logger = $logger;
         $this->helper = $helper;
@@ -98,7 +106,14 @@ class Delta implements StageInterface
                 }
                 foreach ($updateData[$sourceDocName]['methods'] as $method) {
                     echo('.');
-                    call_user_func_array([$this->data, $method], [$selectData[$method]['columns'], $ids]);
+                    $destinationDocumentName = $selectData[$method]['destination'];
+                    $select = call_user_func_array([$this->data, $method], [$selectData[$method]['columns'], $ids]);
+                    $this->destination->getAdapter()->insertFromSelect(
+                        $select,
+                        $this->destination->addDocumentPrefix($destinationDocumentName),
+                        [],
+                        \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
+                    );
                 }
                 $documentNameDelta = $this->source->getDeltaLogName($sourceDocName);
                 $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
