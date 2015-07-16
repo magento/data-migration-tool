@@ -89,19 +89,19 @@ class Helper extends \Migration\Step\OrderGrids\Helper
         $updateData = [
             'sales_flat_order_grid' => [
                 'idKey' => 'entity_id',
-                'methods' => ['getSelectSalesOrderGridArchive']
+                'methods' => ['getSelectSalesOrderGrid']
             ],
             'sales_flat_invoice_grid' => [
                 'idKey' => 'entity_id',
-                'methods' => ['getSelectSalesInvoiceGridArchive']
+                'methods' => ['getSelectSalesInvoiceGrid']
             ],
             'sales_flat_shipment_grid' => [
                 'idKey' => 'entity_id',
-                'methods' => ['getSelectSalesShipmentGridArchive']
+                'methods' => ['getSelectSalesShipmentGrid']
             ],
             'sales_flat_creditmemo_grid' => [
                 'idKey' => 'entity_id',
-                'methods' => ['getSelectSalesCreditmemoGridArchive']
+                'methods' => ['getSelectSalesCreditmemoGrid']
             ],
             'enterprise_sales_order_grid_archive' => [
                 'idKey' => 'entity_id',
