@@ -17,9 +17,9 @@
         <document key="entity_id">sales_flat_invoice_grid</document>
         <document key="entity_id">sales_flat_shipment_grid</document>
         <document key="entity_id">sales_flat_creditmemo_grid</document>
-        <!--<document key="entity_id">enterprise_sales_order_grid_archive</document>-->
-        <!--<document key="entity_id">enterprise_sales_invoice_grid_archive</document>-->
-        <!--<document key="entity_id">enterprise_sales_shipment_grid_archive</document>-->
-        <!--<document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>-->
+        <document key="entity_id">enterprise_sales_order_grid_archive</document>
+        <document key="entity_id">enterprise_sales_invoice_grid_archive</document>
+        <document key="entity_id">enterprise_sales_shipment_grid_archive</document>
+        <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
     </group>
 </groups>
