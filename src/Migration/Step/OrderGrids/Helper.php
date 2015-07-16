@@ -120,7 +120,7 @@ class Helper
             'payment_method' => $paymentSelect,
             'total_refunded' => 'sales_order.total_refunded'
         ];
-        foreach ($fields as $key => $value) {
+        foreach (array_keys($fields) as $key) {
             $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
         }
 
@@ -174,7 +174,7 @@ class Helper
             'created_at' => 'sales_invoice.created_at',
             'updated_at' => 'sales_invoice.updated_at'
         ];
-        foreach ($fields as $key => $value) {
+        foreach (array_keys($fields) as $key) {
             $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
         }
         return $result;
@@ -223,7 +223,7 @@ class Helper
             'created_at' => 'sales_shipment.created_at',
             'updated_at' => 'sales_shipment.updated_at'
         ];
-        foreach ($fields as $key => $value) {
+        foreach (array_keys($fields) as $key) {
             $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
         }
         return $result;
@@ -275,7 +275,7 @@ class Helper
             'adjustment_negative' => 'sales_creditmemo.adjustment_negative',
             'order_base_grand_total' => 'sales_order.base_grand_total'
         ];
-        foreach ($fields as $key => $value) {
+        foreach (array_keys($fields) as $key) {
             $result[$key] = isset($columns[$key]) ? $columns[$key] : 'null';
         }
         return $result;
