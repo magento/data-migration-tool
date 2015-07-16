@@ -7,13 +7,6 @@
 -->
 <groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
     <group name="delta_map">
-        <document key="entity_id">customer_entity</document>
-        <document key="value_id">customer_entity_int</document>
-        <document key="value_id">customer_entity_varchar</document>
-        <document key="entity_id">customer_address_entity</document>
-        <document key="value_id">customer_address_entity_varchar</document>
-        <document key="value_id">customer_address_entity_text</document>
-        <document key="value_id">customer_address_entity_int</document>
         <document key="catalog_compare_item_id">catalog_compare_item</document>
         <document key="item_id">cataloginventory_stock_item</document>
         <document key="message_id">core_email_queue</document>
