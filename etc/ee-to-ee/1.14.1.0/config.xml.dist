@@ -58,15 +58,15 @@
             <data>Migration\Step\SalesOrder\Data</data>
             <volume>Migration\Step\SalesOrder\Volume</volume>
         </step>
-        <step title="OrderGrids Step">
-            <integrity>Migration\Step\OrderGridsEE\Integrity</integrity>
-            <data>Migration\Step\OrderGridsEE\Data</data>
-            <volume>Migration\Step\OrderGridsEE\Volume</volume>
-        </step>
         <step title="ConfigurablePrices step">
             <integrity>Migration\Step\ConfigurablePrices\Integrity</integrity>
             <data>Migration\Step\ConfigurablePrices\Data</data>
             <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
+        <step title="OrderGrids Step">
+            <integrity>Migration\Step\OrderGridsEE\Integrity</integrity>
+            <data>Migration\Step\OrderGridsEE\Data</data>
+            <volume>Migration\Step\OrderGridsEE\Volume</volume>
         </step>
     </steps>
     <steps mode="delta">
@@ -80,6 +80,7 @@
         </step>
         <step title="Map Step">
             <delta>Migration\Step\Map\Delta</delta>
+            <volume>Migration\Step\Map\Volume</volume>
         </step>
         <step title="Log Step">
             <delta>Migration\Step\Log\Delta</delta>
@@ -115,6 +116,7 @@
         <delta_document_groups_file>etc/ee-to-ee/deltalog.xml.dist</delta_document_groups_file>
         <customer_attr_map_file>etc/ee-to-ee/customer-attr-map.xml.dist</customer_attr_map_file>
         <customer_attr_document_groups_file>etc/ee-to-ee/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
+        <order_grids_document_groups_file>etc/ee-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <class_map>etc/ee-to-ee/class-map.xml.dist</class_map>
         <bulk_size>100</bulk_size>
         <source_prefix />
