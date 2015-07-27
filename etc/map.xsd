@@ -70,9 +70,10 @@
     </xs:complexType>
 
     <xs:complexType name="ignoreFieldType">
-        <xs:sequence>
+        <xs:choice minOccurs="1" maxOccurs="1">
             <xs:element name="field" type="fieldFormatType" minOccurs="1" maxOccurs="1"/>
-        </xs:sequence>
+            <xs:element name="datatype" type="fieldFormatType" minOccurs="1" maxOccurs="1"/>
+        </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="moveFieldType">

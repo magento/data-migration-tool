@@ -166,6 +166,9 @@
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
+            <ignore>
+                <datatype>catalog_eav_attribute.search_weight</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>

@@ -32,6 +32,11 @@ class Map implements MapInterface
     /**
      * @var array
      */
+    protected $ignoredDataTypeFields = [];
+
+    /**
+     * @var array
+     */
     protected $documentsMap = [];
 
     /**
@@ -103,6 +108,21 @@ class Map implements MapInterface
         $map = $this->xml->query(sprintf('//%s/field_rules/ignore/field[text()="%s.%s"]', $type, $document, $field));
         $this->ignoredFields[$key] = ($map->length > 0);
         return $this->ignoredFields[$key];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isFieldDataTypeIgnored($document, $field, $type)
+    {
+        $key = $document . '-' . $field . '-' . $type;
+        if (isset($this->ignoredDataTypeFields[$key])) {
+            return $this->ignoredDataTypeFields[$key];
+        }
+        $this->validateType($type);
+        $map = $this->xml->query(sprintf('//%s/field_rules/ignore/datatype[text()="%s.%s"]', $type, $document, $field));
+        $this->ignoredDataTypeFields[$key] = ($map->length > 0);
+        return $this->ignoredDataTypeFields[$key];
     }
 
     /**

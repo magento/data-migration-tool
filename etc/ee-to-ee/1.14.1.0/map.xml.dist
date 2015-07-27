@@ -1503,6 +1503,12 @@
             <ignore>
                 <field>newsletter_template.template_text_preprocessed</field>
             </ignore>
+            <ignore>
+                <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
+            </ignore>
+            <ignore>
+                <datatype>weee_tax.state</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1969,6 +1975,12 @@
             </ignore>
             <ignore>
                 <field>magento_banner.ga_creative</field>
+            </ignore>
+            <ignore>
+                <datatype>quote_payment.cc_exp_month</datatype>
+            </ignore>
+            <ignore>
+                <datatype>weee_tax.state</datatype>
             </ignore>
         </field_rules>
     </destination>
