@@ -14,11 +14,7 @@ Magento 2 migration involves four components: data, extensions, themes, and cust
 ### Supported versions
 We support the following versions for migration:
 
-*	Community Edition (CE) version 1.9.1.0 
-
-We also plan to support:
-
-*  CE 1.6.x, CE 1.7.x, CE 1.8.x, and CE 1.9.x
+*	1.9.1.0, 1.6.x, 1.7.x, 1.8.x, and 1.9.x
 
 ## Prerequisites
 Before you start your migration, you must do all of the following:
