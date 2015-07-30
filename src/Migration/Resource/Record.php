@@ -67,12 +67,7 @@ class Record
             return true;
         }
 
-        foreach (array_keys($this->data) as $field) {
-            if (!$structure->hasField($field)) {
-                return false;
-            }
-        }
-        return true;
+        return count(array_diff_key($structure->getFields(), $this->data)) == 0;
     }
 
     /**

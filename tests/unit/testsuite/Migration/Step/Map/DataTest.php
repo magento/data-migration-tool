@@ -61,6 +61,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
     public function setUp()
     {
         $this->progressBar = $this->getMock(
@@ -72,7 +77,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
-            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount'],
+            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount', 'getPageSize'],
             [],
             '',
             false
@@ -95,6 +100,16 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getHandlerConfig'])
             ->getMock();
+
+        /** @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject $config */
+        $this->config = $this->getMockBuilder('Migration\Config')->setMethods(['getOption'])
+            ->disableOriginalConstructor()->getMock();
+        $this->config->expects($this->any())->method('getOption')->willReturnMap(
+            [
+                ['direct_document_copy', 0],
+                ['bulk_size', 100]
+            ]
+        );
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
@@ -120,7 +135,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->recordTransformerFactory,
             $mapFactory,
             $this->progress,
-            $this->logger
+            $this->logger,
+            $this->config
         );
     }
 
@@ -173,8 +189,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $recordTransformer->expects($this->once())->method('init');
 
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(5))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->any())->method('getRecords')->willReturnOnConsecutiveCalls($bulk, []);
+
+        $this->source->expects($this->any())->method('getPageSize')->willReturn(100);
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')->will(
             $this->returnValue($destinationRecords)
@@ -205,10 +222,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords', 'getStructure'], [], '', false);
         $bulk = [['id' => 4, 'name' => 'john']];
-        $this->source->expects($this->at(4))->method('getRecords')->will($this->returnValue($bulk));
-        $this->source->expects($this->at(5))->method('getRecords')->will($this->returnValue([]));
+        $this->source->expects($this->any())->method('getRecords')->willReturnOnConsecutiveCalls($bulk, []);
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
-
+        $this->source->expects($this->any())->method('getPageSize')->willReturn(100);
         $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()
             ->setMethods(['getStructure', 'getRecords'])
             ->getMock();

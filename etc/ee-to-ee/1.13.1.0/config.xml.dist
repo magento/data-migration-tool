@@ -117,7 +117,16 @@
         <customer_attr_document_groups_file>etc/ee-to-ee/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
         <order_grids_document_groups_file>etc/ee-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <class_map>etc/ee-to-ee/class-map.xml.dist</class_map>
-        <bulk_size>100</bulk_size>
+        <!--
+        In case bulk_size=0 it will be auto-detected for every document.
+        -->
+        <bulk_size>0</bulk_size>
+        <!--
+        Set direct_document_copy = 1 for better performance.
+        NOTE: 'source' and 'destination' databases MUST be placed on the same MySQL instance
+        and 'destination' user MUST be granted with 'SELECT' permissions on 'source' database
+         -->
+        <direct_document_copy>0</direct_document_copy>
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>

@@ -121,6 +121,12 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->expects($this->once())->method('loadChangedRecords')
             ->with('document', 'm2_cl_document', 'key_field', 0, 100);
+        $this->config->expects($this->any())->method('getOption')->willReturnMap(
+            [
+                ['source_prefix', ''],
+                ['bulk_size', 100]
+            ]
+        );
         $this->resourceSource->getChangedRecords('document', 'key_field');
     }
 
@@ -128,6 +134,12 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->expects($this->once())->method('loadDeletedRecords')
             ->with('m2_cl_document', 'key_field', 0, 100);
+        $this->config->expects($this->any())->method('getOption')->willReturnMap(
+            [
+                ['source_prefix', ''],
+                ['bulk_size', 100]
+            ]
+        );
         $this->resourceSource->getDeletedRecords('document', 'key_field');
     }
 }

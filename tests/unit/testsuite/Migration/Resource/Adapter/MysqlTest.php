@@ -49,7 +49,8 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'createTableByDdl',
                 'update',
                 'isTableExists',
-                'insertFromSelect'
+                'insertFromSelect',
+                'getConnection'
             ],
             [],
             '',
@@ -128,11 +129,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     {
         $data = [['column1' => 'value1'], ['column1' => 'value2']];
 
-        $this->pdoMysql->expects($this->any())
-            ->method('insertMultiple')
-            ->with($this->equalTo('some_table'), $this->equalTo($data))
-            ->willReturn(2);
-
+        $pdoMock = $this->getMock('\PdoTest', ['prepare', 'execute'], [], '', false);
+        $pdoMock->expects($this->any())->method('prepare')->willReturnSelf();
+        $pdoMock->expects($this->any())->method('execute')->willReturnSelf();
+        $this->pdoMysql->expects($this->any())->method('getConnection')->willReturn($pdoMock);
         $this->assertEquals(2, $this->adapterMysql->insertRecords('some_table', $data));
     }
 

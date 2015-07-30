@@ -46,7 +46,7 @@ class Source extends AbstractResource
      */
     public function loadPage($documentName, $pageNumber)
     {
-        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
+        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
     }
 
     /**
@@ -81,7 +81,7 @@ class Source extends AbstractResource
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             $pageNumber,
-            $this->getPageSize(),
+            $this->getPageSize($documentName),
             $getProcessed
         );
     }
@@ -100,7 +100,7 @@ class Source extends AbstractResource
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             0,
-            $this->getPageSize(),
+            $this->getPageSize($documentName),
             $getProcessed
         );
     }
