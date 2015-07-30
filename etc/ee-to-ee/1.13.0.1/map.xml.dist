@@ -426,6 +426,12 @@
                 <document>core_flag</document>
             </ignore>
             <ignore>
+                <document>core_email_queue</document>
+            </ignore>
+            <ignore>
+                <document>core_email_queue_recipients</document>
+            </ignore>
+            <ignore>
                 <document>merchandiser_category_values</document>
             </ignore>
             <ignore>
@@ -1966,6 +1972,12 @@
             </ignore>
             <ignore>
                 <field>magento_banner.ga_creative</field>
+            </ignore>
+            <ignore>
+                <datatype>quote_payment.cc_exp_month</datatype>
+            </ignore>
+            <ignore>
+                <datatype>weee_tax.state</datatype>
             </ignore>
         </field_rules>
     </destination>

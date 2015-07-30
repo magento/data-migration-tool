@@ -102,7 +102,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $fields = ['field1' => []];
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
 
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();

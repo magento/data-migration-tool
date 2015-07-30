@@ -189,12 +189,22 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkForErrors()
     {
-        $isSuccess = true;
         if (!$this->hasMappedDocuments) {
             $this->logger->error('Mapped documents not found. Check your configuration.');
             return false;
         }
+        $checkMissingDocuments = $this->checkMissingDocuments();
+        $checkMissingDocumentFields = $this->checkMissingDocumentFields();
+        $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
+        return $checkMissingDocuments && $checkMissingDocumentFields && $checkMismatchDocumentFieldDataTypes;
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkMissingDocuments()
+    {
+        $isSuccess = true;
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
@@ -210,7 +220,15 @@ abstract class AbstractIntegrity implements StageInterface
                 implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
+        return $isSuccess;
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkMissingDocumentFields()
+    {
+        $isSuccess = true;
         if (isset($this->missingDocumentFields[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
@@ -232,7 +250,14 @@ abstract class AbstractIntegrity implements StageInterface
                 ));
             }
         }
+        return $isSuccess;
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkMismatchDocumentFieldDataTypes()
+    {
         if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE])) {
             foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $this->logger->warning(sprintf(
@@ -251,7 +276,6 @@ abstract class AbstractIntegrity implements StageInterface
                 ));
             }
         }
-
-        return $isSuccess;
+        return true;
     }
 }

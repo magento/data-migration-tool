@@ -105,7 +105,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $fields = ['field1' => []];
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
         $destinationRecord = ['attribute_code' => 'eav_entity'];
         $this->helper->expects($this->any())->method('getDocumentList')->willReturn(['source_doc' => 'dest_doc']);
         $this->helper->expects($this->once())->method('getDestEavDocument')->willReturn('eav_entity_int');

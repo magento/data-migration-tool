@@ -97,6 +97,21 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    public function testHandleWarning()
+    {
+        $message = 'Warnin message';
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => 300, 'extra' => $extra];
+        $this->consoleHandler->setLevel(100);
+        ob_start();
+        $this->consoleHandler->setBubble(false);
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertTrue($result);
+        $this->assertContains($message, $output);
+    }
+
     public function testHandleRed()
     {
         $message = 'Colorized message';
