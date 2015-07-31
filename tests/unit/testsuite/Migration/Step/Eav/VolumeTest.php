@@ -49,7 +49,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getDestinationRecords', 'getSourceRecordsCount', 'getDestinationRecordsCount'])
             ->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['error'])
+            ->setMethods(['warning'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')
             ->disableOriginalConstructor()
@@ -173,7 +173,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(1);
-        $this->logger->expects($this->atLeastOnce())->method('error');
+        $this->logger->expects($this->atLeastOnce())->method('warning');
 
         $this->assertFalse($this->volume->perform());
     }

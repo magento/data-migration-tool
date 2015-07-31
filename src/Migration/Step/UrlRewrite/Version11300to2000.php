@@ -506,7 +506,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $result = $this->source->getRecordsCount($this->tableName)
             == $this->destination->getRecordsCount('url_rewrite');
         if (!$result) {
-            $this->logger->error('Mismatch of entities in the document: url_rewrite');
+            $this->logger->warning('Mismatch of entities in the document: url_rewrite');
         }
         $this->progress->finish();
         return $result;

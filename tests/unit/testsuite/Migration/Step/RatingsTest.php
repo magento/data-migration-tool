@@ -70,7 +70,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
         );
         $this->structure = $this->getMock('Migration\Resource\Structure', ['getFields'], [], '', false);
         $this->document = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['warning', 'error'], [], '', false);
         $this->progress = $this->getMock(
             'Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'advance', 'finish'],
@@ -231,7 +231,7 @@ class RatingsTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $this->logger
             ->expects($this->once())
-            ->method('error')
+            ->method('warning')
             ->with('Mismatch of entities in the documents: rating, rating_store');
         $this->assertFalse($this->ratings->perform());
     }

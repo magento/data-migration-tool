@@ -68,7 +68,7 @@ class Volume extends AbstractVolume
             - $oldDestinationRecordsCount;
         if ($sourceRecordsCount != $newDestinationRecordsCount) {
             $message = 'Mismatch of entities in the document: ' . $documents[MapInterface::TYPE_DEST];
-            $this->logger->error($message);
+            $this->logger->warning($message);
         }
         $this->progressBar->finish();
         return $this->checkForErrors();
