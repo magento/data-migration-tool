@@ -14,6 +14,16 @@ class Source extends AbstractResource
     const CONFIG_DOCUMENT_PREFIX = 'source_prefix';
 
     /**
+     * @var array
+     */
+    protected $documentIdentity = [];
+
+    /**
+     * @var array
+     */
+    protected $lastLoadedIdentityId = [];
+
+    /**
      * {@inheritdoc}
      */
     protected function getResourceConfig()
@@ -46,7 +56,63 @@ class Source extends AbstractResource
      */
     public function loadPage($documentName, $pageNumber)
     {
-        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize());
+        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
+    }
+
+    /**
+     * Return records from the document, paging is included
+     *
+     * @param string $documentName
+     * @param int $pageNumber
+     * @param int $pageSize
+     * @return array
+     */
+    public function getRecords($documentName, $pageNumber, $pageSize = null)
+    {
+        $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
+        $records = $this->adapter->loadPage(
+            $this->addDocumentPrefix($documentName),
+            $pageNumber,
+            $pageSize,
+            $this->getIdentityField($documentName),
+            isset($this->lastLoadedIdentityId[$documentName]) ? $this->lastLoadedIdentityId[$documentName] : null
+        );
+
+        return $records;
+    }
+
+    /**
+     * @param string $documentName
+     * @param array $record
+     * @return void
+     */
+    public function setLastLoadedRecord($documentName, array $record)
+    {
+        if ($this->getIdentityField($documentName) && isset($record[$this->getIdentityField($documentName)])) {
+            $this->lastLoadedIdentityId[$documentName] = $record[$this->getIdentityField($documentName)];
+        } elseif (empty($record)) {
+            unset($this->lastLoadedIdentityId[$documentName]);
+        }
+    }
+
+    /**
+     * @param string $documentName
+     * @return mixed
+     */
+    protected function getIdentityField($documentName)
+    {
+        if (array_key_exists($documentName, $this->documentIdentity)) {
+            return $this->documentIdentity[$documentName];
+        }
+
+        $this->documentIdentity[$documentName] = null;
+        foreach ($this->getDocument($documentName)->getStructure()->getFields() as $params) {
+            if ($params['PRIMARY'] && $params['IDENTITY']) {
+                $this->documentIdentity[$documentName] = $params['COLUMN_NAME'];
+            }
+        }
+
+        return $this->documentIdentity[$documentName];
     }
 
     /**
@@ -81,7 +147,7 @@ class Source extends AbstractResource
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             $pageNumber,
-            $this->getPageSize(),
+            $this->getPageSize($documentName),
             $getProcessed
         );
     }
@@ -100,7 +166,7 @@ class Source extends AbstractResource
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             0,
-            $this->getPageSize(),
+            $this->getPageSize($documentName),
             $getProcessed
         );
     }

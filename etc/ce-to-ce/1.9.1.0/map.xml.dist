@@ -569,6 +569,9 @@
             <ignore>
                 <document>catalog_product_super_attribute_pricing</document>
             </ignore>
+            <ignore>
+                <document>core_website</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -596,10 +599,6 @@
             <rename>
                 <document>core_translate</document>
                 <to>translation</to>
-            </rename>
-            <rename>
-                <document>core_website</document>
-                <to>store_website</to>
             </rename>
             <rename>
                 <document>core_session</document>
@@ -1284,6 +1283,9 @@
             </ignore>
             <ignore>
                 <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
+            <ignore>
+                <document>store_website</document>
             </ignore>
         </document_rules>
         <field_rules>

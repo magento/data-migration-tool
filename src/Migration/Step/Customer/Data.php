@@ -140,27 +140,32 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
 
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
-            $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
+            $this->progress->start(
+                ceil($this->source->getRecordsCount($sourceDocName) / $this->source->getPageSize($sourceDocName)),
+                LogManager::LOG_LEVEL_DEBUG
+            );
+            $destData = array_fill_keys(
+                array_keys($destDocument->getStructure()->getFields()),
+                null
+            );
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
 
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
-                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
-                    $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
-
                     if ($this->helper->isSkipRecord($attributeType, $sourceDocName, $recordData)) {
                         continue;
                     }
-
                     /** @var Record $record */
                     $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
                     $destRecord = $this->recordFactory->create(['document' => $destDocument]);
                     $recordTransformer->transform($record, $destRecord);
-
+                    $destRecord->setData(array_merge($destData, $destRecord->getData()));
                     $destinationRecords->addRecord($destRecord);
                 }
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+                $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
                 $this->helper->updateAttributeData($attributeType, $sourceDocName, $destinationRecords);
 

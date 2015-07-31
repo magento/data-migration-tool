@@ -59,17 +59,24 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     public function validateStructureDataProvider()
     {
         $structureValid = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
-        $structureValid->expects($this->any())->method('getFields')->willReturn(['id', 'name']);
+        $structureValid->expects($this->any())->method('getFields')->willReturn(['id' => [], 'name' => []]);
         $structureValid->expects($this->any())->method('hasField')->willReturnCallback(function ($fieldName) {
             return in_array($fieldName, ['id', 'name']);
         });
+        $structureValid2 = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
+        $structureValid2->expects($this->any())->method('getFields')
+            ->willReturn(['id' => [], 'name' => [], 'address' => []]);
+        $structureValid2->expects($this->any())->method('hasField')->willReturn(false);
+
         $structureNotValid = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
-        $structureNotValid->expects($this->any())->method('getFields')->willReturn(['id', 'name']);
+        $structureNotValid->expects($this->any())->method('getFields')
+            ->willReturn(['id' => []]);
         $structureNotValid->expects($this->any())->method('hasField')->willReturn(false);
         return [
             [false, null],
             [true, $structureValid],
-            [false, $structureNotValid]
+            [true, $structureValid2],
+            [false, $structureNotValid],
         ];
     }
 

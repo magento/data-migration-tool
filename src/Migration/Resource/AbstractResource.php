@@ -17,6 +17,16 @@ abstract class AbstractResource
     const DEFAULT_BULK_SIZE = 100;
 
     /**
+     * Max bulk size allowed
+     */
+    const MAX_BULK_SIZE = 50000;
+
+    /**
+     * Empirically detected average memory size required for 1 column
+     */
+    const MEMORY_PER_FIELD = 3000;
+
+    /**
      * @var AdapterInterface
      */
     protected $adapter;
@@ -45,6 +55,11 @@ abstract class AbstractResource
      * @var array
      */
     protected $documentList;
+
+    /**
+     * @var array
+     */
+    protected $documentBulkSize = [];
 
     /**
      * @param AdapterFactory $adapterFactory
@@ -154,12 +169,52 @@ abstract class AbstractResource
     /**
      * Retrieving bulk size
      *
-     * @return int
+     * @param string $documentName
+     * @return mixed
      */
-    public function getPageSize()
+    public function getPageSize($documentName)
     {
-        $pageSize = (int)$this->configReader->getOption('bulk_size');
-        return empty($pageSize) ? self::DEFAULT_BULK_SIZE : $pageSize;
+        if (array_key_exists($documentName, $this->documentBulkSize)) {
+            return $this->documentBulkSize[$documentName];
+        }
+
+        $configValue = (int)$this->configReader->getOption('bulk_size');
+        if ($configValue === 0) {
+            $fields = $this->getDocument($documentName)->getStructure()->getFields();
+            $fieldsNumber = count($fields);
+            $memoryLimit = $this->getBytes(ini_get('memory_limit'));
+            $pageSize = ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber));
+        } else {
+            $pageSize = $configValue > 0 ? $configValue : self::DEFAULT_BULK_SIZE;
+        }
+
+        $pageSize = $pageSize > self::MAX_BULK_SIZE ? self::MAX_BULK_SIZE : $pageSize;
+        $this->documentBulkSize[$documentName] = $pageSize;
+
+        return $this->documentBulkSize[$documentName];
+    }
+
+    /**
+     * @param string $memoryLimit
+     * @return int|string
+     */
+    protected function getBytes($memoryLimit)
+    {
+        $memoryLimit = trim($memoryLimit);
+        $last = strtolower($memoryLimit[strlen($memoryLimit)-1]);
+        switch($last) {
+            case 'g':
+                $memoryLimit *= 1024;
+                // fall-through intentional
+            case 'm':
+                $memoryLimit *= 1024;
+                // fall-through intentional
+            case 'k':
+                $memoryLimit *= 1024;
+                break;
+        }
+
+        return $memoryLimit;
     }
 
     /**
@@ -172,7 +227,7 @@ abstract class AbstractResource
      */
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
-        $pageSize = $pageSize ?: $this->getPageSize() ;
+        $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
         return $this->adapter->loadPage($this->addDocumentPrefix($documentName), $pageNumber, $pageSize);
     }
 

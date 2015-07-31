@@ -45,9 +45,11 @@ interface AdapterInterface
      * @param string $documentName
      * @param int $pageNumber
      * @param int $pageSize
+     * @param string $identityField
+     * @param int $identityId
      * @return array
      */
-    public function loadPage($documentName, $pageNumber, $pageSize);
+    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null);
 
     /**
      * Insert records into document

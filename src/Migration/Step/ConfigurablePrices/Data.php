@@ -95,7 +95,7 @@ class Data implements StageInterface
         $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->getConfigurablePrice($sourceDocumentName);
-        while (!empty($bulk = $this->getRecords($select, $pageNumber))) {
+        while (!empty($bulk = $this->getRecords($sourceDocumentName, $select, $pageNumber))) {
             $pageNumber++;
             $destinationCollection = $destinationDocument->getRecords();
             foreach ($bulk as $recordData) {
@@ -126,13 +126,17 @@ class Data implements StageInterface
     }
 
     /**
+     * @param string $sourceDocumentName
      * @param \Magento\Framework\DB\Select $select
      * @param int $pageNumber
      * @return array
      */
-    protected function getRecords(\Magento\Framework\DB\Select $select, $pageNumber)
+    protected function getRecords($sourceDocumentName, \Magento\Framework\DB\Select $select, $pageNumber)
     {
-        $select->limit($this->source->getPageSize(), $pageNumber * $this->source->getPageSize());
+        $select->limit(
+            $this->source->getPageSize($sourceDocumentName),
+            $pageNumber * $this->source->getPageSize($sourceDocumentName)
+        );
         return $this->sourceAdapter->loadDataFromSelect($select);
     }
 

@@ -81,11 +81,16 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadPage($documentName, $pageNumber, $pageSize)
+    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($documentName, '*')
-            ->limit($pageSize, $pageNumber * $pageSize);
+        $select->from($documentName, '*');
+        if ($identityField && $identityId !== null) {
+            $select->where("`$identityField` > ?", $identityId);
+            $select->limit($pageSize);
+        } else {
+            $select->limit($pageSize, $pageNumber * $pageSize);
+        }
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
     }
@@ -98,8 +103,10 @@ class Mysql implements \Migration\Resource\AdapterInterface
         $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
         if ($updateOnDuplicate) {
             $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+        } else if (!is_array(reset($records))) {
+            $result = $this->resourceAdapter->insert($documentName, $records);
         } else {
-            $result = $this->resourceAdapter->insertMultiple($documentName, $records);
+            $result = $this->insertMultiple($documentName, $records);
         }
         $this->resourceAdapter->rawQuery("SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'')");
 
@@ -107,12 +114,45 @@ class Mysql implements \Migration\Resource\AdapterInterface
     }
 
     /**
+     * @param string $documentName
+     * @param array $records
+     * @return bool
+     */
+    protected function insertMultiple($documentName, $records)
+    {
+        $bind = [];
+        $values = [];
+        $colNum = count($records[0]);
+        $fields = array_keys($records[0]);
+        foreach ($records as $record) {
+            foreach ($record as $value) {
+                $bind[] = $value;
+            }
+            $values[] = '(' . implode(',', array_fill(0, $colNum, '?')) . ')';
+        }
+        if ($values && $fields) {
+            $insertSql = sprintf(
+                'INSERT INTO %s (%s) VALUES %s',
+                $documentName,
+                sprintf('`%s`', implode('`,`', $fields)),
+                implode(',', $values)
+            );
+            $statement = $this->resourceAdapter->getConnection()->prepare($insertSql);
+            $statement->execute($bind);
+        }
+
+        return true;
+    }
+
+    /**
      * @inheritdoc
      */
     public function insertFromSelect(\Magento\Framework\DB\Select $select, $table, array $fields = [], $mode = false)
     {
+        $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
         $query = $this->resourceAdapter->insertFromSelect($select, $table, $fields, $mode);
         $this->resourceAdapter->query($query);
+        $this->resourceAdapter->rawQuery("SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'')");
     }
 
     /**
