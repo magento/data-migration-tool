@@ -14,11 +14,11 @@ Magento 2 migration involves four components: data, extensions, themes, and cust
 ### Supported versions
 Currently we support the following versions for migration:
 
-*	1.9.1.0, 
+*	1.9.1.0
 
 Also the following versions are supported if You choose to migrate to EE:
 
-* 1.7.0.0, 1.7.0.1, 1.7.0.2, 1.9.0.0, 1.9.0.1
+* 	1.7.0.0, 1.7.0.1, 1.7.0.2, 1.9.0.0, 1.9.0.1
 
 ## Prerequisites
 Before you start your migration, you must do all of the following:
