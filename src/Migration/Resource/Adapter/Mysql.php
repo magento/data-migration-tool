@@ -88,6 +88,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
         if ($identityField && $identityId !== null) {
             $select->where("`$identityField` > ?", $identityId);
             $select->limit($pageSize);
+            $select->order("`$identityField` ASC");
         } else {
             $select->limit($pageSize, $pageNumber * $pageSize);
         }
