@@ -81,11 +81,16 @@ class Mysql implements \Migration\Resource\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadPage($documentName, $pageNumber, $pageSize)
+    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
     {
         $select = $this->resourceAdapter->select();
-        $select->from($documentName, '*')
-            ->limit($pageSize, $pageNumber * $pageSize);
+        $select->from($documentName, '*');
+        if ($identityField && $identityId !== null) {
+            $select->where("`$identityField` > ?", $identityId);
+            $select->limit($pageSize);
+        } else {
+            $select->limit($pageSize, $pageNumber * $pageSize);
+        }
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
     }
@@ -98,6 +103,8 @@ class Mysql implements \Migration\Resource\AdapterInterface
         $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
         if ($updateOnDuplicate) {
             $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+        } else if (!is_array(reset($records))) {
+            $result = $this->resourceAdapter->insert($documentName, $records);
         } else {
             $result = $this->insertMultiple($documentName, $records);
         }
@@ -127,7 +134,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
             $insertSql = sprintf(
                 'INSERT INTO %s (%s) VALUES %s',
                 $documentName,
-                implode(',', $fields),
+                sprintf('`%s`', implode('`,`', $fields)),
                 implode(',', $values)
             );
             $statement = $this->resourceAdapter->getConnection()->prepare($insertSql);

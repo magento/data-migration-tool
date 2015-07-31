@@ -180,11 +180,10 @@ abstract class AbstractResource
 
         $configValue = (int)$this->configReader->getOption('bulk_size');
         if ($configValue === 0) {
-            $pageSize = 0;
             $fields = $this->getDocument($documentName)->getStructure()->getFields();
             $fieldsNumber = count($fields);
             $memoryLimit = $this->getBytes(ini_get('memory_limit'));
-            $pageSize = $pageSize ?: (ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber)));
+            $pageSize = ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber));
         } else {
             $pageSize = $configValue > 0 ? $configValue : self::DEFAULT_BULK_SIZE;
         }

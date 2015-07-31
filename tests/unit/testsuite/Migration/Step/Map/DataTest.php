@@ -77,7 +77,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
         $this->source = $this->getMock(
             'Migration\Resource\Source',
-            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount', 'getPageSize'],
+            ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount', 'getPageSize', 'setLastLoadedRecord'],
             [],
             '',
             false
@@ -190,6 +190,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
 
         $bulk = [['id' => 4, 'name' => 'john']];
         $this->source->expects($this->any())->method('getRecords')->willReturnOnConsecutiveCalls($bulk, []);
+        $this->source->expects($this->any())->method('setLastLoadedRecord')->withConsecutive(
+            [$sourceDocName, $bulk[0]],
+            [$sourceDocName, []]
+        );
 
         $this->source->expects($this->any())->method('getPageSize')->willReturn(100);
         $destinationRecords =  $this->getMock('\Migration\Resource\Record\Collection', [], [], '', false);
@@ -225,6 +229,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getRecords')->willReturnOnConsecutiveCalls($bulk, []);
         $this->source->expects($this->once())->method('getDocument')->willReturn($sourceDocument);
         $this->source->expects($this->any())->method('getPageSize')->willReturn(100);
+        $this->source->expects($this->any())->method('setLastLoadedRecord')->withConsecutive(
+            [$sourceDocName, $bulk[0]],
+            [$sourceDocName, []]
+        );
         $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()
             ->setMethods(['getStructure', 'getRecords'])
             ->getMock();

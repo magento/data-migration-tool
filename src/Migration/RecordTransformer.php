@@ -137,7 +137,6 @@ class RecordTransformer
             }
             unset($data[$field]);
         }
-        $data = array_merge(array_fill_keys($destinationFields, null), $data);
         $to->setData($data);
     }
 }

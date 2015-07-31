@@ -67,7 +67,7 @@ class Record
             return true;
         }
 
-        return count(array_diff_key($structure->getFields(), $this->data)) == 0;
+        return count(array_diff_key($this->data, $structure->getFields())) == 0;
     }
 
     /**

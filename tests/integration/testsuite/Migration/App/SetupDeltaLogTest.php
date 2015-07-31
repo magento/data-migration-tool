@@ -46,6 +46,13 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $sourceAdapter->insertRecords(
             $dataTable,
             [
+                'field1' => 1000,
+                'field2' => 200
+            ]
+        );
+        $sourceAdapter->insertRecords(
+            $dataTable,
+            [
                 'field1' => 101,
                 'field2' => 22,
                 'field3' => 33,
@@ -61,7 +68,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         );
         $expectedData = [
             ['key' => '8', 'operation' => 'UPDATE', 'processed' => 0],
-            ['key' => '9', 'operation' => 'INSERT', 'processed' => 0]
+            ['key' => '9', 'operation' => 'INSERT', 'processed' => 0],
+            ['key' => '10', 'operation' => 'INSERT', 'processed' => 0]
         ];
         $this->assertEquals($expectedData, $source->getRecords($source->getDeltaLogName($dataTable), 0));
     }

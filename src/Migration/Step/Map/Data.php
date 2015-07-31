@@ -154,10 +154,12 @@ class Data implements StageInterface
                         }
                         $destinationRecords->addRecord($destRecord);
                     }
+                    $this->source->setLastLoadedRecord($sourceDocName, end($items));
                     $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
                     $this->destination->saveRecords($destinationName, $destinationRecords);
                 }
             }
+            $this->source->setLastLoadedRecord($sourceDocName, []);
             $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
             $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
         }

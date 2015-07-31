@@ -144,6 +144,10 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                 ceil($this->source->getRecordsCount($sourceDocName) / $this->source->getPageSize($sourceDocName)),
                 LogManager::LOG_LEVEL_DEBUG
             );
+            $destData = array_fill_keys(
+                array_keys($destDocument->getStructure()->getFields()),
+                null
+            );
             while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $pageNumber++;
 
@@ -157,6 +161,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                     /** @var Record $destRecord */
                     $destRecord = $this->recordFactory->create(['document' => $destDocument]);
                     $recordTransformer->transform($record, $destRecord);
+                    $destRecord->setData(array_merge($destData, $destRecord->getData()));
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->progress->advance(LogManager::LOG_LEVEL_INFO);
