@@ -16,7 +16,11 @@ Currently we support the following versions for migration:
 
 *	1.9.1.0
 
-Also the following versions are supported if You choose to migrate to EE:
+We plan to support:
+
+* 	1.6.x, 1.7.x, 1.8.x, and 1.9.x
+
+Also the following versions are already supported if You choose to migrate to EE:
 
 * 	1.7.0.0, 1.7.0.1, 1.7.0.2, 1.9.0.0, 1.9.0.1
 
