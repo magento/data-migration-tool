@@ -426,12 +426,6 @@
                 <document>core_flag</document>
             </ignore>
             <ignore>
-                <document>core_email_queue</document>
-            </ignore>
-            <ignore>
-                <document>core_email_queue_recipients</document>
-            </ignore>
-            <ignore>
                 <document>merchandiser_category_values</document>
             </ignore>
             <ignore>
@@ -1501,6 +1495,12 @@
             </ignore>
             <ignore>
                 <field>newsletter_template.template_text_preprocessed</field>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
+            </ignore>
+            <ignore>
+                <datatype>weee_tax.state</datatype>
             </ignore>
         </field_rules>
     </source>
