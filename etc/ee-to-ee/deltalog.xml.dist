@@ -76,12 +76,6 @@
         <document key="invitation_id">enterprise_invitation</document>
         <document key="history_id">enterprise_invitation_status_history</document>
         <document key="track_id">enterprise_invitation_track</document>
-        <document key="targetrule_id">enterprise_targetrule_index_crosssell</document>
-        <document key="targetrule_id">enterprise_targetrule_index_crosssell_product</document>
-        <document key="targetrule_id">enterprise_targetrule_index_related</document>
-        <document key="targetrule_id">enterprise_targetrule_index_related_product</document>
-        <document key="targetrule_id">enterprise_targetrule_index_upsell</document>
-        <document key="targetrule_id">enterprise_targetrule_index_upsell_product</document>
     </group>
     <group name="delta_sales">
         <document key="entity_id">sales_flat_order</document>

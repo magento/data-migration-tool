@@ -75,7 +75,7 @@ class Source extends AbstractResource
             $pageNumber,
             $pageSize,
             $this->getIdentityField($documentName),
-            isset($this->lastLoadedIdentityId[$documentName]) ? $this->lastLoadedIdentityId[$documentName] : 0
+            isset($this->lastLoadedIdentityId[$documentName]) ? $this->lastLoadedIdentityId[$documentName] : null
         );
 
         return $records;

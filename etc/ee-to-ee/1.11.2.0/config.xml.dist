@@ -101,16 +101,16 @@
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>etc/ee-to-ee/1.11.0.0/map.xml.dist</map_file>
+        <map_file>etc/ee-to-ee/1.11.2.0/map.xml.dist</map_file>
         <eav_map_file>etc/ee-to-ee/map-eav.xml.dist</eav_map_file>
         <eav_document_groups_file>etc/ee-to-ee/eav-document-groups.xml.dist</eav_document_groups_file>
         <eav_attribute_groups_file>etc/ee-to-ee/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
         <log_map_file>etc/ee-to-ee/map-log.xml.dist</log_map_file>
         <log_document_groups_file>etc/ee-to-ee/log-document-groups.xml.dist</log_document_groups_file>
         <settings_map_file>etc/ee-to-ee/settings.xml.dist</settings_map_file>
-        <customer_map_file>etc/ee-to-ee/1.11.0.0/map-customer.xml.dist</customer_map_file>
+        <customer_map_file>etc/ee-to-ee/1.11.2.0/map-customer.xml.dist</customer_map_file>
         <customer_document_groups_file>etc/ee-to-ee/customer-document-groups.xml.dist</customer_document_groups_file>
-        <customer_attribute_groups_file>etc/ee-to-ee/1.11.0.0/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
+        <customer_attribute_groups_file>etc/ee-to-ee/1.11.2.0/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
         <sales_order_map_file>etc/ee-to-ee/map-sales.xml.dist</sales_order_map_file>
         <delta_document_groups_file>etc/ee-to-ee/deltalog.xml.dist</delta_document_groups_file>
         <customer_attr_map_file>etc/ee-to-ee/customer-attr-map.xml.dist</customer_attr_map_file>

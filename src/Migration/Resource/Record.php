@@ -23,6 +23,11 @@ class Record
     protected $structure;
 
     /**
+     * @var \Migration\Resource\Document;
+     */
+    protected $document;
+
+    /**
      * @param array $data
      * @param Document $document
      */
@@ -31,6 +36,7 @@ class Record
         $this->data = $data;
         if ($document !== null) {
             $this->setStructure($document->getStructure());
+            $this->setDocument($document);
         }
     }
 
@@ -49,6 +55,23 @@ class Record
     public function setStructure($structure)
     {
         $this->structure = $structure;
+    }
+
+    /**
+     * @param Document $document
+     * @return void
+     */
+    public function setDocument(Document $document)
+    {
+        $this->document = $document;
+    }
+
+    /**
+     * @return Document
+     */
+    public function getDocument()
+    {
+        return $this->document;
     }
 
     /**

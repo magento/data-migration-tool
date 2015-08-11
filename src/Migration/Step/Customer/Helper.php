@@ -125,7 +125,8 @@ class Helper
 
         $attributeIdsByType = [];
         $attributeCodesById = [];
-        foreach (array_keys($this->readerAttributes->getGroup($sourceDocName)) as $attribute) {
+        $attributeCodes = array_keys($this->readerAttributes->getGroup($sourceDocName));
+        foreach ($attributeCodes as $attribute) {
             if (isset($this->eavAttributes[$attributeType][$attribute])) {
                 $attributeId = $this->eavAttributes[$attributeType][$attribute]['attribute_id'];
                 $attributeIdsByType[$this->eavAttributes[$attributeType][$attribute]['backend_type']][] = $attributeId;
@@ -156,7 +157,11 @@ class Helper
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
                 $data = $record->getData();
-                $data = array_merge($data, $recordAttributesData[$record->getValue('entity_id')]);
+                $data = array_merge(
+                    array_fill_keys($attributeCodes, null),
+                    $data,
+                    $recordAttributesData[$record->getValue('entity_id')]
+                );
                 $record->setData($data);
             }
         }

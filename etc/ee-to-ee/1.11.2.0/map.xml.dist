@@ -1882,9 +1882,6 @@
                 <document>oauth_token</document>
             </ignore>
             <ignore>
-                <document>paypal_payment_transaction</document>
-            </ignore>
-            <ignore>
                 <document>report_viewed_product_aggregated_daily</document>
             </ignore>
             <ignore>
@@ -1894,12 +1891,6 @@
                 <document>report_viewed_product_aggregated_yearly</document>
             </ignore>
             <ignore>
-                <document>sales_order_aggregated_updated</document>
-            </ignore>
-            <ignore>
-                <document>sales_order_tax_item</document>
-            </ignore>
-            <ignore>
                 <document>salesrule_coupon_aggregated_updated</document>
             </ignore>
             <ignore>
@@ -1907,9 +1898,6 @@
             </ignore>
             <ignore>
                 <document>salesrule_website</document>
-            </ignore>
-            <ignore>
-                <document>tax_order_aggregated_updated</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_price</document>
@@ -2102,22 +2090,7 @@
                 <field>magento_banner.ga_creative</field>
             </ignore>
             <ignore>
-                <field>admin_user.rp_token</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.rp_token_created_at</field>
-            </ignore>
-            <ignore>
                 <field>cataloginventory_stock_item.is_decimal_divided</field>
-            </ignore>
-            <ignore>
-                <field>catalogrule.sub_is_enable</field>
-            </ignore>
-            <ignore>
-                <field>catalogrule.sub_simple_action</field>
-            </ignore>
-            <ignore>
-                <field>catalogrule.sub_discount_amount</field>
             </ignore>
             <ignore>
                 <field>catalogrule_product.sub_simple_action</field>
@@ -2145,9 +2118,6 @@
             </ignore>
             <ignore>
                 <field>magento_versionscms_hierarchy_node.scope_id</field>
-            </ignore>
-            <ignore>
-                <field>paypal_settlement_report_row.payment_tracking_id</field>
             </ignore>
             <ignore>
                 <field>paypal_settlement_report_row.store_id</field>

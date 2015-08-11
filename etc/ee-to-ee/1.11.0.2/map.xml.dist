@@ -291,9 +291,6 @@
                 <document>enterprise_queue_task</document>
             </ignore>
             <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
                 <document>googlebase_attributes</document>
             </ignore>
             <ignore>
