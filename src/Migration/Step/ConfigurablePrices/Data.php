@@ -94,7 +94,7 @@ class Data implements StageInterface
         $this->logger->debug('migrating', ['table' => $sourceDocumentName]);
         $this->progress->start($this->source->getRecordsCount($sourceDocumentName), LogManager::LOG_LEVEL_DEBUG);
         /** @var \Magento\Framework\DB\Select $select */
-        $select = $this->getConfigurablePrice($sourceDocumentName);
+        $select = $this->getConfigurablePrice();
         while (!empty($bulk = $this->getRecords($sourceDocumentName, $select, $pageNumber))) {
             $pageNumber++;
             $destinationCollection = $destinationDocument->getRecords();
@@ -107,7 +107,7 @@ class Data implements StageInterface
                 );
                 $destinationCollection->addRecord($destinationRecord);
             }
-            $this->destination->saveRecords($destinationDocumentName, $destinationCollection);
+            $this->destination->saveRecords($destinationDocumentName, $destinationCollection, true);
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
@@ -141,54 +141,59 @@ class Data implements StageInterface
     }
 
     /**
-     * @param string $sourceDocument
      * @return \Magento\Framework\DB\Select
      */
-    protected function getConfigurablePrice($sourceDocument)
+    protected function getConfigurablePrice()
     {
-        $sourceDocumentName = $this->source->addDocumentPrefix($sourceDocument);
+        $priceAttributeId = $this->getPriceAttributeId();
+        $entitiesExpr = new \Zend_Db_Expr(
+            'select product_id from ' . $this->source->addDocumentPrefix('catalog_product_super_attribute')
+        );
+        $priceExpr = new \Zend_Db_Expr(
+            'IF(sup_ap.is_percent = 1, TRUNCATE(mt.value + (mt.value * sup_ap.pricing_value/100), 4), ' .
+            ' mt.value + sup_ap.pricing_value)'
+        );
         $fields = [
-            'store_id' => 'website_id',
-            'value' => 'pricing_value',
-            'entity_id' => 'l.product_id',
-            'attribute_id' => 'cpsa.attribute_id'
+            'value' => $priceExpr,
+            'attribute_id' => new \Zend_Db_Expr($priceAttributeId)
         ];
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
-
-        $select->from($sourceDocumentName, $fields)
-            ->joinInner(
-                ['cpsa' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
-                'cpsa.product_super_attribute_id = ' . $sourceDocumentName . '.product_super_attribute_id',
+        $select->from(['mt' => $this->source->addDocumentPrefix('catalog_product_entity_decimal')], $fields)
+            ->joinLeft(
+                ['sup_a' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
+                'mt.entity_id = product_id',
                 []
             )
             ->joinInner(
-                ['l' => $this->source->addDocumentPrefix('catalog_product_super_link')],
-                'cpsa.product_id = l.parent_id',
-                []
+                ['sup_ap' => $this->source->addDocumentPrefix('catalog_product_super_attribute_pricing')],
+                'sup_ap.product_super_attribute_id = sup_a.product_super_attribute_id',
+                ['store_id' => 'website_id']
             )
             ->joinInner(
-                ['a' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
-                'l.parent_id = a.product_id',
-                []
+                ['supl' => $this->source->addDocumentPrefix('catalog_product_super_link')],
+                'mt.entity_id = supl.parent_id',
+                ['entity_id' =>'product_id']
             )
             ->joinInner(
-                ['cp' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
-                'l.product_id = cp.entity_id AND cp.attribute_id = a.attribute_id AND cp.store_id = '
-                . $sourceDocumentName . '.website_id',
+                ['pint' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
+                'pint.entity_id = supl.product_id and pint.attribute_id = sup_a.attribute_id ' .
+                ' and pint.value = sup_ap.value_index and pint.store_id = sup_ap.website_id',
                 []
             )
-            ->joinInner(
-                ['apd' => $this->source->addDocumentPrefix('catalog_product_super_attribute_pricing')],
-                'a.product_super_attribute_id = apd.product_super_attribute_id AND apd.pricing_value = '
-                . $sourceDocumentName .'.pricing_value AND cp.value = apd.value_index',
-                []
-            )
-            ->joinInner(
-                ['le' => $this->source->addDocumentPrefix('catalog_product_entity')],
-                'le.entity_id = l.product_id',
-                []
-            );
+            ->where('mt.entity_id in (?)', $entitiesExpr)
+            ->where('mt.attribute_id = ?', $priceAttributeId)
+        ;
         return $select;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getPriceAttributeId()
+    {
+        $select = $this->sourceAdapter->getSelect();
+        $select->from($this->source->addDocumentPrefix('eav_attribute'))->where('attribute_code = ?', 'price');
+        return $select->getAdapter()->fetchOne($select);
     }
 }

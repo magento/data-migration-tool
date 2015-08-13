@@ -53,6 +53,7 @@ class Volume extends AbstractVolume
         $this->destination = $destination;
         $this->progressBar = $progressBar;
         $this->helper = $helper;
+        $this->logger = $logger;
     }
 
     /**
@@ -62,13 +63,11 @@ class Volume extends AbstractVolume
     {
         $documents = $this->helper->getDocumentList();
         $this->progressBar->start(1);
-        $sourceRecordsCount = $this->source->getRecordsCount($documents[MapInterface::TYPE_SOURCE]);
         $oldDestinationRecordsCount = $this->helper->getDestinationRecordsCount();
         $newDestinationRecordsCount = $this->destination->getRecordsCount($documents[MapInterface::TYPE_DEST])
             - $oldDestinationRecordsCount;
-        if ($sourceRecordsCount != $newDestinationRecordsCount) {
-            $message = 'Mismatch of entities in the document: ' . $documents[MapInterface::TYPE_DEST];
-            $this->logger->warning($message);
+        if ($newDestinationRecordsCount != 0) {
+            $this->errors[] = 'Mismatch of entities in the document: ' . $documents[MapInterface::TYPE_DEST];
         }
         $this->progressBar->finish();
         return $this->checkForErrors();
