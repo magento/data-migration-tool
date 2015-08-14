@@ -9,7 +9,6 @@
     <group name="delta_map">
         <document key="catalog_compare_item_id">catalog_compare_item</document>
         <document key="item_id">cataloginventory_stock_item</document>
-        <document key="message_id">core_email_queue</document>
         <document key="subscriber_id">newsletter_subscriber</document>
         <document key="entity_id">sales_flat_quote</document>
         <document key="address_id">sales_flat_quote_address</document>
