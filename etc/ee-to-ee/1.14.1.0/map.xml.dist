@@ -1809,6 +1809,9 @@
             <ignore>
                 <document>store_website</document>
             </ignore>
+            <ignore>
+                <document>support_report</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>

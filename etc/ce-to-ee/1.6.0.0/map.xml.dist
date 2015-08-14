@@ -1535,6 +1535,9 @@
                 <document>store_website</document>
             </ignore>
             <ignore>
+                <document>support_report</document>
+            </ignore>
+            <ignore>
                 <document>magento_sales_shipment_grid_archive</document>
             </ignore>
             <ignore>
