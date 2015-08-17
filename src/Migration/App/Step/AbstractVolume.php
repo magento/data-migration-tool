@@ -39,7 +39,7 @@ abstract class AbstractVolume implements StageInterface
     protected function checkForErrors()
     {
         foreach ($this->errors as $error) {
-            $this->logger->error($error);
+            $this->logger->warning($error);
         }
         return empty($this->errors);
     }

@@ -159,7 +159,7 @@ class Stores implements StageInterface
         foreach ($this->getDocumentList() as $sourceName => $destinationName) {
             $this->progress->advance();
             if ($this->source->getRecordsCount($sourceName) != $this->destination->getRecordsCount($destinationName)) {
-                $this->logger->error('Mismatch of entities in the document: ' . $destinationName);
+                $this->logger->warning('Mismatch of entities in the document: ' . $destinationName);
                 $result = false;
             }
         }

@@ -166,7 +166,7 @@ class Ratings extends DatabaseStage
             $ratingsIsActive[] = $rating['rating_id'];
         }
         if (count(array_intersect($ratingsShouldBeActive, $ratingsIsActive)) != count($ratingsShouldBeActive)) {
-            $this->logger->error(
+            $this->logger->warning(
                 sprintf(
                     'Mismatch of entities in the documents: %s, %s',
                     self::RATING_TABLE_NAME,

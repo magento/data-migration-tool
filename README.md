@@ -12,13 +12,17 @@ Magento 2 migration involves four components: data, extensions, themes, and cust
 *	Themes and Customizations: Magento 2 uses new approaches and technologies that give merchants an unmatched ability to create innovative shopping experiences and scale to new levels. To take advantage of these advances, developers will need to make changes to their themes and customizations. Documentation is available online for creating Magento 2 <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/themes/theme-general.html">themes</a>, <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/layouts/layout-overview.html">layouts</a>, and <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/layouts/xml-manage.html">customizations</a>.
 
 ### Supported versions
-We support the following versions for migration:
+Currently we support the following versions for migration:
 
-*	Community Edition (CE) version 1.9.1.0 
+*	1.9.1.0
 
-We also plan to support:
+We plan to support:
 
-*  CE 1.6.x, CE 1.7.x, CE 1.8.x, and CE 1.9.x
+* 	1.6.x, 1.7.x, 1.8.x, and 1.9.x
+
+Also the following versions are already supported if You choose to migrate to EE:
+
+* 	1.7.0.0, 1.7.0.1, 1.7.0.2, 1.9.0.0, 1.9.0.1
 
 ## Prerequisites
 Before you start your migration, you must do all of the following:

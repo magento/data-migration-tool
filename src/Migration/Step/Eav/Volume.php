@@ -94,8 +94,9 @@ class Volume extends AbstractVolume
 
             foreach (['attribute_model', 'backend_model', 'frontend_model', 'source_model'] as $field) {
                 if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
-                    $this->errors[] = 'Incorrect value in: eav_attribute.' . $field .' for attribute_code='
-                        . $attribute['attribute_code'];
+                    $this->errors[] = 'Incorrect value: '. $attribute[$field]
+                        .' in: eav_attribute.' . $field
+                        .' for attribute_code=' . $attribute['attribute_code'];
                 }
             }
         }
@@ -124,7 +125,8 @@ class Volume extends AbstractVolume
         foreach ($this->helper->getDestinationRecords('catalog_eav_attribute') as $attribute) {
             foreach (['frontend_input_renderer'] as $field) {
                 if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
-                    $this->errors[] = 'Incorrect value in: catalog_eav_attribute.' . $field
+                    $this->errors[] = 'Incorrect value: '. $attribute[$field]
+                        . ' in: catalog_eav_attribute.' . $field
                         . ' for attribute_id=' . $attribute['attribute_id'];
                 }
             }

@@ -95,7 +95,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function testPerformWithoutError()
     {
-        $fields = ['field1' => []];
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
         $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(
             [
                 ['source_document', MapInterface::TYPE_SOURCE, 'destination_document'],
@@ -129,7 +129,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function testPerformWithError()
     {
-        $fields = ['field1' => []];
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
         $this->map->expects($this->atLeastOnce())->method('getDocumentMap')->willReturnMap(
             [
                 ['source_document', MapInterface::TYPE_SOURCE, 'source_document'],

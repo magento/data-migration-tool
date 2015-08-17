@@ -39,7 +39,13 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
 
     protected function setUp()
     {
-        $this->sourceDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
+        $this->sourceDocument = $this->getMock(
+            'Migration\Resource\Document',
+            ['getStructure', 'getName'],
+            [],
+            '',
+            false
+        );
         $this->destDocument = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
         $this->mapReader = $this->getMock('Migration\Reader\MapInterface');
         $this->handlerManagerFactory = $this->getMock(
@@ -88,16 +94,20 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         $srcHandler = $this->initHandler($this->sourceDocument, 0);
         $destHandler = $this->initHandler($this->destDocument, 1);
         $this->recordTransformer->init();
-
+        $this->sourceDocument->expects($this->any())->method('getName')->willReturn('source_document_name');
         $recordFrom = $this->getMock('Migration\Resource\Record', [], [], '', false);
         $recordFrom->expects($this->any())->method('getFields')->will($this->returnValue(['field1', 'field2']));
+        $recordFrom->expects($this->any())->method('getData')->will($this->returnValue(['field1' => 1, 'field2' => 2]));
         $recordTo = $this->getMock('Migration\Resource\Record', [], [], '', false);
-        $recordTo->expects($this->any())->method('getFields')->will($this->returnValue(['field3']));
+        $recordTo->expects($this->any())->method('getFields')->will($this->returnValue(['field2']));
+        $recordTo->expects($this->once())->method('setData')->with(['field2' => 2]);
 
         $field2Handler = $this->getMock('Migration\Handler\SetValue', ['handle'], [], '', false);
         $field2Handler->expects($this->once())->method('handle');
         $srcHandler->expects($this->any())->method('getHandlers')->willReturn(['field2' => $field2Handler]);
         $destHandler->expects($this->any())->method('getHandlers')->willReturn([]);
+        $this->mapReader->expects($this->any())->method('getFieldMap')->with('source_document_name', 'field1')
+            ->willReturnArgument(1);
         $this->recordTransformer->transform($recordFrom, $recordTo);
     }
 }

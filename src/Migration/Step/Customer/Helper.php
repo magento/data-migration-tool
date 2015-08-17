@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright ï¿½ 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Customer;
@@ -123,34 +123,63 @@ class Helper
             $records[] = $record->getValue('entity_id');
         }
 
-        /** @var Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        foreach (array_keys($this->readerAttributes->getGroup($sourceDocName)) as $attribute) {
-            $eavTableSuffix = '_' . $this->eavAttributes[$attributeType][$attribute]['backend_type'];
-            $query = $adapter->getSelect()
-                ->from(
-                    [
-                        'et' => $this->source->addDocumentPrefix($sourceDocName . $eavTableSuffix)
-                    ],
-                    [
-                        'entity_id',
-                        'value'
-                    ]
-                )
-                ->where('et.entity_id IN (?)', $records)
-                ->where('et.attribute_id = ?', $this->eavAttributes[$attributeType][$attribute]['attribute_id']);
-            $attributeData = $query->getAdapter()->fetchAll($query);
-            $attributeDataById = [];
-            foreach ($attributeData as $entityData) {
-                $attributeDataById[$entityData['entity_id']] = $entityData;
-            }
-            /** @var Record $record */
-            foreach ($destinationRecords as $record) {
-                $entityId = $record->getValue('entity_id');
-                $value = isset($attributeDataById[$entityId]['value']) ? $attributeDataById[$entityId]['value'] : null;
-                $record->setValue($attribute, $value);
+        $attributeIdsByType = [];
+        $attributeCodesById = [];
+        $attributeCodes = array_keys($this->readerAttributes->getGroup($sourceDocName));
+        foreach ($attributeCodes as $attribute) {
+            if (isset($this->eavAttributes[$attributeType][$attribute])) {
+                $attributeId = $this->eavAttributes[$attributeType][$attribute]['attribute_id'];
+                $attributeIdsByType[$this->eavAttributes[$attributeType][$attribute]['backend_type']][] = $attributeId;
+                $attributeCodesById[$attributeId] = $attribute;
             }
         }
+
+        /** @var Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $selects = [];
+        foreach (array_keys($attributeIdsByType) as $type) {
+            $select = $adapter->getSelect()
+                ->from(
+                    ['et' => $this->source->addDocumentPrefix($sourceDocName . '_' . $type)],
+                    ['entity_id', 'attribute_id', 'value']
+                )
+            ->where('et.entity_id in (?)', $records)
+            ->where('et.attribute_id in (?)', $attributeIdsByType[$type]);
+            $selects[] = $select;
+        }
+        $query = $adapter->getSelect()->union($selects, \Zend_Db_Select::SQL_UNION_ALL);
+
+        $recordAttributesData = $this->sortAttributesData(
+            $query->getAdapter()->fetchAll($query),
+            $attributeCodesById
+        );
+        /** @var Record $record */
+        foreach ($destinationRecords as $record) {
+            if (isset($recordAttributesData[$record->getValue('entity_id')])) {
+                $data = $record->getData();
+                $data = array_merge(
+                    array_fill_keys($attributeCodes, null),
+                    $data,
+                    $recordAttributesData[$record->getValue('entity_id')]
+                );
+                $record->setData($data);
+            }
+        }
+    }
+
+    /**
+     * @param array $data
+     * @param array $attributeCodesById
+     * @return array
+     */
+    protected function sortAttributesData($data, $attributeCodesById)
+    {
+        $result = [];
+        foreach ($data as $entityData) {
+            $attributeCode = $attributeCodesById[$entityData['attribute_id']];
+            $result[$entityData['entity_id']][$attributeCode] = $entityData['value'];
+        }
+        return $result;
     }
 
     /**

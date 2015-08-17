@@ -31,6 +31,16 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
+     * @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentSource;
+
+    /**
+     * @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentDestination;
+
+    /**
      * @var Integrity
      */
     protected $integrity;
@@ -42,7 +52,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
+        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error', 'warning'], [], '', false);
         $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
@@ -59,7 +69,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
-            ->setMethods(['getFieldMap', 'getDocumentMap', 'init', 'isDocumentIgnored'])
+            ->setMethods(['getFieldMap', 'getDocumentMap', 'init', 'isDocumentIgnored', 'isFieldDataTypeIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
@@ -187,18 +197,55 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
-    protected function setupFieldsValidation()
+
+    public function testPerformWithMismatchDocumentFieldDataTypes()
     {
-        $fields = ['field1' => []];
+        $this->setupFieldsValidation(true);
+        $this->documentSource->expects($this->any())->method('getName')->will($this->returnValue('document1'));
+        $this->documentDestination->expects($this->any())->method('getName')->will($this->returnValue('document1'));
+        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document1']));
+        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document1']));
+        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
+        $this->map->expects($this->any())->method('isDocumentIgnored')->willReturn(false);
+        $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
+        $this->map->expects($this->any())->method('isFieldDataTypeIgnored')->will($this->returnValue(false));
+        $this->logger->expects($this->at(0))->method('warning')
+            ->with('Mismatch of data types. Source document: document1. Fields: field1');
+        $this->logger->expects($this->at(1))->method('warning')
+            ->with('Mismatch of data types. Destination document: document1. Fields: field1');
 
-        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $this->integrity->perform();
+    }
+
+    /**
+     * @param bool|false $dataTypeMismatch
+     */
+    protected function setupFieldsValidation($dataTypeMismatch = false)
+    {
+        $dataTypeSource = $dataTypeMismatch ? 'varchar' : 'int';
+        $fieldsSource = ['field1' => ['DATA_TYPE' => $dataTypeSource]];
+        $structureSource = $this->getMockBuilder('\Migration\Resource\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
-        $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
+        $structureSource->expects($this->any())->method('getFields')->will($this->returnValue($fieldsSource));
+        $this->documentSource = $this->getMockBuilder('\Migration\Resource\Document')
+            ->disableOriginalConstructor()->getMock();
+        $this->documentSource->expects($this->any())->method('getStructure')
+            ->will($this->returnValue($structureSource));
 
-        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
-        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+        $dataTypeDestination = 'int';
+        $fieldsDestination = ['field1' => ['DATA_TYPE' => $dataTypeDestination]];
+        $structureDestination = $this->getMockBuilder('\Migration\Resource\Structure')
+            ->disableOriginalConstructor()->setMethods([])->getMock();
+        $structureDestination->expects($this->any())->method('getFields')->will($this->returnValue($fieldsDestination));
+        $this->documentDestination = $this->getMockBuilder('\Migration\Resource\Document')
+            ->disableOriginalConstructor()->getMock();
+        $this->documentDestination->expects($this->any())->method('getStructure')
+            ->will($this->returnValue($structureDestination));
 
-        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
-        $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($this->documentSource));
+        $this->destination->expects($this->any())->method('getDocument')
+            ->will($this->returnValue($this->documentDestination));
     }
 }

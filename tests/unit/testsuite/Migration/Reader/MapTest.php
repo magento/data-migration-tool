@@ -128,4 +128,10 @@ class MapTest extends \PHPUnit_Framework_TestCase
         // Second run to check cached value
         $this->assertTrue($this->map->isDocumentIgnored('dest-document-ignored', MapInterface::TYPE_DEST));
     }
+
+    public function testIsFieldDataTypeIgnored()
+    {
+        $this->assertTrue($this->map->isFieldDataTypeIgnored('dest-document5', 'field6', MapInterface::TYPE_SOURCE));
+        $this->assertTrue($this->map->isFieldDataTypeIgnored('dest-document5', 'field6', MapInterface::TYPE_DEST));
+    }
 }

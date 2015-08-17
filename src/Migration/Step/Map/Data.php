@@ -6,6 +6,7 @@
 namespace Migration\Step\Map;
 
 use Migration\App\Step\StageInterface;
+use Migration\Config;
 use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
@@ -66,6 +67,16 @@ class Data implements StageInterface
     protected $logger;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
+     * @var bool
+     */
+    protected $copyDirectly;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -74,6 +85,7 @@ class Data implements StageInterface
      * @param MapFactory $mapFactory
      * @param Progress $progress
      * @param Logger $logger
+     * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
@@ -83,7 +95,8 @@ class Data implements StageInterface
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
         Progress $progress,
-        Logger $logger
+        Logger $logger,
+        Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -93,6 +106,8 @@ class Data implements StageInterface
         $this->progressBar = $progressBar;
         $this->progress = $progress;
         $this->logger = $logger;
+        $this->config = $config;
+        $this->copyDirectly = (bool)$this->config->getOption('direct_document_copy');
     }
 
     /**
@@ -102,14 +117,10 @@ class Data implements StageInterface
     {
         $this->progressBar->start(count($this->source->getDocumentList()), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = $this->source->getDocumentList();
-        // TODO: during steps refactoring MAGETWO-35749 stage will be removed
         $stage = 'run';
         $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
-        foreach ($sourceDocuments as $sourceDocName) {
+        foreach (array_diff($sourceDocuments, $processedDocuments) as $sourceDocName) {
             $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
-            if (in_array($sourceDocName, $processedDocuments)) {
-                continue;
-            }
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
@@ -117,29 +128,38 @@ class Data implements StageInterface
             }
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
-
-            $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
-            $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
-            $this->progressBar->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
-            while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
-                $pageNumber++;
-                $destinationRecords = $destDocument->getRecords();
-                foreach ($items as $data) {
-                    $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
-                    if ($recordTransformer) {
-                        /** @var Record $record */
-                        $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
-                        /** @var Record $destRecord */
-                        $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                        $recordTransformer->transform($record, $destRecord);
-                    } else {
-                        $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $data]);
+            $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
+            $doCopy = $recordTransformer === null && $this->copyDirectly;
+            if ($doCopy && $this->isCopiedDirectly($sourceDocument, $destDocument)) {
+                $this->progressBar->start(1, LogManager::LOG_LEVEL_DEBUG);
+            } else {
+                $pageNumber = 0;
+                $this->progressBar->start(
+                    ceil($this->source->getRecordsCount($sourceDocName) / $this->source->getPageSize($sourceDocName)),
+                    LogManager::LOG_LEVEL_DEBUG
+                );
+                while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
+                    $pageNumber++;
+                    $destinationRecords = $destDocument->getRecords();
+                    foreach ($items as $data) {
+                        if ($recordTransformer) {
+                            /** @var Record $record */
+                            $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $data]);
+                            /** @var Record $destRecord */
+                            $destRecord = $this->recordFactory->create(['document' => $destDocument]);
+                            $recordTransformer->transform($record, $destRecord);
+                        } else {
+                            $destRecord = $this->recordFactory->create(['document' => $destDocument, 'data' => $data]);
+                        }
+                        $destinationRecords->addRecord($destRecord);
                     }
-                    $destinationRecords->addRecord($destRecord);
+                    $this->source->setLastLoadedRecord($sourceDocName, end($items));
+                    $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
+                    $this->destination->saveRecords($destinationName, $destinationRecords);
                 }
-                $this->destination->saveRecords($destinationName, $destinationRecords);
             }
+            $this->source->setLastLoadedRecord($sourceDocName, []);
             $this->progress->addProcessedEntity($this, $stage, $sourceDocName);
             $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
         }
@@ -193,6 +213,39 @@ class Data implements StageInterface
             $destDocument->getStructure()->getFields()
         );
         return empty($diff);
+    }
+
+    /**
+     * @param Document $sourceDocument
+     * @param Document $destinationDocument
+     * @return bool
+     */
+    protected function isCopiedDirectly(Document $sourceDocument, Document $destinationDocument)
+    {
+        if (!$this->copyDirectly) {
+            return;
+        }
+        $result = true;
+        $schema = $this->config->getSource()['database']['name'];
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from($this->source->addDocumentPrefix($sourceDocument->getName()), '*', $schema);
+        try {
+            $this->destination->getAdapter()->insertFromSelect(
+                $select,
+                $this->destination->addDocumentPrefix($destinationDocument->getName()),
+                array_keys($sourceDocument->getStructure()->getFields())
+            );
+        } catch (\Exception $e) {
+            $this->copyDirectly = false;
+            $this->logger->error(
+                'Document ' . $sourceDocument->getName() . ' can not be copied directly because of error: '
+                . $e->getMessage()
+            );
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**

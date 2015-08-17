@@ -18,6 +18,11 @@ class Helper
     protected $destination;
 
     /**
+     * @var array
+     */
+    protected $destinationRecordsCount = 0;
+
+    /**
      * @param Destination $destination
      */
     public function __construct(
@@ -25,11 +30,6 @@ class Helper
     ) {
         $this->destination = $destination;
     }
-
-    /**
-     * @var array
-     */
-    protected $destinationRecordsCount = [];
 
     /**
      * @return array

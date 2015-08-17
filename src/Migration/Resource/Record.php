@@ -23,6 +23,11 @@ class Record
     protected $structure;
 
     /**
+     * @var \Migration\Resource\Document;
+     */
+    protected $document;
+
+    /**
      * @param array $data
      * @param Document $document
      */
@@ -31,6 +36,7 @@ class Record
         $this->data = $data;
         if ($document !== null) {
             $this->setStructure($document->getStructure());
+            $this->setDocument($document);
         }
     }
 
@@ -52,6 +58,23 @@ class Record
     }
 
     /**
+     * @param Document $document
+     * @return void
+     */
+    public function setDocument(Document $document)
+    {
+        $this->document = $document;
+    }
+
+    /**
+     * @return Document
+     */
+    public function getDocument()
+    {
+        return $this->document;
+    }
+
+    /**
      * @param Structure $structure
      * @return bool
      */
@@ -67,12 +90,7 @@ class Record
             return true;
         }
 
-        foreach (array_keys($this->data) as $field) {
-            if (!$structure->hasField($field)) {
-                return false;
-            }
-        }
-        return true;
+        return count(array_diff_key($this->data, $structure->getFields())) == 0;
     }
 
     /**

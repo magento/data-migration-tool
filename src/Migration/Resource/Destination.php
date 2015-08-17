@@ -23,7 +23,7 @@ class Destination extends AbstractResource
      */
     public function saveRecords($documentName, $records, $updateOnDuplicate = false)
     {
-        $pageSize = $this->configReader->getOption('bulk_size');
+        $pageSize = $this->getPageSize($documentName);
         $i = 0;
         $data = [];
         $documentName = $this->addDocumentPrefix($documentName);

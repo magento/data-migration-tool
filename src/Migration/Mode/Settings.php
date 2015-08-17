@@ -94,7 +94,7 @@ USAGE;
     private function runVolume(array $step, $stepName)
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
-            $this->logger->error('Volume Check failed');
+            $this->logger->warning('Volume Check failed');
         }
     }
 }
