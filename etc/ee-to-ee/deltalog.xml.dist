@@ -53,7 +53,6 @@
         <document key="entity_store_id">eav_entity_store</document>
         <document key="tax_id">sales_order_tax</document>
         <document key="tax_item_id">sales_order_tax_item</document>
-        <document key="version_id">catalog_product_index_price_cl</document>
         <document key="reward_id">enterprise_reward</document>
         <document key="history_id">enterprise_reward_history</document>
         <document key="segment_id">enterprise_customersegment_customer</document>
