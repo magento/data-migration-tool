@@ -79,6 +79,8 @@
     </group>
     <group name="delta_sales">
         <document key="entity_id">sales_flat_order</document>
+		<document key="transaction_id">sales_payment_transaction</document>
+		<document key="transaction_id">paypal_payment_transaction</document>
     </group>
     <group name="delta_customer_custom_attributes">
         <document key="entity_id">enterprise_customer_sales_flat_order</document>
