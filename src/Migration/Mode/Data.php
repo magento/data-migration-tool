@@ -46,19 +46,6 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Data migration mode usage information:
-
-Main data migration
-USAGE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function run()
     {
         /** @var StepList $steps */
