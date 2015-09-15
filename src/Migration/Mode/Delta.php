@@ -69,20 +69,6 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Delta mode usage information:
-
- Migrates delta data that appears after main data migration
-
-USAGE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function run()
     {
         do {
