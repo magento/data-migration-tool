@@ -71,12 +71,15 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
         if (!$this->file->getRealPath($logFileDir)) {
             if (substr($logFileDir, 0, 1) != '/') {
                 $logFileDir = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath()
-                    . DIRECTORY_SEPARATOR . $logFileDir;
+                    . $logFileDir;
                 $logFile = $logFileDir . DIRECTORY_SEPARATOR . basename($logFile);
             }
             if (!$this->file->isExists($logFileDir)) {
                 $this->file->createDirectory($logFileDir, $this->permissions);
             }
+        } elseif ($logFileDir == '.') {
+            $logFile = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath()
+                . basename($logFile);
         }
         return $logFile;
     }
