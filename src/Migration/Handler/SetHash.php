@@ -6,6 +6,7 @@
 namespace Migration\Handler;
 
 use Migration\Resource\Record;
+use Migration\Exception;
 
 /**
  * Handler to set hash value to the field, based on other field
@@ -28,7 +29,8 @@ class SetHash extends AbstractHandler implements HandlerInterface
     protected $supportedHashAlgorithms = ['crc32'];
 
     /**
-     * @param string $value
+     * @param string $hash
+     * @param string $baseField
      */
     public function __construct($hash, $baseField)
     {

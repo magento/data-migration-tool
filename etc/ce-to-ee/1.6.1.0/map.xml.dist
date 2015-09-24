@@ -1716,6 +1716,13 @@
                 <field>sales_order_status_state.visible_on_front</field>
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
+            <transform>
+                <field>translation.crc_string</field>
+                <handler class="\Migration\Handler\SetHash">
+                    <param name="hash" value="crc32" />
+                    <param name="baseField" value="string" />
+                </handler>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
@@ -2393,9 +2400,6 @@
             </ignore>
             <ignore>
                 <field>tax_calculation_rule.calculate_subtotal</field>
-            </ignore>
-            <ignore>
-                <field>translation.crc_string</field>
             </ignore>
             <ignore>
                 <field>wishlist.name</field>
