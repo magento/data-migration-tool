@@ -2007,6 +2007,13 @@
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
             <transform>
+                <field>translation.crc_string</field>
+                <handler class="\Migration\Handler\SetHash">
+                    <param name="hash" value="crc32" />
+                    <param name="baseField" value="string" />
+                </handler>
+            </transform>
+            <transform>
                 <field>magento_versionscms_page_revision.content</field>
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
