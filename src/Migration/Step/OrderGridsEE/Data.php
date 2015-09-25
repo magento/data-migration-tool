@@ -10,6 +10,7 @@ use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
+use Migration\Config;
 
 /**
  * Class Data
@@ -23,6 +24,7 @@ class Data extends \Migration\Step\OrderGrids\Data
      * @param Resource\RecordFactory $recordFactory
      * @param Logger $logger
      * @param Helper $helper
+     * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
@@ -30,48 +32,49 @@ class Data extends \Migration\Step\OrderGrids\Data
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         Logger $logger,
-        Helper $helper
+        Helper $helper,
+        Config $config
     ) {
-        parent::__construct($progress, $source, $destination, $recordFactory, $logger, $helper);
+        parent::__construct($progress, $source, $destination, $recordFactory, $logger, $helper, $config);
     }
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr $entityIdsSelect
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesOrderGridArchive(array $columns, array $entityIds)
+    public function getSelectSalesOrderGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
     {
-        return parent::getSelectSalesOrderGrid($columns, $entityIds);
+        return parent::getSelectSalesOrderGrid($columns, $entityIdsSelect);
     }
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr $entityIdsSelect
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesInvoiceGridArchive(array $columns, array $entityIds)
+    public function getSelectSalesInvoiceGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
     {
-        return parent::getSelectSalesInvoiceGrid($columns, $entityIds);
+        return parent::getSelectSalesInvoiceGrid($columns, $entityIdsSelect);
     }
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr $entityIdsSelect
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesShipmentGridArchive(array $columns, array $entityIds)
+    public function getSelectSalesShipmentGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
     {
-        return parent::getSelectSalesShipmentGrid($columns, $entityIds);
+        return parent::getSelectSalesShipmentGrid($columns, $entityIdsSelect);
     }
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr $entityIdsSelect
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesCreditmemoGridArchive(array $columns, array $entityIds)
+    public function getSelectSalesCreditmemoGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
     {
-        return parent::getSelectSalesCreditmemoGrid($columns, $entityIds);
+        return parent::getSelectSalesCreditmemoGrid($columns, $entityIdsSelect);
     }
 }
