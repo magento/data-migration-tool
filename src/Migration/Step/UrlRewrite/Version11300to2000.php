@@ -300,6 +300,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             $destinationRecord = $this->recordFactory->create();
             $destinationRecord->setStructure($destination->getStructure());
 
+            $destinationRecord->setValue('url_rewrite_id', null);
             $destinationRecord->setValue('store_id', $sourceRecord->getValue('store_id'));
             $destinationRecord->setValue('description', $sourceRecord->getValue('description'));
             $destinationRecord->setValue('redirect_type', 0);
@@ -392,7 +393,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             $records = $destinationDocument->getRecords();
             foreach ($recordsData as $row) {
                 $this->progress->advance();
-                unset($row['value_id']);
+                $row['value_id'] = null;
                 unset($row['entity_type_id']);
                 if (!empty($this->resolvedDuplicates[$type][$row['entity_id']][$row['store_id']])) {
                     $row['value'] = $row['value'] . '-'
@@ -450,12 +451,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             }
         }
         $this->progress->finish();
-        $result = !$errors && !$this->processDuplicatesList();
-        if ($result) {
-            $this->logger->info('Integrity check passed');
-        }
 
-        return $result;
+        return !$errors && !$this->processDuplicatesList();
     }
 
     /**
@@ -626,9 +623,9 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $this->createTemporaryTable($adapter);
+        $this->collectRedirects($adapter);
         $this->collectProductRewrites($adapter);
         $this->collectCategoryRewrites($adapter);
-        $this->collectRedirects($adapter);
         $this->dataInitialized = true;
     }
 

@@ -70,12 +70,23 @@ class Source extends AbstractResource
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
+        $identityField = $this->getIdentityField($documentName);
+        $identityId = null;
+        if ($identityField) {
+            if (!isset($this->lastLoadedIdentityId[$documentName]) && $pageNumber == 0) {
+                $identityId = 0;
+            }
+            if (isset($this->lastLoadedIdentityId[$documentName])) {
+                $identityId = $this->lastLoadedIdentityId[$documentName];
+            }
+        }
+
         $records = $this->adapter->loadPage(
             $this->addDocumentPrefix($documentName),
             $pageNumber,
             $pageSize,
-            $this->getIdentityField($documentName),
-            isset($this->lastLoadedIdentityId[$documentName]) ? $this->lastLoadedIdentityId[$documentName] : null
+            $identityField,
+            $identityId
         );
 
         return $records;
