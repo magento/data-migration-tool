@@ -1217,6 +1217,14 @@
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
+                <field>newsletter_template.template_text</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>core_email_template.template_text</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
                 <field>widget_instance.instance_type</field>
                 <handler class="\Migration\Handler\ClassMap" />
             </transform>
