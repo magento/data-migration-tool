@@ -156,6 +156,10 @@ class Helper
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
+                $recordAttributesData = $this->upgradeCustomerHash(
+                    $recordAttributesData,
+                    $record->getValue('entity_id')
+                );
                 $data = $record->getData();
                 $data = array_merge(
                     array_fill_keys($attributeCodes, null),
@@ -309,5 +313,27 @@ class Helper
                 );
             }
         }
+    }
+
+    /**
+     * Upgrade customer hash according M2 algorithm versions
+     *
+     * @param array $recordAttributesData
+     * @param string $entityId
+     * @return array
+     */
+    private function upgradeCustomerHash($recordAttributesData, $entityId)
+    {
+        if (isset($recordAttributesData[$entityId]['password_hash'])) {
+            list($hash, $salt) = explode(':', $recordAttributesData[$entityId]['password_hash'], 2);
+
+            if (strlen($hash) == 32) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '0']);
+            } elseif (strlen($hash) == 64) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '1']);
+            }
+        }
+
+        return $recordAttributesData;
     }
 }
