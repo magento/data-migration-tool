@@ -180,64 +180,7 @@
                 <document>catalog_product_index_price</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price_bundle_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_tmp</document>
+                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_tier_price</document>
@@ -1723,6 +1666,12 @@
                     <param name="baseField" value="string" />
                 </handler>
             </transform>
+            <transform>
+                <field>catalogrule_product.sub_simple_action</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="by_percent" />
+                </handler>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
@@ -1752,9 +1701,6 @@
             </ignore>
             <ignore>
                 <field>sales_shipment.send_email</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.send_email</field>
             </ignore>
             <ignore>
                 <field>sales_shipment.customer_note</field>
@@ -1836,9 +1782,6 @@
             </ignore>
             <ignore>
                 <field>cms_page.under_version_control</field>
-            </ignore>
-            <ignore>
-                <field>paypal_settlement_report_row.store_id</field>
             </ignore>
             <ignore>
                 <field>quote.customer_balance_amount_used</field>
@@ -2399,19 +2342,10 @@
                 <field>sales_order_item.giftregistry_item_id</field>
             </ignore>
             <ignore>
-                <field>tax_calculation_rule.calculate_subtotal</field>
-            </ignore>
-            <ignore>
                 <field>wishlist.name</field>
             </ignore>
             <ignore>
                 <field>wishlist.visibility</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.rp_token</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.rp_token_created_at</field>
             </ignore>
             <ignore>
                 <field>cataloginventory_stock_item.is_decimal_divided</field>

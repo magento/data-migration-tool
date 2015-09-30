@@ -180,64 +180,7 @@
                 <document>catalog_product_index_price</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price_bundle_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_tmp</document>
+                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_tier_price</document>
@@ -268,18 +211,6 @@
             </ignore>
             <ignore>
                 <document>widget_instance_page_layout</document>
-            </ignore>
-            <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_items</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_types</document>
             </ignore>
             <ignore>
                 <document>googlecheckout_api_debug</document>
@@ -1670,9 +1601,6 @@
             </ignore>
             <ignore>
                 <field>sales_shipment.send_email</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.send_email</field>
             </ignore>
             <ignore>
                 <field>sales_shipment.customer_note</field>
