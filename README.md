@@ -104,3 +104,5 @@ To update `composer.json`:
 
 ## For more details
 See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration User Guide</a>.
+
+
