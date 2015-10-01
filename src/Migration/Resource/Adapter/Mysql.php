@@ -86,7 +86,7 @@ class Mysql implements \Migration\Resource\AdapterInterface
         $select = $this->resourceAdapter->select();
         $select->from($documentName, '*');
         if ($identityField && $identityId !== null) {
-            $select->where("`$identityField` > ?", $identityId);
+            $select->where("`$identityField` >= ?", ($identityId == 0 ? $identityId : $identityId + 1));
             $select->limit($pageSize);
             $select->order("$identityField ASC");
         } else {
