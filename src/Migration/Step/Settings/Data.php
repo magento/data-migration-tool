@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Settings;
 
 use Migration\App\Step\StageInterface;
 use Migration\Reader\Settings as ReaderSettings;
@@ -17,10 +17,10 @@ use Migration\Resource\Record;
 use Migration\Handler;
 
 /**
- * Class Settings
+ * Class Data
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Settings implements StageInterface
+class Data implements StageInterface
 {
     const CONFIG_TABLE_NAME_SOURCE = 'core_config_data';
     const CONFIG_TABLE_NAME_DESTINATION = 'core_config_data';
@@ -66,11 +66,6 @@ class Settings implements StageInterface
     protected $handlerManagerFactory;
 
     /**
-     * @var string
-     */
-    protected $stage;
-
-    /**
      * @param Destination $destination
      * @param Source $source
      * @param Logger $logger
@@ -78,7 +73,6 @@ class Settings implements StageInterface
      * @param Resource\RecordFactory $recordFactory
      * @param ReaderSettings $readerSettings
      * @param Handler\ManagerFactory $handlerManagerFactory
-     * @param string $stage
      */
     public function __construct(
         Destination $destination,
@@ -87,8 +81,7 @@ class Settings implements StageInterface
         ProgressBar\LogLevelProcessor $progress,
         Resource\RecordFactory $recordFactory,
         ReaderSettings $readerSettings,
-        Handler\ManagerFactory $handlerManagerFactory,
-        $stage
+        Handler\ManagerFactory $handlerManagerFactory
     ) {
         $this->destination = $destination;
         $this->source = $source;
@@ -97,57 +90,12 @@ class Settings implements StageInterface
         $this->recordFactory = $recordFactory;
         $this->readerSettings = $readerSettings;
         $this->handlerManagerFactory = $handlerManagerFactory;
-        $this->stage = $stage;
     }
 
     /**
-     * @inheritdoc
+     * {@inheritdoc}
      */
     public function perform()
-    {
-        if (!method_exists($this, $this->stage)) {
-            throw new \Migration\Exception('Invalid step configuration');
-        }
-
-        return call_user_func([$this, $this->stage]);
-    }
-
-    /**
-     * @return bool
-     */
-    protected function integrity()
-    {
-        $this->progress->start(1);
-        $this->progress->advance();
-        $documents = $this->source->getDocumentList();
-        if (!in_array(self::CONFIG_TABLE_NAME_SOURCE, $documents)) {
-            $this->logger->error(
-                sprintf(
-                    'Integrity check failed due to "%s" document does not exist in the source resource',
-                    self::CONFIG_TABLE_NAME_SOURCE
-                )
-            );
-            return false;
-        }
-        $documents = $this->destination->getDocumentList();
-        if (!in_array(self::CONFIG_TABLE_NAME_DESTINATION, $documents)) {
-            $this->logger->error(
-                sprintf(
-                    'Integrity check failed due to "%s" document does not exist in the destination resource',
-                    self::CONFIG_TABLE_NAME_DESTINATION
-                )
-            );
-            return false;
-        }
-        $this->progress->finish();
-        return true;
-    }
-
-    /**
-     * @return bool
-     * @throws \Migration\Exception
-     */
-    protected function data()
     {
         $destinationDocument = $this->destination->getDocument(self::CONFIG_TABLE_NAME_DESTINATION);
         $recordsCountSource = $this->source->getRecordsCount(self::CONFIG_TABLE_NAME_SOURCE);

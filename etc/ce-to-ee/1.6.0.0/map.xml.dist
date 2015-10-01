@@ -180,64 +180,7 @@
                 <document>catalog_product_index_price</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price_bundle_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_tmp</document>
+                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_tier_price</document>
@@ -268,18 +211,6 @@
             </ignore>
             <ignore>
                 <document>widget_instance_page_layout</document>
-            </ignore>
-            <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_items</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_types</document>
             </ignore>
             <ignore>
                 <document>googlecheckout_api_debug</document>
@@ -577,6 +508,18 @@
             </ignore>
             <ignore>
                 <document>core_website</document>
+            </ignore>
+            <ignore>
+                <document>find_feed_import_codes</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_attributes</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_items</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_types</document>
             </ignore>
             <rename>
                 <document>catalogsearch_query</document>
@@ -906,6 +849,14 @@
             </transform>
             <transform>
                 <field>cms_page.content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>newsletter_template.template_text</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>core_email_template.template_text</field>
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
@@ -1695,36 +1646,6 @@
                 </handler>
             </transform>
             <transform>
-                <field>sales_order_tax_item.amount</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000" />
-                </handler>
-            </transform>
-            <transform>
-                <field>sales_order_tax_item.base_amount</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000" />
-                </handler>
-            </transform>
-            <transform>
-                <field>sales_order_tax_item.real_amount</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000" />
-                </handler>
-            </transform>
-            <transform>
-                <field>sales_order_tax_item.real_base_amount</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0.0000" />
-                </handler>
-            </transform>
-            <transform>
-                <field>sales_order_tax_item.taxable_item_type</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="product" />
-                </handler>
-            </transform>
-            <transform>
                 <field>oauth_token.user_type</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
@@ -1745,6 +1666,18 @@
                 <handler class="\Migration\Handler\SetHash">
                     <param name="hash" value="crc32" />
                     <param name="baseField" value="string" />
+                </handler>
+            </transform>
+            <transform>
+                <field>catalogrule.sub_simple_action</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="by_percent" />
+                </handler>
+            </transform>
+            <transform>
+                <field>catalogrule_product.sub_simple_action</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="by_percent" />
                 </handler>
             </transform>
             <ignore>
@@ -1814,24 +1747,6 @@
                 <field>widget_instance.theme_id</field>
             </ignore>
             <ignore>
-                <field>sales_order_tax_item.amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_order_tax_item.base_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_order_tax_item.real_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_order_tax_item.real_base_amount</field>
-            </ignore>
-            <ignore>
-                <field>sales_order_tax_item.associated_item_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_order_tax_item.taxable_item_type</field>
-            </ignore>
-            <ignore>
                 <field>sales_creditmemo_grid.updated_at</field>
             </ignore>
             <ignore>
@@ -1839,9 +1754,6 @@
             </ignore>
             <ignore>
                 <field>sales_shipment_grid.updated_at</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.send_email</field>
             </ignore>
             <ignore>
                 <field>admin_user.failures_num</field>
@@ -1860,9 +1772,6 @@
             </ignore>
             <ignore>
                 <field>cms_page.under_version_control</field>
-            </ignore>
-            <ignore>
-                <field>paypal_settlement_report_row.store_id</field>
             </ignore>
             <ignore>
                 <field>quote.customer_balance_amount_used</field>
@@ -2421,9 +2330,6 @@
             </ignore>
             <ignore>
                 <field>sales_order_item.giftregistry_item_id</field>
-            </ignore>
-            <ignore>
-                <field>tax_calculation_rule.calculate_subtotal</field>
             </ignore>
             <ignore>
                 <field>wishlist.name</field>

@@ -270,18 +270,6 @@
                 <document>widget_instance_page_layout</document>
             </ignore>
             <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_attributes</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_items</document>
-            </ignore>
-            <ignore>
-                <document>googlebase_types</document>
-            </ignore>
-            <ignore>
                 <document>googlecheckout_api_debug</document>
             </ignore>
             <ignore>
@@ -900,6 +888,14 @@
             </transform>
             <transform>
                 <field>cms_page.content</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>newsletter_template.template_text</field>
+                <handler class="\Migration\Handler\Placeholder" />
+            </transform>
+            <transform>
+                <field>core_email_template.template_text</field>
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
@@ -1663,9 +1659,6 @@
             </ignore>
             <ignore>
                 <field>sales_shipment.send_email</field>
-            </ignore>
-            <ignore>
-                <field>sales_order.send_email</field>
             </ignore>
             <ignore>
                 <field>sales_shipment.customer_note</field>

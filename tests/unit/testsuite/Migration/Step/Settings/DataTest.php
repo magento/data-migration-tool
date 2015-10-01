@@ -3,9 +3,12 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Settings;
 
-class SettingsTest extends \PHPUnit_Framework_TestCase
+/**
+ * Class DataTest
+ */
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -18,9 +21,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     protected $source;
 
     /**
-     * @var Settings
+     * @var Data
      */
-    protected $settings;
+    protected $data;
 
     /**
      * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
@@ -82,79 +85,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
-    public function testIntegrity()
-    {
-        $this->progress->expects($this->once())->method('start')->with(1);
-        $this->progress->expects($this->once())->method('advance');
-        $this->progress->expects($this->once())->method('finish');
-        $this->source->expects($this->once())->method('getDocumentList')->willReturn(['core_config_data']);
-        $this->destination->expects($this->once())->method('getDocumentList')->willReturn(['core_config_data']);
-        $this->settings = new Settings(
-            $this->destination,
-            $this->source,
-            $this->logger,
-            $this->progress,
-            $this->recordFactory,
-            $this->readerSettings,
-            $this->handlerManagerFactory,
-            'integrity'
-        );
-        $this->assertTrue($this->settings->perform());
-    }
-
-    public function testIntegritySourceFail()
-    {
-        $this->progress->expects($this->once())->method('start')->with(1);
-        $this->progress->expects($this->once())->method('advance');
-        $this->progress->expects($this->never())->method('finish');
-        $this->source->expects($this->once())->method('getDocumentList')->willReturn([]);
-        $this->logger
-            ->expects($this->once())
-            ->method('error')
-            ->with(
-                'Integrity check failed due to "core_config_data" document does not exist in the source resource'
-            );
-        $this->settings = new Settings(
-            $this->destination,
-            $this->source,
-            $this->logger,
-            $this->progress,
-            $this->recordFactory,
-            $this->readerSettings,
-            $this->handlerManagerFactory,
-            'integrity'
-        );
-        $this->assertFalse($this->settings->perform());
-    }
-
-    public function testIntegrityDestinationFail()
-    {
-        $this->progress->expects($this->once())->method('start')->with(1);
-        $this->progress->expects($this->once())->method('advance');
-        $this->progress->expects($this->never())->method('finish');
-        $this->source->expects($this->once())->method('getDocumentList')->willReturn(['core_config_data']);
-        $this->destination->expects($this->once())->method('getDocumentList')->willReturn([]);
-        $this->logger
-            ->expects($this->once())
-            ->method('error')
-            ->with(
-                'Integrity check failed due to "core_config_data" document does not exist in the destination resource'
-            );
-        $this->settings = new Settings(
-            $this->destination,
-            $this->source,
-            $this->logger,
-            $this->progress,
-            $this->recordFactory,
-            $this->readerSettings,
-            $this->handlerManagerFactory,
-            'integrity'
-        );
-        $this->assertFalse($this->settings->perform());
-    }
-
-    public function testData()
+    public function testPerform()
     {
         $count = 2;
         $sourceRecords = [
@@ -225,16 +156,15 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
             ->with(['document' => $document, 'data' => []])
             ->willReturn($destinationRecord);
         $this->handlerManagerFactory->expects($this->once())->method('create')->willReturn($handlerManager);
-        $this->settings = new Settings(
+        $this->data = new Data(
             $this->destination,
             $this->source,
             $this->logger,
             $this->progress,
             $this->recordFactory,
             $this->readerSettings,
-            $this->handlerManagerFactory,
-            'data'
+            $this->handlerManagerFactory
         );
-        $this->assertTrue($this->settings->perform());
+        $this->assertTrue($this->data->perform());
     }
 }

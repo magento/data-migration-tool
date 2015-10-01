@@ -3,19 +3,14 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Stores;
 
 /**
- * Class StoresTest
+ * Class DataTest
  * @dbFixture stores
  */
-class StoresTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
-    /**
-     * @var Stores
-     */
-    protected $stores;
-
     /**
      * @var \Migration\Resource\Destination
      */
@@ -31,51 +26,33 @@ class StoresTest extends \PHPUnit_Framework_TestCase
     ];
 
     protected $progress;
-    protected $logger;
     protected $source;
-    protected $recordTransformerFactory;
     protected $recordFactory;
+    protected $helper;
 
     public function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
         $objectManager->get('\Migration\Config')
-            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
-        $this->logger = $objectManager->create('Migration\Logger\Logger');
         $this->source = $objectManager->create('Migration\Resource\Source');
         $this->destination = $objectManager->create('Migration\Resource\Destination');
-        $this->recordTransformerFactory = $objectManager->create('Migration\RecordTransformerFactory');
         $this->recordFactory = $objectManager->create('Migration\Resource\RecordFactory');
+        $this->helper = $objectManager->create('Migration\Step\Stores\Helper');
     }
 
-    public function testIntegrity()
+    public function testPerform()
     {
-        $stores = new Stores(
+        $data = new Data(
             $this->progress,
-            $this->logger,
             $this->source,
             $this->destination,
-            $this->recordTransformerFactory,
             $this->recordFactory,
-            'integrity'
+            $this->helper
         );
-        $this->assertTrue($stores->perform());
-    }
-
-    public function testData()
-    {
-        $stores = new Stores(
-            $this->progress,
-            $this->logger,
-            $this->source,
-            $this->destination,
-            $this->recordTransformerFactory,
-            $this->recordFactory,
-            'data'
-        );
-        $this->assertTrue($stores->perform());
+        $this->assertTrue($data->perform());
         foreach ($this->destinationDocuments as $documentName => $recordsCount) {
             $this->assertEquals($recordsCount, count($this->destination->getRecords($documentName, 0)));
         }

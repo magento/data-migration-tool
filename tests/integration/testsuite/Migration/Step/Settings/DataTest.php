@@ -4,19 +4,19 @@
  * See COPYING.txt for license details.
  */
 
-namespace Migration\Step\Map;
+namespace Migration\Step\Settings;
 
 /**
- * Settings step test class
+ * Settings Data step test class
  */
-class SettingsTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
-    public function testData()
+    public function testPerform()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
         $objectManager->get('\Migration\Config')
-            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
         $recordFactory = $objectManager->create('\Migration\Resource\RecordFactory');
         $progress = $objectManager->create('\Migration\App\ProgressBar\LogLevelProcessor');
@@ -28,8 +28,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
-        $settings = $objectManager->create(
-            '\Migration\Step\Settings',
+        $data = $objectManager->create(
+            '\Migration\Step\Settings\Data',
             [
                 'destination' => $destination,
                 'source' => $source,
@@ -38,11 +38,10 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
                 'recordFactory' => $recordFactory,
                 'mapReader' => $mapReader,
                 'handlerManagerFactory' => $handlerManagerFactory,
-                'stage' => 'data'
             ]
         );
         ob_start();
-        $settings->perform();
+        $data->perform();
         ob_end_clean();
         $migratedData = $destination->getRecords('core_config_data', 0);
         $migratedDataExpected = [

@@ -3,21 +3,21 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\Stores;
 
 use Migration\RecordTransformerFactory;
 use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
 
 /**
- * Class Integrity
+ * Class DataTest
  */
-class StoresTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var Stores
+     * @var Data
      */
-    protected $stores;
+    protected $data;
     /**
      * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
      */
@@ -34,27 +34,18 @@ class StoresTest extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
-     * @var RecordTransformerFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Step\Stores\Helper|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $recordTransformerFactory;
+    protected $helper;
 
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
-    /**
-     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
-     */
-    protected $logger;
-
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMock();
-        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -65,7 +56,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->recordTransformerFactory = $this->getMockBuilder('Migration\RecordTransformerFactory')
+        $this->helper = $this->getMockBuilder('Migration\Step\Stores\Helper')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -75,29 +66,7 @@ class StoresTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
-    public function testIntegrity()
-    {
-        $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()->getMock();
-
-        $this->progress->expects($this->once())->method('start')->with('3');
-        $this->progress->expects($this->any())->method('advance');
-        $this->progress->expects($this->once())->method('finish');
-        $this->source->expects($this->any())->method('getDocument', 'getRecords')->willReturn($document);
-        $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
-
-        $this->stores = new Stores(
-            $this->progress,
-            $this->logger,
-            $this->source,
-            $this->destination,
-            $this->recordTransformerFactory,
-            $this->recordFactory,
-            'integrity'
-        );
-        $this->assertTrue($this->stores->perform());
-    }
-
-    public function testData()
+    public function testPerform()
     {
         $recordsData = [
             'record_1' => ['field_name' => []],
@@ -143,47 +112,20 @@ class StoresTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
         $this->destination->expects($this->any())->method('clearDocument')->willReturnSelf();
 
-        $this->stores = new Stores(
+        $this->helper->expects($this->any())->method('getDocumentList')
+            ->willReturn([
+                'core_store' => 'store',
+                'core_store_group' => 'store_group',
+                'core_website' => 'store_website'
+            ]);
+
+        $this->data = new Data(
             $this->progress,
-            $this->logger,
             $this->source,
             $this->destination,
-            $this->recordTransformerFactory,
             $this->recordFactory,
-            'data'
+            $this->helper
         );
-        $this->stores->perform();
-    }
-
-    public function testVolumeCheck()
-    {
-        $fields = ['field_name' => []];
-
-        $structure = $this->getMockBuilder('Migration\Resource\Structure')->disableOriginalConstructor()
-            ->setMethods(['getFields'])->getMock();
-        $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
-        $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
-            ->setMethods(['getStructure'])
-            ->getMock();
-
-        $this->progress->expects($this->once())->method('start')->with('3');
-        $this->progress->expects($this->any())->method('advance');
-        $this->progress->expects($this->once())->method('finish');
-        $document->expects($this->any())->method('getStructure')->willReturn($structure);
-        $this->source->expects($this->any())->method('getDocument')->willReturn($document);
-        $this->destination->expects($this->any())->method('getDocument')->willReturn($document);
-        $this->source->expects($this->any())->method('getRecordsCount')->with()->willReturn(1);
-        $this->destination->expects($this->any())->method('getRecordsCount')->with()->willReturn(1);
-
-        $this->stores = new Stores(
-            $this->progress,
-            $this->logger,
-            $this->source,
-            $this->destination,
-            $this->recordTransformerFactory,
-            $this->recordFactory,
-            'volume'
-        );
-        $this->assertTrue($this->stores->perform());
+        $this->data->perform();
     }
 }
