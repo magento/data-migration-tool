@@ -1282,6 +1282,14 @@
                 <field>sales_order_status_state.visible_on_front</field>
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
+            <transform>
+                <field>rating_option_vote.remote_ip_long</field>
+                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+            </transform>
+            <transform>
+                <field>sendfriend_log.ip</field>
+                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>

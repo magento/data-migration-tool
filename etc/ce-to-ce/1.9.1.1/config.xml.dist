@@ -84,7 +84,7 @@
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>etc/ce-to-ce/1.8.1.0/map.xml.dist</map_file>
+        <map_file>etc/ce-to-ce/1.9.1.1/map.xml.dist</map_file>
         <eav_map_file>etc/ce-to-ce/map-eav.xml.dist</eav_map_file>
         <eav_document_groups_file>etc/ce-to-ce/eav-document-groups.xml.dist</eav_document_groups_file>
         <eav_attribute_groups_file>etc/ce-to-ce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>

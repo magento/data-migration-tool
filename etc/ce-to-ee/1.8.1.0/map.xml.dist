@@ -351,9 +351,6 @@
                 <document>xmlconnect_queue</document>
             </ignore>
             <ignore>
-                <document>googlecheckout_notification</document>
-            </ignore>
-            <ignore>
                 <document>index_event</document>
             </ignore>
             <ignore>

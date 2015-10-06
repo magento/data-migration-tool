@@ -7,14 +7,14 @@
 -->
 <config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
     <steps mode="settings">
-        <step title="Settings step">
-            <integrity>Migration\Step\Settings</integrity>
-            <data>Migration\Step\Settings</data>
+        <step title="Settings Step">
+            <integrity>Migration\Step\Settings\Integrity</integrity>
+            <data>Migration\Step\Settings\Data</data>
         </step>
-        <step title="Stores step">
-            <integrity>Migration\Step\Stores</integrity>
-            <data>Migration\Step\Stores</data>
-            <volume>Migration\Step\Stores</volume>
+        <step title="Stores Step">
+            <integrity>Migration\Step\Stores\Integrity</integrity>
+            <data>Migration\Step\Stores\Data</data>
+            <volume>Migration\Step\Stores\Volume</volume>
         </step>
     </steps>
     <steps mode="data">
@@ -28,7 +28,7 @@
             <data>Migration\Step\CustomCustomerAttributes\Data</data>
             <volume>Migration\Step\CustomCustomerAttributes\Volume</volume>
         </step>
-        <step title="Map step">
+        <step title="Map Step">
             <integrity>Migration\Step\Map\Integrity</integrity>
             <data>Migration\Step\Map\Data</data>
             <volume>Migration\Step\Map\Volume</volume>
@@ -43,10 +43,10 @@
             <data>Migration\Step\Log\Data</data>
             <volume>Migration\Step\Log\Volume</volume>
         </step>
-        <step title="Ratings step">
-            <integrity>Migration\Step\Ratings</integrity>
-            <data>Migration\Step\Ratings</data>
-            <volume>Migration\Step\Ratings</volume>
+        <step title="Ratings Step">
+            <integrity>Migration\Step\Ratings\Integrity</integrity>
+            <data>Migration\Step\Ratings\Data</data>
+            <volume>Migration\Step\Ratings\Volume</volume>
         </step>
         <step title="SalesOrder step">
             <integrity>Migration\Step\SalesOrder\Integrity</integrity>
