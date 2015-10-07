@@ -847,6 +847,14 @@
                 <field>sales_flat_order_item.weee_tax_applied</field>
                 <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
+            <transform>
+                <field>rating_option_vote.remote_ip_long</field>
+                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+            </transform>
+            <transform>
+                <field>sendfriend_log.ip</field>
+                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -978,6 +986,12 @@
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sendfriend_log.ip</datatype>
+            </ignore>
+            <ignore>
+                <datatype>rating_option_vote.remote_ip_long</datatype>
             </ignore>
         </field_rules>
     </source>
@@ -1208,6 +1222,12 @@
             <ignore>
                 <document>store_website</document>
             </ignore>
+            <ignore>
+                <document>log_visitor_info</document>
+            </ignore>
+            <ignore>
+                <document>log_visitor_online</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1281,14 +1301,6 @@
             <transform>
                 <field>sales_order_status_state.visible_on_front</field>
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
-            </transform>
-            <transform>
-                <field>rating_option_vote.remote_ip_long</field>
-                <handler class="\Migration\Handler\ConvertBinaryIp"/>
-            </transform>
-            <transform>
-                <field>sendfriend_log.ip</field>
-                <handler class="\Migration\Handler\ConvertBinaryIp"/>
             </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
@@ -1388,6 +1400,12 @@
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sendfriend_log.ip</datatype>
+            </ignore>
+            <ignore>
+                <datatype>rating_option_vote.remote_ip_long</datatype>
             </ignore>
         </field_rules>
     </destination>
