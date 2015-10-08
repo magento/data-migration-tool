@@ -6,7 +6,7 @@
 
 namespace Migration\Handler;
 
-class ConvertBinaryIpTest extends \PHPUnit_Framework_TestCase
+class ConvertIpTest extends \PHPUnit_Framework_TestCase
 {
     public function testHandle()
     {
@@ -23,7 +23,7 @@ class ConvertBinaryIpTest extends \PHPUnit_Framework_TestCase
 
         $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
 
-        $handler = new ConvertBinaryIp();
+        $handler = new ConvertIp();
         $handler->setField($fieldName);
         $handler->handle($record, $record2);
     }

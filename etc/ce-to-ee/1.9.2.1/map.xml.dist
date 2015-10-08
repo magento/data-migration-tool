@@ -849,11 +849,11 @@
             </transform>
             <transform>
                 <field>rating_option_vote.remote_ip_long</field>
-                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+                <handler class="\Migration\Handler\ConvertIp"/>
             </transform>
             <transform>
                 <field>sendfriend_log.ip</field>
-                <handler class="\Migration\Handler\ConvertBinaryIp"/>
+                <handler class="\Migration\Handler\ConvertIp"/>
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
