@@ -20,6 +20,9 @@ class ConvertBinaryIp extends AbstractHandler implements HandlerInterface
         $this->validate($recordToHandle);
 
         $value      = $recordToHandle->getValue($this->field);
+        if (!$value) {
+            return;
+        }
         $newValue   = ip2long(inet_ntop($value));
         $recordToHandle->setValue($this->field, $newValue);
     }
