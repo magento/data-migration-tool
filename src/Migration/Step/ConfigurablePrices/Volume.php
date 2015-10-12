@@ -47,13 +47,14 @@ class Volume extends AbstractVolume
         Resource\Source $source,
         Resource\Destination $destination,
         ProgressBar\LogLevelProcessor $progressBar,
-        Helper $helper
+        Helper $helper,
+        Logger $logger
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->progressBar = $progressBar;
         $this->helper = $helper;
-        $this->logger = $logger;
+        parent::__construct($logger);
     }
 
     /**
@@ -70,6 +71,6 @@ class Volume extends AbstractVolume
             $this->errors[] = 'Mismatch of entities in the document: ' . $documents[MapInterface::TYPE_DEST];
         }
         $this->progressBar->finish();
-        return $this->checkForErrors();
+        return $this->checkForErrors(Logger::ERROR);
     }
 }

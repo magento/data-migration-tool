@@ -5,6 +5,8 @@
  */
 namespace Migration\Step\Ratings;
 
+use Migration\Logger\Logger;
+
 /**
  * Class VolumeTest
  */
@@ -61,7 +63,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['warning', 'error'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
             'Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'advance', 'finish'],
@@ -95,7 +97,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->with($this->select)->willReturn([['rating_id' => 1]]);
         $this->select->expects($this->at(2))->method('from')->with('rating', ['rating_id'])->will($this->returnSelf());
         $this->select->expects($this->at(3))->method('where')->with('is_active = ?', 1)->will($this->returnSelf());
-        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('addRecord');
         $this->assertTrue($this->volume->perform());
     }
 
@@ -139,8 +141,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnSelf());
         $this->logger
             ->expects($this->once())
-            ->method('warning')
-            ->with('Mismatch of entities in the documents: rating, rating_store');
+            ->method('addRecord')
+            ->with(Logger::ERROR, 'Mismatch of entities in the documents: rating, rating_store');
         $this->assertFalse($this->volume->perform());
     }
 }

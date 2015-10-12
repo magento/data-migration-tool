@@ -38,6 +38,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @var Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
@@ -55,6 +60,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
     }
 
     public function testPerform()
@@ -87,7 +93,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->progress,
             $this->source,
             $this->destination,
-            $this->helper
+            $this->helper,
+            $this->logger
         );
         $this->assertTrue($this->volume->perform());
     }

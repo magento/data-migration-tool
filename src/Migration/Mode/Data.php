@@ -28,19 +28,27 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     protected $setupDeltaLog;
 
     /**
+     * @var \Migration\Config
+     */
+    protected $configReader;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
      * @param SetupDeltaLog $setupDeltaLog
+     * @param \Migration\Config $configReader
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         \Migration\App\Mode\StepListFactory $stepListFactory,
-        SetupDeltaLog $setupDeltaLog
+        SetupDeltaLog $setupDeltaLog,
+        \Migration\Config $configReader
     ) {
         parent::__construct($progress, $logger, $stepListFactory);
         $this->setupDeltaLog = $setupDeltaLog;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -120,8 +128,12 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     protected function runVolume(array $step, $stepName)
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
-            $this->logger->warning('Volume Check failed');
             $this->rollback($step['data'], $stepName);
+            if ($this->configReader->getStep('delta', $stepName)) {
+                $this->logger->warning('Volume Check failed');
+            } else {
+                throw new Exception('Volume Check failed');
+            }
         }
     }
 

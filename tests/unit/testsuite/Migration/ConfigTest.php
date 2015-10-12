@@ -55,6 +55,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($steps, $this->config->getSteps('data'));
     }
 
+    public function testGetStep()
+    {
+        $step = ['delta' => 'Migration\Step\SomeStep\Integrity'];
+        $this->assertEquals($step, $this->config->getStep('delta', 'Step1'));
+    }
+
     public function testGetSource()
     {
         $source = [

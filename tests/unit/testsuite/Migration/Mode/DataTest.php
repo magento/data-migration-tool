@@ -55,8 +55,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['perform'])
             ->getMock();
         $setupDeltaLog->expects($this->any())->method('perform')->willReturn(true);
+        $this->config = $this->getMock('\Migration\Config', ['getStep'], [], '', false);
 
-        $this->data = new Data($this->progress, $this->logger, $stepListFactory, $setupDeltaLog);
+        $this->data = new Data($this->progress, $this->logger, $stepListFactory, $setupDeltaLog, $this->config);
     }
 
     public function testRunStepsIntegrityFail()
@@ -71,9 +72,12 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->data, $this->data->run());
     }
 
+    /**
+     * @expectedException \Migration\Exception
+     * @expectedExceptionMessage Volume Check failed
+     */
     public function testRunStepsVolumeFail()
     {
-        $this->logger->expects($this->once())->method('warning')->with('Volume Check failed');
         $stepData = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepData->expects($this->once())->method('perform')->will($this->returnValue(true));
 

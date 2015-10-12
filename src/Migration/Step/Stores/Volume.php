@@ -8,6 +8,7 @@ namespace Migration\Step\Stores;
 use Migration\App\Step\AbstractVolume;
 use Migration\Resource;
 use Migration\App\ProgressBar;
+use Migration\Logger\Logger;
 
 /**
  * Class Volume
@@ -39,17 +40,20 @@ class Volume extends AbstractVolume
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Helper $helper
+     * @param Logger $logger
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Resource\Source $source,
         Resource\Destination $destination,
-        Helper $helper
+        Helper $helper,
+        Logger $logger
     ) {
         $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
         $this->helper = $helper;
+        parent::__construct($logger);
     }
 
     /**
@@ -65,6 +69,6 @@ class Volume extends AbstractVolume
             }
         }
         $this->progress->finish();
-        return $this->checkForErrors();
+        return $this->checkForErrors(Logger::ERROR);
     }
 }

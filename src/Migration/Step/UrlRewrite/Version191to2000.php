@@ -217,7 +217,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $result &= $this->source->getRecordsCount(self::SOURCE) ==
             $this->destination->getRecordsCount(self::DESTINATION);
         if (!$result) {
-            $this->logger->warning('Mismatch of entities in the document: url_rewrite');
+            $this->logger->error('Mismatch of entities in the document: url_rewrite');
         }
         $this->progress->advance();
         $this->progress->finish();

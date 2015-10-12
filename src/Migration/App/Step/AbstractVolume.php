@@ -34,12 +34,13 @@ abstract class AbstractVolume implements StageInterface
     /**
      * Process errors
      *
+     * @param int $errorLevel
      * @return bool
      */
-    protected function checkForErrors()
+    protected function checkForErrors($errorLevel = Logger::WARNING)
     {
         foreach ($this->errors as $error) {
-            $this->logger->warning($error);
+            $this->logger->addRecord($errorLevel, $error);
         }
         return empty($this->errors);
     }

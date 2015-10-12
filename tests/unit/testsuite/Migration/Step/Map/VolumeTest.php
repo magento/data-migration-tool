@@ -43,7 +43,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['warning'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -113,7 +113,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
-        $this->logger->expects($this->once())->method('warning')->with(
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
             'Mismatch of entities in the document: ' . $dstDocName
         );
         $this->assertFalse($this->volume->perform());

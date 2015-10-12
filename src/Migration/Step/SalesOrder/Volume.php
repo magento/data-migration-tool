@@ -91,7 +91,7 @@ class Volume extends AbstractVolume
                 continue;
             }
             $this->checkMapEntities($sourceDocName, $destinationName);
-            $this->checkEavEntities($sourceDocName, $destinationName);
+            $this->checkEavEntities();
         }
         $this->progress->finish();
         return $this->checkForErrors();

@@ -26,13 +26,6 @@ class Volume extends AbstractVolume
     protected $destination;
 
     /**
-     * Logger instance
-     *
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * Progress bar
      *
      * @var ProgressBar\LogLevelProcessor
@@ -50,8 +43,8 @@ class Volume extends AbstractVolume
         ProgressBar\LogLevelProcessor $progress
     ) {
         $this->destination = $destination;
-        $this->logger = $logger;
         $this->progress = $progress;
+        parent::__construct($logger);
     }
 
     /**
@@ -89,7 +82,7 @@ class Volume extends AbstractVolume
             );
         }
         $this->progress->finish();
-        return $this->checkForErrors();
+        return $this->checkForErrors(Logger::ERROR);
     }
 
     /**

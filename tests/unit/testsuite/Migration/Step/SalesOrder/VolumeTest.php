@@ -55,7 +55,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['warning'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -167,7 +167,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')
             ->with('eav_entity_int')->willReturn(1);
-        $this->logger->expects($this->once())->method('warning')->with(
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
             'Mismatch of entities in the document: ' . $eavDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
@@ -201,7 +202,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')->with('eav_entity_int')
             ->willReturn(0);
-        $this->logger->expects($this->once())->method('warning')->with(
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
             'Mismatch of entities in the document: ' . $destDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
