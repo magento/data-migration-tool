@@ -112,6 +112,6 @@
         <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
         <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
-        <skip_upgrade_customer_password_hash>1</skip_upgrade_customer_password_hash>
+        <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
     </options>
 </config>

@@ -53,20 +53,30 @@ class Helper
     protected $sourceDocuments;
 
     /**
+     * @var \Migration\Config
+     */
+    protected $configReader;
+
+    const UPGRADE_CUSTOMER_PASSWORD_HASH = 'upgrade_customer_password_hash';
+
+    /**
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param GroupsFactory $groupsFactory
+     * @param \Migration\Config $configReader
      */
     public function __construct(
         Resource\Source $source,
         Resource\Destination $destination,
-        GroupsFactory $groupsFactory
+        GroupsFactory $groupsFactory,
+        \Migration\Config $configReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->readerAttributes = $groupsFactory->create('customer_attribute_groups_file');
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->sourceDocuments = $this->readerGroups->getGroup('source_documents');
+        $this->configReader = $configReader;
     }
 
     /**
@@ -110,10 +120,9 @@ class Helper
      * @param string $attributeType
      * @param string $sourceDocName
      * @param Record\Collection $destinationRecords
-     * @param \Migration\Config
      * @return void
      */
-    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords, \Migration\Config $configReader)
+    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords)
     {
         if (!isset($this->sourceDocuments[$sourceDocName]) || $this->sourceDocuments[$sourceDocName] != 'entity_id') {
             return;
@@ -157,7 +166,7 @@ class Helper
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
-                if (!$configReader->getOption(\Migration\Config::SKIP_UPGRADE_CUSTOMER_PASSWORD_HASH)) {
+                if ($this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
                     $recordAttributesData = $this->upgradeCustomerHash(
                         $recordAttributesData,
                         $record->getValue('entity_id')
