@@ -156,12 +156,15 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $record = $this->getMockBuilder('Migration\Resource\Record')
             ->disableOriginalConstructor()
             ->getMock();
+        $configReader = $this->getMockBuilder('Migration\Config')
+            ->disableOriginalConstructor()
+            ->getMock();
         $record->expects($this->any())->method('getValue')->with('entity_id')->willReturn('1');
         $record->expects($this->any())->method('getData')->willReturn([]);
         $record->expects($this->any())->method('setData')->with($expected);
         $destinationRecords = new \Migration\Resource\Record\Collection($structure, [$record]);
 
-        $this->helper->updateAttributeData(self::ENTITY, self::DOCUMENT, $destinationRecords);
+        $this->helper->updateAttributeData(self::ENTITY, self::DOCUMENT, $destinationRecords, $configReader);
     }
 
     /**

@@ -163,7 +163,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                 $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                 $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
-                $this->helper->updateAttributeData($attributeType, $sourceDocName, $destinationRecords);
+                $this->helper->updateAttributeData($attributeType, $sourceDocName, $destinationRecords, $this->configReader);
 
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }

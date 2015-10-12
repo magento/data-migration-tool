@@ -14,6 +14,8 @@ class Config
 
     const CONFIGURATION_SCHEMA = 'config.xsd';
 
+    const SKIP_UPGRADE_CUSTOMER_PASSWORD_HASH = 'skip_upgrade_customer_password_hash';
+
     /**
      * @var \DOMXPath
      */

@@ -110,9 +110,10 @@ class Helper
      * @param string $attributeType
      * @param string $sourceDocName
      * @param Record\Collection $destinationRecords
+     * @param \Migration\Config
      * @return void
      */
-    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords)
+    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords, \Migration\Config $configReader)
     {
         if (!isset($this->sourceDocuments[$sourceDocName]) || $this->sourceDocuments[$sourceDocName] != 'entity_id') {
             return;
@@ -156,10 +157,12 @@ class Helper
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
-                $recordAttributesData = $this->upgradeCustomerHash(
-                    $recordAttributesData,
-                    $record->getValue('entity_id')
-                );
+                if (!$configReader->getOption(\Migration\Config::SKIP_UPGRADE_CUSTOMER_PASSWORD_HASH)) {
+                    $recordAttributesData = $this->upgradeCustomerHash(
+                        $recordAttributesData,
+                        $record->getValue('entity_id')
+                    );
+                }
                 $data = $record->getData();
                 $data = array_merge(
                     array_fill_keys($attributeCodes, null),
