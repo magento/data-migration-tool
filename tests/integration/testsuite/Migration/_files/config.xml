@@ -59,10 +59,10 @@
         </step>
     </steps>
     <source>
-        <database host="localhost" name="magento1_integration" user="root" password="root"/>
+        <database host="localhost" name="magento1_integration" user="root"/>
     </source>
     <destination>
-        <database host="localhost" name="magento2_integration" user="root" password="root"/>
+        <database host="localhost" name="magento2_integration" user="root"/>
     </destination>
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
