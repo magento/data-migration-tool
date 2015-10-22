@@ -39,6 +39,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $destination;
 
     /**
+     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $configReader;
+
+    /**
      * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $readerAttributes;
@@ -99,6 +104,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->destination = $this->getMockBuilder('Migration\Resource\Destination')
             ->disableOriginalConstructor()
             ->getMock();
+        $this->configReader = $this->getMockBuilder('Migration\Config')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->readerAttributes = $this->getMockBuilder('Migration\Reader\Groups')
             ->disableOriginalConstructor()
@@ -129,7 +137,8 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new Helper(
             $this->source,
             $this->destination,
-            $groupsFactory
+            $groupsFactory,
+            $this->configReader
         );
     }
 
@@ -156,6 +165,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $record = $this->getMockBuilder('Migration\Resource\Record')
             ->disableOriginalConstructor()
             ->getMock();
+
+        $this->configReader->expects($this->any())->method('getOption')->willReturn(current($attributeData)[Helper::UPGRADE_CUSTOMER_PASSWORD_HASH]);
+
         $record->expects($this->any())->method('getValue')->with('entity_id')->willReturn('1');
         $record->expects($this->any())->method('getData')->willReturn([]);
         $record->expects($this->any())->method('setData')->with($expected);
@@ -198,6 +210,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             [
                 [
                     [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 1,
                         'entity_id' => '1',
                         'attribute_id' => '12',
                         'value' => '34356a3d028accfb3c2996827b706bf5:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
@@ -210,6 +223,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             [
                 [
                     [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 1,
                         'entity_id' => '1',
                         'attribute_id' => '12',
                         'value' => '123123q:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
@@ -218,7 +232,33 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                 [
                     self::ATTRIBUTE => '123123q:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
                 ]
-            ]
+            ],
+            [
+                [
+                    [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 0,
+                        'entity_id' => '1',
+                        'attribute_id' => '12',
+                        'value' => '34356a3d028accfb3c2996827b706bf5:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
+                    ]
+                ],
+                [
+                    self::ATTRIBUTE => '34356a3d028accfb3c2996827b706bf5:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
+                ]
+            ],
+            [
+                [
+                    [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 0,
+                        'entity_id' => '1',
+                        'attribute_id' => '12',
+                        'value' => '123123q:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
+                    ]
+                ],
+                [
+                    self::ATTRIBUTE => '123123q:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
+                ]
+            ],
         ];
     }
 }
