@@ -180,64 +180,7 @@
                 <document>catalog_product_index_price</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price_bundle_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_tmp</document>
+                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_tier_price</document>
@@ -1283,6 +1226,24 @@
             <ignore>
                 <document>store_website</document>
             </ignore>
+            <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>admin_passwords</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1369,6 +1330,15 @@
             </ignore>
             <ignore>
                 <field>admin_user.interface_locale</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.failures_num</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.first_failure</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.lock_expires</field>
             </ignore>
             <ignore>
                 <field>rating.is_active</field>
@@ -1471,6 +1441,9 @@
             </ignore>
             <ignore>
                 <field>translation.crc_string</field>
+            </ignore>
+            <ignore>
+                <field>checkout_agreement.mode</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>

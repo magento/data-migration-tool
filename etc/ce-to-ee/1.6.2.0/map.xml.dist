@@ -1593,6 +1593,39 @@
             <ignore>
                 <document>catalog_product_index_price*</document>
             </ignore>
+            <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
+            <ignore>
+                <document>admin_passwords</document>
+            </ignore>
+            <ignore>
+                <document>support_backup</document>
+            </ignore>
+            <ignore>
+                <document>support_backup_item</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -2465,6 +2498,15 @@
             </ignore>
             <ignore>
                 <field>sales_order.coupon_rule_name</field>
+            </ignore>
+            <ignore>
+                <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
