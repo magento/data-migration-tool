@@ -865,6 +865,10 @@
                 <field>sales_flat_order_item.weee_tax_applied</field>
                 <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
+            <transform>
+                <field>catalog_product_entity_media_gallery.value_id</field>
+                <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -927,6 +931,9 @@
             </ignore>
             <ignore>
                 <field>catalog_product_entity_gallery.entity_type_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery.entity_id</field>
             </ignore>
             <ignore>
                 <field>catalog_product_entity_int.entity_type_id</field>
@@ -1226,6 +1233,12 @@
             <ignore>
                 <document>store_website</document>
             </ignore>
+            <ignore>
+                <document>catalog_product_entity_media_gallery_value_to_entity</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_entity_media_gallery_value_video</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1300,8 +1313,21 @@
                 <field>sales_order_status_state.visible_on_front</field>
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
+            <transform>
+                <field>catalog_product_entity_media_gallery_value.entity_id</field>
+                <handler class="\Migration\Handler\Gallery\SetEntityId"/>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery.media_type</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery.disabled</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery_value.record_id</field>
             </ignore>
             <ignore>
                 <field>admin_user.interface_locale</field>
