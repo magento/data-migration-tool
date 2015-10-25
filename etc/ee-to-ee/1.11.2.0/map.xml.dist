@@ -1053,6 +1053,10 @@
                 <document>enterprise_rma_grid</document>
                 <to>magento_rma_grid</to>
             </rename>
+            <rename>
+                <document>enterprise_admin_passwords</document>
+                <to>admin_passwords</to>
+            </rename>
         </document_rules>
         <field_rules>
             <move>
@@ -1855,6 +1859,30 @@
             </ignore>
             <ignore>
                 <document>catalog_product_index_price*</document>
+            </ignore>
+            <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
             </ignore>
             <ignore>
                 <document>support_backup</document>

@@ -1861,6 +1861,30 @@
                 <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
+            <ignore>
                 <document>support_backup</document>
             </ignore>
             <ignore>
