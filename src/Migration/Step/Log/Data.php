@@ -64,6 +64,11 @@ class Data implements StageInterface
     protected $logger;
 
     /**
+     * @var AdapterInterface
+     */
+    protected $sourceAdapter;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
@@ -91,6 +96,7 @@ class Data implements StageInterface
         $this->progress = $progress;
         $this->readerGroups = $groupsFactory->create('log_document_groups_file');
         $this->logger = $logger;
+        $this->sourceAdapter = $this->source->getAdapter();
     }
 
     /**
@@ -121,17 +127,22 @@ class Data implements StageInterface
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
-            while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
+
+            $sourceDocumentName = $sourceDocument->getName();
+            /** @var \Magento\Framework\DB\Select $select */
+            $select = $this->getLogDataSelect();
+
+            while (!empty($bulk = $this->getRecords($sourceDocumentName, $select, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
                     $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
-                    /** @var Record $record */
-                    $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                    $recordTransformer->transform($record, $destRecord);
+                    $destRecord = $this->recordFactory->create([
+                        'document'  => $destDocument,
+                        'data'      => $recordData,
+                    ]);
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
@@ -141,6 +152,44 @@ class Data implements StageInterface
         $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * @param string $sourceDocumentName
+     * @param \Magento\Framework\DB\Select $select
+     * @param int $pageNumber
+     * @return array
+     */
+    protected function getRecords($sourceDocumentName, \Magento\Framework\DB\Select $select, $pageNumber)
+    {
+        $select->limit(
+            $this->source->getPageSize($sourceDocumentName),
+            $pageNumber * $this->source->getPageSize($sourceDocumentName)
+        );
+
+        return $this->sourceAdapter->loadDataFromSelect($select);
+    }
+
+    public function getLogDataSelect() {
+
+        $fields = [
+            'visitor_id'    => 'lv.visitor_id',
+            'customer_id'   => 'lc.customer_id',
+            'session_id'    => 'lv.session_id',
+            'last_visit_at' => 'lv.last_visit_at',
+        ];
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->sourceAdapter->getSelect();
+        $select->from(['lv' => $this->source->addDocumentPrefix('log_visitor')], $fields)
+            ->joinLeft(
+                ['lc' => $this->source->addDocumentPrefix('log_customer')],
+                'lv.visitor_id = lc.visitor_id',
+                []
+            )
+            ->group('lv.visitor_id')
+            ->order('lv.visitor_id');
+        
+        return $select;
     }
 
     /**
