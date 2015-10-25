@@ -180,64 +180,7 @@
                 <document>catalog_product_index_price</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price_bundle_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_sel_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_bundle_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_cfg_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_downlod_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_final_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_agr_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_opt_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price_tmp</document>
+                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_tier_price</document>
@@ -1556,6 +1499,39 @@
             <ignore>
                 <document>catalogsearch_fulltext_scope*</document>
             </ignore>
+            <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
+            <ignore>
+                <document>admin_passwords</document>
+            </ignore>
+            <ignore>
+                <document>support_backup</document>
+            </ignore>
+            <ignore>
+                <document>support_backup_item</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -2298,6 +2274,15 @@
             </ignore>
             <ignore>
                 <field>wishlist.visibility</field>
+            </ignore>
+            <ignore>
+                <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>

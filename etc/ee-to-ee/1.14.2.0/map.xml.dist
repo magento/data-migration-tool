@@ -1059,6 +1059,18 @@
                 <document>enterprise_rma_grid</document>
                 <to>magento_rma_grid</to>
             </rename>
+            <rename>
+                <document>enterprise_admin_passwords</document>
+                <to>admin_passwords</to>
+            </rename>
+            <rename>
+                <document>enterprise_support_backup</document>
+                <to>support_backup</to>
+            </rename>
+            <rename>
+                <document>enterprise_support_backup_item</document>
+                <to>support_backup_item</to>
+            </rename>
         </document_rules>
         <field_rules>
             <move>
@@ -1805,6 +1817,30 @@
             <ignore>
                 <document>log_visitor_online</document>
             </ignore>
+            <ignore>
+                <document>reporting_module_status</document>
+            </ignore>
+            <ignore>
+                <document>reporting_orders</document>
+            </ignore>
+            <ignore>
+                <document>reporting_system_updates</document>
+            </ignore>
+            <ignore>
+                <document>reporting_users</document>
+            </ignore>
+            <ignore>
+                <document>reporting_counts</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1985,6 +2021,15 @@
             </ignore>
             <ignore>
                 <datatype>magento_logging_event.x_forwarded_ip</datatype>
+            </ignore>
+            <ignore>
+                <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
             </ignore>
             <ignore>
                 <datatype>rating_option_vote.remote_ip_long</datatype>
