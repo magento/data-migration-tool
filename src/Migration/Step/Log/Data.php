@@ -115,15 +115,6 @@ class Data implements StageInterface
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
 
-            /** @var \Migration\RecordTransformer $recordTransformer */
-            $recordTransformer = $this->recordTransformerFactory->create(
-                [
-                    'sourceDocument' => $sourceDocument,
-                    'destDocument' => $destDocument,
-                    'mapReader' => $this->map
-                ]
-            );
-            $recordTransformer->init();
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
@@ -131,7 +122,6 @@ class Data implements StageInterface
             $sourceDocumentName = $sourceDocument->getName();
             /** @var \Magento\Framework\DB\Select $select */
             $select = $this->getLogDataSelect();
-
             while (!empty($bulk = $this->getRecords($sourceDocumentName, $select, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
@@ -170,7 +160,11 @@ class Data implements StageInterface
         return $this->sourceAdapter->loadDataFromSelect($select);
     }
 
-    public function getLogDataSelect() {
+    /**
+     * @return \Magento\Framework\DB\Select
+     */
+    public function getLogDataSelect()
+    {
 
         $fields = [
             'visitor_id'    => 'lv.visitor_id',
