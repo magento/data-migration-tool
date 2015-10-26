@@ -10,6 +10,7 @@
         <document>log_visitor</document>
     </group>
     <group name="destination_documents_to_clear">
+        <!--
         <document>log_customer</document>
         <document>log_quote</document>
         <document>log_summary</document>
@@ -19,5 +20,6 @@
         <document>log_visitor</document>
         <document>log_visitor_info</document>
         <document>log_visitor_online</document>
+        -->
     </group>
 </groups>
