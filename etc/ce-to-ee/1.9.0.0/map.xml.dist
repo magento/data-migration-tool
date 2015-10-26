@@ -2299,6 +2299,15 @@
                 <field>wishlist.name</field>
             </ignore>
             <ignore>
+                <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
+            </ignore>
+            <ignore>
                 <field>wishlist.visibility</field>
             </ignore>
             <ignore>

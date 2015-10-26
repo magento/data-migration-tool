@@ -1435,6 +1435,9 @@
                 <field>sales_order.send_email</field>
             </ignore>
             <ignore>
+                <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
