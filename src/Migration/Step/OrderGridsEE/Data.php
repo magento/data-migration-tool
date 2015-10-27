@@ -40,41 +40,41 @@ class Data extends \Migration\Step\OrderGrids\Data
 
     /**
      * @param array $columns
-     * @param \Zend_Db_Expr $entityIdsSelect
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesOrderGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
+    public function getSelectSalesOrderGridArchive(array $columns, $entityIds)
     {
-        return parent::getSelectSalesOrderGrid($columns, $entityIdsSelect);
+        return parent::getSelectSalesOrderGrid($columns, $entityIds);
     }
 
     /**
      * @param array $columns
-     * @param \Zend_Db_Expr $entityIdsSelect
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesInvoiceGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
+    public function getSelectSalesInvoiceGridArchive(array $columns, $entityIds)
     {
-        return parent::getSelectSalesInvoiceGrid($columns, $entityIdsSelect);
+        return parent::getSelectSalesInvoiceGrid($columns, $entityIds);
     }
 
     /**
      * @param array $columns
-     * @param \Zend_Db_Expr $entityIdsSelect
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesShipmentGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
+    public function getSelectSalesShipmentGridArchive(array $columns, $entityIds)
     {
-        return parent::getSelectSalesShipmentGrid($columns, $entityIdsSelect);
+        return parent::getSelectSalesShipmentGrid($columns, $entityIds);
     }
 
     /**
      * @param array $columns
-     * @param \Zend_Db_Expr $entityIdsSelect
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesCreditmemoGridArchive(array $columns, \Zend_Db_Expr $entityIdsSelect)
+    public function getSelectSalesCreditmemoGridArchive(array $columns, $entityIds)
     {
-        return parent::getSelectSalesCreditmemoGrid($columns, $entityIdsSelect);
+        return parent::getSelectSalesCreditmemoGrid($columns, $entityIds);
     }
 }
