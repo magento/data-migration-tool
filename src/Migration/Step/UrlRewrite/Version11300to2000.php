@@ -27,6 +27,16 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected $tableName;
 
     /**
+     * @var string
+     */
+    protected $cmsPageTableName = 'cms_page';
+
+    /**
+     * @var string
+     */
+    protected $cmsPageStoreTableName = 'cms_page_store';
+
+    /**
      * @var array
      */
     protected $duplicateIndex;
@@ -86,7 +96,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * @var bool
      */
-    protected $dataInitialized = false;
+    protected static $dataInitialized = false;
 
     /**
      * @var array
@@ -216,6 +226,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     {
         $this->getRewritesSelect();
         $this->progress->start($this->getIterationsCount());
+        $this->destination->clearDocument('url_rewrite');
 
         $sourceDocument = $this->source->getDocument($this->tableName);
         $destinationDocument = $this->destination->getDocument('url_rewrite');
@@ -277,7 +288,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function getRewritesSelect()
     {
-        if (!$this->dataInitialized) {
+        if (!self::$dataInitialized) {
             $this->initTemporaryTable();
         }
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
@@ -314,6 +325,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
 
             $productId = $sourceRecord->getValue('product_id');
             $categoryId = $sourceRecord->getValue('category_id');
+            $cmsPageId = $sourceRecord->getValue('cms_page_id');
             if (!empty($productId) && !empty($categoryId)) {
                 $length = strlen($categoryId);
                 $metadata = sprintf('a:1:{s:11:"category_id";s:%s:"%s";}', $length, $categoryId);
@@ -331,6 +343,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 if ($sourceRecord->getValue('entity_type') != 'custom') {
                     $targetPath = 'catalog/category/view/id/' . $categoryId;
                 }
+            } elseif (!empty($cmsPageId)) {
+                $destinationRecord->setValue('entity_id', $cmsPageId);
             } else {
                 $destinationRecord->setValue('entity_id', 0);
             }
@@ -485,10 +499,6 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 $errors = true;
             }
         }
-        if ($this->destination->getDocument('url_rewrite') && $this->destination->getRecordsCount('url_rewrite') != 0) {
-            $this->logger->error('Destination table is not empty: url_rewrite');
-            $errors = true;
-        }
         return $errors;
     }
 
@@ -626,7 +636,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->collectRedirects($adapter);
         $this->collectProductRewrites($adapter);
         $this->collectCategoryRewrites($adapter);
-        $this->dataInitialized = true;
+        $this->collectCmsPageRewrites($adapter);
+        self::$dataInitialized = true;
     }
 
     /**
@@ -687,6 +698,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
             )
             ->addColumn(
+                'cms_page_id',
+                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
+            )
+            ->addColumn(
                 'priority',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
             )
@@ -719,6 +734,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "trim('0')",
                 'product_id' => "trim('0')",
                 'category_id' => "c.entity_id",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('3')"
             ]
         );
@@ -754,6 +770,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "trim('0')",
                 'product_id' => "trim('0')",
                 'category_id' => "c.entity_id",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('3')"
             ]
         );
@@ -770,6 +787,39 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
 
         $query = $select
             ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $select->getAdapter()->query($query);
+    }
+
+    /**
+     * Fulfill temporary table with Cms Page url rewrites
+     *
+     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @return void
+     */
+    protected function collectCmsPageRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    {
+        $select = $adapter->getSelect();
+        $select->from(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+            [
+                'id' => 'IFNULL(NULL, NULL)',
+                'request_path' => 'cp.identifier',
+                'target_path' => 'CONCAT("cms/page/view/page_id/", cp.page_id)',
+                'is_system' => "trim('1')",
+                'store_id' => 'cps.store_id',
+                'entity_type' => "trim('cms-page')",
+                'redirect_type' => "trim('0')",
+                'product_id' => "trim('0')",
+                'category_id' => "trim('0')",
+                'cms_page_id' => "cp.page_id",
+                'priority' => "trim('5')"
+            ]
+        )->joinLeft(
+            ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
+            'cps.page_id = cp.page_id',
+            []
+        );
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
     }
 
@@ -835,6 +885,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "trim('0')",
                 'product_id' => "p.entity_id",
                 'category_id' => "c.category_id",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('4')"
             ]
         );
@@ -894,6 +945,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                'redirect_type' => "trim('0')",
                'product_id' => "p.entity_id",
                'category_id' => "trim('0')",
+               'cms_page_id' => "trim('0')",
                'priority' => "trim('4')"
            ]
         );
@@ -941,6 +993,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "trim('0')",
                 'product_id' => "p.entity_id",
                 'category_id' => "c.category_id",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('4')"
             ]
         );
@@ -986,6 +1039,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "trim('0')",
                 'product_id' => "p.entity_id",
                 'category_id' => "trim('0')",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('4')"
             ]
         );
@@ -1026,6 +1080,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 'redirect_type' => "(SELECT CASE eurr.options WHEN 'RP' THEN 301 WHEN 'R' THEN 302 ELSE 0 END)",
                 'product_id' => "trim('0')",
                 'category_id' => "trim('0')",
+                'cms_page_id' => "trim('0')",
                 'priority' => "trim('2')"
             ]
         );
