@@ -6,6 +6,7 @@
 namespace Migration\Step\OrderGrids;
 
 use Migration\App\Step\StageInterface;
+use Migration\Config;
 use Migration\Handler;
 use Migration\Resource;
 use Migration\Resource\Record;
@@ -56,12 +57,18 @@ class Data implements StageInterface
     protected $helper;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
      * @param Logger $logger
      * @param Helper $helper
+     * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
@@ -69,7 +76,8 @@ class Data implements StageInterface
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
         Logger $logger,
-        Helper $helper
+        Helper $helper,
+        Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -78,6 +86,7 @@ class Data implements StageInterface
         $this->recordFactory = $recordFactory;
         $this->logger = $logger;
         $this->helper = $helper;
+        $this->config = $config;
     }
 
     /**
@@ -92,14 +101,26 @@ class Data implements StageInterface
             $this->progress->start(1, LogManager::LOG_LEVEL_DEBUG);
 
             $sourceGridDocument = array_flip($this->helper->getDocumentList())[$destinationDocumentName];
-            $entityIds = $this->getEntityIdsFromSourceGrid($sourceGridDocument);
-            if ($entityIds) {
+            $entityIdsSelect = $this->getEntityIdsSelect($sourceGridDocument);
+            try {
+                // performance optimized way. In case when source has direct access to destination database
                 $this->destination->getAdapter()->insertFromSelect(
-                    $this->{$methodToExecute}($document['columns'], $entityIds),
+                    $this->{$methodToExecute}($document['columns'], new \Zend_Db_Expr($entityIdsSelect)),
                     $this->destination->addDocumentPrefix($destinationDocumentName),
                     [],
                     \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
                 );
+            } catch (\Exception $e) {
+                $pageNumber = 0;
+                while (!empty($entityIds = $this->getEntityIds($sourceGridDocument, $pageNumber))) {
+                    $pageNumber++;
+                    $this->destination->getAdapter()->insertFromSelect(
+                        $this->{$methodToExecute}($document['columns'], $entityIds),
+                        $this->destination->addDocumentPrefix($destinationDocumentName),
+                        [],
+                        \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
+                    );
+                }
             }
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
@@ -117,10 +138,10 @@ class Data implements StageInterface
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesOrderGrid(array $columns, $entityIds = [])
+    public function getSelectSalesOrderGrid(array $columns, $entityIds)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -143,10 +164,10 @@ class Data implements StageInterface
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesInvoiceGrid(array $columns, $entityIds = [])
+    public function getSelectSalesInvoiceGrid(array $columns, $entityIds)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -173,10 +194,10 @@ class Data implements StageInterface
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesShipmentGrid(array $columns, $entityIds = [])
+    public function getSelectSalesShipmentGrid(array $columns, $entityIds)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -203,10 +224,10 @@ class Data implements StageInterface
 
     /**
      * @param array $columns
-     * @param array $entityIds
+     * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
      */
-    public function getSelectSalesCreditmemoGrid(array $columns, $entityIds = [])
+    public function getSelectSalesCreditmemoGrid(array $columns, $entityIds)
     {
         foreach ($columns as $key => $value) {
             $columns[$key] = new \Zend_Db_Expr($value);
@@ -241,16 +262,36 @@ class Data implements StageInterface
 
     /**
      * @param string $sourceGridDocumentName
+     * @param int $pageNumber
      * @return array
      */
-    protected function getEntityIdsFromSourceGrid($sourceGridDocumentName)
+    protected function getEntityIds($sourceGridDocumentName, $pageNumber)
     {
         /** @var \Migration\Resource\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect();
-        $select->from($this->source->addDocumentPrefix($sourceGridDocumentName), 'entity_id');
+        $select->from($this->source->addDocumentPrefix($sourceGridDocumentName), 'entity_id')
+            ->limit(
+                $this->source->getPageSize($sourceGridDocumentName),
+                $pageNumber * $this->source->getPageSize($sourceGridDocumentName)
+            );
         $ids = $select->getAdapter()->fetchCol($select);
         return $ids;
+    }
+
+    /**
+     * @param string $sourceGridDocumentName
+     * @return \Magento\Framework\DB\Select
+     */
+    protected function getEntityIdsSelect($sourceGridDocumentName)
+    {
+        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $adapter->getSelect();
+        $schema = $this->config->getSource()['database']['name'];
+        $select->from($this->source->addDocumentPrefix($sourceGridDocumentName), 'entity_id', $schema);
+        return $select;
     }
 }
