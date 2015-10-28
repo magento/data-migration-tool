@@ -68,6 +68,11 @@
             <data>Migration\Step\OrderGridsEE\Data</data>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>
         </step>
+        <step title="Tier Price (Group Price)">
+            <integrity>Migration\Step\TierPrice\Integrity</integrity>
+            <data>Migration\Step\TierPrice\Data</data>
+            <volume>Migration\Step\TierPrice\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Custom Customer Attributes Step">

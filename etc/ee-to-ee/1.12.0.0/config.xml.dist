@@ -68,6 +68,11 @@
             <data>Migration\Step\OrderGridsEE\Data</data>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>
         </step>
+        <step title="Tier Price (Group Price)">
+            <integrity>Migration\Step\TierPrice\Integrity</integrity>
+            <data>Migration\Step\TierPrice\Data</data>
+            <volume>Migration\Step\TierPrice\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Custom Customer Attributes Step">
@@ -130,7 +135,7 @@
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
-        <log_file>var/migration.log</log_file>
+        <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
     </options>
