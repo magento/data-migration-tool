@@ -182,7 +182,14 @@ abstract class AbstractResource
         if ($configValue === 0) {
             $fields = $this->getDocument($documentName)->getStructure()->getFields();
             $fieldsNumber = count($fields);
-            $memoryLimit = $this->getBytes(ini_get('memory_limit'));
+            $iniMemoryLimit = ini_get('memory_limit');
+            if ($iniMemoryLimit > 0) {
+                $memoryLimit = $this->getBytes($iniMemoryLimit);
+            } else {
+                // use 70 % of free memory
+                $memoryLimit = round($this->getServerFreeMemory() * (0.7));
+            }
+
             $pageSize = ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber));
         } else {
             $pageSize = $configValue > 0 ? $configValue : self::DEFAULT_BULK_SIZE;
@@ -215,6 +222,18 @@ abstract class AbstractResource
         }
 
         return $memoryLimit;
+    }
+
+    /**
+     * @return int
+     */
+    public function getServerFreeMemory(){
+
+        $memInfo = shell_exec('cat /proc/meminfo');
+        $memInfoData = explode("\n", (string)trim($memInfo));
+        // MemFree
+
+        return str_replace(['MemFree:', ' ', 'kB'], '', $memInfoData[1]);
     }
 
     /**
