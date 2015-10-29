@@ -137,6 +137,8 @@ class RecordTransformer
             }
             unset($data[$field]);
         }
-        $to->setData($data);
+        foreach ($data as $key => $value) {
+            $to->setValue($key, $value);
+        }
     }
 }
