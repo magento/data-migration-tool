@@ -28,13 +28,21 @@ class Helper
     {
         return [
             self::DESTINATION_DOCUMENT_NAME => [
-                'value_id',             'entity_id',        'all_groups',
-                'customer_group_id',    'qty',              'value',
+                'value_id',
+                'entity_id',
+                'all_groups',
+                'customer_group_id',
+                'qty',
+                'value',
                 'website_id',
             ],
             'catalog_product_entity_group_price' => [
-                'value_id',             'entity_id',        'all_groups',
-                'customer_group_id',    'value',            'website_id',
+                'value_id',
+                'entity_id',
+                'all_groups',
+                'customer_group_id',
+                'value',
+                'website_id',
             ],
         ];
     }
@@ -46,8 +54,12 @@ class Helper
     {
         return [
             self::DESTINATION_DOCUMENT_NAME => [
-                'value_id',             'entity_id',        'all_groups',
-                'customer_group_id',    'qty',              'value',
+                'value_id',
+                'entity_id',
+                'all_groups',
+                'customer_group_id',
+                'qty',
+                'value',
                 'website_id',
             ],
         ];

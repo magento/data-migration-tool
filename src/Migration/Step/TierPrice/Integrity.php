@@ -67,7 +67,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check($this->helper->getSourceDocumentFields(),      MapInterface::TYPE_SOURCE);
+        $this->check($this->helper->getSourceDocumentFields(), MapInterface::TYPE_SOURCE);
         $this->check($this->helper->getDestinationDocumentFields(), MapInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();

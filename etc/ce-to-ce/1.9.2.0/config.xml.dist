@@ -58,7 +58,7 @@
             <data>Migration\Step\OrderGrids\Data</data>
             <volume>Migration\Step\OrderGrids\Volume</volume>
         </step>
-        <step title="Tier Price (Group Price)">
+        <step title="Tier Price Step">
             <integrity>Migration\Step\TierPrice\Integrity</integrity>
             <data>Migration\Step\TierPrice\Data</data>
             <volume>Migration\Step\TierPrice\Volume</volume>
