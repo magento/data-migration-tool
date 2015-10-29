@@ -182,8 +182,13 @@ abstract class AbstractResource
         if ($configValue === 0) {
             $fields = $this->getDocument($documentName)->getStructure()->getFields();
             $fieldsNumber = count($fields);
-            $memoryLimit = $this->getBytes(ini_get('memory_limit'));
-            $pageSize = ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber));
+            $iniMemoryLimit = ini_get('memory_limit');
+            if ($iniMemoryLimit > 0) {
+                $memoryLimit = $this->getBytes($iniMemoryLimit);
+                $pageSize = ceil($memoryLimit / (self::MEMORY_PER_FIELD * $fieldsNumber));
+            } else {
+                $pageSize = self::MAX_BULK_SIZE;
+            }
         } else {
             $pageSize = $configValue > 0 ? $configValue : self::DEFAULT_BULK_SIZE;
         }
