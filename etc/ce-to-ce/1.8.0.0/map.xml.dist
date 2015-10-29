@@ -503,6 +503,12 @@
             <ignore>
                 <document>core_website</document>
             </ignore>
+            <ignore>
+                <document>catalog_product_entity_group_price</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_entity_tier_price</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1256,6 +1262,9 @@
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_video</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_entity_tier_price</document>
             </ignore>
         </document_rules>
         <field_rules>

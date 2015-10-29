@@ -3,7 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\ConfigurablePrices;
+namespace Migration\Step\TierPrice;
 
 use Migration\Resource;
 use Migration\Logger\Logger;
@@ -67,8 +67,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check($this->helper->getSourceFields(), MapInterface::TYPE_SOURCE);
-        $this->check($this->helper->getDestinationFields(), MapInterface::TYPE_DEST);
+        $this->check($this->helper->getSourceDocumentFields(), MapInterface::TYPE_SOURCE);
+        $this->check($this->helper->getDestinationDocumentFields(), MapInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }
@@ -80,29 +80,33 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getSourceFields()) + count($this->helper->getDestinationFields());
+        return count($this->helper->getSourceDocumentFields()) + count($this->helper->getDestinationDocumentFields());
     }
 
     /**
-     * @param array $fieldsData
+     * @param array $tableFields
      * @param string $sourceType
      * @return void
      */
-    protected function check($fieldsData, $sourceType)
+    protected function check($tableFields, $sourceType)
     {
-        $source = $this->getResource($sourceType);
-        foreach ($fieldsData as $field => $documentName) {
-            $this->progress->advance();
-            $document = $source->getDocument($documentName);
-            $structure = array_keys($document->getStructure()->getFields());
-            if (!in_array($field, $structure)) {
+
+        foreach ($tableFields as $documentName => $fieldsData) {
+
+            $source     = $this->getResource($sourceType);
+            $document   = $source->getDocument($documentName);
+            $structure  = array_keys($document->getStructure()->getFields());
+
+            $structureDiff = array_diff($fieldsData, $structure);
+            if (!empty($structureDiff)) {
                 $message = sprintf(
-                    '%s table does not contain field: %s',
+                    '%s table does not contain field(s): %s',
                     $documentName,
-                    $field
+                    '"' . implode('", "', $structureDiff) . '"'
                 );
                 $this->logger->error($message);
             }
+            $this->progress->advance();
         }
     }
 
@@ -112,6 +116,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getResource($sourceType)
     {
-        return ($sourceType == MapInterface::TYPE_SOURCE) ? $this->source : $this->destination;
+        $map = [
+            MapInterface::TYPE_SOURCE   => $this->source,
+            MapInterface::TYPE_DEST     => $this->destination,
+        ];
+        return $map[$sourceType];
     }
 }
