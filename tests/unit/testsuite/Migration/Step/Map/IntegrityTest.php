@@ -50,6 +50,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error', 'warning'], [], '', false);
@@ -85,6 +88,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerformMainFlow()
     {
         $this->setupFieldsValidation();
@@ -103,6 +109,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformDocumentIgnored()
     {
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')->will($this->returnValue(['document']));
@@ -114,6 +123,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithDestinationDocMissed()
     {
         $this->setupFieldsValidation();
@@ -129,6 +141,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithSourceDocMissed()
     {
         $this->setupFieldsValidation();
@@ -143,6 +158,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithDocNotExists()
     {
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')
@@ -156,6 +174,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithSourceFieldErrors()
     {
         $structure = $this->getMockBuilder('\Migration\Resource\Structure')
@@ -197,7 +218,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->integrity->perform();
     }
 
-
+    /**
+     * @return void
+     */
     public function testPerformWithMismatchDocumentFieldDataTypes()
     {
         $this->setupFieldsValidation(true);
@@ -221,6 +244,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param bool|false $dataTypeMismatch
+     * @return void
      */
     protected function setupFieldsValidation($dataTypeMismatch = false)
     {

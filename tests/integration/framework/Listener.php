@@ -13,6 +13,9 @@ class Listener implements \PHPUnit_Framework_TestListener
      */
     protected $helper;
 
+    /**
+     *
+     */
     public function __construct()
     {
         $this->helper = \Migration\TestFramework\Helper::getInstance();

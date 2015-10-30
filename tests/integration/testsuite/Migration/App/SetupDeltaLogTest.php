@@ -12,6 +12,9 @@ namespace Migration\App;
 class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @return void
+     */
     public function testSetupTriggers()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -77,6 +80,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $dataTable
      * @param \Migration\Resource\Source $resource
+     * @return void
      */
     protected function checkDeltaLogTable($dataTable, $resource)
     {

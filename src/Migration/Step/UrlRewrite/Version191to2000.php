@@ -329,11 +329,13 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         }
         /** @var \Magento\Framework\Db\Select $select */
         $select = $this->source->getAdapter()->getSelect();
-        $select->from(['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+        $select->from(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
             [
                 new \Zend_Db_Expr('COUNT(*)'),
             ]
-        )->joinLeft(
+        )
+        ->joinLeft(
             ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
             'cps.page_id = cp.page_id',
             []

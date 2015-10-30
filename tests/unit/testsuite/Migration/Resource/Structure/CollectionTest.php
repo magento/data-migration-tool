@@ -17,6 +17,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected $structureCollection;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $structure1 = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
@@ -26,6 +29,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->structureCollection = new \Migration\Resource\Structure\Collection($this->structures);
     }
 
+    /**
+     * @return void
+     */
     public function testAddStructure()
     {
         $this->assertEquals(3, count($this->structureCollection));
@@ -34,11 +40,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4, count($this->structureCollection));
     }
 
+    /**
+     * @return void
+     */
     public function testGetStructure()
     {
         $this->assertEquals($this->structures['table2'], $this->structureCollection->getStructure('table2'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetStructureNotExists()
     {
         $this->assertNull($this->structureCollection->getStructure('table5'));

@@ -16,7 +16,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $eav;
 
-
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
@@ -30,6 +32,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->assertTrue($this->eav->perform());

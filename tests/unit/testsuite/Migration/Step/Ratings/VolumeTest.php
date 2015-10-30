@@ -42,6 +42,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMock(
@@ -73,6 +76,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->volume = new Volume($this->destination, $this->logger, $this->progress);
@@ -101,6 +107,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailed()
     {
         $this->volume = new Volume($this->destination, $this->logger, $this->progress);

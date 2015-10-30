@@ -12,6 +12,9 @@ namespace Migration\App;
 class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */

@@ -40,6 +40,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $volume;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->initialData = $this->getMockBuilder('\Migration\Step\Eav\InitialData')->disableOriginalConstructor()
@@ -78,6 +81,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $eavAttributes = [
@@ -129,6 +135,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithError()
     {
         $eavAttributes = [

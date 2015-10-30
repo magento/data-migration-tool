@@ -66,7 +66,7 @@ class Volume extends AbstractVolume
         $sourceTotal        = 0;
         $destinationTotal   = $this->destination->getRecordsCount($this->helper->getDestinationName());
 
-        foreach ($this->helper->getSourceDocumentFields() as $sourceName => $fieldsData) {
+        foreach (array_keys($this->helper->getSourceDocumentFields()) as $sourceName) {
             $sourceTotal += $this->source->getRecordsCount($sourceName);
             $this->progress->advance();
         }

@@ -39,6 +39,9 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
      */
     protected $normalizationField = 'website_id';
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
@@ -51,6 +54,9 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $fieldNameRuleId = 'rule_id';

@@ -11,6 +11,9 @@ namespace Migration\Handler;
  */
 class AddPrefixTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $prefix = 'prefix';

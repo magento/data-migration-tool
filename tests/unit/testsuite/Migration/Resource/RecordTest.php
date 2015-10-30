@@ -17,6 +17,9 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     protected $structure;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->structure = $this->getMock(
@@ -37,6 +40,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Migration\Resource\Record::getStructure
      * @covers \Migration\Resource\Record::setStructure
+     * @return void
      */
     public function testGetStructure()
     {
@@ -49,6 +53,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      *
      * @param bool $result
      * @param \Migration\Resource\Structure|null $structure
+     * @return void
      */
     public function testValidateStructure($result, $structure)
     {
@@ -56,6 +61,9 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->record->validateStructure($structure));
     }
 
+    /**
+     * @return array
+     */
     public function validateStructureDataProvider()
     {
         $structureValid = $this->getMock('\Migration\Resource\Structure', [], [], '', false);
@@ -80,11 +88,18 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return void
+     */
     public function testGetValue()
     {
         $this->assertEquals('10', $this->record->getValue('id'));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testSetValue()
     {
         $this->record->setStructure($this->structure);
@@ -96,6 +111,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Migration\Exception
      * @expectedExceptionMessage Record structure does not contain field wrongField
+     * @return void
      */
     public function testSetValueWithException()
     {
@@ -103,6 +119,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->record->setValue('wrongField', 'itemNew');
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testSetData()
     {
         $this->assertEquals('item1', $this->record->getValue('name'));
@@ -113,6 +133,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Migration\Exception
      * @expectedExceptionMessage Record structure does not match provided Data
+     * @return void
      */
     public function testSetDataWithException()
     {
@@ -121,11 +142,17 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->record->setData(['id' => 11, 'wrongName' => 'item2']);
     }
 
+    /**
+     * @return void
+     */
     public function testGetData()
     {
         $this->assertEquals(['id' => 10, 'name' => 'item1'], $this->record->getData());
     }
 
+    /**
+     * @return array
+     */
     public function getFieldsDataProvider()
     {
         return [
@@ -137,6 +164,7 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      * @param array $structureData
      * @param array $fields
      * @dataProvider getFieldsDataProvider
+     * @return void
      */
     public function testGetFields($structureData, $fields)
     {
@@ -146,6 +174,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($fields, $this->record->getFields());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testGetFieldsInvalid()
     {
         $this->record->setStructure(null);

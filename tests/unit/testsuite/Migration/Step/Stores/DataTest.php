@@ -43,6 +43,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
@@ -66,6 +69,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $recordsData = [

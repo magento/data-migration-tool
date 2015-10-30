@@ -22,6 +22,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected $recordCollection;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->structure = $this->getMock(
@@ -41,11 +44,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->recordCollection = new \Migration\Resource\Record\Collection($this->structure, $this->records);
     }
 
+    /**
+     * @return void
+     */
     public function testGetStructure()
     {
         $this->assertSame($this->structure, $this->recordCollection->getStructure());
     }
 
+    /**
+     * @return void
+     */
     public function testIterator()
     {
         $result = '';
@@ -57,6 +66,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(' 0=>item1 1=>item2 2=>item3', $result);
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testAddRecord()
     {
         $this->assertEquals(3, count($this->recordCollection));
@@ -72,6 +85,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Record structure does not equal Collection structure
+     * @return void
      */
     public function testAddRecordWithException()
     {
@@ -81,6 +95,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4, count($this->recordCollection));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testGetValue()
     {
         $this->structure->expects($this->any())->method('hasField')->with($this->equalTo('fieldName'))
@@ -91,12 +109,17 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Collection Structure does not contain field fieldName
+     * @return void
      */
     public function testGetValueWithException()
     {
         $this->assertEquals(['item1', 'item2', 'item3'], $this->recordCollection->getValue('fieldName'));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testSetValue()
     {
         $this->structure->expects($this->any())->method('hasField')->with($this->equalTo('fieldName'))
@@ -116,6 +139,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Exception
      * @expectedExceptionMessage Collection Structure does not contain field fieldName
+     * @return void
      */
     public function testSetValueWithException()
     {

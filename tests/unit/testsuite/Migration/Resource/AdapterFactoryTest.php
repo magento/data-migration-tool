@@ -26,6 +26,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected $adapterFactory;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
@@ -39,6 +42,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
         $this->adapterFactory = new \Migration\Resource\AdapterFactory($this->objectManager, $this->config);
     }
 
+    /**
+     * @return void
+     */
     public function testCreate()
     {
         $adapterClassName = '\Migration\Resource\Adapter\Mysql';

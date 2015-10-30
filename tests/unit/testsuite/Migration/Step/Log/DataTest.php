@@ -59,6 +59,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMock(
@@ -127,6 +130,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
@@ -170,6 +176,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->data->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testGetMapEmptyDestinationDocumentName()
     {
         $sourceDocument = $this->getMock('\Migration\Resource\Document', ['getRecords'], [], '', false);

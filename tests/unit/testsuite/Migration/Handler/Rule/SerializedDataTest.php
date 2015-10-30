@@ -12,6 +12,9 @@ use Migration\Resource\Record;
  */
 class SerializedDataTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $data = serialize([

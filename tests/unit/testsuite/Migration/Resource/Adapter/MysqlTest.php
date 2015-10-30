@@ -18,6 +18,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     protected $adapterMysql;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $config = [
@@ -67,6 +70,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql = new Mysql($mysqlFactory, $triggerFactory, $config);
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocumentStructure()
     {
         $this->pdoMysql->expects($this->any())
@@ -76,6 +82,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['id' => 'int'], $this->adapterMysql->getDocumentStructure('some_table'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocumentList()
     {
         $this->pdoMysql->expects($this->any())
@@ -84,6 +93,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['table1', 'table2'], $this->adapterMysql->getDocumentList());
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecordsCount()
     {
         $select = $this->getMock('\Magento\Framework\DB\Select', ['from'], [], '', false);
@@ -102,6 +114,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(10, $this->adapterMysql->getRecordsCount('some_table'));
     }
 
+    /**
+     * @return void
+     */
     public function testLoadPage()
     {
         $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
@@ -125,6 +140,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($data, $this->adapterMysql->loadPage('some_table', 10, 2));
     }
 
+    /**
+     * @return void
+     */
     public function testInsertRecords()
     {
         $data = [['column1' => 'value1'], ['column1' => 'value2']];
@@ -136,6 +154,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->adapterMysql->insertRecords('some_table', $data));
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteAllRecords()
     {
         $docName = 'some_name';
@@ -143,6 +164,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->deleteAllRecords($docName);
     }
 
+    /**
+     * @return void
+     */
     public function testGetSelect()
     {
         $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
@@ -150,6 +174,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($select, $this->adapterMysql->getSelect());
     }
 
+    /**
+     * @return void
+     */
     public function testLoadDataFromSelect()
     {
         $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
@@ -158,6 +185,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($data, $this->adapterMysql->loadDataFromSelect($select));
     }
 
+    /**
+     * @return void
+     */
     public function testUpdateDocument()
     {
         $docName = 'some_name';
@@ -166,6 +196,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->updateDocument($docName, [], $condition);
     }
 
+    /**
+     * @return void
+     */
     public function testGetTableDdlCopy()
     {
         $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
@@ -177,6 +210,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->getTableDdlCopy('source_table', 'destination_table');
     }
 
+    /**
+     * @return void
+     */
     public function testCreateTableByDdl()
     {
         $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
@@ -190,6 +226,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->createTableByDdl($table);
     }
 
+    /**
+     * @return void
+     */
     public function testBackupDocument()
     {
         $documentName = 'document_name';
@@ -218,6 +257,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->backupDocument($documentName);
     }
 
+    /**
+     * @return void
+     */
     public function testRollbackDocument()
     {
         $documentName = 'document_name';
@@ -238,6 +280,9 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $this->adapterMysql->rollbackDocument($documentName);
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteBackup()
     {
         $this->pdoMysql->expects($this->once())->method('isTableExists')->willReturn(true);

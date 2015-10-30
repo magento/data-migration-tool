@@ -12,6 +12,9 @@ use Migration\Resource\Record;
  */
 class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandleSetNull()
     {
         $fieldName = 'fieldname';
@@ -33,6 +36,9 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
         $handler->handle($recordToHandle, $oppositeRecord);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleSetValue()
     {
         $value = 'value';
@@ -54,6 +60,9 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
         $handler->handle($recordToHandle, $oppositeRecord);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleKeepValueFromSource()
     {
         $fieldName = 'fieldname';

@@ -27,6 +27,9 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
      */
     protected $classMap;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->classMap = $this->getMockBuilder('Migration\Reader\ClassMap')->setMethods(['convertClassName'])
@@ -37,6 +40,9 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         $this->handler->setField($this->fieldName);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleConvert()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
@@ -59,6 +65,9 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         $this->handler->handle($recordToHandle, $oppositeRecord);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleGetDestination()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */

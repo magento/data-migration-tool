@@ -28,10 +28,11 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @param $map
-     * @param $initialValue
-     * @param $processedValue
+     * @param string $map
+     * @param mixed $initialValue
+     * @param mixed $processedValue
      * @dataProvider dataProviderMaps
+     * @return void
      */
     public function testHandle($map, $initialValue, $processedValue)
     {
@@ -49,6 +50,9 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
         $handler->handle($record, $record2);
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidMap()
     {
         $this->setExpectedException('Exception');

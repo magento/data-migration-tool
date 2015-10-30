@@ -1,4 +1,4 @@
 # Files or directories that are included into static code analysis
 # Glob patterns are supported
 #
-src
+vendor/magento/data-migration-tool/src

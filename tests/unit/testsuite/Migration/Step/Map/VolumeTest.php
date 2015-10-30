@@ -41,6 +41,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $volume;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
@@ -83,6 +86,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
@@ -94,6 +100,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformIgnored()
     {
         $sourceDocName = 'core_config_data';
@@ -105,6 +114,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailed()
     {
         $sourceDocName = 'core_config_data';

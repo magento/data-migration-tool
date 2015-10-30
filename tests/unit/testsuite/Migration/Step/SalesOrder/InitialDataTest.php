@@ -34,6 +34,9 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     protected $initialData;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
@@ -45,6 +48,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Migration\Step\SalesOrder\InitialData::initDestAttributes
      * @covers \Migration\Step\SalesOrder\InitialData::getDestEavAttributesCount
+     * @return void
      */
     public function testInit()
     {

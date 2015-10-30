@@ -37,6 +37,9 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected $recordTransformer;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->sourceDocument = $this->getMock(
@@ -82,6 +85,9 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         return $handlerManager;
     }
 
+    /**
+     * @return void
+     */
     public function testInit()
     {
         $this->initHandler($this->sourceDocument, 0);
@@ -89,6 +95,9 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         $this->recordTransformer->init();
     }
 
+    /**
+     * @return void
+     */
     public function testTransform()
     {
         $srcHandler = $this->initHandler($this->sourceDocument, 0);

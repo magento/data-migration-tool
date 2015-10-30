@@ -35,6 +35,9 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
@@ -65,6 +68,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      * @covers \Migration\Step\Eav\InitialData::getAttributes
      * @covers \Migration\Step\Eav\InitialData::getAttributeSets
      * @covers \Migration\Step\Eav\InitialData::getAttributeGroups
+     * @return void
      */
     public function testInit()
     {

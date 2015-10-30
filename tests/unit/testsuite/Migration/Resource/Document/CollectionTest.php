@@ -17,6 +17,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected $documentCollection;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $document1 = $this->getMock('\Migration\Resource\Document', [], [], '', false);
@@ -29,6 +32,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->documentCollection = new \Migration\Resource\Document\Collection($this->data);
     }
 
+    /**
+     * @return void
+     */
     public function testIterator()
     {
         $result = '';
@@ -39,16 +45,25 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(' 0=>Doc1 1=>Doc2 2=>Doc3', $result);
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocument()
     {
         $this->assertSame($this->data[2], $this->documentCollection->getDocument('Doc3'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocumentNotExists()
     {
         $this->assertNull($this->documentCollection->getDocument('Doc5'));
     }
 
+    /**
+     * @return void
+     */
     public function testAddDocument()
     {
         $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);

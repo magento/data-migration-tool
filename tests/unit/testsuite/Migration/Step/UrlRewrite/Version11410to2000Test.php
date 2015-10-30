@@ -50,6 +50,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
      */
     protected $recordFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMock(
@@ -77,6 +80,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
     }
 
+    /**
+     * @return void
+     */
     public function testIntegrity()
     {
         $this->version = new \Migration\Step\UrlRewrite\Version11410to2000(

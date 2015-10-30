@@ -59,6 +59,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $groups;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
@@ -137,6 +140,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(

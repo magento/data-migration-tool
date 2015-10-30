@@ -28,6 +28,9 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
     /** @var  Map|\PHPUnit_Framework_MockObject_MockObject */
     protected $map;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         /** @var Map|\PHPUnit_Framework_MockObject_MockObject $map */
@@ -54,6 +57,9 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
         $this->handler = new ConditionSql($mapFactory, $this->source, $destination);
     }
 
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */

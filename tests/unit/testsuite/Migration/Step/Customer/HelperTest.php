@@ -82,6 +82,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         ]
     ];
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->adapter = $this->getMockBuilder('Migration\Resource\Adapter\Mysql')
@@ -147,6 +150,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      * @param array $expected
      *
      * @dataProvider dataProviderUpdateAttributeData
+     * @return void
      */
     public function testUpdateAttributeData($attributeData, $expected)
     {
@@ -166,7 +170,8 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $this->configReader->expects($this->any())->method('getOption')->willReturn(current($attributeData)[Helper::UPGRADE_CUSTOMER_PASSWORD_HASH]);
+        $this->configReader->expects($this->any())->method('getOption')
+            ->willReturn(current($attributeData)[Helper::UPGRADE_CUSTOMER_PASSWORD_HASH]);
 
         $record->expects($this->any())->method('getValue')->with('entity_id')->willReturn('1');
         $record->expects($this->any())->method('getData')->willReturn([]);
@@ -178,6 +183,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
     /**
      * Init EAV attributes
+     * @return void
      */
     protected function getAttributeType()
     {

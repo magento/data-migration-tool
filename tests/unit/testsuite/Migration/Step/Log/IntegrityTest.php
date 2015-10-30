@@ -48,6 +48,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $readerGroups;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
@@ -100,6 +103,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @covers \Migration\Step\Log\Integrity::getIterationsCount
+     * @return void
      */
     public function testPerformMainFlow()
     {

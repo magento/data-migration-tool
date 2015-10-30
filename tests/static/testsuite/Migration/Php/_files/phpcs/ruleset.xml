@@ -36,4 +36,5 @@
     <rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
     <rule ref="Squiz.Commenting.DocCommentAlignment"/>
     <rule ref="Generic.PHP.DeprecatedFunctions"/>
+    <rule ref="../../../../../../../../../../dev/tests/static/framework/Magento"/>
 </ruleset>

@@ -7,6 +7,9 @@ namespace Migration\Handler;
 
 class ClassMapTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $classOldFashion = 'catalog/product_widget_new';

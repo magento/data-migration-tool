@@ -38,6 +38,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
@@ -57,6 +60,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()->getMock();

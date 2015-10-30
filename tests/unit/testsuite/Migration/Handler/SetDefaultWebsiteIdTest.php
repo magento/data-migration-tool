@@ -7,6 +7,9 @@ namespace Migration\Handler;
 
 class SetDefaultWebsiteIdTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $value = '1';

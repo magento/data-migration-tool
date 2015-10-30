@@ -7,7 +7,6 @@ namespace Migration\Step\TierPrice;
 
 use Migration\App\Step\StageInterface;
 use Migration\Handler;
-use Migration\Reader\MapFactory;
 use Migration\Resource;
 use Migration\Resource\Record;
 use Migration\App\ProgressBar;
@@ -55,7 +54,6 @@ class Data implements StageInterface
      * @param Resource\Source $source
      * @param Resource\Destination $destination
      * @param Resource\RecordFactory $recordFactory
-     * @param MapFactory $mapFactory
      * @param Helper $helper
      * @param Logger $logger
      */
@@ -64,7 +62,6 @@ class Data implements StageInterface
         Resource\Source $source,
         Resource\Destination $destination,
         Resource\RecordFactory $recordFactory,
-        MapFactory $mapFactory,
         Logger $logger,
         Helper $helper
     ) {

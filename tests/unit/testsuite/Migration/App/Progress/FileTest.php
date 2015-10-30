@@ -24,6 +24,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
      */
     protected $file;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->filesystemDriver = $this->getMockBuilder('\Magento\Framework\Filesystem\Driver\File')
@@ -44,6 +47,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file = new File($this->filesystemDriver, $this->filesystem);
     }
 
+    /**
+     * @return void
+     */
     public function testSaveData()
     {
         $data = ['key' => ['other_key' => 'value']];
@@ -51,6 +57,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->file->saveData($data);
     }
 
+    /**
+     * @return void
+     */
     public function testGetData()
     {
         $this->filesystemDriver->expects($this->any())->method('isExists')->will($this->returnValue(true));
@@ -60,6 +69,9 @@ class FileTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['object' => ['integrity' => true]], $data);
     }
 
+    /**
+     * @return void
+     */
     public function testClearLockFile()
     {
         $this->file->clearLockFile();

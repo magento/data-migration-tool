@@ -7,6 +7,9 @@ namespace Migration\Handler;
 
 class SetValueTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $value = 'value';
@@ -23,6 +26,9 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
         $handler->handle($record, $record2);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleException()
     {
         $value = 'value';

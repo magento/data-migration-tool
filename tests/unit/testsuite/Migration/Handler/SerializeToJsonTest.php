@@ -8,6 +8,9 @@ namespace Migration\Handler;
 
 class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $array = ['some_field' => 'value'];
