@@ -1818,6 +1818,9 @@
             <ignore>
                 <document>catalog_product_entity_tier_price</document>
             </ignore>
+            <ignore>
+                <document>customer_grid_flat</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
