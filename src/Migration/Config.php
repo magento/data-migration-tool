@@ -5,6 +5,8 @@
  */
 namespace Migration;
 
+use \Magento\Framework\App\Arguments\ValidationState;
+
 /**
  * Class Config
  */
@@ -25,6 +27,20 @@ class Config
     protected $options;
 
     /**
+     * @var ValidationState
+     */
+    protected $validationState;
+
+    /**
+     * @param ValidationState $validationState
+     */
+    public function __construct(
+        ValidationState $validationState
+    ) {
+        $this->validationState = $validationState;
+    }
+
+    /**
      * Init configuration
      *
      * @param string $configFile
@@ -42,7 +58,7 @@ class Config
         }
 
         $xml = file_get_contents($configFile);
-        $document = new \Magento\Framework\Config\Dom($xml);
+        $document = new \Magento\Framework\Config\Dom($xml, $this->validationState);
 
         if (!$document->validate($this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA)) {
             throw new Exception('XML file is invalid.');
