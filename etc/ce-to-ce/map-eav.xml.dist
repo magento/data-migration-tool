@@ -186,6 +186,18 @@
             <ignore>
                 <field>catalog_eav_attribute.is_filterable_in_grid</field>
             </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_used_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_visible_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_filterable_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_searchable_in_grid</field>
+            </ignore>
             <transform>
                 <field>eav_attribute_group.attribute_group_code</field>
                 <handler class="\Migration\Handler\EavAttributeGroup\SetGroupCode" />
