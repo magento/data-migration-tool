@@ -1866,6 +1866,9 @@
             <ignore>
                 <document>customer_grid_flat</document>
             </ignore>
+            <ignore>
+                <document>visual_merchandiser_rule</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
