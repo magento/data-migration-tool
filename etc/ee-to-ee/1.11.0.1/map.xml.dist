@@ -516,6 +516,9 @@
                 <document>admin_user</document>
             </ignore>
             <ignore>
+                <document>enterprise_admin_passwords</document>
+            </ignore>
+            <ignore>
                 <document>admin_role</document>
             </ignore>
             <ignore>
@@ -1927,7 +1930,7 @@
                 <document>visual_merchandiser_rule</document>
             </ignore>
             <ignore>
-                <document>enterprise_admin_passwords</document>
+                <document>admin_passwords</document>
             </ignore>
         </document_rules>
         <field_rules>
