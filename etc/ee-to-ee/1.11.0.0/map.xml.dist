@@ -659,6 +659,9 @@
             <ignore>
                 <document>catalog_product_entity_tier_price</document>
             </ignore>
+            <ignore>
+                <document>enterprise_admin_passwords</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1058,10 +1061,6 @@
             <rename>
                 <document>enterprise_rma_grid</document>
                 <to>magento_rma_grid</to>
-            </rename>
-            <rename>
-                <document>enterprise_admin_passwords</document>
-                <to>admin_passwords</to>
             </rename>
         </document_rules>
         <field_rules>

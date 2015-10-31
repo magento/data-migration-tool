@@ -1059,10 +1059,6 @@
                 <document>enterprise_rma_grid</document>
                 <to>magento_rma_grid</to>
             </rename>
-            <rename>
-                <document>enterprise_admin_passwords</document>
-                <to>admin_passwords</to>
-            </rename>
         </document_rules>
         <field_rules>
             <move>
@@ -1851,6 +1847,9 @@
             </ignore>
             <ignore>
                 <document>visual_merchandiser_rule</document>
+            </ignore>
+            <ignore>
+                <document>enterprise_admin_passwords</document>
             </ignore>
         </document_rules>
         <field_rules>
