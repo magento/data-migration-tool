@@ -7,8 +7,8 @@ namespace Migration\Step\Eav;
 
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class InitialData

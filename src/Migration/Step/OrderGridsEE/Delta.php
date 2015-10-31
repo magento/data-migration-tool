@@ -7,8 +7,8 @@ namespace Migration\Step\OrderGridsEE;
 
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 class Delta extends \Migration\Step\OrderGrids\Delta
 {

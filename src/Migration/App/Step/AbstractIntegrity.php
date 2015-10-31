@@ -9,7 +9,7 @@ use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class AbstractIntegrity
@@ -17,16 +17,16 @@ use Migration\Resource;
 abstract class AbstractIntegrity implements StageInterface
 {
     /**
-     * Resource of source
+     * ResourceModel of source
      *
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * Resource of destination
+     * ResourceModel of destination
      *
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -80,16 +80,16 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         $mapConfigOption
     ) {
@@ -159,8 +159,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destinationDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destinationDocument
      * @param string $type
      * @return void
      */

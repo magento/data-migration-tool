@@ -12,8 +12,8 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 use Migration\Logger\Logger;
 
 /**

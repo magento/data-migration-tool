@@ -5,8 +5,8 @@
  */
 namespace Migration\Handler;
 
-use Migration\Resource\Record;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Source;
 
 /**
  * Class SetDefaultWebsiteId

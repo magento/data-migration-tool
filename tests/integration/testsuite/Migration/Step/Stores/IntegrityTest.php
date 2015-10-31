@@ -12,7 +12,7 @@ namespace Migration\Step\Stores;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Resource\Destination
+     * @var \Migration\ResourceModel\Destination
      */
     protected $destination;
 
@@ -31,7 +31,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
@@ -50,8 +50,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
-        $this->source = $objectManager->create('Migration\Resource\Source');
-        $this->destination = $objectManager->create('Migration\Resource\Destination');
+        $this->source = $objectManager->create('Migration\ResourceModel\Source');
+        $this->destination = $objectManager->create('Migration\ResourceModel\Destination');
         $this->helper = $objectManager->create('Migration\Step\Stores\Helper');
     }
 

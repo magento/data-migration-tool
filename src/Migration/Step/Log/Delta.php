@@ -9,8 +9,8 @@ use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
-use Migration\Resource\Source;
-use Migration\Resource;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel;
 
 class Delta extends AbstractDelta
 {
@@ -29,8 +29,8 @@ class Delta extends AbstractDelta
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      */
     public function __construct(
@@ -38,8 +38,8 @@ class Delta extends AbstractDelta
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory
     ) {
         parent::__construct(

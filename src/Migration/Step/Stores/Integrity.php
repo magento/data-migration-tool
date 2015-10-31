@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\Stores;
 
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
 /**
@@ -14,12 +14,12 @@ use Migration\App\ProgressBar;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -35,14 +35,14 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param Helper $helper
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         Helper $helper
     ) {
         $this->progress = $progress;

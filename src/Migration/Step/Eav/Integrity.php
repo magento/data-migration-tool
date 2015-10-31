@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class Integrity
@@ -25,8 +25,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
@@ -34,8 +34,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         $mapConfigOption = 'eav_map_file'

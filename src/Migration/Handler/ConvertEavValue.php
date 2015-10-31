@@ -5,9 +5,9 @@
  */
 namespace Migration\Handler;
 
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource\Record;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Source;
 use Migration\Config;
 use Migration\Exception;
 use Migration\Step\DatabaseStage;

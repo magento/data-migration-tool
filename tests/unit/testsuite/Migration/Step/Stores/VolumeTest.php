@@ -19,12 +19,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $volume;
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -52,10 +52,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->source = $this->getMockBuilder('Migration\Resource\Source')
+        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\Resource\Destination')
+        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -73,10 +73,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     {
         $fields = ['field_name' => []];
 
-        $structure = $this->getMockBuilder('Migration\Resource\Structure')->disableOriginalConstructor()
+        $structure = $this->getMockBuilder('Migration\ResourceModel\Structure')->disableOriginalConstructor()
             ->setMethods(['getFields'])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
-        $document = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
+        $document = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
             ->setMethods(['getStructure'])
             ->getMock();
 

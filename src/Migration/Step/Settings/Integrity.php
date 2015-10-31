@@ -9,11 +9,11 @@ use Migration\App\Step\StageInterface;
 use Migration\Reader\Settings as ReaderSettings;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
-use Migration\Resource;
-use Migration\Resource\Document;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\Record;
 use Migration\Handler;
 
 /**

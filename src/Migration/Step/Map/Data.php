@@ -10,9 +10,9 @@ use Migration\Config;
 use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
-use Migration\Resource;
-use Migration\Resource\Document;
-use Migration\Resource\Record;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
@@ -25,17 +25,17 @@ use Migration\Logger\Logger;
 class Data implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -78,9 +78,9 @@ class Data implements StageInterface
 
     /**
      * @param ProgressBar\LogLevelProcessor $progressBar
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param Progress $progress
@@ -89,9 +89,9 @@ class Data implements StageInterface
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
         Progress $progress,

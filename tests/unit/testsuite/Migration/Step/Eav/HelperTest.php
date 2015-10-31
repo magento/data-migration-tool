@@ -8,8 +8,8 @@ namespace Migration\Step\Eav;
 use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
 use Migration\RecordTransformerFactory;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class HelperTest
@@ -54,10 +54,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
-        $this->source = $this->getMockBuilder('Migration\Resource\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
         $this->factory = $this->getMockBuilder('Migration\RecordTransformerFactory')->disableOriginalConstructor()
@@ -158,9 +158,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRecordTransformer()
     {
-        $sourceDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
+        $sourceDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
             ->getMock();
-        $destinationDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
+        $destinationDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
             ->getMock();
         $recordTransformer = $this->getMockBuilder('Migration\RecordTransformer')->disableOriginalConstructor()
             ->setMethods(['init'])

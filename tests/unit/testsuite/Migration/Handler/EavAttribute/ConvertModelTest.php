@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\EavAttribute;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class ConvertModelTest
@@ -46,12 +46,14 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
     public function testHandleConvert()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->classMap->expects($this->once())->method('convertClassName')
             ->with('some\class_name')
@@ -71,12 +73,12 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
     public function testHandleGetDestination()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('Some\Class\Name'));

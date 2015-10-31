@@ -11,12 +11,12 @@ namespace Migration\Step\Settings;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
@@ -36,7 +36,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $progress;
 
     /**
-     * @var \Migration\Resource\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordFactory;
 
@@ -56,14 +56,14 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords'],
             [],
             '',
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getRecordsCount', 'getRecords', 'getDocumentList'],
             [],
             '',
@@ -76,7 +76,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->recordFactory = $this->getMock('Migration\Resource\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock('Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
         $this->handlerManagerFactory = $this->getMock('Migration\Handler\ManagerFactory', ['create'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
         $this->progress = $this->getMock(

@@ -11,11 +11,11 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
 use Migration\App\ProgressBar;
-use Migration\Resource\Record;
-use Migration\Resource\RecordFactory;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
 use Migration\Step\DatabaseStage;
 use Migration\Logger\Logger;
@@ -99,9 +99,9 @@ class Data extends DatabaseStage
      */
     public function perform()
     {
-        /** @var \Migration\Resource\Adapter\Mysql $sourceAdapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $sourceAdapter */
         $sourceAdapter = $this->source->getAdapter();
-        /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
         $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);

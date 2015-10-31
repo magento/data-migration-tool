@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\ConfigurablePrices;
 
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\MapInterface;
@@ -21,12 +21,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $helper;
 
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -44,15 +44,15 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Helper $helper
      * @param Logger $logger
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      */
     public function __construct(
         Helper $helper,
         Logger $logger,
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination
     ) {
         $this->helper = $helper;
         $this->logger = $logger;
@@ -90,7 +90,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function check($fieldsData, $sourceType)
     {
-        $source = $this->getResource($sourceType);
+        $source = $this->getResourceModel($sourceType);
         foreach ($fieldsData as $field => $documentName) {
             $this->progress->advance();
             $document = $source->getDocument($documentName);
@@ -108,9 +108,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
     /**
      * @param string $sourceType
-     * @return Resource\Destination|Resource\Source
+     * @return ResourceModel\Destination|ResourceModel\Source
      */
-    protected function getResource($sourceType)
+    protected function getResourceModel($sourceType)
     {
         return ($sourceType == MapInterface::TYPE_SOURCE) ? $this->source : $this->destination;
     }

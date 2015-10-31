@@ -10,10 +10,10 @@ use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
 use Migration\Reader\MapFactory;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 class Delta extends AbstractDelta
 {
@@ -43,7 +43,7 @@ class Delta extends AbstractDelta
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Helper $helper
      * @param Data $data
@@ -53,8 +53,8 @@ class Delta extends AbstractDelta
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Helper $helper,
         Data $data

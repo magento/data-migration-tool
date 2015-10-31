@@ -6,22 +6,22 @@
 namespace Migration\Step\OrderGridsEE;
 
 use Migration\Logger\Logger;
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
 class Volume extends \Migration\Step\OrderGrids\Volume
 {
     /**
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Helper $helper
      */
     public function __construct(
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         ProgressBar\LogLevelProcessor $progressBar,
         Helper $helper
     ) {

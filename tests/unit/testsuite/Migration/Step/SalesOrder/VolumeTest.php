@@ -7,8 +7,8 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 use Migration\App\ProgressBar;
 
 class VolumeTest extends \PHPUnit_Framework_TestCase
@@ -81,14 +81,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getDocumentList', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount'],
             [],
             '',

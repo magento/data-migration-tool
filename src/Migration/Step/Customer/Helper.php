@@ -5,10 +5,10 @@
  */
 namespace Migration\Step\Customer;
 
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 class Helper
 {
@@ -18,12 +18,12 @@ class Helper
     protected $documentAttributeTypes;
 
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -60,14 +60,14 @@ class Helper
     const UPGRADE_CUSTOMER_PASSWORD_HASH = 'upgrade_customer_password_hash';
 
     /**
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param GroupsFactory $groupsFactory
      * @param \Migration\Config $configReader
      */
     public function __construct(
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         GroupsFactory $groupsFactory,
         \Migration\Config $configReader
     ) {

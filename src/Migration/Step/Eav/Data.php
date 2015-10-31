@@ -12,11 +12,11 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\App\ProgressBar;
-use Migration\Resource\Destination;
-use Migration\Resource\Record;
-use Migration\Resource\Document;
-use Migration\Resource\RecordFactory;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\RecordFactory;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Data

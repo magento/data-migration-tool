@@ -28,22 +28,22 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
     /**
-     * @var \Migration\Resource\Record\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Record\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordCollection;
 
     /**
-     * @var \Migration\Resource\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordFactory;
 
@@ -66,16 +66,16 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             'type' => 'database',
             'version' => '1.9'
         ]);
-        $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\Resource\Destination', [], [], '', false);
+        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
         $this->recordCollection = $this->getMock(
-            '\Migration\Resource\Record\Collection',
+            '\Migration\ResourceModel\Record\Collection',
             ['addRecord'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
     }
 
     /**
@@ -104,7 +104,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->at(0))
             ->method('start')
             ->with($this->equalTo(1));
-        $sourceStructure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $sourceStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()
             ->getMock();
         $sourceStructure->expects($this->once())
@@ -125,7 +125,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('getStructure')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceStructure);
-        $destinationStructure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $destinationStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()
             ->getMock();
         $destinationStructure->expects($this->once())
@@ -178,21 +178,21 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('start')
             ->with($this->equalTo(123));
 
-        $sourceDocument = $this->getMockBuilder('\Migration\Resource\Document')
+        $sourceDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->disableOriginalConstructor()
             ->getMock();
         $this->source->expects($this->once())
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceDocument);
-        $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')
+        $destinationDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->disableOriginalConstructor()
             ->getMock();
         $this->destination->expects($this->at(0))
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION))
             ->willReturn($destinationDocument);
-        $destinationProductCategory = $this->getMockBuilder('\Migration\Resource\Document')
+        $destinationProductCategory = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->setMethods(['setValue', 'getRecords'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -213,7 +213,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE), $this->equalTo(0))
             ->willReturn(['RecordData1']);
 
-        $sourceRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $sourceRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -222,7 +222,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $sourceDocument, 'data' => 'RecordData1']))
             ->willReturn($sourceRecord);
 
-        $destinationRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $destinationRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -231,7 +231,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $destinationDocument]))
             ->willReturn($destinationRecord);
 
-        $destinationCategoryRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $destinationCategoryRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 

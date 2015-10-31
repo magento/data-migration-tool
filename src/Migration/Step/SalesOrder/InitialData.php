@@ -5,8 +5,8 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class InitialData

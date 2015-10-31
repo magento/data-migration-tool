@@ -6,7 +6,7 @@
 namespace Migration\Step\Stores;
 
 use Migration\App\Step\StageInterface;
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
 /**
@@ -15,17 +15,17 @@ use Migration\App\ProgressBar;
 class Data implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -41,16 +41,16 @@ class Data implements StageInterface
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param Helper $helper
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         Helper $helper
     ) {
         $this->progress = $progress;
@@ -77,7 +77,7 @@ class Data implements StageInterface
                 $pageNumber++;
                 $recordsToSave = $destinationDocument->getRecords();
                 foreach ($sourceRecords as $recordData) {
-                    /** @var Resource\Record $destinationRecord */
+                    /** @var ResourceModel\Record $destinationRecord */
                     $destinationRecord = $this->recordFactory->create(['document' => $destinationDocument]);
                     if ($this->haveEqualStructure($sourceDocument, $destinationDocument)) {
                         $destinationRecord->setData($recordData);
@@ -94,9 +94,9 @@ class Data implements StageInterface
     }
 
     /**
-     * @param Resource\Record $destinationRecord
+     * @param ResourceModel\Record $destinationRecord
      * @param array $recordData
-     * @return Resource\Record
+     * @return ResourceModel\Record
      */
     protected function transformRecord($destinationRecord, $recordData)
     {
@@ -107,11 +107,11 @@ class Data implements StageInterface
     }
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destDocument
      * @return bool
      */
-    protected function haveEqualStructure(Resource\Document $sourceDocument, Resource\Document $destDocument)
+    protected function haveEqualStructure(ResourceModel\Document $sourceDocument, ResourceModel\Document $destDocument)
     {
         $diff = array_diff_key(
             $sourceDocument->getStructure()->getFields(),

@@ -8,7 +8,7 @@ namespace Migration\Step\Ratings;
 class DataTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -18,7 +18,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     protected $data;
 
     /**
-     * @var \Migration\Resource\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $adapter;
 
@@ -38,7 +38,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix'],
             [],
             '',
@@ -50,7 +50,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValueMap([['rating_store', 'rating_store'], ['rating', 'rating']]));
         $this->select = $this->getMock('Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
         $this->adapter = $this->getMock(
-            'Migration\Resource\Adapter\Mysql',
+            'Migration\ResourceModel\Adapter\Mysql',
             ['getSelect', 'loadDataFromSelect', 'updateDocument'],
             [],
             '',

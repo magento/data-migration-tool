@@ -22,13 +22,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $recordFactory = $objectManager->create('\Migration\Resource\RecordFactory');
+        $recordFactory = $objectManager->create('\Migration\ResourceModel\RecordFactory');
         $progress = $objectManager->create('\Migration\App\ProgressBar\LogLevelProcessor');
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $mapReader = $objectManager->create('\Migration\Reader\Settings');
         $handlerManagerFactory = $objectManager->get('\Migration\Handler\ManagerFactory');
-        $destination = $objectManager->get('\Migration\Resource\Destination');
-        $source = $objectManager->get('\Migration\Resource\Source');
+        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
+        $source = $objectManager->get('\Migration\ResourceModel\Source');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
