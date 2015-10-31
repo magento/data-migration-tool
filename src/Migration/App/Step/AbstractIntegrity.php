@@ -112,9 +112,10 @@ abstract class AbstractIntegrity implements StageInterface
      *
      * @param array $documents
      * @param string $type - allowed values: MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST
+     * @param bool $verifyFields
      * @return $this
      */
-    protected function check($documents, $type)
+    protected function check($documents, $type, $verifyFields = true)
     {
         $documents = $this->filterIgnoredDocuments($documents, $type);
         if (!empty($documents)) {
@@ -135,7 +136,9 @@ abstract class AbstractIntegrity implements StageInterface
                     $this->missingDocuments[$type][$sourceDocumentName] = true;
                 } else {
                     $this->hasMappedDocuments = true;
-                    $this->verifyFields($sourceDocument, $destinationDocument, $type);
+                    if ($verifyFields) {
+                        $this->verifyFields($sourceDocument, $destinationDocument, $type);
+                    }
                 }
             }
         }

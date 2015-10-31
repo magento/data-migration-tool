@@ -67,8 +67,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->check($this->helper->getSourceFields(), MapInterface::TYPE_SOURCE);
-        $this->check($this->helper->getDestinationFields(), MapInterface::TYPE_DEST);
+        $this->checkFields($this->helper->getSourceFields(), MapInterface::TYPE_SOURCE);
+        $this->checkFields($this->helper->getDestinationFields(), MapInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }
@@ -88,20 +88,15 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param string $sourceType
      * @return void
      */
-    protected function check($fieldsData, $sourceType)
+    protected function checkFields($fieldsData, $sourceType)
     {
-        $source = $this->getResourceModel($sourceType);
+        $resourceModel = $this->getResourceModel($sourceType);
         foreach ($fieldsData as $field => $documentName) {
             $this->progress->advance();
-            $document = $source->getDocument($documentName);
+            $document = $resourceModel->getDocument($documentName);
             $structure = array_keys($document->getStructure()->getFields());
             if (!in_array($field, $structure)) {
-                $message = sprintf(
-                    '%s table does not contain field: %s',
-                    $documentName,
-                    $field
-                );
-                $this->logger->error($message);
+                $this->missingDocumentFields[$sourceType][$documentName][] = $field;
             }
         }
     }

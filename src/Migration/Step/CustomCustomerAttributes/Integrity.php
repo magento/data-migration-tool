@@ -59,8 +59,8 @@ class Integrity extends AbstractIntegrity
             $dstDocuments[] = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
         }
 
-        $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
-        $this->check($dstDocuments, MapInterface::TYPE_DEST);
+        $this->check($srcDocuments, MapInterface::TYPE_SOURCE, false);
+        $this->check($dstDocuments, MapInterface::TYPE_DEST, false);
         $this->progress->finish();
         return $this->checkForErrors();
     }
