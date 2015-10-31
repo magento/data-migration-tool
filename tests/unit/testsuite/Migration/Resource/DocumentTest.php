@@ -22,6 +22,9 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
      */
     protected $document;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->structure = $this->getMock(
@@ -45,6 +48,9 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecords()
     {
         $recordCollection = $this->getMock(
@@ -65,11 +71,17 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($recordCollection, $this->document->getRecords());
     }
 
+    /**
+     * @return void
+     */
     public function testGetName()
     {
         $this->assertEquals('test_document', $this->document->getName());
     }
 
+    /**
+     * @return void
+     */
     public function testGetStructure()
     {
         $this->assertSame($this->structure, $this->document->getStructure());

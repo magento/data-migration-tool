@@ -8,6 +8,9 @@ namespace Migration\Handler;
 
 class SetHashTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $hash           = 'crc32';

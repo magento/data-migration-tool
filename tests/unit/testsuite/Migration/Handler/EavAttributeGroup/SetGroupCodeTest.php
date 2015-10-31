@@ -13,6 +13,9 @@ use Migration\Step\DatabaseStage;
  */
 class SetGroupCodeTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */

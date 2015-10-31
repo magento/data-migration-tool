@@ -7,6 +7,9 @@ namespace Migration\Handler\Settings;
 
 class CategoryRootIdTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $categoryRootId = 2;

@@ -46,6 +46,9 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
      */
     protected $resourceDestination;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $config = [
@@ -96,6 +99,7 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider saveRecordsDataSet()
      * @param string|null @prefix
+     * @return void
      */
     public function testSaveRecords($prefix)
     {
@@ -154,6 +158,9 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return void
+     */
     public function testClearDocument()
     {
         $docName = 'somename';
@@ -163,6 +170,9 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->resourceDestination->clearDocument($docName);
     }
 
+    /**
+     * @return void
+     */
     public function testBackupDocument()
     {
         $docName = 'somename';
@@ -172,6 +182,9 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->resourceDestination->backupDocument($docName);
     }
 
+    /**
+     * @return void
+     */
     public function testRollbackDocument()
     {
         $docName = 'somename';
@@ -181,6 +194,9 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->resourceDestination->rollbackDocument($docName);
     }
 
+    /**
+     * @return void
+     */
     public function testDeleteDocumentBackup()
     {
         $docName = 'somename';

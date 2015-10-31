@@ -47,6 +47,9 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
      */
     protected $recordFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
@@ -75,6 +78,9 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
     }
 
+    /**
+     * @return void
+     */
     public function testRollback()
     {
         $version = new \Migration\Step\UrlRewrite\Version191to2000(
@@ -89,6 +95,10 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($version->rollback());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrity()
     {
         $this->progress->expects($this->at(0))
@@ -155,6 +165,10 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($version->perform());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testData()
     {
         $this->source->expects($this->once())
@@ -253,6 +267,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $sourceRecord
+     * @return void
      */
     private function mockSourceRecordGetters($sourceRecord)
     {
@@ -273,6 +288,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $destinationRecord
+     * @return void
      */
     private function mockDestinationRecordSetters($destinationRecord)
     {
@@ -319,6 +335,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $destinationCategoryRecord
+     * @return void
      */
     private function mockDestinationCategorySetters($destinationCategoryRecord)
     {

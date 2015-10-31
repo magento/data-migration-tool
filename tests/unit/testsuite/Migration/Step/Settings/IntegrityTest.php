@@ -50,6 +50,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $handlerManagerFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMock(
@@ -85,7 +88,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
-
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->progress->expects($this->once())->method('start')->with(1);
@@ -105,6 +110,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformSourceFail()
     {
         $this->progress->expects($this->once())->method('start')->with(1);
@@ -129,6 +137,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformDestinationFail()
     {
         $this->progress->expects($this->once())->method('start')->with(1);

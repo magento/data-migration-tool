@@ -25,10 +25,24 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         'store_website' => 2
     ];
 
+    /**
+     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $progress;
+
+    /**
+     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $source;
+
+    /**
+     * @var \Migration\Step\Stores\Helper|\PHPUnit_Framework_MockObject_MockObject
+     */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -41,6 +55,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->helper = $objectManager->create('Migration\Step\Stores\Helper');
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $integrity = new Integrity(

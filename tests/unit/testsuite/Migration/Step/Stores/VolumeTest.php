@@ -43,6 +43,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
@@ -63,6 +66,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $fields = ['field_name' => []];

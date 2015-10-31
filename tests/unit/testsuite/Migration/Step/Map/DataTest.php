@@ -66,6 +66,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $config;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progressBar = $this->getMock(
@@ -140,6 +143,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testGetMapEmptyDestinationDocumentName()
     {
         $sourceDocName = 'core_config_data';
@@ -148,6 +154,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->data->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
@@ -214,6 +223,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->data->perform();
     }
 
+    /**
+     * @return void
+     */
     public function testPerformJustCopy()
     {
         $sourceDocName = 'core_config_data';

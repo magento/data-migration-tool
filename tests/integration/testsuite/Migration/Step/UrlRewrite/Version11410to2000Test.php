@@ -32,6 +32,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
      */
     protected $objectManager;
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     protected function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -48,6 +52,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         \Migration\Logger\Logger::clearMessages();
     }
 
+    /**
+     * @return void
+     */
     public function testIntegrity()
     {
         $urlRewrite = $this->objectManager->create(
@@ -79,6 +86,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @return void
+     */
     public function testData()
     {
         $urlRewrite = $this->objectManager->create(

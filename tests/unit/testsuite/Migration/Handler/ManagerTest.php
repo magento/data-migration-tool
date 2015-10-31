@@ -17,6 +17,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected $manager;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->objectManager = $this->getMock(
@@ -32,6 +35,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Migration\Handler\Manager::initHandler
      * @covers \Migration\Handler\Manager::getHandler
+     * @return void
      */
     public function testGetHandlerCorrect()
     {
@@ -45,6 +49,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$field => $handler], $this->manager->getHandlers());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testGetHandlerWithHandlerKey()
     {
         $field = 'someField';
@@ -61,6 +69,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers \Migration\Handler\Manager::initHandler
      * @covers \Migration\Handler\Manager::getHandler
+     * @return void
      */
     public function testGetHandlerEmpty()
     {
@@ -73,12 +82,20 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(null, $this->manager->getHandler('non_existant_field'));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testInitHandlerEmptyConfig()
     {
         $this->objectManager->expects($this->never())->method('create');
         $this->manager->initHandler('anyfield');
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testInitHandlerEmptyClass()
     {
         $this->setExpectedException('Exception', 'Handler class name not specified.');
@@ -86,6 +103,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $this->manager->initHandler('anyfield', $config);
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testInitInvalidHandler()
     {
         $handlerConfig = ['class' => 'Migration\Migration', 'params' => ['value' => '12']];

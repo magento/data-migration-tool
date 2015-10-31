@@ -8,6 +8,9 @@ namespace Migration\Handler;
 
 class ConvertIpTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $ip         = '127.0.0.1';

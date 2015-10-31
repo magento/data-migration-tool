@@ -33,6 +33,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->stepList = $this->getMockBuilder('\Migration\App\Mode\StepList')->disableOriginalConstructor()
@@ -60,6 +63,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->data = new Data($this->progress, $this->logger, $stepListFactory, $setupDeltaLog, $this->config);
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsIntegrityFail()
     {
         $this->setExpectedException('Migration\Exception', 'Integrity Check failed');
@@ -75,6 +81,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     /**
      * @expectedException \Migration\Exception
      * @expectedExceptionMessage Volume Check failed
+     * @return void
      */
     public function testRunStepsVolumeFail()
     {
@@ -93,6 +100,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->data->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsDataMigrationFail()
     {
         $this->setExpectedException('Migration\Exception', 'Data Migration failed');
@@ -109,6 +119,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->data, $this->data->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsSuccess()
     {
         $stageIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
@@ -136,6 +149,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->data->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsWithSuccessProgress()
     {
         $stageIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();

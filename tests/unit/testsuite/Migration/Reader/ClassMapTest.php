@@ -15,6 +15,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
      */
     protected $classMap;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
@@ -25,6 +28,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         $this->classMap = new ClassMap($config);
     }
 
+    /**
+     * @return void
+     */
     public function testConvertClassName()
     {
         $this->assertEquals(
@@ -33,6 +39,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testConvertClassNameNotInMap()
     {
         $this->assertEquals(
@@ -41,6 +50,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testGetMap()
     {
         $this->assertEquals(

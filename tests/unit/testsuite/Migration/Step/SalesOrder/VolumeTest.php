@@ -53,6 +53,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $salesOrder;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
@@ -108,6 +111,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocumentName = 'source_document';
@@ -139,6 +145,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->salesOrder->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailExistingEavAttributes()
     {
         $sourceDocumentName = 'source_document';
@@ -174,6 +183,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->salesOrder->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailExistingDocumentEntities()
     {
         $sourceDocumentName = 'source_document';

@@ -21,6 +21,9 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
      */
     protected $destination;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -31,6 +34,9 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
         $this->destination = $objectManager->get('\Migration\Resource\Destination');
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecordsCount()
     {
         $sourceCount = $this->source->getRecordsCount('table_with_data');
@@ -39,6 +45,9 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $destinationCount);
     }
 
+    /**
+     * @return void
+     */
     public function testGetFields()
     {
         $sourceStruct = $this->source->getDocument('table_with_data')->getStructure()->getFields();

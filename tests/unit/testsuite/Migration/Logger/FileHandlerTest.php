@@ -44,6 +44,9 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected $handlerLevel = 1;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->file = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
@@ -67,6 +70,9 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
         $this->fileHandler = new FileHandler($this->file, $this->config, $this->filesystem);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleSuccess()
     {
         $extra = ['mode' => 'application mode'];
@@ -87,6 +93,9 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleSuccessWithoutBubble()
     {
         $extra = ['mode' => 'application mode'];
@@ -108,6 +117,9 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($result);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleError()
     {
         $extra = ['mode' => 'application mode'];

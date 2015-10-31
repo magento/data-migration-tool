@@ -54,6 +54,9 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
      */
     protected $delta;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
@@ -95,6 +98,10 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testDelta()
     {
         $sourceDocName = 'orders';

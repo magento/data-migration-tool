@@ -122,7 +122,7 @@ class Helper
      * @param Record\Collection $destinationRecords
      * @return void
      */
-    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords)
+    public function updateAttributeData($attributeType, $sourceDocName, Record\Collection $destinationRecords)
     {
         if (!isset($this->sourceDocuments[$sourceDocName]) || $this->sourceDocuments[$sourceDocName] != 'entity_id') {
             return;
@@ -163,6 +163,15 @@ class Helper
             $query->getAdapter()->fetchAll($query),
             $attributeCodesById
         );
+
+        $this->setAttributeData($destinationRecords, $recordAttributesData, $attributeCodes);
+    }
+
+    public function setAttributeData(
+        Record\Collection $destinationRecords,
+        array $recordAttributesData,
+        array $attributeCodes
+    ) {
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {

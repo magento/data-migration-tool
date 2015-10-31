@@ -58,8 +58,8 @@ class Helper
 
     /**
      * @param \Magento\Framework\Shell $shell
-     * @param $magentoDir
-     * @param $dbFixturePath
+     * @param string $magentoDir
+     * @param string $dbFixturePath
      * @throws \Exception
      */
     public function __construct(
@@ -135,7 +135,7 @@ class Helper
      *
      * @param string $fixturePath
      * @throws \Exception
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return void
      */
     protected function reinstallDb($fixturePath)
     {

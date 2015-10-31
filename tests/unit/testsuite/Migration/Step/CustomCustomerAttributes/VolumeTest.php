@@ -49,6 +49,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $readerGroups;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
@@ -105,6 +108,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $fields = ['field1' => []];

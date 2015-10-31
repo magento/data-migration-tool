@@ -47,6 +47,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')
@@ -93,6 +96,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithoutError()
     {
         $fields = ['field1' => ['DATA_TYPE' => 'int']];
@@ -127,6 +133,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithError()
     {
         $fields = ['field1' => ['DATA_TYPE' => 'int']];

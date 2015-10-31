@@ -40,6 +40,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMock(
@@ -66,6 +69,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->integrity = new Integrity($this->destination, $this->logger, $this->progress);
@@ -79,6 +85,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformDocumentsFail()
     {
         $this->integrity = new Integrity($this->destination, $this->logger, $this->progress);
@@ -99,6 +108,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFieldFail()
     {
         $this->integrity = new Integrity($this->destination, $this->logger, $this->progress);

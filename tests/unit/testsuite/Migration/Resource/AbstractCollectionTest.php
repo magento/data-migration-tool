@@ -17,6 +17,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected $data;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $document1 = $this->getMock('\Migration\Resource\Document', [], [], '', false);
@@ -29,6 +32,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->documentCollection = new \Migration\Resource\Document\Collection($this->data);
     }
 
+    /**
+     * @return void
+     */
     public function testCurrent()
     {
         $this->assertSame($this->data[0], $this->documentCollection->current());
@@ -36,6 +42,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->data[1], $this->documentCollection->current());
     }
 
+    /**
+     * @return void
+     */
     public function testKey()
     {
         $this->assertEquals(0, $this->documentCollection->key());
@@ -44,6 +53,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(2, $this->documentCollection->key());
     }
 
+    /**
+     * @return void
+     */
     public function testNext()
     {
         $this->assertEquals(0, $this->documentCollection->key());
@@ -51,6 +63,9 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(1, $this->documentCollection->key());
     }
 
+    /**
+     * @return void
+     */
     public function testRewind()
     {
         $this->documentCollection->next();
@@ -59,11 +74,17 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(0, $this->documentCollection->key());
     }
 
+    /**
+     * @return void
+     */
     public function testValid()
     {
         $this->assertTrue($this->documentCollection->valid());
     }
 
+    /**
+     * @return void
+     */
     public function testNotValid()
     {
         $this->documentCollection->next();
@@ -73,11 +94,17 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->documentCollection->valid());
     }
 
+    /**
+     * @return void
+     */
     public function testCount()
     {
         $this->assertEquals(3, $this->documentCollection->count());
     }
 
+    /**
+     * @return void
+     */
     public function testIterator()
     {
         $result = '';

@@ -22,6 +22,9 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
      */
     protected $oppositeRecord;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
@@ -32,6 +35,9 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
             ->getMock();
     }
 
+    /**
+     * @return void
+     */
     public function testHandleInitiallyInvisible()
     {
         $fieldName = 'visible_on_front';
@@ -54,6 +60,9 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
         $handler->handle($this->recordToHandle, $this->oppositeRecord);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleNotVisibleStates()
     {
         $fieldName = 'visible_on_front';
@@ -79,6 +88,7 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
     /**
      * @dataProvider stateProvider
      * @param string $state
+     * @return void
      */
     public function testHandleVisibleState($state)
     {
@@ -104,6 +114,9 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
         $handler->handle($this->recordToHandle, $this->oppositeRecord);
     }
 
+    /**
+     * @return array
+     */
     public function stateProvider()
     {
         return [['new'], ['processing'], ['complete'], ['closed'], ['canceled'], ['holded'], ['payment_review']];

@@ -13,6 +13,10 @@ namespace Migration\Step\Map;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrityWithMap()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -43,6 +47,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($logOutput[\Monolog\Logger::ERROR]));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrityWithoutMap()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();

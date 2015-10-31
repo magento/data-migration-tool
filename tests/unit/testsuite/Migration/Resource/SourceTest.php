@@ -51,6 +51,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
      */
     protected $bulkSize = 10;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $adapterConfigs = ['config' => [
@@ -97,6 +100,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testLoadPage()
     {
         $this->config->expects($this->any())
@@ -107,6 +113,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(['1', '2'], $this->resourceSource->loadPage('table', 2));
     }
 
+    /**
+     * @return void
+     */
     public function testCreateDelta()
     {
         $this->adapter->expects($this->once())->method('createDelta')
@@ -117,6 +126,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->resourceSource->createDelta('document', 'key_field');
     }
 
+    /**
+     * @return void
+     */
     public function testGetChangedRecords()
     {
         $this->adapter->expects($this->once())->method('loadChangedRecords')
@@ -130,6 +142,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->resourceSource->getChangedRecords('document', 'key_field');
     }
 
+    /**
+     * @return void
+     */
     public function testGetDeletedRecords()
     {
         $this->adapter->expects($this->once())->method('loadDeletedRecords')

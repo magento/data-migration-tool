@@ -11,6 +11,10 @@ namespace Migration\Step\Settings;
  */
 class DataTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testPerform()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();

@@ -41,6 +41,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $factory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
@@ -64,6 +67,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory);
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecordsCount()
     {
         $this->source->expects($this->once())->method('getRecordsCount')->with('some_document')
@@ -71,6 +77,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $this->helper->getSourceRecordsCount('some_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecordsCount()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
@@ -81,6 +90,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $this->helper->getDestinationRecordsCount('some_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecords()
     {
         $this->source->expects($this->once())->method('getRecordsCount')->will($this->returnValue(1));
@@ -94,6 +106,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getSourceRecords('test_source_document', ['key', 'field']));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecords()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
@@ -109,6 +124,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getDestinationRecords('test_source_document', ['key', 'field']));
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecordsNoKey()
     {
         $row = ['key' => 'key_value', 'field' => 'field_value'];
@@ -119,6 +137,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$row], $this->helper->getSourceRecords('test_source_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecordsNoKey()
     {
         $row = ['key' => 'key_value', 'field' => 'field_value'];
@@ -132,6 +153,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$row], $this->helper->getDestinationRecords('test_source_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecordTransformer()
     {
         $sourceDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()

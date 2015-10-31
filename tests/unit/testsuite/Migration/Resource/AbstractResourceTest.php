@@ -52,6 +52,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected $resourceSource;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $config = [
@@ -135,6 +138,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      * @dataProvider getDocumentDataSource()
      * @param string $prefix
      * @param string $optionName
+     * @return void
      */
     public function testGetDocument($prefix, $optionName)
     {
@@ -177,6 +181,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         ];
     }
 
+    /**
+     * @return void
+     */
     public function testGetWrongDocument()
     {
         $prefix = 'prefix_';
@@ -191,6 +198,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->resourceDestination->getDocument('badDocument'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecordsCount()
     {
         $prefix = 'prefix_';
@@ -208,6 +218,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(10, $this->resourceDestination->getRecordsCount($resourceName));
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecords()
     {
         $resourceName = 'core_config_data';
@@ -218,6 +231,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $this->resourceDestination->getRecords($resourceName, $pageNumber);
     }
 
+    /**
+     * @return void
+     */
     public function testGetAdapter()
     {
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());

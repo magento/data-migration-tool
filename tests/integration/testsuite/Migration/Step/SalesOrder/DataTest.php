@@ -11,6 +11,10 @@ namespace Migration\Step\SalesOrder;
  */
 class DataTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testPerform()
     {
         $salesOrderToMigrate = [

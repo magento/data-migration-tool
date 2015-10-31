@@ -32,6 +32,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMock(
@@ -62,6 +65,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->data = new Data($this->destination, $this->progress);

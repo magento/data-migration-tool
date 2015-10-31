@@ -7,6 +7,9 @@ namespace Migration\Handler;
 
 class PlaceholderTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $classMapData = ['catalog/product_widget_new' => 'Magento\Catalog\Block\Product\Widget\NewWidget'];

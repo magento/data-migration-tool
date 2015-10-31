@@ -50,6 +50,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $handlerManagerFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->destination = $this->getMock(
@@ -85,6 +88,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $count = 2;

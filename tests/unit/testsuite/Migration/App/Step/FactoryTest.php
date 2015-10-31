@@ -20,6 +20,9 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected $objectManager;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->objectManager = $this->getMockBuilder('\Magento\Framework\ObjectManager\ObjectManager')
@@ -28,6 +31,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->factory = new StageFactory($this->objectManager);
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testCreate()
     {
         $step = $this->getMock('\Migration\App\Step\StageInterface');
@@ -35,6 +42,10 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($step, $this->factory->create('\Migration\Steps\Integrity'));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testCreateStepWithException()
     {
         $this->setExpectedException('\Exception', 'Class: \Migration\Step\Integrity must implement StageInterface.');

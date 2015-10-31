@@ -60,6 +60,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     protected $logger;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMock(
@@ -126,6 +129,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
      * @covers \Migration\Step\SalesOrder\Data::getAttributeData
      * @covers \Migration\Step\SalesOrder\Data::getAttributeValue
      * @covers \Migration\Step\SalesOrder\Data::getDestEavDocument
+     * @return void
      */
     public function testGetMap()
     {

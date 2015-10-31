@@ -23,6 +23,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->source = $this->getMockBuilder('\Migration\Resource\Source')
@@ -32,6 +35,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new Helper($this->source);
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceAttributes()
     {
         $entity = [
@@ -57,18 +63,27 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($entity, $this->helper->getSourceAttributes('eav_attribute'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetEavAttributes()
     {
         $eavAttributes = ['reward_points_balance_refunded', 'reward_salesrule_points'];
         $this->assertEquals($eavAttributes, $this->helper->getEavAttributes());
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocumentList()
     {
         $documentList = ['sales_flat_order' => 'sales_order'];
         $this->assertEquals($documentList, $this->helper->getDocumentList());
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestEavDocument()
     {
         $destEavDocument = 'eav_entity_int';
