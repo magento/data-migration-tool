@@ -11,8 +11,8 @@ use Migration\Logger\Logger;
 use Migration\Exception;
 use Migration\App\Mode\StepList;
 use Migration\Reader\Groups;
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Delta

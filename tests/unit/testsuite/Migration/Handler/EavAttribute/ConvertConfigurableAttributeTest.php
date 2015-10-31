@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\EavAttribute;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class ConvertModelTest
@@ -45,11 +45,13 @@ class ConvertConfigurableAttributeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleConfigurable()
     {
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
         $recordToHandle->expects($this->any())->method('getValue')
             ->willReturnMap(
@@ -67,11 +69,11 @@ class ConvertConfigurableAttributeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleNotConfigurable()
     {
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('simple'));

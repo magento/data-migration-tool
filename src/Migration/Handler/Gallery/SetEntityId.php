@@ -6,9 +6,9 @@
 namespace Migration\Handler\Gallery;
 
 use Migration\Handler\AbstractHandler;
-use Migration\Resource\Record;
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel\Source;
 
 /**
  * Class SetEntityId

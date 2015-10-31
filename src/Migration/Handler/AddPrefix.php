@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Handler to set constant value to the field

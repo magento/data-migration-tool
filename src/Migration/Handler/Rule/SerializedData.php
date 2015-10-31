@@ -7,7 +7,7 @@ namespace Migration\Handler\Rule;
 
 use Migration\Reader\ClassMap;
 use Migration\Handler\AbstractHandler;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class SerializedRules

@@ -8,10 +8,10 @@ namespace Migration\Handler\Rule;
 use Migration\Handler\AbstractHandler;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
-use Migration\Resource\Destination;
-use Migration\Resource\Record;
-use Migration\Resource\Source;
-use Migration\Resource\RecordFactory;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\RecordFactory;
 
 /**
  * Class NormalizationIds

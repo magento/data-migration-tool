@@ -11,7 +11,7 @@ namespace Migration\Step\Ratings;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -26,12 +26,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\Resource\Structure|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Structure|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $structure;
 
     /**
-     * @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $document;
 
@@ -46,7 +46,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix'],
             [],
             '',
@@ -57,8 +57,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->method('addDocumentPrefix')
             ->will($this->returnValueMap([['rating_store', 'rating_store'], ['rating', 'rating']]));
 
-        $this->structure = $this->getMock('Migration\Resource\Structure', ['getFields'], [], '', false);
-        $this->document = $this->getMock('Migration\Resource\Document', ['getStructure'], [], '', false);
+        $this->structure = $this->getMock('Migration\ResourceModel\Structure', ['getFields'], [], '', false);
+        $this->document = $this->getMock('Migration\ResourceModel\Document', ['getStructure'], [], '', false);
         $this->logger = $this->getMock('Migration\Logger\Logger', ['warning', 'error'], [], '', false);
         $this->progress = $this->getMock(
             'Migration\App\ProgressBar\LogLevelProcessor',

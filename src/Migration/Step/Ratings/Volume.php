@@ -7,7 +7,7 @@ namespace Migration\Step\Ratings;
 
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Destination;
 use Migration\App\Step\AbstractVolume;
 
 /**
@@ -56,7 +56,7 @@ class Volume extends AbstractVolume
         $this->progress->advance();
         $ratingsShouldBeActive = [];
         $ratingsIsActive = [];
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->destination->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect()->from($this->getRatingStoreDocument(), ['rating_id'])->where('store_id > 0');

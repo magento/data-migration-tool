@@ -9,7 +9,7 @@ use Migration\App\Step\RollbackInterface;
 use Migration\App\Step\StageInterface;
 use Migration\Reader\MapInterface;
 use Migration\Step\DatabaseStage;
-use Migration\Resource\Document;
+use Migration\ResourceModel\Document;
 
 /**
  * Class Version11300to2000
@@ -47,30 +47,30 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected $resolvedDuplicates = [];
 
     /**
-     * Resource of source
+     * ResourceModel of source
      *
-     * @var \Migration\Resource\Source
+     * @var \Migration\ResourceModel\Source
      */
     protected $source;
 
     /**
-     * Resource of destination
+     * ResourceModel of destination
      *
-     * @var \Migration\Resource\Destination
+     * @var \Migration\ResourceModel\Destination
      */
     protected $destination;
 
     /**
      * Record Factory
      *
-     * @var \Migration\Resource\RecordFactory
+     * @var \Migration\ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
     /**
      * Record Collection Factory
      *
-     * @var \Migration\Resource\Record\CollectionFactory
+     * @var \Migration\ResourceModel\Record\CollectionFactory
      */
     protected $recordCollectionFactory;
 
@@ -176,10 +176,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param \Migration\App\ProgressBar\LogLevelProcessor $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
-     * @param \Migration\Resource\Source $source
-     * @param \Migration\Resource\Destination $destination
-     * @param \Migration\Resource\Record\CollectionFactory $recordCollectionFactory
-     * @param \Migration\Resource\RecordFactory $recordFactory
+     * @param \Migration\ResourceModel\Source $source
+     * @param \Migration\ResourceModel\Destination $destination
+     * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
+     * @param \Migration\ResourceModel\RecordFactory $recordFactory
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -187,10 +187,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         \Migration\App\ProgressBar\LogLevelProcessor $progress,
         \Migration\Logger\Logger $logger,
         \Migration\Config $config,
-        \Migration\Resource\Source $source,
-        \Migration\Resource\Destination $destination,
-        \Migration\Resource\Record\CollectionFactory $recordCollectionFactory,
-        \Migration\Resource\RecordFactory $recordFactory,
+        \Migration\ResourceModel\Source $source,
+        \Migration\ResourceModel\Destination $destination,
+        \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory,
+        \Migration\ResourceModel\RecordFactory $recordFactory,
         $stage
     ) {
         $this->progress = $progress;
@@ -268,7 +268,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * @param Document $destProductCategory
      * @param array $row
-     * @return \Migration\Resource\Record|null
+     * @return \Migration\ResourceModel\Record|null
      * @throws \Migration\Exception
      */
     private function getProductCategoryRecord(Document $destProductCategory, array $row)
@@ -291,7 +291,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         if (!self::$dataInitialized) {
             $this->initTemporaryTable();
         }
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
         $select->from(['r' => $this->source->addDocumentPrefix($this->tableName)]);
@@ -299,15 +299,15 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
-     * @param \Migration\Resource\Record\Collection $source
-     * @param \Migration\Resource\Record\Collection $destination
+     * @param \Migration\ResourceModel\Record\Collection $source
+     * @param \Migration\ResourceModel\Record\Collection $destination
      * @return void
      */
     protected function migrateRewrites($source, $destination)
     {
-        /** @var \Migration\Resource\Record $sourceRecord */
+        /** @var \Migration\ResourceModel\Record $sourceRecord */
         foreach ($source as $sourceRecord) {
-            /** @var \Migration\Resource\Record $destinationRecord */
+            /** @var \Migration\ResourceModel\Record $destinationRecord */
             $destinationRecord = $this->recordFactory->create();
             $destinationRecord->setStructure($destination->getStructure());
 
@@ -540,7 +540,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $subSelect->group(['request_path', 'store_id'])
             ->having('COUNT(*) > 1');
 
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
 
         /** @var \Magento\Framework\DB\Select $select */
@@ -568,7 +568,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected function getSuffix($suffixFor, $mainTable = 's')
     {
         if (empty($this->suffixData[$suffixFor])) {
-            /** @var \Migration\Resource\Adapter\Mysql $adapter */
+            /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
             $adapter = $this->source->getAdapter();
             $select = $adapter->getSelect();
 
@@ -630,7 +630,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function initTemporaryTable()
     {
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $this->createTemporaryTable($adapter);
         $this->collectRedirects($adapter);
@@ -643,10 +643,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * Crete temporary table
      *
-     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
      * @return void
      */
-    protected function createTemporaryTable(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function createTemporaryTable(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->getAdapter()->dropTable($this->source->addDocumentPrefix($this->tableName));
@@ -716,10 +716,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * Fulfill temporary table with category url rewrites
      *
-     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
      * @return void
      */
-    protected function collectCategoryRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectCategoryRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(
@@ -793,10 +793,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * Fulfill temporary table with Cms Page url rewrites
      *
-     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
      * @return void
      */
-    protected function collectCmsPageRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectCmsPageRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(
@@ -826,10 +826,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * Fulfill temporary table with product url rewrites
      *
-     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
      * @return void
      */
-    protected function collectProductRewrites(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectProductRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         /** @var \Magento\Framework\Db\Select $select */
         $select = $adapter->getSelect();
@@ -1062,10 +1062,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * Fulfill temporary table with redirects
      *
-     * @param \Migration\Resource\Adapter\Mysql $adapter
+     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
      * @return void
      */
-    protected function collectRedirects(\Migration\Resource\Adapter\Mysql $adapter)
+    protected function collectRedirects(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
         $select->from(

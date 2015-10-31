@@ -7,7 +7,7 @@ namespace Migration\Step\Ratings;
 
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Destination;
 
 /**
  * Class Integrity

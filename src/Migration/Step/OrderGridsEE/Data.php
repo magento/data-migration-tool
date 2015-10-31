@@ -6,8 +6,8 @@
 namespace Migration\Step\OrderGridsEE;
 
 use Migration\Handler;
-use Migration\Resource;
-use Migration\Resource\Record;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
 use Migration\Config;
@@ -19,18 +19,18 @@ class Data extends \Migration\Step\OrderGrids\Data
 {
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param Logger $logger
      * @param Helper $helper
      * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         Logger $logger,
         Helper $helper,
         Config $config

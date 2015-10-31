@@ -99,8 +99,8 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
                 'stage' => 'data'
             ]
         );
-        /** @var \Migration\Resource\Destination $destination */
-        $destination = $this->objectManager->get('\Migration\Resource\Destination');
+        /** @var \Migration\ResourceModel\Destination $destination */
+        $destination = $this->objectManager->get('\Migration\ResourceModel\Destination');
         ob_start();
         $urlRewrite->perform();
         ob_end_clean();

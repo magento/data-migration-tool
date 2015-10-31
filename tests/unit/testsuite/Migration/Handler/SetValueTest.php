@@ -14,12 +14,12 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
     {
         $value = 'value';
         $fieldName = 'fieldname';
-        /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock('Migration\Resource\Record', ['setValue', 'getFields'], [], '', false);
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
+        $record = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
         $record->expects($this->once())->method('setValue')->with($fieldName, $value);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
 
         $handler = new SetValue($value);
         $handler->setField($fieldName);
@@ -32,10 +32,10 @@ class SetValueTest extends \PHPUnit_Framework_TestCase
     public function testHandleException()
     {
         $value = 'value';
-        $record = $this->getMock('Migration\Resource\Record', ['getFields'], [], '', false);
+        $record = $this->getMock('Migration\ResourceModel\Record', ['getFields'], [], '', false);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([]));
         $handler = new SetValue($value);
-        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
         $this->setExpectedException('Exception');
         $handler->handle($record, $record2);
     }

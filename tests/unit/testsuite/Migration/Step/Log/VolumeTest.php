@@ -7,7 +7,7 @@ namespace Migration\Step\Log;
 
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class VolumeTest
@@ -25,12 +25,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -63,14 +63,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getDocumentList', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount'],
             [],
             '',

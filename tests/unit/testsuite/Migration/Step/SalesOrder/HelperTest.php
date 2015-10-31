@@ -6,7 +6,7 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Reader;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Helper
@@ -28,7 +28,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMockBuilder('\Migration\Resource\Source')
+        $this->source = $this->getMockBuilder('\Migration\ResourceModel\Source')
             ->setMethods(['getAdapter', 'addDocumentPrefix'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -47,7 +47,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $mySqlAdapter = $this->getMock(
-            '\Migration\Resource\Adapter\Mysql',
+            '\Migration\ResourceModel\Adapter\Mysql',
             ['getSelect', 'loadDataFromSelect'],
             [],
             '',

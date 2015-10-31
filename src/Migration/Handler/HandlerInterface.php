@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 interface HandlerInterface
 {

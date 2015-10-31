@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\TierPrice;
 
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\MapInterface;
@@ -21,12 +21,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $helper;
 
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -44,15 +44,15 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param Helper $helper
      * @param Logger $logger
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      */
     public function __construct(
         Helper $helper,
         Logger $logger,
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination
     ) {
         $this->helper = $helper;
         $this->logger = $logger;
@@ -93,7 +93,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
         foreach ($tableFields as $documentName => $fieldsData) {
 
-            $source     = $this->getResource($sourceType);
+            $source     = $this->getResourceModel($sourceType);
             $document   = $source->getDocument($documentName);
             $structure  = array_keys($document->getStructure()->getFields());
 
@@ -112,9 +112,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
     /**
      * @param string $sourceType
-     * @return Resource\Destination|Resource\Source
+     * @return ResourceModel\Destination|ResourceModel\Source
      */
-    protected function getResource($sourceType)
+    protected function getResourceModel($sourceType)
     {
         $map = [
             MapInterface::TYPE_SOURCE   => $this->source,

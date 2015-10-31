@@ -29,17 +29,17 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $helper;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $configReader;
 
@@ -54,7 +54,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
-     * @var \Migration\Resource\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $adapter;
 
@@ -87,7 +87,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->adapter = $this->getMockBuilder('Migration\Resource\Adapter\Mysql')
+        $this->adapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')
             ->setMethods(['fetchAll', 'getSelect'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -101,10 +101,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->select->expects($this->any())->method('getAdapter')->willReturn($this->adapter);
         $this->adapter->expects($this->any())->method('getSelect')->willReturn($this->select);
 
-        $this->source = $this->getMockBuilder('Migration\Resource\Source')
+        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')
             ->disableOriginalConstructor()
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\Resource\Destination')
+        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
             ->disableOriginalConstructor()
             ->getMock();
         $this->configReader = $this->getMockBuilder('Migration\Config')
@@ -163,10 +163,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
 
         $this->adapter->expects($this->at(2))->method('fetchAll')->with($this->select)->willReturn($attributeData);
 
-        $structure = $this->getMockBuilder('Migration\Resource\Structure')
+        $structure = $this->getMockBuilder('Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()
             ->getMock();
-        $record = $this->getMockBuilder('Migration\Resource\Record')
+        $record = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -176,7 +176,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->any())->method('getValue')->with('entity_id')->willReturn('1');
         $record->expects($this->any())->method('getData')->willReturn([]);
         $record->expects($this->any())->method('setData')->with($expected);
-        $destinationRecords = new \Migration\Resource\Record\Collection($structure, [$record]);
+        $destinationRecords = new \Migration\ResourceModel\Record\Collection($structure, [$record]);
 
         $this->helper->updateAttributeData(self::ENTITY, self::DOCUMENT, $destinationRecords);
     }

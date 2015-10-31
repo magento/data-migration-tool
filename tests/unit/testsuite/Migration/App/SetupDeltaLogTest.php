@@ -17,10 +17,10 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */
-        $source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        /** @var \Migration\Resource\Document|\PHPUnit_Framework_MockObject_MockObject $source */
-        $document = $this->getMock('\Migration\Resource\Document', [], [], '', false);
+        /** @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject $source */
+        $source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+        /** @var \Migration\ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject $source */
+        $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
         $source->expects($this->any())
             ->method('getDocument')
             ->willReturn($document);

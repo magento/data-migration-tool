@@ -6,8 +6,8 @@
 namespace Migration\Handler\Gallery;
 
 use Migration\Handler\AbstractHandler;
-use Migration\Resource\Destination;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Record;
 
 /**
  * Class InsertValueToEntity

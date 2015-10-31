@@ -37,13 +37,19 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     public function testHandle($map, $initialValue, $processedValue)
     {
         $fieldName = 'fieldname';
-        /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock('Migration\Resource\Record', ['setValue', 'getValue', 'getFields'], [], '', false);
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
+        $record = $this->getMock(
+            'Migration\ResourceModel\Record',
+            ['setValue', 'getValue', 'getFields'],
+            [],
+            '',
+            false
+        );
         $record->expects($this->once())->method('getValue')->will($this->returnValue($initialValue));
         $record->expects($this->once())->method('setValue')->with($fieldName, $processedValue);
         $record->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
 
         $handler = new Convert($map);
         $handler->setField($fieldName);
@@ -57,8 +63,8 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     {
         $this->setExpectedException('Exception');
         $handler = new Convert('[dummy]');
-        $record = $this->getMock('Migration\Resource\Record', [], [], '', false);
-        $record2 = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $record = $this->getMock('Migration\ResourceModel\Record', [], [], '', false);
+        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
         $handler->handle($record, $record2, 'dummy');
     }
 }

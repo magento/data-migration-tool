@@ -8,12 +8,12 @@ namespace Migration\Step\OrderGrids;
 use Migration\App\Step\StageInterface;
 use Migration\Config;
 use Migration\Handler;
-use Migration\Resource;
-use Migration\Resource\Record;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
-use Migration\Resource\Adapter\Mysql;
+use Migration\ResourceModel\Adapter\Mysql;
 
 /**
  * Class Data
@@ -22,7 +22,7 @@ use Migration\Resource\Adapter\Mysql;
 class Data implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
@@ -32,7 +32,7 @@ class Data implements StageInterface
     protected $destinationAdapter;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -47,7 +47,7 @@ class Data implements StageInterface
     protected $logger;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -63,18 +63,18 @@ class Data implements StageInterface
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param Logger $logger
      * @param Helper $helper
      * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         Logger $logger,
         Helper $helper,
         Config $config
@@ -267,7 +267,7 @@ class Data implements StageInterface
      */
     protected function getEntityIds($sourceGridDocumentName, $pageNumber)
     {
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect();
@@ -286,7 +286,7 @@ class Data implements StageInterface
      */
     protected function getEntityIdsSelect($sourceGridDocumentName)
     {
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect();

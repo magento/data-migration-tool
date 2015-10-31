@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\Resource\Source;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Helper
@@ -42,7 +42,7 @@ class Helper
      */
     protected function getEavAttributeSelect($eavAttribute)
     {
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
         $tables = [];

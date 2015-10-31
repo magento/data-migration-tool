@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\OrderGrids;
 
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class Helper
@@ -13,14 +13,14 @@ use Migration\Resource;
 class Helper
 {
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Destination $destination
      */
-    public function __construct(Resource\Destination $destination)
+    public function __construct(ResourceModel\Destination $destination)
     {
         $this->destination = $destination;
     }

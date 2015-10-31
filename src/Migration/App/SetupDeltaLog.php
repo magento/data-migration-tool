@@ -7,7 +7,7 @@ namespace Migration\App;
 
 use Migration\Reader\Groups;
 use Migration\App\Step\StageInterface;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Source;
 
 class SetupDeltaLog implements StageInterface
 {

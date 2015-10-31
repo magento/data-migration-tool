@@ -6,8 +6,8 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Reader;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class InitialDataTest
@@ -39,8 +39,8 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\Resource\Destination', ['getRecordsCount'], [], '', false);
+        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', ['getRecordsCount'], [], '', false);
         $this->helper = $this->getMock('\Migration\Step\SalesOrder\Helper', ['getDestEavDocument'], [], '', false);
         $this->initialData = new InitialData($this->source, $this->destination, $this->helper);
     }

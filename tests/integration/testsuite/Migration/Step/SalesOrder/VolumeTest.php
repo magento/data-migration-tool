@@ -72,7 +72,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $config = $objectManager->get('\Migration\Config');
         $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
-        $destination = $objectManager->get('\Migration\Resource\Destination');
+        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();

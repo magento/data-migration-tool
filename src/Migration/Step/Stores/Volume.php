@@ -6,7 +6,7 @@
 namespace Migration\Step\Stores;
 
 use Migration\App\Step\AbstractVolume;
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
 
@@ -16,12 +16,12 @@ use Migration\Logger\Logger;
 class Volume extends AbstractVolume
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -37,15 +37,15 @@ class Volume extends AbstractVolume
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param Helper $helper
      * @param Logger $logger
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         Helper $helper,
         Logger $logger
     ) {

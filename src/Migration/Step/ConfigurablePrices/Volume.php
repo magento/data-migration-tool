@@ -8,18 +8,18 @@ namespace Migration\Step\ConfigurablePrices;
 use Migration\App\Step\AbstractVolume;
 use Migration\Logger\Logger;
 use Migration\Reader\MapInterface;
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
 class Volume extends AbstractVolume
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -37,15 +37,15 @@ class Volume extends AbstractVolume
 
     /**
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Helper $helper
      */
     public function __construct(
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         ProgressBar\LogLevelProcessor $progressBar,
         Helper $helper,
         Logger $logger

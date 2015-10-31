@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SalesOrderStatusState;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class SetVisibleOnFrontTest
@@ -27,10 +27,10 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $this->recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()->getMock();
-        $this->oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')
+        $this->oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
     }
