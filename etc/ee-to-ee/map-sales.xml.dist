@@ -62,6 +62,24 @@
             <ignore>
                 <field>sales_order.coupon_rule_name</field>
             </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
         </field_rules>
     </destination>
 </map>

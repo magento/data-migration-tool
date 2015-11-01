@@ -2113,6 +2113,42 @@
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
+                <field>quote.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
         </field_rules>

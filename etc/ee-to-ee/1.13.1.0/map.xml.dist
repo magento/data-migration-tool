@@ -2019,6 +2019,42 @@
                 <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
             </ignore>
             <ignore>
+                <field>quote.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
