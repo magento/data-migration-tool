@@ -21,7 +21,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = new Config();
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $this->config = new Config($validationState);
         $this->config->init(realpath(__DIR__ . '/_files/test-config.xml'));
     }
 
@@ -40,7 +47,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testInvalidConfigFile()
     {
         $this->setExpectedException('Migration\Exception', 'Invalid config filename: non-existent.xml');
-        $config = new Config();
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $config = new Config($validationState);
         $config->init('non-existent.xml');
     }
 
@@ -51,7 +66,15 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     public function testInvalidXml()
     {
         $this->setExpectedException('Migration\Exception', 'XML file is invalid');
-        $config = new Config();
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $config = new Config($validationState);
         $config->init(__DIR__ . '/_files/invalid-config.xml');
     }
 

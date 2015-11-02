@@ -67,6 +67,23 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             'version' => '1.9'
         ]);
         $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+
+        $select = $this->getMockBuilder('Magento\Framework\DB\Select')
+            ->setMethods(['from', 'joinLeft'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $select->expects($this->any())->method('from')->willReturnSelf();
+        $select->expects($this->any())->method('joinLeft')->willReturnSelf();
+
+        $sourceAdapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
+            ->setMethods(['getSelect', 'loadDataFromSelect'])
+            ->getMock();
+
+        $sourceAdapter->expects($this->any())->method('getSelect')->willReturn($select);
+
+        $this->source->expects($this->any())->method('getAdapter')->willReturn($sourceAdapter);
+
         $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
         $this->recordCollection = $this->getMock(
             '\Migration\ResourceModel\Record\Collection',
@@ -171,12 +188,16 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
      */
     public function testData()
     {
+        $countCmsPageRewrites = 1;
+        $recordsAmount = 123;
+        $progressRecordsAmount = $recordsAmount + $countCmsPageRewrites;
+
         $this->source->expects($this->once())
             ->method('getRecordsCount')
-            ->willReturn(123);
+            ->willReturn($recordsAmount);
         $this->progress->expects($this->at(0))
             ->method('start')
-            ->with($this->equalTo(123));
+            ->with($this->equalTo($progressRecordsAmount));
 
         $sourceDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->disableOriginalConstructor()
