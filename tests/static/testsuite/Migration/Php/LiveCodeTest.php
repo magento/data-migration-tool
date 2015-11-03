@@ -51,7 +51,7 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
     public static function setUpBeforeClass()
     {
         self::$pathToSource = Utility\Files::init()->getPathToSource();
-        self::$reportDir = self::$pathToSource . '/dev/tests/static/report';
+        self::$reportDir = self::$pathToSource . '/vendor/magento/data-migration-tool/tests/static/report';
         self::$magentoDir = require __DIR__ . '/../../../../../etc/magento_path.php';
         if (!is_dir(self::$reportDir)) {
             mkdir(self::$reportDir, 0770);
