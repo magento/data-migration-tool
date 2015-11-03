@@ -20,7 +20,14 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->map = new Map('tests/unit/testsuite/Migration/_files/map.xml');
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $this->map = new Map($validationState, 'tests/unit/testsuite/Migration/_files/map.xml');
     }
 
     /**
