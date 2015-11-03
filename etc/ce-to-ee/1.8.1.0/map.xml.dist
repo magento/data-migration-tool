@@ -869,6 +869,18 @@
                 <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
             <transform>
+                <field>sales_flat_quote_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_creditmemo_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_invoice_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
                 <field>catalog_product_entity_media_gallery.value_id</field>
                 <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
             </transform>

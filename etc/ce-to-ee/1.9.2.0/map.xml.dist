@@ -854,6 +854,18 @@
                 <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
             <transform>
+                <field>sales_flat_quote_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_creditmemo_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_invoice_item.weee_tax_applied</field>
+                <handler class="Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
                 <field>rating_option_vote.remote_ip_long</field>
                 <handler class="\Migration\Handler\ConvertIp"/>
             </transform>
