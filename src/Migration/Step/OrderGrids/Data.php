@@ -62,6 +62,11 @@ class Data implements StageInterface
     protected $config;
 
     /**
+     * @var bool
+     */
+    protected $copyDirectly;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
@@ -87,6 +92,7 @@ class Data implements StageInterface
         $this->logger = $logger;
         $this->helper = $helper;
         $this->config = $config;
+        $this->copyDirectly = (bool)$this->config->getOption('direct_document_copy');
     }
 
     /**
@@ -101,16 +107,13 @@ class Data implements StageInterface
             $this->progress->start(1, LogManager::LOG_LEVEL_DEBUG);
 
             $sourceGridDocument = array_flip($this->helper->getDocumentList())[$destinationDocumentName];
-            $entityIdsSelect = $this->getEntityIdsSelect($sourceGridDocument);
-            try {
-                // performance optimized way. In case when source has direct access to destination database
-                $this->destination->getAdapter()->insertFromSelect(
-                    $this->{$methodToExecute}($document['columns'], new \Zend_Db_Expr($entityIdsSelect)),
-                    $this->destination->addDocumentPrefix($destinationDocumentName),
-                    [],
-                    \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
-                );
-            } catch (\Exception $e) {
+            $isCopiedDirectly = $this->isCopiedDirectly(
+                $methodToExecute,
+                $document['columns'],
+                $destinationDocumentName,
+                $sourceGridDocument
+            );
+            if (!$isCopiedDirectly) {
                 $pageNumber = 0;
                 while (!empty($entityIds = $this->getEntityIds($sourceGridDocument, $pageNumber))) {
                     $pageNumber++;
@@ -126,6 +129,45 @@ class Data implements StageInterface
         }
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * Performance optimized way. In case when source has direct access to destination database
+     *
+     * @param string $methodToExecute
+     * @param array $columns
+     * @param string $destinationDocumentName
+     * @param string $sourceGridDocument
+     * @return bool|void
+     */
+    protected function isCopiedDirectly(
+        $methodToExecute,
+        array $columns,
+        $destinationDocumentName,
+        $sourceGridDocument
+    ) {
+        if (!$this->copyDirectly) {
+            return;
+        }
+        $result = true;
+        try {
+            $entityIdsSelect = $this->getEntityIdsSelect($sourceGridDocument);
+            $this->destination->getAdapter()->insertFromSelect(
+                $this->{$methodToExecute}($columns, new \Zend_Db_Expr($entityIdsSelect)),
+                $this->destination->addDocumentPrefix($destinationDocumentName),
+                [],
+                \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
+            );
+        } catch (\Exception $e) {
+            $this->copyDirectly = false;
+            $this->logger->error(
+                'Document ' . $sourceGridDocument . ' can not be copied directly because of error: '
+                . $e->getMessage()
+            );
+            $result = false;
+        }
+
+        return $result;
     }
 
     /**
