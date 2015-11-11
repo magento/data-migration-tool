@@ -1285,5 +1285,49 @@
             <path>catalog/seo/product_url_suffix</path>
             <handler class="\Migration\Handler\Settings\UrlSuffix"/>
         </transform>
+        <transform>
+            <path>payment/payflow_advanced/pwd</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/wpp/api_username</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/wpp/api_password</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/wpp/api_signature</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/fetch_reports/ftp_login</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/fetch_reports/ftp_password</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>payment/verisign/user</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>payment/verisign/pwd</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>payment/payflow_link/pwd</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/wpuk/user</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>paypal/wpuk/pwd</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
     </value>
 </settings>
