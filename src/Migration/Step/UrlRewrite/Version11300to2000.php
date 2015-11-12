@@ -799,14 +799,14 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected function collectCmsPageRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
         $select = $adapter->getSelect();
-        $select->from(
+        $select->distinct()->from(
             ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
             [
                 'id' => 'IFNULL(NULL, NULL)',
                 'request_path' => 'cp.identifier',
                 'target_path' => 'CONCAT("cms/page/view/page_id/", cp.page_id)',
                 'is_system' => "trim('1')",
-                'store_id' => 'cps.store_id',
+                'store_id' => 'IF(cps.store_id = 0, 1, cps.store_id)',
                 'entity_type' => "trim('cms-page')",
                 'redirect_type' => "trim('0')",
                 'product_id' => "trim('0')",
@@ -818,7 +818,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
             'cps.page_id = cp.page_id',
             []
-        );
+        )->group(['request_path', 'cps.store_id']);
         $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
         $select->getAdapter()->query($query);
     }
