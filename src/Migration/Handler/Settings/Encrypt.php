@@ -16,21 +16,15 @@ use Symfony\Component\Config\Definition\Exception\Exception;
 class Encrypt extends AbstractHandler
 {
     const CRYPT_KEY = 'crypt_key';
-
-    /**
-     * @var string
-     */
-    protected $backendModelName = '\Magento\Framework\Encryption\Crypt';
-
     /**
      * @var \Magento\Framework\Encryption\Encryptor
      */
     protected $encryptor;
 
     /**
-     * @var \Magento\Framework\ObjectManager
+     * @var \Magento\Framework\Encryption\CryptFactory
      */
-    protected $objectManager;
+    protected $cryptFactory;
 
     /**
      * @var \Migration\Config
@@ -43,18 +37,18 @@ class Encrypt extends AbstractHandler
     protected $cryptKey;
 
     /**
-     * Encode constructor.
+     * Encrypt constructor.
      *
-     * @param \Magento\Framework\Encryption\Encryptor        $encryptor
-     * @param \Magento\Framework\ObjectManager\ObjectManager $objectManager
-     * @param \Migration\Config                              $configReader
+     * @param \Magento\Framework\Encryption\Encryptor    $encryptor
+     * @param \Magento\Framework\Encryption\CryptFactory $cryptFactory
+     * @param \Migration\Config                          $configReader
      */
     public function __construct(
         \Magento\Framework\Encryption\Encryptor $encryptor,
-        \Magento\Framework\ObjectManager\ObjectManager $objectManager,
+        \Magento\Framework\Encryption\CryptFactory $cryptFactory,
         \Migration\Config $configReader
     ) {
-        $this->objectManager = $objectManager;
+        $this->cryptFactory  = $cryptFactory;
         $this->encryptor     = $encryptor;
         $this->configReader  = $configReader;
 
@@ -87,7 +81,7 @@ class Encrypt extends AbstractHandler
             $cypher         = MCRYPT_BLOWFISH;
         }
 
-        $crypt = $this->objectManager->create($this->backendModelName, [
+        $crypt = $this->cryptFactory->create([
             'key'        => $this->cryptKey,
             'cipher'     => $cypher,
             'mode'       => $mode,
@@ -107,7 +101,7 @@ class Encrypt extends AbstractHandler
     public function validate(Record $record)
     {
         if (empty($this->cryptKey)) {
-            throw new Exception("cryptKey is not defined.");
+            throw new Exception("\"crypt_key\" option is not defined the configuration.");
         }
 
         parent::validate($record);

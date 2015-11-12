@@ -21,9 +21,9 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
     protected $encryptor;
 
     /**
-     * @var \Magento\Framework\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Magento\Framework\Encryption\CryptFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $objectManager;
+    protected $cryptFactory;
 
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -39,8 +39,8 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
 
         $this->configReader = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
 
-        $this->objectManager = $this->getMock(
-            '\Magento\Framework\ObjectManager\ObjectManager',
+        $this->cryptFactory = $this->getMock(
+            '\Magento\Framework\Encryption\CryptFactory',
             ['create'],
             [],
             '',
@@ -91,9 +91,9 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
             ->with(self::CRYPT_KEY)
             ->will($this->returnValue($key));
 
-        $this->objectManager->expects($this->once())
+        $this->cryptFactory->expects($this->once())
             ->method('create')
-            ->with($this->backendModelName, [
+            ->with([
                 'key'        => $key,
                 'cipher'     => $cypher,
                 'mode'       => $mode,
@@ -106,7 +106,7 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
             ->with($decryptedValue)
             ->willReturn($newValue);
 
-        $handler = new \Migration\Handler\Settings\Encrypt($this->encryptor, $this->objectManager, $this->configReader);
+        $handler = new \Migration\Handler\Settings\Encrypt($this->encryptor, $this->cryptFactory, $this->configReader);
         $handler->setField($fieldName);
         $handler->handle($recordToHandle, $oppositeRecord);
     }
@@ -117,39 +117,36 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
     public function dataProviderEncryptionData()
     {
         return [
-            'ee' =>
+            [
                 [
-                    [
-                        'key'            => '7979bbf5eedb156a709cca04bcd1ab3f',
-                        'dbValue'        => '0:2:4db32e3c8ef3612a:+AFOl9Rr7yTVBAUukxOQbg==',
-                        'initVector'     => '4db32e3c8ef3612a',
-                        'encryptedValue' => '+AFOl9Rr7yTVBAUukxOQbg==',
-                        'cypher'         => MCRYPT_RIJNDAEL_128,
-                        'mode'           => MCRYPT_MODE_CBC,
-                    ],
-                    [
-                        'decryptedValue' => '1350644470',
-                        'newValue'       => '0:2:YU9IwW5apFqebOynZBiBnKZlssuBPt8O'
-                            . ':QQB7G0RlWIFMWT8hXWBgi1kZ7oUj/iQ9mII1tiGEJYE=',
-                    ],
+                    'key'            => '7979bbf5eedb156a709cca04bcd1ab3f',
+                    'dbValue'        => '0:2:4db32e3c8ef3612a:+AFOl9Rr7yTVBAUukxOQbg==',
+                    'initVector'     => '4db32e3c8ef3612a',
+                    'encryptedValue' => '+AFOl9Rr7yTVBAUukxOQbg==',
+                    'cypher'         => MCRYPT_RIJNDAEL_128,
+                    'mode'           => MCRYPT_MODE_CBC,
                 ],
-            'ce' =>
                 [
-                    [
-                        'key'            => '538e855c156dcb99aa1bef633a1b98b9',
-                        'dbValue'        => '2klxhuOkPMF22vf24BCruA==',
-                        'initVector'     => false,
-                        'encryptedValue' => '2klxhuOkPMF22vf24BCruA==',
-                        'cypher'         => MCRYPT_BLOWFISH,
-                        'mode'           => MCRYPT_MODE_ECB,
-                    ],
-                    [
-                        'decryptedValue' => '1350644470',
-                        'newValue'       => '0:2:cCsFNUtbk1yrpF1V75KA3Z2UiBLQsCgS'
-                            . ':7Ed+QCz/CV8DIJlRvVIyKhAf8IBgLih/9PLlQ/AEjIg=',
-                    ],
+                    'decryptedValue' => '1350644470',
+                    'newValue'       => '0:2:YU9IwW5apFqebOynZBiBnKZlssuBPt8O'
+                        . ':QQB7G0RlWIFMWT8hXWBgi1kZ7oUj/iQ9mII1tiGEJYE=',
                 ],
-
+            ],
+            [
+                [
+                    'key'            => '538e855c156dcb99aa1bef633a1b98b9',
+                    'dbValue'        => '2klxhuOkPMF22vf24BCruA==',
+                    'initVector'     => false,
+                    'encryptedValue' => '2klxhuOkPMF22vf24BCruA==',
+                    'cypher'         => MCRYPT_BLOWFISH,
+                    'mode'           => MCRYPT_MODE_ECB,
+                ],
+                [
+                    'decryptedValue' => '1350644470',
+                    'newValue'       => '0:2:cCsFNUtbk1yrpF1V75KA3Z2UiBLQsCgS'
+                        . ':7Ed+QCz/CV8DIJlRvVIyKhAf8IBgLih/9PLlQ/AEjIg=',
+                ],
+            ],
         ];
     }
 }
