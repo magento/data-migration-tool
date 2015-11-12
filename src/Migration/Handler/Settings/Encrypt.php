@@ -8,7 +8,7 @@ namespace Migration\Handler\Settings;
 use Magento\Framework\App\ObjectManager;
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
-use Symfony\Component\Config\Definition\Exception\Exception;
+use Migration\Exception;
 
 /**
  * Handler to convert encoded value to value compatible with M2
