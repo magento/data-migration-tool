@@ -25,7 +25,15 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $config->expects($this->once())->method('getOption')->with('class_map')
             ->willReturn('tests/unit/testsuite/Migration/_files/class-map.xml');
-        $this->classMap = new ClassMap($config);
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $this->classMap = new ClassMap($config, $validationState);
     }
 
     /**

@@ -109,7 +109,7 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         $recordFrom->expects($this->any())->method('getData')->will($this->returnValue(['field1' => 1, 'field2' => 2]));
         $recordTo = $this->getMock('Migration\ResourceModel\Record', [], [], '', false);
         $recordTo->expects($this->any())->method('getFields')->will($this->returnValue(['field2']));
-        $recordTo->expects($this->once())->method('setData')->with(['field2' => 2]);
+        $recordTo->expects($this->any())->method('setData')->with(['field2' => 2]);
 
         $field2Handler = $this->getMock('Migration\Handler\SetValue', ['handle'], [], '', false);
         $field2Handler->expects($this->once())->method('handle');
