@@ -5,11 +5,12 @@
  */
 namespace Migration\Handler;
 
+use Magento\TestFramework\Db\Adapter\Mysql;
 use Migration\ResourceModel\Record;
 use Migration\Exception;
 
 /**
- * Handler to set hash value to the field, based on other field
+ * Handler to set offset for date and time fields while migration
  */
 class Timezone extends AbstractHandler implements HandlerInterface
 {
@@ -21,10 +22,22 @@ class Timezone extends AbstractHandler implements HandlerInterface
 
     const SIGN_MINUS = '-';
 
+    const TYPE_INT = 'int';
+
     /**
      * @var string
      */
     protected $offset;
+
+    /**
+     * @var array
+     */
+    protected $supportedDatatypes = [
+        self::TYPE_INT,
+        \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
+        \Magento\Framework\DB\Ddl\Table::TYPE_TIMESTAMP,
+        \Magento\Framework\DB\Ddl\Table::TYPE_DATETIME,
+    ];
 
     /**
      * @param string $offset
@@ -42,13 +55,30 @@ class Timezone extends AbstractHandler implements HandlerInterface
         $this->validate($recordToHandle);
 
         $value  = $recordToHandle->getValue($this->field);
+
         if (!$value || !$this->offset) {
             return;
         }
-        $dateTime = new \DateTime($value);
+
+        $fieldType = $recordToHandle->getStructure()->getFields()[$this->field]['DATA_TYPE'];
+        $isTypeInt = in_array($fieldType, [self::TYPE_INT, \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER]);
+
+        if ($isTypeInt) {
+            $dateTime = new \DateTime();
+            $dateTime->setTimestamp($value);
+        } else {
+            $dateTime = new \DateTime($value);
+        }
+
         $dateTime->modify($this->offset . ' hour');
 
-        $recordToHandle->setValue($this->field, $dateTime->format('Y-m-d H:i:s'));
+        if ($isTypeInt) {
+            $value = $dateTime->getTimestamp();
+        } else {
+            $value = $dateTime->format(\Magento\Framework\DB\Adapter\Pdo\Mysql::TIMESTAMP_FORMAT);
+        }
+
+        $recordToHandle->setValue($this->field, $value);
     }
 
     /**
@@ -58,7 +88,8 @@ class Timezone extends AbstractHandler implements HandlerInterface
     {
         $offsetInt  = $this->offset;
 
-        if (in_array($sign = substr($this->offset, 0, 1), [self::SIGN_PLUS, self::SIGN_MINUS])) {
+        $sign = substr($this->offset, 0, 1);
+        if (in_array($sign, [self::SIGN_PLUS, self::SIGN_MINUS])) {
             $offsetInt = substr($this->offset, 1, strlen($this->offset) - 1);
         } else {
             $sign = self::SIGN_PLUS;
@@ -70,6 +101,11 @@ class Timezone extends AbstractHandler implements HandlerInterface
                 'Offset can have value between '
                 . '"' . self::MIN_OFFSET . '" and "' . self::SIGN_PLUS . self::MAX_OFFSET . '""'
             );
+        }
+
+        $fieldType = $record->getStructure()->getFields()[$this->field]['DATA_TYPE'];
+        if (!in_array($fieldType, $this->supportedDatatypes)) {
+            throw new Exception('Provided datatype for field "' . $this->field . '" is not supported');
         }
 
         parent::validate($record);
