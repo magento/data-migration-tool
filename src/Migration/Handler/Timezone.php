@@ -5,7 +5,6 @@
  */
 namespace Migration\Handler;
 
-use Magento\TestFramework\Db\Adapter\Mysql;
 use Migration\ResourceModel\Record;
 use Migration\Exception;
 
