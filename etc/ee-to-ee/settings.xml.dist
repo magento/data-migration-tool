@@ -284,9 +284,6 @@
             <path>catalog/merchandiser/ajax_page_load</path>
         </ignore>
         <ignore>
-            <path>catalog/merchandiser/attribute_codes</path>
-        </ignore>
-        <ignore>
             <path>catalog/merchandiser/column_count</path>
         </ignore>
         <ignore>
@@ -300,9 +297,6 @@
         </ignore>
         <ignore>
             <path>catalog/merchandiser/hide_product_position_field</path>
-        </ignore>
-        <ignore>
-            <path>catalog/merchandiser/new_products_handler</path>
         </ignore>
         <ignore>
             <path>catalog/merchandiser/rebuild_on_categorysave</path>
@@ -1915,6 +1909,14 @@
 		<transform>
 			<path>payment_services/centinel/password</path>
             <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
+        <transform>
+            <path>catalog/merchandiser/attribute_codes</path>
+            <handler class="\Migration\Handler\Settings\VisualMerchandiserAttribute"/>
+        </transform>
+        <transform>
+            <path>catalog/merchandiser/new_products_handler</path>
+            <handler class="\Migration\Handler\Settings\VisualMerchandiserInsertMode"/>
         </transform>
     </value>
 </settings>

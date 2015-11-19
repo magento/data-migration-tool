@@ -78,6 +78,11 @@
             <data>Migration\Step\SalesIncrement\Data</data>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
+        <step title="VisualMerchandiser Step">
+            <integrity>Migration\Step\VisualMerchandiser\Integrity</integrity>
+            <data>Migration\Step\VisualMerchandiser\Data</data>
+            <volume>Migration\Step\VisualMerchandiser\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Custom Customer Attributes Step">
@@ -131,6 +136,9 @@
         <customer_attr_document_groups_file>etc/ee-to-ee/customer-attr-document-groups.xml.dist</customer_attr_document_groups_file>
         <order_grids_document_groups_file>etc/ee-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <class_map>etc/ee-to-ee/class-map.xml.dist</class_map>
+        <visual_merchandiser_map>etc/ee-to-ee/visual_merchandiser_map.xml.dist</visual_merchandiser_map>
+        <visual_merchandiser_document_groups>etc/ee-to-ee/visual_merchandiser_document_groups.xml.dist</visual_merchandiser_document_groups>
+        <visual_merchandiser_attribute_groups>etc/ee-to-ee/visual_merchandiser_attribute_groups.xml.dist</visual_merchandiser_attribute_groups>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->

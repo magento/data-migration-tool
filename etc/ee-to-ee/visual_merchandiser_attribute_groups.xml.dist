@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+    <group name="catalog_category_entity">
+        <attribute>automatic_sorting</attribute>
+    </group>
+    <group name="catalog_category_entity_varchar">
+        <attribute>value_id</attribute>
+        <attribute>attribute_id</attribute>
+        <attribute>store_id</attribute>
+        <attribute>entity_id</attribute>
+        <attribute>value</attribute>
+    </group>
+</groups>
