@@ -47,7 +47,6 @@
         <document key="item_id">downloadable_link_purchased_item</document>
         <document key="gift_message_id">gift_message</document>
         <document key="address_item_id">sales_flat_quote_address_item</document>
-        <document key="entity_store_id">eav_entity_store</document>
         <document key="tax_id">sales_order_tax</document>
         <document key="tax_item_id">sales_order_tax_item</document>
         <document key="reward_id">enterprise_reward</document>
@@ -106,5 +105,8 @@
         <document key="entity_id">enterprise_sales_invoice_grid_archive</document>
         <document key="entity_id">enterprise_sales_shipment_grid_archive</document>
         <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
+    </group>
+    <group name="delta_sales_sequence">
+         <document key="entity_store_id">eav_entity_store</document>
     </group>
 </groups>

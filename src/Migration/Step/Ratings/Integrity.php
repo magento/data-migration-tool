@@ -66,7 +66,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ) {
             $this->logger->error(
                 sprintf(
-                    'Integrity check failed due to "%s" or "%s" documents do not exist in the destination resource',
+                    '"%s" or "%s" documents do not exist in the destination resource',
                     self::RATING_TABLE_NAME,
                     self::RATING_STORE_TABLE_NAME
                 )
@@ -78,7 +78,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         if (!array_key_exists('is_active', $structureRating)) {
             $this->logger->error(
                 sprintf(
-                    'Integrity check failed due to "is_active" field does not exist in "%s" document of'
+                    '"is_active" field does not exist in "%s" document of'
                     . ' the destination resource',
                     self::RATING_TABLE_NAME
                 )
