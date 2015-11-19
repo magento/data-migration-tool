@@ -95,10 +95,6 @@
         <to>Magento\Catalog\Model\Product\Attribute\Backend\Boolean</to>
     </rename>
     <rename>
-        <from>catalog/product_attribute_backend_groupprice</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\GroupPrice</to>
-    </rename>
-    <rename>
         <from>catalog/product_attribute_backend_media</from>
         <to>Magento\Catalog\Model\Product\Attribute\Backend\Media</to>
     </rename>
@@ -517,9 +513,5 @@
     <rename>
         <from>eav/entity_attribute_frontend_default</from>
         <to>Magento\Eav\Model\Entity\Attribute\Frontend\DefaultFrontend</to>
-    </rename>
-    <rename>
-        <from>catalog/product_attribute_backend_groupprice</from>
-        <to />
     </rename>
 </classmap>
