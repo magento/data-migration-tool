@@ -1478,6 +1478,12 @@
             <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
+            <ignore>
+                <datatype>enterprise_catalogevent_event.date_start</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_catalogevent_event.date_end</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2071,6 +2077,12 @@
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_catalogevent_event.date_start</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_catalogevent_event.date_end</datatype>
             </ignore>
         </field_rules>
     </destination>
