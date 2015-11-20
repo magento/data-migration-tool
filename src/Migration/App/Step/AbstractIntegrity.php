@@ -193,7 +193,7 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkForErrors()
     {
         if (!$this->hasMappedDocuments) {
-            $this->logger->error('Mapped documents not found. Check your configuration.');
+            $this->logger->error('Mapped documents are missing or not found. Check your configuration.');
             return false;
         }
         $checkMissingDocuments = $this->checkMissingDocuments();
@@ -211,7 +211,7 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Source documents not mapped: %s',
+                'Source documents are missing or not mapped: %s',
                 implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
             ));
         }
@@ -219,7 +219,7 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Destination documents not mapped: %s',
+                'Destination documents are missing or not mapped: %s',
                 implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
@@ -236,7 +236,7 @@ abstract class AbstractIntegrity implements StageInterface
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $this->logger->error(sprintf(
-                    'Source fields not mapped. Document: %s. Fields: %s',
+                    'Source fields are missing or not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));
@@ -247,7 +247,7 @@ abstract class AbstractIntegrity implements StageInterface
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
                 $this->logger->error(sprintf(
-                    'Destination fields not mapped. Document: %s. Fields: %s',
+                    'Destination fields are missing or not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));

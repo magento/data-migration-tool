@@ -1342,6 +1342,10 @@
                 <field>catalog_product_entity_media_gallery.value_id</field>
                 <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
             </transform>
+            <transform>
+                <field>enterprise_giftregistry_type.meta_xml</field>
+                <handler class="\Migration\Handler\ConvertDateFormat"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>

@@ -63,6 +63,11 @@
             <data>Migration\Step\TierPrice\Data</data>
             <volume>Migration\Step\TierPrice\Volume</volume>
         </step>
+        <step title="SalesIncrement Step">
+            <integrity>Migration\Step\SalesIncrement\Integrity</integrity>
+            <data>Migration\Step\SalesIncrement\Data</data>
+            <volume>Migration\Step\SalesIncrement\Volume</volume>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Customer Attributes Step">
@@ -80,6 +85,10 @@
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGrids\Delta</delta>
             <volume>Migration\Step\OrderGrids\Volume</volume>
+        </step>
+        <step title="SalesIncrement Step">
+            <delta>Migration\Step\SalesIncrement\Delta</delta>
+            <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
     </steps>
     <source>

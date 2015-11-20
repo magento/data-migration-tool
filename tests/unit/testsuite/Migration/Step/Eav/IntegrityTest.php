@@ -163,7 +163,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->willReturn($document);
 
         $this->logger->expects($this->once())->method('error')
-            ->with('Source documents not mapped: source_document');
+            ->with('Source documents are missing or not mapped: source_document');
         $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
             ->willReturn(['source_document' => 0, 'common_document' => 1]);
 

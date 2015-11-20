@@ -38,6 +38,7 @@ class Config
         ValidationState $validationState
     ) {
         $this->validationState = $validationState;
+        date_default_timezone_set('UTC');
     }
 
     /**
