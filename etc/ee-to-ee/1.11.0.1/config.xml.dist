@@ -68,11 +68,6 @@
             <data>Migration\Step\OrderGridsEE\Data</data>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>
         </step>
-        <step title="Tier Price Step">
-            <integrity>Migration\Step\TierPrice\Integrity</integrity>
-            <data>Migration\Step\TierPrice\Data</data>
-            <volume>Migration\Step\TierPrice\Volume</volume>
-        </step>
         <step title="SalesIncrement Step">
             <integrity>Migration\Step\SalesIncrement\Integrity</integrity>
             <data>Migration\Step\SalesIncrement\Data</data>

@@ -654,12 +654,6 @@
                 <document>core_website</document>
             </ignore>
             <ignore>
-                <document>catalog_product_entity_group_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_tier_price</document>
-            </ignore>
-            <ignore>
                 <document>enterprise_admin_passwords</document>
             </ignore>
             <rename>
@@ -1850,9 +1844,6 @@
                 <document>captcha_log</document>
             </ignore>
             <ignore>
-                <document>catalog_product_entity_group_price</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_index_group_price</document>
             </ignore>
             <ignore>
@@ -1941,9 +1932,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_video</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
                 <document>customer_grid_flat</document>

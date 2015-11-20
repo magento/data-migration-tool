@@ -9,6 +9,9 @@
     <source>
         <document_rules>
             <ignore>
+                <document>find_feed_import_codes</document>
+            </ignore>
+            <ignore>
                 <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
@@ -496,12 +499,6 @@
             </ignore>
             <ignore>
                 <document>strikeiron_tax_rate</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_group_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_tier_price</document>
             </ignore>
             <rename>
                 <document>catalogsearch_query</document>
@@ -1289,9 +1286,6 @@
                 <document>captcha_log</document>
             </ignore>
             <ignore>
-                <document>catalog_product_entity_group_price</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_index_group_price</document>
             </ignore>
             <ignore>
@@ -1356,9 +1350,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_video</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
                 <document>customer_grid_flat</document>
