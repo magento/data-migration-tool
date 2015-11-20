@@ -193,7 +193,7 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkForErrors()
     {
         if (!$this->hasMappedDocuments) {
-            $this->logger->error('Mapped documents not found. Check your configuration.');
+            $this->logger->error('Mapped documents are missing or not found. Check your configuration.');
             return false;
         }
         $checkMissingDocuments = $this->checkMissingDocuments();
@@ -264,7 +264,7 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE])) {
             foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $this->logger->warning(sprintf(
-                    'Mismatch in data types. Source document: %s. Fields: %s',
+                    'Mismatch of data types. Source document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));
@@ -273,7 +273,7 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_DEST])) {
             foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_DEST] as $document => $fields) {
                 $this->logger->warning(sprintf(
-                    'Mismatch in data types. Destination document: %s. Fields: %s',
+                    'Mismatch of data types. Destination document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));
