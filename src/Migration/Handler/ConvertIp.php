@@ -34,6 +34,7 @@ class ConvertIp extends AbstractHandler implements HandlerInterface
 
         $value = $recordToHandle->getValue($this->field);
         if (!$value) {
+            $recordToHandle->setValue($this->field, 0);
             return;
         }
         $newValue = $this->isIpPacked ? ip2long(inet_ntop($value)) : ip2long($value);
