@@ -53,6 +53,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
 
     /**
      * @param int $value
+     * @return void
      */
     public function setForeignKeyChecks($value)
     {
