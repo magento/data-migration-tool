@@ -147,6 +147,7 @@ abstract class AbstractDelta implements StageInterface
      */
     protected function processDeletedRecords($documentName, $idKey, $destinationName)
     {
+        $this->destination->getAdapter()->setForeignKeyChecks(1);
         while (!empty($items = $this->source->getDeletedRecords($documentName, $idKey))) {
             $this->destination->deleteRecords(
                 $this->destination->addDocumentPrefix($destinationName),
@@ -157,6 +158,7 @@ abstract class AbstractDelta implements StageInterface
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
             $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
         }
+        $this->destination->getAdapter()->setForeignKeyChecks(0);
     }
 
     /**

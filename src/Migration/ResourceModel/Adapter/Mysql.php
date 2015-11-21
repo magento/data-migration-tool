@@ -47,8 +47,17 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     ) {
         $configData['config'] = $config;
         $this->resourceAdapter = $adapterFactory->create($configData);
-        $this->resourceAdapter->query('SET FOREIGN_KEY_CHECKS=0;');
+        $this->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
+    }
+
+    /**
+     * @param int $value
+     */
+    public function setForeignKeyChecks($value)
+    {
+        $value = (int) $value;
+        $this->resourceAdapter->query("SET FOREIGN_KEY_CHECKS={$value};");
     }
 
     /**
