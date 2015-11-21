@@ -3,8 +3,7 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-
-namespace Migration\Step\VisualMerchandiser\Handler;
+namespace Migration\Handler\VisualMerchandiser;
 
 use Migration\Handler\AbstractHandler;
 use Migration\ResourceModel\Record;
@@ -14,6 +13,9 @@ class SmartAttribute extends AbstractHandler
     const ATTRIBUTE_CODE_NAME = 'attribute_codes';
     const ATTRIBUTE_VALUE_NAME = 'smart_attributes';
 
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $count = 0;
@@ -36,9 +38,13 @@ class SmartAttribute extends AbstractHandler
         }
     }
 
+    /**
+     * @param string $attribute
+     * @return array
+     */
     protected function parseOperator($attribute)
     {
-        $response = [];
+        $result = [];
         $possibleValues = [
             'gte'   => '>=',
             'lte'   => '<=',
@@ -50,15 +56,15 @@ class SmartAttribute extends AbstractHandler
         ];
         foreach ($possibleValues as $operator => $value) {
             if (strpos($attribute, $value) !== false) {
-                $response['operator'] = $operator;
-                $response['value'] = trim(str_replace($value, "", $attribute));
+                $result['operator'] = $operator;
+                $result['value'] = trim(str_replace($value, "", $attribute));
             }
         }
-        if (empty($response)) {
-            $response['operator'] = 'eq';
-            $response['value'] = $attribute;
+        if (empty($result)) {
+            $result['operator'] = 'eq';
+            $result['value'] = $attribute;
         }
 
-        return $response;
+        return $result;
     }
 }

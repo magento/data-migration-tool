@@ -175,7 +175,7 @@ class Helper
     }
 
     /**
-     * @param $name
+     * @param string $name
      * @return void
      * @throws \Migration\Exception
      */

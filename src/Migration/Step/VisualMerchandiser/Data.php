@@ -17,6 +17,7 @@ use Migration\Logger\Logger;
 
 /**
  * Class Data
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Data extends \Migration\Step\DatabaseStage implements StageInterface
 {
@@ -81,6 +82,8 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Helper $helper
+     * @param \Migration\Config $config
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
@@ -91,7 +94,8 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        \Migration\Step\VisualMerchandiser\Helper $helper
+        \Migration\Step\VisualMerchandiser\Helper $helper,
+        \Migration\Config $config
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -102,8 +106,12 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $this->readerGroups = $groupsFactory->create('visual_merchandiser_document_groups');
         $this->logger = $logger;
         $this->helper = $helper;
+        parent::__construct($config);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function perform()
     {
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
@@ -157,19 +165,5 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $this->helper->updateEavAttributes();
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
-    }
-
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $iterations = 0;
-        foreach (array_keys($this->readerGroups->getGroup('source_documents')) as $document) {
-            $iterations += $this->source->getRecordsCount($document);
-        }
-        return $iterations;
     }
 }

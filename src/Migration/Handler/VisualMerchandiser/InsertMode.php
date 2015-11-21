@@ -3,13 +3,16 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Handler\Settings;
+namespace Migration\Handler\VisualMerchandiser;
 
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
-class VisualMerchandiserInsertMode extends AbstractHandler
+class InsertMode extends AbstractHandler
 {
+    /**
+     * {@inheritdoc}
+     */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $valueMap = [

@@ -3,12 +3,12 @@
  * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Handler\Settings;
+namespace Migration\Handler\VisualMerchandiser;
 
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
-class VisualMerchandiserAttribute extends AbstractHandler
+class Attribute extends AbstractHandler
 {
     const DESTINATION_DEFAULT_SKU_ATTRIBUTE = "SKU";
 
