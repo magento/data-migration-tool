@@ -315,7 +315,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             []
         )->group(['request_path', 'cps.store_id']);
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
-        $this->destination->saveRecords($this->source->addDocumentPrefix(self::DESTINATION), $urlRewrites);
+        $this->destination->saveRecords(self::DESTINATION, $urlRewrites);
     }
 
     /**
