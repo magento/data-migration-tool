@@ -7,7 +7,7 @@ namespace Migration\Step\Map;
 
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 class VolumeTest extends \PHPUnit_Framework_TestCase
 {
@@ -22,12 +22,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -41,9 +41,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $volume;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['warning'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -52,14 +55,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getDocumentList', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount'],
             [],
             '',
@@ -83,6 +86,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocName = 'core_config_data';
@@ -94,6 +100,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformIgnored()
     {
         $sourceDocName = 'core_config_data';
@@ -105,6 +114,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->volume->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailed()
     {
         $sourceDocName = 'core_config_data';
@@ -113,7 +125,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
-        $this->logger->expects($this->once())->method('warning')->with(
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
             'Mismatch of entities in the document: ' . $dstDocName
         );
         $this->assertFalse($this->volume->perform());

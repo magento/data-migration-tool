@@ -13,6 +13,10 @@ namespace Migration\Step\Map;
 class IntegrityTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrityWithMap()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -43,6 +47,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse(isset($logOutput[\Monolog\Logger::ERROR]));
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrityWithoutMap()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
@@ -68,16 +76,16 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         ob_end_clean();
 
         $messages = [];
-        $messages[] = 'Source documents not mapped: ';
+        $messages[] = 'Source documents are missing or not mapped: ';
         $messages[] = 'source_table_1,source_table_2,source_table_ignored,source_table_renamed,table_with_data';
 
-        $messages[] = 'Destination documents not mapped: ';
+        $messages[] = 'Destination documents are missing or not mapped: ';
         $messages[] = 'dest_table_1,dest_table_2,dest_table_ignored,dest_table_renamed,table_without_data';
 
-        $messages[] = 'Source fields not mapped. ';
+        $messages[] = 'Source fields are missing or not mapped. ';
         $messages[] = 'Document: common_table. Fields: source_field_ignored';
 
-        $messages[] = 'Destination fields not mapped. ';
+        $messages[] = 'Destination fields are missing or not mapped. ';
         $messages[] = 'Document: common_table. Fields: dest_field_ignored';
 
         $logOutput = \Migration\Logger\Logger::getMessages();

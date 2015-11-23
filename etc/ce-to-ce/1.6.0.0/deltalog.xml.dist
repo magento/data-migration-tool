@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+    <group name="delta_map">
+        <document key="catalog_compare_item_id">catalog_compare_item</document>
+        <document key="item_id">cataloginventory_stock_item</document>
+        <document key="subscriber_id">newsletter_subscriber</document>
+        <document key="entity_id">sales_flat_quote</document>
+        <document key="address_id">sales_flat_quote_address</document>
+        <document key="item_id">sales_flat_quote_item</document>
+        <document key="option_id">sales_flat_quote_item_option</document>
+        <document key="rate_id">sales_flat_quote_shipping_rate</document>
+        <document key="payment_id">sales_flat_quote_payment</document>
+        <document key="entity_id">sales_flat_order_address</document>
+        <document key="item_id">sales_flat_order_item</document>
+        <document key="entity_id">sales_flat_order_payment</document>
+        <document key="entity_id">sales_flat_order_status_history</document>
+        <document key="entity_id">sales_flat_order_grid</document>
+        <document key="wishlist_id">wishlist</document>
+        <document key="wishlist_item_id">wishlist_item</document>
+        <document key="option_id">wishlist_item_option</document>
+        <document key="index_id">report_viewed_product_index</document>
+        <document key="index_id">report_compared_product_index</document>
+        <document key="event_id">report_event</document>
+        <document key="review_id">review</document>
+        <document key="detail_id">review_detail</document>
+        <document key="review_id">review_store</document>
+        <document key="vote_id">rating_option_vote</document>
+        <document key="primary_id">rating_option_vote_aggregated</document>
+        <document key="primary_id">review_entity_summary</document>
+        <document key="entity_id">sales_flat_shipment</document>
+        <document key="entity_id">sales_flat_shipment_item</document>
+        <document key="entity_id">sales_flat_shipment_track</document>
+        <document key="entity_id">sales_flat_shipment_grid</document>
+        <document key="entity_id">sales_flat_creditmemo</document>
+        <document key="entity_id">sales_flat_creditmemo_item</document>
+        <document key="entity_id">sales_flat_creditmemo_grid</document>
+        <document key="entity_id">sales_flat_invoice</document>
+        <document key="entity_id">sales_flat_invoice_item</document>
+        <document key="entity_id">sales_flat_invoice_grid</document>
+        <document key="purchased_id">downloadable_link_purchased</document>
+        <document key="item_id">downloadable_link_purchased_item</document>
+        <document key="gift_message_id">gift_message</document>
+        <document key="address_item_id">sales_flat_quote_address_item</document>
+        <document key="entity_store_id">eav_entity_store</document>
+        <document key="tax_id">sales_order_tax</document>
+        <document key="entity_id">sales_flat_order</document>
+    </group>
+    <group name="delta_log">
+        <document key="visitor_id">log_visitor</document>
+    </group>
+    <group name="delta_customer">
+        <document key="entity_id">customer_entity</document>
+        <document key="value_id">customer_entity_datetime</document>
+        <document key="value_id">customer_entity_decimal</document>
+        <document key="value_id">customer_entity_int</document>
+        <document key="value_id">customer_entity_text</document>
+        <document key="value_id">customer_entity_varchar</document>
+        <document key="entity_id">customer_address_entity</document>
+        <document key="value_id">customer_address_entity_datetime</document>
+        <document key="value_id">customer_address_entity_decimal</document>
+        <document key="value_id">customer_address_entity_int</document>
+        <document key="value_id">customer_address_entity_text</document>
+        <document key="value_id">customer_address_entity_varchar</document>
+    </group>
+</groups>

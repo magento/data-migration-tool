@@ -28,12 +28,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -47,6 +47,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $map;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')
@@ -56,10 +59,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->source = $this->getMockBuilder('\Migration\Resource\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder('\Migration\ResourceModel\Source')->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->destination = $this->getMockBuilder('\Migration\Resource\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder('\Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
@@ -93,6 +96,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithoutError()
     {
         $fields = ['field1' => ['DATA_TYPE' => 'int']];
@@ -105,11 +111,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->atLeastOnce())->method('getFieldMap')->willReturn('field1');
         $this->map->expects($this->atLeastOnce())->method('isDocumentIgnored')->willReturn(false);
 
-        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
 
-        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
@@ -127,6 +133,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->integrity->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformWithError()
     {
         $fields = ['field1' => ['DATA_TYPE' => 'int']];
@@ -138,11 +147,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
                 ['common_document', MapInterface::TYPE_DEST, 'common_document'],
             ]
         ) ;
-        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
 
-        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
         $this->source->expects($this->atLeastOnce())->method('getDocumentList')
@@ -154,7 +163,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->willReturn($document);
 
         $this->logger->expects($this->once())->method('error')
-            ->with('Source documents not mapped: source_document');
+            ->with('Source documents are missing or not mapped: source_document');
         $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
             ->willReturn(['source_document' => 0, 'common_document' => 1]);
 

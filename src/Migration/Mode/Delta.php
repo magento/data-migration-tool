@@ -11,8 +11,8 @@ use Migration\Logger\Logger;
 use Migration\Exception;
 use Migration\App\Mode\StepList;
 use Migration\Reader\Groups;
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Delta
@@ -64,20 +64,6 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
         $this->autoRestart = $autoRestart;
         $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
         parent::__construct($progress, $logger, $stepListFactory);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Delta mode usage information:
-
- Migrates delta data that appears after main data migration
-
-USAGE;
     }
 
     /**

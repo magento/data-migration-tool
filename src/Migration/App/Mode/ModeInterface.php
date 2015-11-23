@@ -16,11 +16,4 @@ interface ModeInterface
      * @return bool
      */
     public function run();
-
-    /**
-     * Returns usage help
-     *
-     * @return string
-     */
-    public function getUsageHelp();
 }

@@ -7,8 +7,8 @@ namespace Migration\Handler\Rule;
 
 use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Record;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Source;
 
 /**
  * Class ConditionSqlTest
@@ -28,6 +28,9 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
     /** @var  Map|\PHPUnit_Framework_MockObject_MockObject */
     protected $map;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         /** @var Map|\PHPUnit_Framework_MockObject_MockObject $map */
@@ -40,11 +43,11 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         /** @var Source|\PHPUnit_Framework_MockObject_MockObject $source */
-        $this->source = $this->getMockBuilder('Migration\Resource\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
             ->setMethods(['getDocumentList', 'addDocumentPrefix'])
             ->getMock();
-        /** @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
-        $destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
+        /** @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
+        $destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['addDocumentPrefix'])
             ->getMock();
         $destination->expects($this->any())->method('addDocumentPrefix')->will($this->returnCallback(function ($value) {
@@ -54,15 +57,20 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
         $this->handler = new ConditionSql($mapFactory, $this->source, $destination);
     }
 
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record $oppositeRecord|\PHPUnit_Framework_MockObject_MockObject */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $fieldName = 'fieldname';
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));

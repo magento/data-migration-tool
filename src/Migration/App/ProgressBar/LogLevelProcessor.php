@@ -103,6 +103,7 @@ class LogLevelProcessor
             echo PHP_EOL;
             $max = ($max == 0) ? 1: $max;
             $this->progressBar->start($max);
+            $this->progressBar->setOverwrite(true);
         }
     }
 

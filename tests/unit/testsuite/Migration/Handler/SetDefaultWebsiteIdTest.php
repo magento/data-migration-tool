@@ -7,6 +7,9 @@ namespace Migration\Handler;
 
 class SetDefaultWebsiteIdTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $value = '1';
@@ -21,11 +24,13 @@ class SetDefaultWebsiteIdTest extends \PHPUnit_Framework_TestCase
                 'is_default' => '1'
             ]
         ];
-        /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $recordToHandle = $this->getMock('Migration\Resource\Record', ['setValue', 'getFields'], [], '', false);
-        $recordOpposite = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
-        /** @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject $source */
-        $source = $this->getMock('Migration\Resource\Source', ['getRecords'], [], '', false);
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
+        $recordToHandle = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
+        $recordOpposite = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
+        /** @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject $source */
+        $source = $this->getMock('Migration\ResourceModel\Source', ['getRecords'], [], '', false);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $value);
         $recordToHandle->expects($this->once())->method('getFields')->willReturn([$fieldName]);
         $source->expects($this->once())->method('getRecords')->willReturn($records);

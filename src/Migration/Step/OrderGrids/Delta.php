@@ -9,19 +9,19 @@ use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
-use Migration\Resource;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel;
 
 class Delta implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -134,7 +134,7 @@ class Delta implements StageInterface
     protected function markRecordsProcessed($documentName, $idKey, $ids)
     {
         $ids = implode("','", $ids);
-        /** @var Resource\Adapter\Mysql $adapter */
+        /** @var ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
     }

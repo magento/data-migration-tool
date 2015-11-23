@@ -12,17 +12,9 @@ Magento 2 migration involves four components: data, extensions, themes, and cust
 *	Themes and Customizations: Magento 2 uses new approaches and technologies that give merchants an unmatched ability to create innovative shopping experiences and scale to new levels. To take advantage of these advances, developers will need to make changes to their themes and customizations. Documentation is available online for creating Magento 2 <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/themes/theme-general.html">themes</a>, <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/layouts/layout-overview.html">layouts</a>, and <a href="http://devdocs.magento.com/guides/v1.0/frontend-dev-guide/layouts/xml-manage.html">customizations</a>.
 
 ### Supported versions
-Currently we support the following versions for migration:
+This edition of tool supports the following versions for migration:
 
-*	1.9.1.0
-
-We plan to support:
-
-* 	1.6.x, 1.7.x, 1.8.x, and 1.9.x
-
-Also the following versions are already supported if You choose to migrate to EE:
-
-* 	1.7.0.0, 1.7.0.1, 1.7.0.2, 1.9.0.0, 1.9.0.1
+*	Community Edition (CE) version 1.6.x, 1.7.x, 1.8.x, 1.9.x
 
 ## Prerequisites
 Before you start your migration, you must do all of the following:
@@ -46,9 +38,9 @@ Before you start your migration, you must do all of the following:
 	Reach out to your extension providers to see if they have been ported yet.
 
 ## Install the Data Migration Tool
-This section discusses how to install the Magento Data Migration Tool. You can install it from either <a href="http://packages.magento.com/#magento/data-migration-tool" target="_blank">packages.magento.com</a> or from a GitHub repository.
+This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
 
-**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 0.74-beta8). To find the version of either package, open `composer.json` and find the value of `"version"`.
+**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.0.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
 
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
@@ -62,19 +54,16 @@ To install the migration tool from GitHub, use the following steps:
 
 3.	Wait while dependencies are updated.
 
-### Install the tool from packages.magento.com
+### Install the tool from repo.magento.com
 To install the Data Migration Tool, you must update `composer.json` in the Magento root installation directory to provide the location of the migration tool package. 
-
-Sample data is versioned like Magento code. Before you begin, you can either:
-
-*	Find the exact version you want at <a href="http://packages.magento.com/#magento/data-migration-tool" target="_blank">packages.magento.com</a>.
-*	Install the latest version using Composer <a href="https://getcomposer.org/doc/01-basic-usage.md#next-significant-release-tilde-and-caret-operators-" target="_blank">next significant release syntax</a>.
 
 To install the migration tool, you must:
 
 1.	Decide the version of `magento/data-migration-tool` you want as discussed in the preceding section.
 
 2.	Run the `composer config` and `composer require` commands to update `composer.json`.
+
+3.  When prompted, enter your <a href="http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html" target="_blank">authentication keys</a>. Your public key is your username; your private key is your password.
 
 To update `composer.json`:
 
@@ -84,9 +73,9 @@ To update `composer.json`:
 
 7.	Enter the following command to reference Magento packages in `composer.json`:
 
-		composer config repositories.magento composer http://packages.magento.com
+		composer config repositories.magento composer http://repo.magento.com
 
-8.	Enter the following command to require the current version of the sample data package:
+8.	Enter the following command to require the current version of the package:
 
 		composer require magento/data-migration-tool:<version>
 
@@ -94,11 +83,11 @@ To update `composer.json`:
 
 	Exact version example:
 
-		composer require magento/data-migration-tool:0.74.0-beta8
+		composer require magento/data-migration-tool:2.0.0
 
 	Next significant release example:
 
-		composer require magento/data-migration-tool:~0.74.0-beta8
+		composer require magento/data-migration-tool:~2.0.0
 
 9.	Wait while dependencies are installed.
 

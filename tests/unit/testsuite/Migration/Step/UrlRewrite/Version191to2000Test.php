@@ -28,25 +28,28 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
     /**
-     * @var \Migration\Resource\Record\Collection|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Record\Collection|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordCollection;
 
     /**
-     * @var \Migration\Resource\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
@@ -63,18 +66,38 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             'type' => 'database',
             'version' => '1.9'
         ]);
-        $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\Resource\Destination', [], [], '', false);
+        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+
+        $select = $this->getMockBuilder('Magento\Framework\DB\Select')
+            ->setMethods(['from', 'joinLeft'])
+            ->disableOriginalConstructor()
+            ->getMock();
+
+        $select->expects($this->any())->method('from')->willReturnSelf();
+        $select->expects($this->any())->method('joinLeft')->willReturnSelf();
+
+        $sourceAdapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
+            ->setMethods(['getSelect', 'loadDataFromSelect'])
+            ->getMock();
+
+        $sourceAdapter->expects($this->any())->method('getSelect')->willReturn($select);
+
+        $this->source->expects($this->any())->method('getAdapter')->willReturn($sourceAdapter);
+
+        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
         $this->recordCollection = $this->getMock(
-            '\Migration\Resource\Record\Collection',
+            '\Migration\ResourceModel\Record\Collection',
             ['addRecord'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
     }
 
+    /**
+     * @return void
+     */
     public function testRollback()
     {
         $version = new \Migration\Step\UrlRewrite\Version191to2000(
@@ -89,12 +112,16 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($version->rollback());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testIntegrity()
     {
         $this->progress->expects($this->at(0))
             ->method('start')
             ->with($this->equalTo(1));
-        $sourceStructure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $sourceStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()
             ->getMock();
         $sourceStructure->expects($this->once())
@@ -115,7 +142,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('getStructure')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceStructure);
-        $destinationStructure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $destinationStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()
             ->getMock();
         $destinationStructure->expects($this->once())
@@ -155,30 +182,38 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->assertTrue($version->perform());
     }
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testData()
     {
+        $countCmsPageRewrites = 1;
+        $recordsAmount = 123;
+        $progressRecordsAmount = $recordsAmount + $countCmsPageRewrites;
+
         $this->source->expects($this->once())
             ->method('getRecordsCount')
-            ->willReturn(123);
+            ->willReturn($recordsAmount);
         $this->progress->expects($this->at(0))
             ->method('start')
-            ->with($this->equalTo(123));
+            ->with($this->equalTo($progressRecordsAmount));
 
-        $sourceDocument = $this->getMockBuilder('\Migration\Resource\Document')
+        $sourceDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->disableOriginalConstructor()
             ->getMock();
         $this->source->expects($this->once())
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceDocument);
-        $destinationDocument = $this->getMockBuilder('\Migration\Resource\Document')
+        $destinationDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->disableOriginalConstructor()
             ->getMock();
         $this->destination->expects($this->at(0))
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION))
             ->willReturn($destinationDocument);
-        $destinationProductCategory = $this->getMockBuilder('\Migration\Resource\Document')
+        $destinationProductCategory = $this->getMockBuilder('\Migration\ResourceModel\Document')
             ->setMethods(['setValue', 'getRecords'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -199,7 +234,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE), $this->equalTo(0))
             ->willReturn(['RecordData1']);
 
-        $sourceRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $sourceRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -208,7 +243,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $sourceDocument, 'data' => 'RecordData1']))
             ->willReturn($sourceRecord);
 
-        $destinationRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $destinationRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -217,7 +252,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $destinationDocument]))
             ->willReturn($destinationRecord);
 
-        $destinationCategoryRecord = $this->getMockBuilder('\Migration\Resource\Record')
+        $destinationCategoryRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -253,6 +288,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $sourceRecord
+     * @return void
      */
     private function mockSourceRecordGetters($sourceRecord)
     {
@@ -273,6 +309,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $destinationRecord
+     * @return void
      */
     private function mockDestinationRecordSetters($destinationRecord)
     {
@@ -319,6 +356,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
     /**
      * @param \PHPUnit_Framework_MockObject_MockObject $destinationCategoryRecord
+     * @return void
      */
     private function mockDestinationCategorySetters($destinationCategoryRecord)
     {

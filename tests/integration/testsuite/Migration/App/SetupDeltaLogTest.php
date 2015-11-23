@@ -12,14 +12,17 @@ namespace Migration\App;
 class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @return void
+     */
     public function testSetupTriggers()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
         $objectManager->get('\Migration\Config')
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
-        /** @var \Migration\Resource\Source $source */
-        $source = $objectManager->create('\Migration\Resource\Source');
+        /** @var \Migration\ResourceModel\Source $source */
+        $source = $objectManager->create('\Migration\ResourceModel\Source');
         /** @var \Migration\App\SetupDeltaLog $setupDeltaLog */
         $setupDeltaLog = $objectManager->create(
             '\Migration\App\SetupDeltaLog'
@@ -76,7 +79,8 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 
     /**
      * @param string $dataTable
-     * @param \Migration\Resource\Source $resource
+     * @param \Migration\ResourceModel\Source $resource
+     * @return void
      */
     protected function checkDeltaLogTable($dataTable, $resource)
     {

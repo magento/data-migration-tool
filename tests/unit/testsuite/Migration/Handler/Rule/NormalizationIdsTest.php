@@ -5,9 +5,9 @@
  */
 namespace Migration\Handler\Rule;
 
-use Migration\Resource\Record;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
 
 /**
  * Class NormalizationIdsTest
@@ -39,9 +39,12 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
      */
     protected $normalizationField = 'website_id';
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
-        $this->destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['clearDocument', 'saveRecords'])
             ->getMock();
         $this->handler = new NormalizationIds(
@@ -51,6 +54,9 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $fieldNameRuleId = 'rule_id';
@@ -63,12 +69,14 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
         ];
 
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record $oppositeRecord|\PHPUnit_Framework_MockObject_MockObject */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $recordToHandle->expects($this->once())
             ->method('getFields')

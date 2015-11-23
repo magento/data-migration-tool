@@ -21,19 +21,6 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Settings mode usage information:
-
-Migrates store settings
-USAGE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function run()
     {
         /** @var StepList $steps */

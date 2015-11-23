@@ -9,8 +9,8 @@ use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Source;
-use Migration\Resource;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel;
 
 abstract class AbstractDelta implements StageInterface
 {
@@ -35,12 +35,12 @@ abstract class AbstractDelta implements StageInterface
     protected $logger;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -69,8 +69,8 @@ abstract class AbstractDelta implements StageInterface
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      */
     public function __construct(
@@ -78,8 +78,8 @@ abstract class AbstractDelta implements StageInterface
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory
     ) {
         $this->source = $source;
@@ -134,7 +134,7 @@ abstract class AbstractDelta implements StageInterface
     protected function markRecordsProcessed($documentName, $idKey, $ids)
     {
         $ids = implode("','", $ids);
-        /** @var Resource\Adapter\Mysql $adapter */
+        /** @var ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
     }
@@ -147,6 +147,7 @@ abstract class AbstractDelta implements StageInterface
      */
     protected function processDeletedRecords($documentName, $idKey, $destinationName)
     {
+        $this->destination->getAdapter()->setForeignKeyChecks(1);
         while (!empty($items = $this->source->getDeletedRecords($documentName, $idKey))) {
             $this->destination->deleteRecords(
                 $this->destination->addDocumentPrefix($destinationName),
@@ -157,6 +158,7 @@ abstract class AbstractDelta implements StageInterface
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
             $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
         }
+        $this->destination->getAdapter()->setForeignKeyChecks(0);
     }
 
     /**
@@ -207,10 +209,10 @@ abstract class AbstractDelta implements StageInterface
 
     /**
      * @param array $data
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destDocument
      * @param \Migration\RecordTransformer $recordTransformer
-     * @param Resource\Record\Collection $destinationRecords
+     * @param ResourceModel\Record\Collection $destinationRecords
      * @return void
      */
     protected function transformData($data, $sourceDocument, $destDocument, $recordTransformer, $destinationRecords)
@@ -226,8 +228,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destinationDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destinationDocument
      * @return \Migration\RecordTransformer
      */
     protected function getRecordTransformer($sourceDocument, $destinationDocument)

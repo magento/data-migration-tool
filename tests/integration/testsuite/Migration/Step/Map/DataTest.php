@@ -11,6 +11,10 @@ namespace Migration\Step\Map;
  */
 class DataTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testPerform()
     {
         $progress = $this->getMock(
@@ -31,7 +35,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $logger = $objectManager->create('\Migration\Logger\Logger');
         $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
         $config = $objectManager->get('\Migration\Config');
-        $destination = $objectManager->get('\Migration\Resource\Destination');
+        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();

@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\ConfigurablePrices;
 
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Destination;
 
 /**
  * Class Helper

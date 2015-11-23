@@ -40,7 +40,7 @@
     </rename>
     <rename>
         <from>catalog/category</from>
-        <to>Magento\Catalog\Model\Resource\Category</to>
+        <to>Magento\Catalog\Model\ResourceModel\Category</to>
     </rename>
     <rename>
         <from>catalog/category_attribute_backend_image</from>
@@ -60,7 +60,7 @@
     </rename>
     <rename>
         <from>catalog/category_attribute_collection</from>
-        <to>Magento\Catalog\Model\Resource\Category\Attribute\Collection</to>
+        <to>Magento\Catalog\Model\ResourceModel\Category\Attribute\Collection</to>
     </rename>
     <rename>
         <from>catalog/category_attribute_source_layout</from>
@@ -88,15 +88,11 @@
     </rename>
     <rename>
         <from>catalog/product</from>
-        <to>Magento\Catalog\Model\Resource\Product</to>
+        <to>Magento\Catalog\Model\ResourceModel\Product</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_boolean</from>
         <to>Magento\Catalog\Model\Product\Attribute\Backend\Boolean</to>
-    </rename>
-    <rename>
-        <from>catalog/product_attribute_backend_groupprice</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\GroupPrice</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_media</from>
@@ -132,7 +128,7 @@
     </rename>
     <rename>
         <from>catalog/product_attribute_collection</from>
-        <to>Magento\Catalog\Model\Resource\Product\Attribute\Collection</to>
+        <to>Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection</to>
     </rename>
     <rename>
         <from>catalog/product_attribute_frontend_image</from>
@@ -172,7 +168,7 @@
     </rename>
     <rename>
         <from>catalog/resource_eav_attribute</from>
-        <to>Magento\Catalog\Model\Resource\Eav\Attribute</to>
+        <to>Magento\Catalog\Model\ResourceModel\Eav\Attribute</to>
     </rename>
     <rename>
         <from>catalogrule/rule_action_collection</from>
@@ -204,11 +200,11 @@
     </rename>
     <rename>
         <from>customer/address</from>
-        <to>Magento\Customer\Model\Resource\Address</to>
+        <to>Magento\Customer\Model\ResourceModel\Address</to>
     </rename>
     <rename>
         <from>customer/address_attribute_collection</from>
-        <to>Magento\Customer\Model\Resource\Address\Attribute\Collection</to>
+        <to>Magento\Customer\Model\ResourceModel\Address\Attribute\Collection</to>
     </rename>
     <rename>
         <from>customer/attribute</from>
@@ -220,7 +216,7 @@
     </rename>
     <rename>
         <from>customer/attribute_collection</from>
-        <to>Magento\Customer\Model\Resource\Attribute\Collection</to>
+        <to>Magento\Customer\Model\ResourceModel\Attribute\Collection</to>
     </rename>
     <rename>
         <from>customer/attribute_data_postcode</from>
@@ -228,7 +224,7 @@
     </rename>
     <rename>
         <from>customer/customer</from>
-        <to>Magento\Customer\Model\Resource\Customer</to>
+        <to>Magento\Customer\Model\ResourceModel\Customer</to>
     </rename>
     <rename>
         <from>customer/customer_attribute_backend_billing</from>
@@ -264,7 +260,7 @@
     </rename>
     <rename>
         <from>customer/entity_address_attribute_backend_region</from>
-        <to>Magento\Customer\Model\Resource\Address\Attribute\Backend\Region</to>
+        <to>Magento\Customer\Model\ResourceModel\Address\Attribute\Backend\Region</to>
     </rename>
     <rename>
         <from>customer/entity_address_attribute_backend_street</from>
@@ -272,11 +268,11 @@
     </rename>
     <rename>
         <from>customer/entity_address_attribute_source_country</from>
-        <to>Magento\Customer\Model\Resource\Address\Attribute\Source\Country</to>
+        <to>Magento\Customer\Model\ResourceModel\Address\Attribute\Source\Country</to>
     </rename>
     <rename>
         <from>customer/entity_address_attribute_source_region</from>
-        <to>Magento\Customer\Model\Resource\Address\Attribute\Source\Region</to>
+        <to>Magento\Customer\Model\ResourceModel\Address\Attribute\Source\Region</to>
     </rename>
     <rename>
         <from>eav/entity_attribute_backend_array</from>
@@ -324,19 +320,19 @@
     </rename>
     <rename>
         <from>sales/order</from>
-        <to>Magento\Sales\Model\Resource\Order</to>
+        <to>Magento\Sales\Model\ResourceModel\Order</to>
     </rename>
     <rename>
         <from>sales/order_creditmemo</from>
-        <to>Magento\Sales\Model\Resource\Order\Creditmemo</to>
+        <to>Magento\Sales\Model\ResourceModel\Order\Creditmemo</to>
     </rename>
     <rename>
         <from>sales/order_invoice</from>
-        <to>Magento\Sales\Model\Resource\Order\Invoice</to>
+        <to>Magento\Sales\Model\ResourceModel\Order\Invoice</to>
     </rename>
     <rename>
         <from>sales/order_shipment</from>
-        <to>Magento\Sales\Model\Resource\Order\Shipment</to>
+        <to>Magento\Sales\Model\ResourceModel\Order\Shipment</to>
     </rename>
     <rename>
         <from>sales/widget_guest_form</from>

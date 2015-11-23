@@ -11,8 +11,8 @@ use Migration\Reader\MapInterface;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
-use Migration\Resource;
-use Migration\Resource\Record;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
@@ -24,17 +24,17 @@ use Migration\Logger\Logger;
 class Data implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -64,10 +64,15 @@ class Data implements StageInterface
     protected $logger;
 
     /**
+     * @var AdapterInterface
+     */
+    protected $sourceAdapter;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -75,9 +80,9 @@ class Data implements StageInterface
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
@@ -91,6 +96,7 @@ class Data implements StageInterface
         $this->progress = $progress;
         $this->readerGroups = $groupsFactory->create('log_document_groups_file');
         $this->logger = $logger;
+        $this->sourceAdapter = $this->source->getAdapter();
     }
 
     /**
@@ -109,29 +115,24 @@ class Data implements StageInterface
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
 
-            /** @var \Migration\RecordTransformer $recordTransformer */
-            $recordTransformer = $this->recordTransformerFactory->create(
-                [
-                    'sourceDocument' => $sourceDocument,
-                    'destDocument' => $destDocument,
-                    'mapReader' => $this->map
-                ]
-            );
-            $recordTransformer->init();
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
-            while (!empty($bulk = $this->source->getRecords($sourceDocName, $pageNumber))) {
+
+            $sourceDocumentName = $sourceDocument->getName();
+            /** @var \Magento\Framework\DB\Select $select */
+            $select = $this->getLogDataSelect();
+            while (!empty($bulk = $this->getRecords($sourceDocumentName, $select, $pageNumber))) {
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
                     $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
-                    /** @var Record $record */
-                    $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
-                    $recordTransformer->transform($record, $destRecord);
+                    $destRecord = $this->recordFactory->create([
+                        'document'  => $destDocument,
+                        'data'      => $recordData,
+                    ]);
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
@@ -141,6 +142,48 @@ class Data implements StageInterface
         $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * @param string $sourceDocumentName
+     * @param \Magento\Framework\DB\Select $select
+     * @param int $pageNumber
+     * @return array
+     */
+    protected function getRecords($sourceDocumentName, \Magento\Framework\DB\Select $select, $pageNumber)
+    {
+        $select->limit(
+            $this->source->getPageSize($sourceDocumentName),
+            $pageNumber * $this->source->getPageSize($sourceDocumentName)
+        );
+
+        return $this->sourceAdapter->loadDataFromSelect($select);
+    }
+
+    /**
+     * @return \Magento\Framework\DB\Select
+     */
+    public function getLogDataSelect()
+    {
+
+        $fields = [
+            'visitor_id'    => 'lv.visitor_id',
+            'customer_id'   => 'lc.customer_id',
+            'session_id'    => 'lv.session_id',
+            'last_visit_at' => 'lv.last_visit_at',
+        ];
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->sourceAdapter->getSelect();
+        $select->from(['lv' => $this->source->addDocumentPrefix('log_visitor')], $fields)
+            ->joinLeft(
+                ['lc' => $this->source->addDocumentPrefix('log_customer')],
+                'lv.visitor_id = lc.visitor_id',
+                []
+            )
+            ->group('lv.visitor_id')
+            ->order('lv.visitor_id');
+        
+        return $select;
     }
 
     /**

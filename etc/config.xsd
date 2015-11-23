@@ -97,6 +97,8 @@
             <xs:element name="resource_adapter_class_name" type="xs:string" maxOccurs="1"/>
             <xs:element name="log_file" type="xs:string" maxOccurs="1"/>
             <xs:element name="progress_bar_format" type="xs:string" maxOccurs="1"/>
+            <xs:element name="upgrade_customer_password_hash" type="xs:string" maxOccurs="1"/>
+            <xs:element name="crypt_key" type="xs:string" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:choice>
     </xs:complexType>

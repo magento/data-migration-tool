@@ -5,10 +5,10 @@
  */
 namespace Migration\Step\Customer;
 
-use Migration\Resource\Adapter\Mysql;
-use Migration\Resource;
+use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 class Helper
 {
@@ -18,12 +18,12 @@ class Helper
     protected $documentAttributeTypes;
 
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -53,20 +53,30 @@ class Helper
     protected $sourceDocuments;
 
     /**
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @var \Migration\Config
+     */
+    protected $configReader;
+
+    const UPGRADE_CUSTOMER_PASSWORD_HASH = 'upgrade_customer_password_hash';
+
+    /**
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param GroupsFactory $groupsFactory
+     * @param \Migration\Config $configReader
      */
     public function __construct(
-        Resource\Source $source,
-        Resource\Destination $destination,
-        GroupsFactory $groupsFactory
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        GroupsFactory $groupsFactory,
+        \Migration\Config $configReader
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->readerAttributes = $groupsFactory->create('customer_attribute_groups_file');
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->sourceDocuments = $this->readerGroups->getGroup('source_documents');
+        $this->configReader = $configReader;
     }
 
     /**
@@ -112,7 +122,7 @@ class Helper
      * @param Record\Collection $destinationRecords
      * @return void
      */
-    public function updateAttributeData($attributeType, $sourceDocName, $destinationRecords)
+    public function updateAttributeData($attributeType, $sourceDocName, Record\Collection $destinationRecords)
     {
         if (!isset($this->sourceDocuments[$sourceDocName]) || $this->sourceDocuments[$sourceDocName] != 'entity_id') {
             return;
@@ -153,9 +163,24 @@ class Helper
             $query->getAdapter()->fetchAll($query),
             $attributeCodesById
         );
+
+        $this->setAttributeData($destinationRecords, $recordAttributesData, $attributeCodes);
+    }
+
+    public function setAttributeData(
+        Record\Collection $destinationRecords,
+        array $recordAttributesData,
+        array $attributeCodes
+    ) {
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
+                if ($this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
+                    $recordAttributesData = $this->upgradeCustomerHash(
+                        $recordAttributesData,
+                        $record->getValue('entity_id')
+                    );
+                }
                 $data = $record->getData();
                 $data = array_merge(
                     array_fill_keys($attributeCodes, null),
@@ -309,5 +334,27 @@ class Helper
                 );
             }
         }
+    }
+
+    /**
+     * Upgrade customer hash according M2 algorithm versions
+     *
+     * @param array $recordAttributesData
+     * @param string $entityId
+     * @return array
+     */
+    private function upgradeCustomerHash($recordAttributesData, $entityId)
+    {
+        if (isset($recordAttributesData[$entityId]['password_hash'])) {
+            list($hash, $salt) = explode(':', $recordAttributesData[$entityId]['password_hash'], 2);
+
+            if (strlen($hash) == 32) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '0']);
+            } elseif (strlen($hash) == 64) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '1']);
+            }
+        }
+
+        return $recordAttributesData;
     }
 }

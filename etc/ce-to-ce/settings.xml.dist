@@ -1285,5 +1285,125 @@
             <path>catalog/seo/product_url_suffix</path>
             <handler class="\Migration\Handler\Settings\UrlSuffix"/>
         </transform>
+        <transform>
+			<path>payment/payflow_advanced/pwd</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>paypal/wpp/api_username</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>paypal/wpp/api_password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>paypal/wpp/api_signature</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>paypal/fetch_reports/ftp_login</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>paypal/fetch_reports/ftp_password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/verisign/user</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/verisign/pwd</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/payflow_link/pwd</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/authorizenet_directpost/login</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/authorizenet_directpost/trans_key</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/authorizenet_directpost/trans_md5</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/authorizenet/login</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment/authorizenet/trans_key</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/ups/password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/ups/username</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/ups/access_license_number</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/usps/userid</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/usps/password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/fedex/account</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/fedex/meter_number</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/fedex/key</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/fedex/password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhl/id</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhl/password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhl/shipping_key</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhl/shipping_intlkey</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhlint/id</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>carriers/dhlint/password</path>
+			<handler class="\Migration\Handler\Settings\Encrypt"/>
+		</transform>
+		<transform>
+			<path>payment_services/centinel/password</path>
+            <handler class="\Migration\Handler\Settings\Encrypt"/>
+        </transform>
     </value>
 </settings>

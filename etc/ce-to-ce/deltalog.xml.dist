@@ -9,7 +9,6 @@
     <group name="delta_map">
         <document key="catalog_compare_item_id">catalog_compare_item</document>
         <document key="item_id">cataloginventory_stock_item</document>
-        <document key="message_id">core_email_queue</document>
         <document key="subscriber_id">newsletter_subscriber</document>
         <document key="entity_id">sales_flat_quote</document>
         <document key="address_id">sales_flat_quote_address</document>
@@ -34,9 +33,6 @@
         <document key="vote_id">rating_option_vote</document>
         <document key="primary_id">rating_option_vote_aggregated</document>
         <document key="primary_id">review_entity_summary</document>
-        <document key="poll_id">poll</document>
-        <document key="vote_id">poll_vote</document>
-        <document key="answer_id">poll_answer</document>
         <document key="entity_id">sales_flat_shipment</document>
         <document key="entity_id">sales_flat_shipment_item</document>
         <document key="entity_id">sales_flat_shipment_track</document>
@@ -51,7 +47,6 @@
         <document key="item_id">downloadable_link_purchased_item</document>
         <document key="gift_message_id">gift_message</document>
         <document key="address_item_id">sales_flat_quote_address_item</document>
-        <document key="entity_store_id">eav_entity_store</document>
         <document key="tax_id">sales_order_tax</document>
         <document key="tax_item_id">sales_order_tax_item</document>
         <document key="entity_id">sales_flat_order</document>
@@ -72,5 +67,8 @@
         <document key="value_id">customer_address_entity_int</document>
         <document key="value_id">customer_address_entity_text</document>
         <document key="value_id">customer_address_entity_varchar</document>
+    </group>
+    <group name="delta_sales_sequence">
+         <document key="entity_store_id">eav_entity_store</document>
     </group>
 </groups>
