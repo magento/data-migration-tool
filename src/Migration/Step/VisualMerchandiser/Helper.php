@@ -38,7 +38,7 @@ class Helper
     /**
      * @var []
      */
-    public $records;
+    public $records = [];
 
     /**
      * @var ResourceModel\Destination
