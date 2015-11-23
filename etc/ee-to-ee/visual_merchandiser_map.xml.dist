@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>merchandiser_category_values</document>
+                <to>visual_merchandiser_rule</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>merchandiser_category_values.heroproducts</field>
+            </ignore>
+            <ignore>
+                <field>merchandiser_category_values.attribute_codes</field>
+            </ignore>
+            <ignore>
+                <field>merchandiser_category_values.ruled_only</field>
+            </ignore>
+            <ignore>
+                <field>merchandiser_category_values.automatic_sort</field>
+            </ignore>
+            <ignore>
+                <datatype>merchandiser_category_values.smart_attributes</datatype>
+            </ignore>
+            <move>
+                <field>merchandiser_category_values.smart_attributes</field>
+                <to>visual_merchandiser_rule.conditions_serialized</to>
+            </move>
+            <transform>
+                <field>merchandiser_category_values.smart_attributes</field>
+                <handler class="\Migration\Handler\VisualMerchandiser\SmartAttribute"/>
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>visual_merchandiser_rule.rule_id</field>
+            </ignore>
+            <ignore>
+                <field>visual_merchandiser_rule.store_id</field>
+            </ignore>
+            <ignore>
+                <field>visual_merchandiser_rule.is_active</field>
+            </ignore>
+            <ignore>
+                <datatype>visual_merchandiser_rule.conditions_serialized</datatype>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>
