@@ -12,11 +12,11 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\App\ProgressBar;
-use Migration\Resource\Destination;
-use Migration\Resource\Record;
-use Migration\Resource\Document;
-use Migration\Resource\RecordFactory;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\RecordFactory;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Data
@@ -199,7 +199,7 @@ class Data implements StageInterface, RollbackInterface
                     $recordsToSave->addRecord($destinationRecord);
                 }
             }
-
+            $this->destination->clearDocument($destinationDocument->getName());
             $this->saveRecords($destinationDocument, $recordsToSave);
             if ($documentName == 'eav_attribute_set') {
                 $this->loadNewAttributeSets();
@@ -256,7 +256,7 @@ class Data implements StageInterface, RollbackInterface
             $destinationRecord->setValue('attribute_id', null);
             $recordsToSave->addRecord($destinationRecord);
         }
-
+        $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
         $this->loadNewAttributes();
     }
@@ -302,7 +302,7 @@ class Data implements StageInterface, RollbackInterface
             $destinationRecord = $this->factory->create(['document' => $destinationDocument, 'data' => $record]);
             $recordsToSave->addRecord($destinationRecord);
         }
-
+        $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
     }
 
@@ -354,7 +354,10 @@ class Data implements StageInterface, RollbackInterface
 
                 $recordsToSave->addRecord($destinationRecord);
             }
+            $this->destination->clearDocument($destinationDocument->getName());
+            $this->saveRecords($destinationDocument, $recordsToSave);
 
+            $recordsToSave = $destinationDocument->getRecords();
             if ($mappingFields) {
                 foreach ($destinationRecords as $record) {
                     $destinationRecord = $this->factory->create([
@@ -384,7 +387,6 @@ class Data implements StageInterface, RollbackInterface
      */
     protected function saveRecords(Document $document, Record\Collection $recordsToSave)
     {
-        $this->destination->clearDocument($document->getName());
         $this->destination->saveRecords($document->getName(), $recordsToSave);
     }
 

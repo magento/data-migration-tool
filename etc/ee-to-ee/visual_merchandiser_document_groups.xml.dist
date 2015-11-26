@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+    <group name="source_documents">
+        <document>merchandiser_category_values</document>
+    </group>
+    <group name="eav_entities">
+        <document>catalog_category</document>
+    </group>
+    <group name="catalog_category">
+        <document key="entity_id">catalog_category_entity</document>
+        <document key="value_id">catalog_category_entity_varchar</document>
+    </group>
+    <group name="merchandiser_category_values">
+        <attribute>automatic_sort</attribute>
+    </group>
+</groups>

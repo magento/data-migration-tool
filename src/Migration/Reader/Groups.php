@@ -6,6 +6,7 @@
 namespace Migration\Reader;
 
 use Migration\Exception;
+use \Magento\Framework\App\Arguments\ValidationState;
 
 /**
  * Class Groups
@@ -20,11 +21,20 @@ class Groups
     protected $xml;
 
     /**
+     * @var ValidationState
+     */
+    protected $validationState;
+
+    /**
+     * @param ValidationState $validationState
      * @param string $groupsFile
      * @throws Exception
      */
-    public function __construct($groupsFile = '')
-    {
+    public function __construct(
+        ValidationState $validationState,
+        $groupsFile = ''
+    ) {
+        $this->validationState = $validationState;
         if (!empty($groupsFile)) {
             $this->init($groupsFile);
         }
@@ -45,7 +55,7 @@ class Groups
         }
 
         $xml = file_get_contents($xmlFile);
-        $document = new \Magento\Framework\Config\Dom($xml);
+        $document = new \Magento\Framework\Config\Dom($xml, $this->validationState);
 
         if (!$document->validate($this->getRootDir() .'etc/' . self::CONFIGURATION_SCHEMA)) {
             throw new Exception('XML file is invalid.');

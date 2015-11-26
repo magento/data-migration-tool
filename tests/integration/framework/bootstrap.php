@@ -20,3 +20,4 @@ if (is_dir(TESTS_TEMP_DIR)) {
     $filesystemAdapter->deleteDirectory(TESTS_TEMP_DIR);
 }
 mkdir(TESTS_TEMP_DIR);
+date_default_timezone_set('UTC');

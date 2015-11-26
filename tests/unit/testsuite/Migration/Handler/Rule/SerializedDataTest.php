@@ -5,13 +5,16 @@
  */
 namespace Migration\Handler\Rule;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class SerializedDataTest
  */
 class SerializedDataTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $data = serialize([
@@ -24,12 +27,14 @@ class SerializedDataTest extends \PHPUnit_Framework_TestCase
         ]);
 
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
         $classMap = $this->getMockBuilder('\Migration\Reader\ClassMap')->disableOriginalConstructor()
             ->setMethods(['convertClassName'])
             ->getMock();

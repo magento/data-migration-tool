@@ -10,6 +10,9 @@ namespace Migration\App\Mode;
  */
 class StepListTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testGetSteps()
     {
         $stage1 = $this->getMock('\Migration\App\Step\StageInterface');

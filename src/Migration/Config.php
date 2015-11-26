@@ -5,6 +5,8 @@
  */
 namespace Migration;
 
+use \Magento\Framework\App\Arguments\ValidationState;
+
 /**
  * Class Config
  */
@@ -25,6 +27,21 @@ class Config
     protected $options;
 
     /**
+     * @var ValidationState
+     */
+    protected $validationState;
+
+    /**
+     * @param ValidationState $validationState
+     */
+    public function __construct(
+        ValidationState $validationState
+    ) {
+        $this->validationState = $validationState;
+        date_default_timezone_set('UTC');
+    }
+
+    /**
      * Init configuration
      *
      * @param string $configFile
@@ -42,7 +59,7 @@ class Config
         }
 
         $xml = file_get_contents($configFile);
-        $document = new \Magento\Framework\Config\Dom($xml);
+        $document = new \Magento\Framework\Config\Dom($xml, $this->validationState);
 
         if (!$document->validate($this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA)) {
             throw new Exception('XML file is invalid.');
@@ -85,6 +102,33 @@ class Config
             }
         }
         return $steps;
+    }
+
+
+    /**
+     * Get step data
+     *
+     * @param string $mode
+     * @param string $name
+     * @return array
+     */
+    public function getStep($mode, $name)
+    {
+        $step = [];
+        /** @var \DOMNodeList $stepsDom */
+        $stepsDom = $this->config->query("//steps[@mode='{$mode}']/step[@title='{$name}']");
+        if ($stepsDom->length == 0) {
+            return $step;
+        }
+        /** @var \DOMElement $stepDom */
+        $stepDom = $stepsDom->item(0);
+        /** @var \DOMElement $child */
+        foreach ($stepDom->childNodes as $child) {
+            if ($child->nodeType == XML_ELEMENT_NODE) {
+                $step[$child->nodeName] = $child->nodeValue;
+            }
+        }
+        return $step;
     }
 
     /**

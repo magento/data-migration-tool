@@ -9,7 +9,7 @@ use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class AbstractIntegrity
@@ -17,16 +17,16 @@ use Migration\Resource;
 abstract class AbstractIntegrity implements StageInterface
 {
     /**
-     * Resource of source
+     * ResourceModel of source
      *
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * Resource of destination
+     * ResourceModel of destination
      *
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -52,6 +52,13 @@ abstract class AbstractIntegrity implements StageInterface
     protected $missingDocumentFields;
 
     /**
+     * Mismatch in data type of fields
+     *
+     * @var array
+     */
+    protected $mismatchDocumentFieldDataTypes;
+
+    /**
      * Map reader
      *
      * @var \Migration\Reader\MapInterface
@@ -73,16 +80,16 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         $mapConfigOption
     ) {
@@ -105,10 +112,10 @@ abstract class AbstractIntegrity implements StageInterface
      *
      * @param array $documents
      * @param string $type - allowed values: MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST
+     * @param bool $verifyFields
      * @return $this
-     * @throws \Exception
      */
-    protected function check($documents, $type)
+    protected function check($documents, $type, $verifyFields = true)
     {
         $documents = $this->filterIgnoredDocuments($documents, $type);
         if (!empty($documents)) {
@@ -129,7 +136,9 @@ abstract class AbstractIntegrity implements StageInterface
                     $this->missingDocuments[$type][$sourceDocumentName] = true;
                 } else {
                     $this->hasMappedDocuments = true;
-                    $this->verifyFields($sourceDocument, $destinationDocument, $type);
+                    if ($verifyFields) {
+                        $this->verifyFields($sourceDocument, $destinationDocument, $type);
+                    }
                 }
             }
         }
@@ -153,19 +162,25 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destinationDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destinationDocument
      * @param string $type
      * @return void
      */
     protected function verifyFields($sourceDocument, $destinationDocument, $type)
     {
-        $sourceFields = array_keys($sourceDocument->getStructure()->getFields());
+        $sourceFields = $sourceDocument->getStructure()->getFields();
         $destFields = $destinationDocument->getStructure()->getFields();
-        foreach ($sourceFields as $field) {
-            $mappedField = $this->map->getFieldMap($sourceDocument->getName(), $field, $type);
-            if ($mappedField && !isset($destFields[$mappedField])) {
-                $this->missingDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
+        foreach ($sourceFields as $sourceField => $sourceFieldMetaData) {
+            $mappedField = $this->map->getFieldMap($sourceDocument->getName(), $sourceField, $type);
+            if ($mappedField) {
+                if (!isset($destFields[$mappedField])) {
+                    $this->missingDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
+                } else if ($sourceFieldMetaData['DATA_TYPE'] != $destFields[$mappedField]['DATA_TYPE']
+                    && !$this->map->isFieldDataTypeIgnored($sourceDocument->getName(), $sourceField, $type)
+                ) {
+                    $this->mismatchDocumentFieldDataTypes[$type][$sourceDocument->getName()][] = $sourceField;
+                }
             }
         }
     }
@@ -177,16 +192,26 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkForErrors()
     {
-        $isSuccess = true;
         if (!$this->hasMappedDocuments) {
-            $this->logger->error('Mapped documents not found. Check your configuration.');
+            $this->logger->error('Mapped documents are missing or not found. Check your configuration.');
             return false;
         }
+        $checkMissingDocuments = $this->checkMissingDocuments();
+        $checkMissingDocumentFields = $this->checkMissingDocumentFields();
+        $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
+        return $checkMissingDocuments && $checkMissingDocumentFields && $checkMismatchDocumentFieldDataTypes;
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkMissingDocuments()
+    {
+        $isSuccess = true;
         if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Source documents not mapped: %s',
+                'Source documents are missing or not mapped: %s',
                 implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
             ));
         }
@@ -194,16 +219,24 @@ abstract class AbstractIntegrity implements StageInterface
         if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
             $isSuccess = false;
             $this->logger->error(sprintf(
-                'Destination documents not mapped: %s',
+                'Destination documents are missing or not mapped: %s',
                 implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
             ));
         }
+        return $isSuccess;
+    }
 
+    /**
+     * @return bool
+     */
+    public function checkMissingDocumentFields()
+    {
+        $isSuccess = true;
         if (isset($this->missingDocumentFields[MapInterface::TYPE_SOURCE])) {
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
                 $this->logger->error(sprintf(
-                    'Source fields not mapped. Document: %s. Fields: %s',
+                    'Source fields are missing or not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));
@@ -214,12 +247,38 @@ abstract class AbstractIntegrity implements StageInterface
             $isSuccess = false;
             foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
                 $this->logger->error(sprintf(
-                    'Destination fields not mapped. Document: %s. Fields: %s',
+                    'Destination fields are missing or not mapped. Document: %s. Fields: %s',
                     $document,
                     implode(',', $fields)
                 ));
             }
         }
         return $isSuccess;
+    }
+
+    /**
+     * @return bool
+     */
+    public function checkMismatchDocumentFieldDataTypes()
+    {
+        if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE])) {
+            foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE] as $document => $fields) {
+                $this->logger->warning(sprintf(
+                    'Mismatch of data types. Source document: %s. Fields: %s',
+                    $document,
+                    implode(',', $fields)
+                ));
+            }
+        }
+        if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_DEST])) {
+            foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_DEST] as $document => $fields) {
+                $this->logger->warning(sprintf(
+                    'Mismatch of data types. Destination document: %s. Fields: %s',
+                    $document,
+                    implode(',', $fields)
+                ));
+            }
+        }
+        return true;
     }
 }

@@ -32,6 +32,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
      */
     protected $objectManager;
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     protected function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
@@ -48,6 +52,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         \Migration\Logger\Logger::clearMessages();
     }
 
+    /**
+     * @return void
+     */
     public function testIntegrity()
     {
         $urlRewrite = $this->objectManager->create(
@@ -79,6 +86,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         }
     }
 
+    /**
+     * @return void
+     */
     public function testData()
     {
         $urlRewrite = $this->objectManager->create(
@@ -89,15 +99,15 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
                 'stage' => 'data'
             ]
         );
-        /** @var \Migration\Resource\Destination $destination */
-        $destination = $this->objectManager->get('\Migration\Resource\Destination');
+        /** @var \Migration\ResourceModel\Destination $destination */
+        $destination = $this->objectManager->get('\Migration\ResourceModel\Destination');
         ob_start();
         $urlRewrite->perform();
         ob_end_clean();
 
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertTrue(empty($logOutput[\Monolog\Logger::ERROR]));
-        $this->assertEquals(39, $destination->getRecordsCount('url_rewrite'));
+        $this->assertEquals(48, $destination->getRecordsCount('url_rewrite'));
         $this->assertEquals(11, $destination->getRecordsCount('catalog_category_entity_varchar'));
         $this->assertEquals(4, $destination->getRecordsCount('catalog_product_entity_varchar'));
 

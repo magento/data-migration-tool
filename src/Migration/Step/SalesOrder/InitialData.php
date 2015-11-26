@@ -5,8 +5,8 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class InitialData
@@ -74,7 +74,7 @@ class InitialData
     {
         $attributesCount = null;
         if (isset($this->destEavAttributesCount[$eavEntity])) {
-            $attributesCount =  $this->destEavAttributesCount[$eavEntity];
+            $attributesCount = $this->destEavAttributesCount[$eavEntity];
         }
         return $attributesCount;
     }

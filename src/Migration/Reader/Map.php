@@ -6,6 +6,7 @@
 namespace Migration\Reader;
 
 use Migration\Exception;
+use \Magento\Framework\App\Arguments\ValidationState;
 
 /**
  * Class Map
@@ -32,6 +33,11 @@ class Map implements MapInterface
     /**
      * @var array
      */
+    protected $ignoredDataTypeFields = [];
+
+    /**
+     * @var array
+     */
     protected $documentsMap = [];
 
     /**
@@ -45,11 +51,20 @@ class Map implements MapInterface
     protected $wildcards;
 
     /**
+     * @var ValidationState
+     */
+    protected $validationState;
+
+    /**
+     * @param ValidationState $validationState
      * @param string $mapFile
      * @throws Exception
      */
-    public function __construct($mapFile)
-    {
+    public function __construct(
+        ValidationState $validationState,
+        $mapFile
+    ) {
+        $this->validationState = $validationState;
         $this->init($mapFile);
     }
 
@@ -71,7 +86,7 @@ class Map implements MapInterface
         }
 
         $xml = file_get_contents($configFile);
-        $document = new \Magento\Framework\Config\Dom($xml);
+        $document = new \Magento\Framework\Config\Dom($xml, $this->validationState);
 
         if (!$document->validate($this->getRootDir() .'etc/' . self::CONFIGURATION_SCHEMA)) {
             throw new Exception('XML file is invalid.');
@@ -103,6 +118,21 @@ class Map implements MapInterface
         $map = $this->xml->query(sprintf('//%s/field_rules/ignore/field[text()="%s.%s"]', $type, $document, $field));
         $this->ignoredFields[$key] = ($map->length > 0);
         return $this->ignoredFields[$key];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function isFieldDataTypeIgnored($document, $field, $type)
+    {
+        $key = $document . '-' . $field . '-' . $type;
+        if (isset($this->ignoredDataTypeFields[$key])) {
+            return $this->ignoredDataTypeFields[$key];
+        }
+        $this->validateType($type);
+        $map = $this->xml->query(sprintf('//%s/field_rules/ignore/datatype[text()="%s.%s"]', $type, $document, $field));
+        $this->ignoredDataTypeFields[$key] = ($map->length > 0);
+        return $this->ignoredDataTypeFields[$key];
     }
 
     /**

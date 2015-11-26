@@ -7,7 +7,7 @@ namespace Migration;
 
 use Migration\Handler\AbstractHandler;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class RecordTransformer
@@ -15,12 +15,12 @@ use Migration\Resource\Record;
 class RecordTransformer
 {
     /**
-     * @var Resource\Document
+     * @var ResourceModel\Document
      */
     protected $sourceDocument;
 
     /**
-     * @var Resource\Document
+     * @var ResourceModel\Document
      */
     protected $destDocument;
 
@@ -45,14 +45,14 @@ class RecordTransformer
     protected $mapReader;
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destDocument
      * @param Handler\ManagerFactory $handlerManagerFactory
      * @param MapInterface $mapReader
      */
     public function __construct(
-        Resource\Document $sourceDocument,
-        Resource\Document $destDocument,
+        ResourceModel\Document $sourceDocument,
+        ResourceModel\Document $destDocument,
         Handler\ManagerFactory $handlerManagerFactory,
         MapInterface $mapReader
     ) {
@@ -90,7 +90,7 @@ class RecordTransformer
      */
     protected function initHandlerManager($type = MapInterface::TYPE_SOURCE)
     {
-        /** @var Resource\Document $document */
+        /** @var ResourceModel\Document $document */
         $document = (MapInterface::TYPE_SOURCE == $type) ? $this->sourceDocument : $this->destDocument;
         /** @var Handler\Manager $handlerManager */
         $handlerManager = $this->handlerManagerFactory->create();
@@ -125,19 +125,20 @@ class RecordTransformer
      */
     protected function copy(Record $from, Record $to)
     {
-        foreach ($from->getFields() as $field) {
-            if (!$this->mapReader->isFieldIgnored(
-                $this->sourceDocument->getName(),
-                $field,
-                MapInterface::TYPE_SOURCE
-            )) {
-                $fieldMap = $this->mapReader->getFieldMap(
-                    $this->sourceDocument->getName(),
-                    $field,
-                    MapInterface::TYPE_SOURCE
-                );
-                $to->setValue($fieldMap, $from->getValue($field));
+        $sourceDocumentName = $this->sourceDocument->getName();
+        $data = $from->getData();
+        $sourceFields = $from->getFields();
+        $destinationFields = $to->getFields();
+        $diff = array_diff($sourceFields, $destinationFields);
+        foreach ($diff as $field) {
+            if (!$this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
+                $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
+                $data[$fieldMap] = $from->getValue($field);
             }
+            unset($data[$field]);
+        }
+        foreach ($data as $key => $value) {
+            $to->setValue($key, $value);
         }
     }
 }

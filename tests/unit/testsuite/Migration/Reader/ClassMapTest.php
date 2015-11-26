@@ -15,6 +15,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
      */
     protected $classMap;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
@@ -22,9 +25,20 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $config->expects($this->once())->method('getOption')->with('class_map')
             ->willReturn('tests/unit/testsuite/Migration/_files/class-map.xml');
-        $this->classMap = new ClassMap($config);
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $this->classMap = new ClassMap($config, $validationState);
     }
 
+    /**
+     * @return void
+     */
     public function testConvertClassName()
     {
         $this->assertEquals(
@@ -33,6 +47,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testConvertClassNameNotInMap()
     {
         $this->assertEquals(
@@ -41,6 +58,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testGetMap()
     {
         $this->assertEquals(

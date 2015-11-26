@@ -7,11 +7,11 @@ namespace Migration\Step\UrlRewrite;
 
 use Migration\App\ProgressBar;
 use Migration\App\Step\RollbackInterface;
-use Migration\Resource\Destination;
-use Migration\Resource\Document;
-use Migration\Resource\Record;
-use Migration\Resource\RecordFactory;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\RecordFactory;
+use Migration\ResourceModel\Source;
 use Migration\Reader\MapInterface;
 
 /**
@@ -23,6 +23,16 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
 
     const DESTINATION = 'url_rewrite';
     const DESTINATION_PRODUCT_CATEGORY = 'catalog_url_rewrite_product_category';
+
+    /**
+     * @var string
+     */
+    protected $cmsPageTableName = 'cms_page';
+
+    /**
+     * @var string
+     */
+    protected $cmsPageStoreTableName = 'cms_page_store';
 
     /**
      * @var Source
@@ -43,6 +53,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      * @var RecordFactory
      */
     protected $recordFactory;
+
+    /**
+     * @var \Migration\Logger\Logger
+     */
+    protected $logger;
 
     /**
      * @var string
@@ -99,6 +114,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      * @param Destination $destination
      * @param ProgressBar\LogLevelProcessor $progress
      * @param RecordFactory $factory
+     * @param \Migration\Logger\Logger $logger
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -108,6 +124,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         Destination $destination,
         ProgressBar\LogLevelProcessor $progress,
         RecordFactory $factory,
+        \Migration\Logger\Logger $logger,
         $stage
     ) {
         parent::__construct($config);
@@ -116,6 +133,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $this->progress = $progress;
         $this->recordFactory = $factory;
         $this->stage = $stage;
+        $this->logger = $logger;
     }
 
     /**
@@ -143,7 +161,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      */
     protected function data()
     {
-        $this->progress->start($this->source->getRecordsCount(self::SOURCE));
+        $this->progress->start($this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites());
 
         $sourceDocument = $this->source->getDocument(self::SOURCE);
         $destDocument = $this->destination->getDocument(self::DESTINATION);
@@ -181,6 +199,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
+        $this->collectCmsPageRewrites();
         $this->progress->finish();
         return true;
     }
@@ -191,7 +210,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     public function perform()
     {
         if (!method_exists($this, $this->stage)) {
-            throw new \Exception('Invalid step configuration');
+            throw new \Migration\Exception('Invalid step configuration');
         }
 
         return call_user_func([$this, $this->stage]);
@@ -206,8 +225,11 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= $this->source->getRecordsCount(self::SOURCE) ==
+        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) ==
             $this->destination->getRecordsCount(self::DESTINATION);
+        if (!$result) {
+            $this->logger->error('Mismatch of entities in the document: url_rewrite');
+        }
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
@@ -267,5 +289,57 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $isCategory = $record->getValue('category_id') ? 'category' : null;
         $isProduct = $record->getValue('product_id') ? 'product' : null;
         return $isProduct ?: $isCategory;
+    }
+
+    /**
+     * @return void
+     */
+    protected function collectCmsPageRewrites()
+    {
+        $this->progress->advance();
+        /** @var \Magento\Framework\Db\Select $select */
+        $select = $this->source->getAdapter()->getSelect();
+        $select->distinct()->from(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+            [
+                new \Zend_Db_Expr('"cms-page" as `entity_type`'),
+                'entity_id' => 'cp.page_id',
+                'request_path' => 'cp.identifier',
+                'target_path' => 'CONCAT("cms/page/view/page_id/", cp.page_id)',
+                'store_id' => 'IF(cps.store_id = 0, 1, cps.store_id)',
+                new \Zend_Db_Expr('1 as `is_autogenerated`')
+            ]
+        )->joinLeft(
+            ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
+            'cps.page_id = cp.page_id',
+            []
+        )->group(['request_path', 'cps.store_id']);
+        $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
+        $this->destination->saveRecords(self::DESTINATION, $urlRewrites);
+    }
+
+    /**
+     * @param bool $countVolume
+     * @return int
+     */
+    protected function countCmsPageRewrites($countVolume = false)
+    {
+        if (!$countVolume) {
+            return 1;
+        }
+        /** @var \Magento\Framework\Db\Select $select */
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+            [
+                new \Zend_Db_Expr('COUNT(*)'),
+            ]
+        )
+        ->joinLeft(
+            ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
+            'cps.page_id = cp.page_id',
+            []
+        );
+        return $select->getAdapter()->fetchOne($select);
     }
 }

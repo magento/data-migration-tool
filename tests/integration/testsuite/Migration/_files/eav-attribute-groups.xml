@@ -8,5 +8,6 @@
 <groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
     <group name="ignore">
         <attribute>msrp_enabled</attribute>
+        <attribute>group_price</attribute>
     </group>
 </groups>

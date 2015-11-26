@@ -10,11 +10,17 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     /** @var Logger */
     protected $logger;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->logger = new Logger();
     }
 
+    /**
+     * @return void
+     */
     public function testGetName()
     {
         $someName = 'Some name';
@@ -25,6 +31,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     /**
      * @covers Migration\Logger\Logger::addRecord
      * @covers Migration\Logger\Logger::getMessages
+     * @return void
      */
     public function testAddRecord()
     {

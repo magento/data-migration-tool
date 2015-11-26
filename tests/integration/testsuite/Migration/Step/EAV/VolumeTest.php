@@ -21,7 +21,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $volume;
 
-
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
@@ -41,6 +43,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $this->assertTrue($this->data->perform());

@@ -58,8 +58,8 @@ class Helper
 
     /**
      * @param \Magento\Framework\Shell $shell
-     * @param $magentoDir
-     * @param $dbFixturePath
+     * @param string $magentoDir
+     * @param string $dbFixturePath
      * @throws \Exception
      */
     public function __construct(
@@ -126,7 +126,8 @@ class Helper
     {
         $dirList = new \Magento\Framework\App\Filesystem\DirectoryList($this->magentoDir);
         $driverPool = new \Magento\Framework\Filesystem\DriverPool;
-        return (new \Magento\Framework\App\ObjectManagerFactory($dirList, $driverPool))->create([]);
+        $configFilePool = new \Magento\Framework\Config\File\ConfigFilePool;
+        return (new \Magento\Framework\App\ObjectManagerFactory($dirList, $driverPool, $configFilePool))->create([]);
     }
 
     /**
@@ -134,7 +135,7 @@ class Helper
      *
      * @param string $fixturePath
      * @throws \Exception
-     * @throws \Magento\Framework\Exception\LocalizedException
+     * @return void
      */
     protected function reinstallDb($fixturePath)
     {

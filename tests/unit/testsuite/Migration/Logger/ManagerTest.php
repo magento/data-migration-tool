@@ -37,6 +37,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected $messageProcessor;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->logger = $this->getMock(
@@ -89,6 +92,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      * @param string $logLevel
      * @param int $logLevelCode
      * @dataProvider dataProviderProcessSuccess
+     * @return void
      */
     public function testProcessSuccess($logLevel, $logLevelCode)
     {
@@ -118,6 +122,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     /**
      * @param string $logLevel
      * @dataProvider dataProviderProcessInvalidLevel
+     * @return void
      */
     public function testProcessInvalidLevel($logLevel)
     {

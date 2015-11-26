@@ -7,8 +7,8 @@ namespace Migration\Step\SalesOrder;
 
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 use Migration\App\ProgressBar;
 
 class VolumeTest extends \PHPUnit_Framework_TestCase
@@ -53,9 +53,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $salesOrder;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
+        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -78,14 +81,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getDocumentList', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount'],
             [],
             '',
@@ -108,6 +111,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $sourceDocumentName = 'source_document';
@@ -139,6 +145,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->salesOrder->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailExistingEavAttributes()
     {
         $sourceDocumentName = 'source_document';
@@ -167,12 +176,16 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')
             ->with('eav_entity_int')->willReturn(1);
-        $this->logger->expects($this->once())->method('error')->with(
-            'Volume check failed for the destination document ' . $eavDocumentName
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
+            'Mismatch of entities in the document: ' . $eavDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
     }
 
+    /**
+     * @return void
+     */
     public function testPerformFailExistingDocumentEntities()
     {
         $sourceDocumentName = 'source_document';
@@ -201,8 +214,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')->with('eav_entity_int')
             ->willReturn(0);
-        $this->logger->expects($this->once())->method('error')->with(
-            'Volume check failed for the destination document ' . $destDocumentName
+        $this->logger->expects($this->once())->method('addRecord')->with(
+            Logger::WARNING,
+            'Mismatch of entities in the document: ' . $destDocumentName
         );
         $this->assertFalse($this->salesOrder->perform());
     }
