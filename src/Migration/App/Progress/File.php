@@ -5,6 +5,9 @@
  */
 namespace Migration\App\Progress;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+use Magento\Framework\Filesystem;
+
 /**
  * Class File
  */
@@ -18,6 +21,11 @@ class File
     /**
      * @var \Magento\Framework\Filesystem\DriverInterface
      */
+    protected $filesystemDriver;
+
+    /**
+     * @var Filesystem
+     */
     protected $filesystem;
 
     /**
@@ -26,11 +34,14 @@ class File
     protected $data = [];
 
     /**
-     * @param \Magento\Framework\Filesystem\Driver\File $filesystem
+     * @param \Magento\Framework\Filesystem\Driver\File $filesystemDriver
+     * @param \Magento\Framework\Filesystem $filesystem
      */
     public function __construct(
-        \Magento\Framework\Filesystem\Driver\File $filesystem
+        \Magento\Framework\Filesystem\Driver\File $filesystemDriver,
+        \Magento\Framework\Filesystem $filesystem
     ) {
+        $this->filesystemDriver = $filesystemDriver;
         $this->filesystem = $filesystem;
     }
 
@@ -41,7 +52,7 @@ class File
     public function getData()
     {
         if (empty($this->data)) {
-            $data = @unserialize($this->filesystem->fileGetContents($this->getLockFile()));
+            $data = @unserialize($this->filesystemDriver->fileGetContents($this->getLockFile()));
             if (is_array($data)) {
                 $this->data = $data;
             }
@@ -57,8 +68,8 @@ class File
      */
     public function saveData($data)
     {
-        if ($this->filesystem->isExists($this->getLockFile())) {
-            $this->filesystem->filePutContents($this->getLockFile(), serialize($data));
+        if ($this->filesystemDriver->isExists($this->getLockFile())) {
+            $this->filesystemDriver->filePutContents($this->getLockFile(), serialize($data));
             $this->data = $data;
             return true;
         }
@@ -70,10 +81,10 @@ class File
      */
     protected function getLockFile()
     {
-        $lockFileDir = dirname(dirname(dirname(dirname(__DIR__)))) . DIRECTORY_SEPARATOR .'var';
+        $lockFileDir = $this->filesystem->getDirectoryRead(DirectoryList::VAR_DIR)->getAbsolutePath();
         $lockFile = $lockFileDir . DIRECTORY_SEPARATOR . $this->lockFileName;
-        if (!$this->filesystem->isExists($lockFile)) {
-            $this->filesystem->filePutContents($lockFile, 0);
+        if (!$this->filesystemDriver->isExists($lockFile)) {
+            $this->filesystemDriver->filePutContents($lockFile, 0);
         }
         return $lockFile;
     }

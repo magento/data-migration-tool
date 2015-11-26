@@ -12,6 +12,9 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected $consoleHandler;
 
+    /**
+     * @return void
+     */
     protected function setUp()
     {
         $this->consoleHandler = new ConsoleHandler();
@@ -36,6 +39,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      * @param string $recordLevel
      * @param string|int $handlerLevel
      * @dataProvider dataProviderHandleSuccess
+     * @return void
      */
     public function testHandleSuccess($recordLevel, $handlerLevel)
     {
@@ -55,6 +59,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      * @param string $recordLevel
      * @param string|int $handlerLevel
      * @dataProvider dataProviderHandleSuccess
+     * @return void
      */
     public function testHandleSuccessWithoutBubble($recordLevel, $handlerLevel)
     {
@@ -86,6 +91,7 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
      * @param string $recordLevel
      * @param string|int $handlerLevel
      * @dataProvider dataProviderHandleError
+     * @return void
      */
     public function testHandleError($recordLevel, $handlerLevel)
     {
@@ -97,6 +103,27 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($result);
     }
 
+    /**
+     * @return void
+     */
+    public function testHandleWarning()
+    {
+        $message = 'Warnin message';
+        $extra = ['mode' => 'application mode'];
+        $record = ['message' => $message, 'level' => 300, 'extra' => $extra];
+        $this->consoleHandler->setLevel(100);
+        ob_start();
+        $this->consoleHandler->setBubble(false);
+        $result = $this->consoleHandler->handle($record);
+        $output = ob_get_contents();
+        ob_end_clean();
+        $this->assertTrue($result);
+        $this->assertContains($message, $output);
+    }
+
+    /**
+     * @return void
+     */
     public function testHandleRed()
     {
         $message = 'Colorized message';

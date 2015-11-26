@@ -21,19 +21,6 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     /**
      * {@inheritdoc}
      */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Settings mode usage information:
-
-Migrates store settings
-USAGE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function run()
     {
         /** @var StepList $steps */
@@ -94,7 +81,7 @@ USAGE;
     private function runVolume(array $step, $stepName)
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
-            throw new Exception('Volume Check failed');
+            $this->logger->warning('Volume Check failed');
         }
     }
 }

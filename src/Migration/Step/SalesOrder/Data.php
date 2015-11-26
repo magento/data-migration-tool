@@ -10,8 +10,8 @@ use Migration\Handler;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
-use Migration\Resource;
-use Migration\Resource\Record;
+use Migration\ResourceModel;
+use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
@@ -23,17 +23,17 @@ use Migration\Logger\Logger;
 class Data implements StageInterface
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
     /**
-     * @var Resource\RecordFactory
+     * @var ResourceModel\RecordFactory
      */
     protected $recordFactory;
 
@@ -64,9 +64,9 @@ class Data implements StageInterface
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param MapFactory $mapFactory
      * @param Helper $helper
@@ -74,9 +74,9 @@ class Data implements StageInterface
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
-        Resource\Source $source,
-        Resource\Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         MapFactory $mapFactory,
         Helper $helper,
@@ -98,10 +98,9 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocumentList()), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
 
             $destinationDocumentName = $this->map->getDocumentMap(
@@ -134,6 +133,7 @@ class Data implements StageInterface
                 $destinationCollection = $destDocument->getRecords();
                 $destEavCollection = $eavDocumentResource->getRecords();
                 foreach ($bulk as $recordData) {
+                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $sourceRecord */
                     $sourceRecord = $this->recordFactory->create(
@@ -156,8 +156,22 @@ class Data implements StageInterface
     }
 
     /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $iterations = 0;
+        foreach (array_keys($this->helper->getDocumentList()) as $document) {
+            $iterations += $this->source->getRecordsCount($document);
+        }
+        return $iterations;
+    }
+
+    /**
      * @param array $data
-     * @param Resource\Document $sourceDocument
+     * @param ResourceModel\Document $sourceDocument
      * @param Record\Collection $destEavCollection
      * @return void
      */
@@ -246,6 +260,6 @@ class Data implements StageInterface
      */
     public function rollback()
     {
-        throw new \Exception('Rollback is impossible');
+        throw new \Migration\Exception('Rollback is impossible');
     }
 }

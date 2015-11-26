@@ -6,7 +6,7 @@
 namespace Migration\Step\SalesOrder;
 
 use Migration\Reader;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Helper
@@ -23,12 +23,21 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
-        $this->source = $this->getMock('\Migration\Resource\Source', ['getAdapter'], [], '', false);
+        $this->source = $this->getMockBuilder('\Migration\ResourceModel\Source')
+            ->setMethods(['getAdapter', 'addDocumentPrefix'])
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->helper = new Helper($this->source);
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceAttributes()
     {
         $entity = [
@@ -38,7 +47,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $mySqlAdapter = $this->getMock(
-            '\Migration\Resource\Adapter\Mysql',
+            '\Migration\ResourceModel\Adapter\Mysql',
             ['getSelect', 'loadDataFromSelect'],
             [],
             '',
@@ -47,24 +56,34 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $dbSelect = $this->getMock('\Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
         $mySqlAdapter->expects($this->any())->method('getSelect')->willReturn($dbSelect);
         $this->source->expects($this->any())->method('getAdapter')->willReturn($mySqlAdapter);
+        $this->source->expects($this->any())->method('addDocumentPrefix')->willReturnArgument(0);
         $dbSelect->expects($this->any())->method('from')->willReturnSelf();
         $dbSelect->expects($this->any())->method('where')->willReturnSelf();
         $mySqlAdapter->expects($this->once())->method('loadDataFromSelect')->willReturn($entity);
         $this->assertEquals($entity, $this->helper->getSourceAttributes('eav_attribute'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetEavAttributes()
     {
         $eavAttributes = ['reward_points_balance_refunded', 'reward_salesrule_points'];
         $this->assertEquals($eavAttributes, $this->helper->getEavAttributes());
     }
 
+    /**
+     * @return void
+     */
     public function testGetDocumentList()
     {
         $documentList = ['sales_flat_order' => 'sales_order'];
         $this->assertEquals($documentList, $this->helper->getDocumentList());
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestEavDocument()
     {
         $destEavDocument = 'eav_entity_int';

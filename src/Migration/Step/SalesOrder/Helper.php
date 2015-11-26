@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\Resource\Source;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Helper
@@ -42,10 +42,14 @@ class Helper
      */
     protected function getEavAttributeSelect($eavAttribute)
     {
-        /** @var \Migration\Resource\Adapter\Mysql $adapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->from(array_keys($this->getDocumentList()))->where($eavAttribute . ' is not null');
+        $tables = [];
+        foreach (array_keys($this->getDocumentList()) as $sourceDocument) {
+            $tables[] = $this->source->addDocumentPrefix($sourceDocument);
+        }
+        $select->from($tables)->where($eavAttribute . ' is not null');
         return $select;
     }
 

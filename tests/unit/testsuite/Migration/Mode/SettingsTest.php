@@ -33,6 +33,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      */
     protected $progress;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->stepList = $this->getMockBuilder('\Migration\App\Mode\StepList')->disableOriginalConstructor()
@@ -45,7 +48,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $stepListFactory->expects($this->any())->method('create')->with(['mode' => 'settings'])
             ->willReturn($this->stepList);
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
-            ->setMethods(['info'])
+            ->setMethods(['info', 'warning'])
             ->getMock();
         $this->progress = $this->getMockBuilder('\Migration\App\Progress')->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted'])
@@ -54,6 +57,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->settings = new Settings($this->progress, $this->logger, $stepListFactory);
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsIntegrityFail()
     {
         $this->setExpectedException('Migration\Exception', 'Integrity Check failed');
@@ -66,9 +72,12 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->settings, $this->settings->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsVolumeFail()
     {
-        $this->setExpectedException('Migration\Exception', 'Volume Check failed');
+        $this->logger->expects($this->once())->method('warning')->with('Volume Check failed');
         $stepIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
         $stepIntegrity->expects($this->once())->method('perform')->will($this->returnValue(true));
 
@@ -83,9 +92,12 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->logger->expects($this->any())->method('info');
         $this->stepList->expects($this->any())->method('getSteps')
             ->willReturn(['Title' => ['integrity' => $stepIntegrity, 'data' => $stepData, 'volume' => $stepVolume]]);
-        $this->assertSame($this->settings, $this->settings->run());
+        $this->assertTrue($this->settings->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsDataMigrationFail()
     {
         $this->setExpectedException('Migration\Exception', 'Data Migration failed');
@@ -106,6 +118,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->assertSame($this->settings, $this->settings->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsSuccess()
     {
         $stepIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();
@@ -128,6 +143,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->settings->run());
     }
 
+    /**
+     * @return void
+     */
     public function testRunStepsWithSuccessProgress()
     {
         $stepIntegrity = $this->getMockBuilder('\Migration\App\Step\StageInterface')->getMock();

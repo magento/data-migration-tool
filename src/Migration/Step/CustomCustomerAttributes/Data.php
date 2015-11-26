@@ -11,11 +11,11 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
 use Migration\App\ProgressBar;
-use Migration\Resource\Record;
-use Migration\Resource\RecordFactory;
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\RecordFactory;
 use Migration\Step\CustomCustomerAttributes;
 use Migration\Step\DatabaseStage;
 use Migration\Logger\Logger;
@@ -99,14 +99,13 @@ class Data extends DatabaseStage
      */
     public function perform()
     {
-        /** @var \Migration\Resource\Adapter\Mysql $sourceAdapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $sourceAdapter */
         $sourceAdapter = $this->source->getAdapter();
-        /** @var \Migration\Resource\Adapter\Mysql $destinationAdapter */
+        /** @var \Migration\ResourceModel\Adapter\Mysql $destinationAdapter */
         $destinationAdapter = $this->destination->getAdapter();
         $sourceDocuments = array_keys($this->groups->getGroup('source_documents'));
-        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         foreach ($sourceDocuments as $sourceDocumentName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $sourceTable =  $sourceAdapter->getTableDdlCopy(
                 $this->source->addDocumentPrefix($sourceDocumentName),
@@ -129,6 +128,7 @@ class Data extends DatabaseStage
                 $pageNumber++;
                 $recordsToSave = $destinationDocument->getRecords();
                 foreach ($sourceRecords as $recordData) {
+                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $destinationRecord */
                     $destinationRecord = $this->recordFactory->create(['document' => $destinationDocument]);
@@ -141,5 +141,20 @@ class Data extends DatabaseStage
         }
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    protected function getIterationsCount()
+    {
+        $iterations = 0;
+        foreach (array_keys($this->groups->getGroup('source_documents')) as $document) {
+            $iterations += $this->source->getRecordsCount($document);
+        }
+
+        return $iterations;
     }
 }

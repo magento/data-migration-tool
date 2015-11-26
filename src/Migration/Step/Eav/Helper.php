@@ -10,9 +10,9 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\RecordTransformer;
 use Migration\RecordTransformerFactory;
-use Migration\Resource\Destination;
-use Migration\Resource\Document;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Document;
+use Migration\ResourceModel\Source;
 
 /**
  * Class Helper

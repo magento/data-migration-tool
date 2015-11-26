@@ -46,6 +46,9 @@
                     <param name="default_value" value="10"/>
                 </handler>
             </transform>
+            <ignore>
+                <datatype>dest-document5.field6</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -64,6 +67,9 @@
             </ignore>
             <ignore>
                 <field>dest-document5.field5</field>
+            </ignore>
+            <ignore>
+                <datatype>dest-document5.field6</datatype>
             </ignore>
         </field_rules>
     </destination>

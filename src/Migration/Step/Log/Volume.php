@@ -5,27 +5,27 @@
  */
 namespace Migration\Step\Log;
 
-use Migration\App\Step\StageInterface;
+use Migration\App\Step\AbstractVolume;
 use Migration\Logger\Logger;
 use Migration\Reader\MapInterface;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
-use Migration\Resource;
+use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
 /**
  * Class Volume
  */
-class Volume implements StageInterface
+class Volume extends AbstractVolume
 {
     /**
-     * @var Resource\Source
+     * @var ResourceModel\Source
      */
     protected $source;
 
     /**
-     * @var Resource\Destination
+     * @var ResourceModel\Destination
      */
     protected $destination;
 
@@ -35,19 +35,9 @@ class Volume implements StageInterface
     protected $map;
 
     /**
-     * @var Logger
-     */
-    protected $logger;
-
-    /**
      * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
-
-    /**
-     * @var array
-     */
-    protected $errors = [];
 
     /**
      * @var \Migration\Reader\Groups
@@ -56,16 +46,16 @@ class Volume implements StageInterface
 
     /**
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         ProgressBar\LogLevelProcessor $progress,
         GroupsFactory $groupsFactory
@@ -73,9 +63,9 @@ class Volume implements StageInterface
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapFactory->create('log_map_file');
-        $this->logger = $logger;
         $this->progress = $progress;
         $this->readerGroups = $groupsFactory->create('log_document_groups_file');
+        parent::__construct($logger);
     }
 
     /**
@@ -83,7 +73,6 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $isSuccess = true;
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         $this->progress->start($this->getIterationsCount());
         foreach ($sourceDocuments as $sourceDocName) {
@@ -95,17 +84,14 @@ class Volume implements StageInterface
             $sourceCount = $this->source->getRecordsCount($sourceDocName);
             $destinationCount = $this->destination->getRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
-                $isSuccess = false;
-                $this->errors[] = 'Volume check failed for the destination document: ' . $destinationName;
+                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
             }
         }
         if (!$this->checkCleared(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')))) {
-            $isSuccess = false;
-            $this->errors[] = 'Destination log documents are not cleared';
+            $this->errors[] = 'Log documents in the destination resource are not cleared';
         }
         $this->progress->finish();
-        $this->logErrors();
-        return $isSuccess;
+        return $this->checkForErrors();
     }
 
     /**
@@ -136,16 +122,5 @@ class Volume implements StageInterface
     {
         return count($this->readerGroups->getGroup('destination_documents_to_clear'))
             + count($this->readerGroups->getGroup('source_documents'));
-    }
-
-    /**
-     * Log Volume check errors
-     * @return void
-     */
-    protected function logErrors()
-    {
-        foreach ($this->errors as $error) {
-            $this->logger->error($error);
-        }
     }
 }

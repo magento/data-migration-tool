@@ -31,25 +31,28 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
     /**
-     * @var \Migration\Resource\Record\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Record\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordCollectionFactory;
 
     /**
-     * @var \Migration\Resource\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $recordFactory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->progress = $this->getMock(
@@ -65,18 +68,21 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             'type' => 'database',
             'version' => '1.14.1.0'
         ]);
-        $this->source = $this->getMock('\Migration\Resource\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\Resource\Destination', [], [], '', false);
+        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
         $this->recordCollectionFactory = $this->getMock(
-            '\Migration\Resource\Record\CollectionFactory',
+            '\Migration\ResourceModel\Record\CollectionFactory',
             ['create'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('\Migration\Resource\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
     }
 
+    /**
+     * @return void
+     */
     public function testIntegrity()
     {
         $this->version = new \Migration\Step\UrlRewrite\Version11410to2000(

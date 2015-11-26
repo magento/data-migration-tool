@@ -5,30 +5,25 @@
  */
 namespace Migration\Step\SalesOrder;
 
-use Migration\App\Step\StageInterface;
+use Migration\App\Step\AbstractVolume;
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 use Migration\App\ProgressBar;
 
 /**
  * Class Volume
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
-class Volume implements StageInterface
+class Volume extends AbstractVolume
 {
     /**
      * @var InitialData
      */
     protected $initialData;
-
-    /**
-     * @var Logger
-     */
-    protected $logger;
 
     /**
      * @var ProgressBar\LogLevelProcessor
@@ -79,7 +74,7 @@ class Volume implements StageInterface
         $this->helper = $helper;
         $this->map = $mapFactory->create('sales_order_map_file');
         $this->progress = $progress;
-        $this->logger = $logger;
+        parent::__construct($logger);
     }
 
     /**
@@ -87,7 +82,6 @@ class Volume implements StageInterface
      */
     public function perform()
     {
-        $isSuccess = true;
         $sourceDocuments = array_keys($this->helper->getDocumentList());
         $this->progress->start(count($sourceDocuments));
         foreach ($sourceDocuments as $sourceDocName) {
@@ -96,43 +90,35 @@ class Volume implements StageInterface
             if (!$destinationName) {
                 continue;
             }
-            $mapIsSuccess = $this->checkMapEntities($sourceDocName, $destinationName);
-            $eavIsSuccess = $this->checkEavEntities($sourceDocName, $destinationName);
-            if (!$mapIsSuccess || !$eavIsSuccess) {
-                $isSuccess = false;
-                break;
-            }
+            $this->checkMapEntities($sourceDocName, $destinationName);
+            $this->checkEavEntities();
         }
         $this->progress->finish();
-        return (bool)$isSuccess;
+        return $this->checkForErrors();
     }
 
     /**
      * @param string $sourceDocName
      * @param string $destinationName
-     * @return bool
+     * @return void
      */
     protected function checkMapEntities($sourceDocName, $destinationName)
     {
-        $isSuccess = true;
         $sourceCount = $this->source->getRecordsCount($sourceDocName);
         $destinationCount = $this->destination->getRecordsCount($destinationName);
         if ($sourceCount != $destinationCount) {
-            $isSuccess = false;
-            $this->logger->error(sprintf(
-                'Volume check failed for the destination document %s',
+            $this->errors[] = sprintf(
+                'Mismatch of entities in the document: %s',
                 $destinationName
-            ));
+            );
         }
-        return $isSuccess;
     }
 
     /**
-     * @return bool
+     * @return void
      */
     protected function checkEavEntities()
     {
-        $isSuccess = true;
         $countBeforeRun = $this->initialData->getDestEavAttributesCount($this->helper->getDestEavDocument());
         $countAfterRun = $this->destination->getRecordsCount($this->helper->getDestEavDocument());
         $countEavAttributes = null;
@@ -140,22 +126,11 @@ class Volume implements StageInterface
             $countEavAttributes += count($this->helper->getSourceAttributes($eavAttribute));
         }
         if (($countBeforeRun + $countEavAttributes) != $countAfterRun) {
-            $isSuccess = false;
-            $this->logger->error(sprintf(
-                'Volume check failed for the destination document %s',
+            $this->errors[] = sprintf(
+                'Mismatch of entities in the document: %s',
                 $this->helper->getDestEavDocument()
-            ));
+            );
         }
-        return $isSuccess;
-    }
-
-    /**
-     * @param string $message
-     * @return void
-     */
-    protected function logError($message)
-    {
-        $this->logger->log(Logger::ERROR, $message);
     }
 
     /**

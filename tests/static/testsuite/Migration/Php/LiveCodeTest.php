@@ -5,6 +5,7 @@
  */
 namespace Migration\Test\Php;
 
+use Magento\Framework\App\Utility;
 use Magento\TestFramework\CodingStandard\Tool\CodeMessDetector;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer;
 use Magento\TestFramework\CodingStandard\Tool\CodeSniffer\Wrapper;
@@ -49,11 +50,11 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
      */
     public static function setUpBeforeClass()
     {
-        self::$pathToSource = \Magento\Framework\App\Utility\Files::init()->getPathToSource();
-        self::$reportDir = self::$pathToSource . '/tests/static/report';
+        self::$pathToSource = Utility\Files::init()->getPathToSource();
+        self::$reportDir = self::$pathToSource . '/vendor/magento/data-migration-tool/tests/static/report';
         self::$magentoDir = require __DIR__ . '/../../../../../etc/magento_path.php';
         if (!is_dir(self::$reportDir)) {
-            mkdir(self::$reportDir, 0777);
+            mkdir(self::$reportDir, 0770);
         }
         self::setupFileLists();
     }
@@ -69,8 +70,8 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
         if ($type != '' && !preg_match('/\/$/', $type)) {
             $type = $type . '/';
         }
-        self::$whiteList = Files::readLists(__DIR__ . '/_files/' . $type . 'whitelist/*.txt');
-        self::$blackList = Files::readLists(__DIR__ . '/_files/' . $type . 'blacklist/*.txt');
+        self::$whiteList = Files::init()->readLists(__DIR__ . '/_files/' . $type . 'whitelist/*.txt');
+        self::$blackList = Files::init()->readLists(__DIR__ . '/_files/' . $type . 'blacklist/*.txt');
     }
 
     /**
@@ -113,6 +114,7 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
         $reportFile = self::$reportDir . '/phpcs_report.xml';
         $wrapper = new Wrapper();
         $codeSniffer = new CodeSniffer(realpath(__DIR__ . '/_files/phpcs'), $reportFile, $wrapper);
+
         if (!$codeSniffer->canRun()) {
             $this->markTestSkipped('PHP Code Sniffer is not installed.');
         }
@@ -175,6 +177,8 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
         );
 
         // delete empty reports
-        unlink($reportFile);
+        if (file_exists($reportFile)) {
+            unlink($reportFile);
+        }
     }
 }

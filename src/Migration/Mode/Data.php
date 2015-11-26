@@ -28,32 +28,27 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     protected $setupDeltaLog;
 
     /**
+     * @var \Migration\Config
+     */
+    protected $configReader;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
      * @param SetupDeltaLog $setupDeltaLog
+     * @param \Migration\Config $configReader
      */
     public function __construct(
         Progress $progress,
         Logger $logger,
         \Migration\App\Mode\StepListFactory $stepListFactory,
-        SetupDeltaLog $setupDeltaLog
+        SetupDeltaLog $setupDeltaLog,
+        \Migration\Config $configReader
     ) {
         parent::__construct($progress, $logger, $stepListFactory);
         $this->setupDeltaLog = $setupDeltaLog;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getUsageHelp()
-    {
-        return <<<USAGE
-
-Data migration mode usage information:
-
-Main data migration
-USAGE;
+        $this->configReader = $configReader;
     }
 
     /**
@@ -134,7 +129,11 @@ USAGE;
     {
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
             $this->rollback($step['data'], $stepName);
-            throw new Exception('Volume Check failed');
+            if ($this->configReader->getStep('delta', $stepName)) {
+                $this->logger->warning('Volume Check failed');
+            } else {
+                throw new Exception('Volume Check failed');
+            }
         }
     }
 
@@ -150,7 +149,7 @@ USAGE;
             $this->logger->info(sprintf('%s: rollback', $stepName));
             try {
                 $stage->rollback();
-            } catch (\Exception $e) {
+            } catch (\Migration\Exception $e) {
                 $this->logger->error($e->getMessage());
             }
             $this->progress->reset($stage);

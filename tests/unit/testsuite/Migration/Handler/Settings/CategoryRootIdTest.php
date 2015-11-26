@@ -7,14 +7,17 @@ namespace Migration\Handler\Settings;
 
 class CategoryRootIdTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
         $categoryRootId = 2;
         $categoryRootIdHandled = null;
         $fieldName = 'value';
-        /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMock(
-            'Migration\Resource\Record',
+            'Migration\ResourceModel\Record',
             ['getValue', 'setValue', 'getFields'],
             [],
             '',
@@ -23,7 +26,9 @@ class CategoryRootIdTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($categoryRootId);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $categoryRootIdHandled);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
         $handler = new \Migration\Handler\Settings\CategoryRootId();
         $handler->setField($fieldName);
         $handler->handle($recordToHandle, $oppositeRecord);

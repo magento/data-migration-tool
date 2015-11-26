@@ -7,7 +7,7 @@ namespace Migration\Step\CustomCustomerAttributes;
 
 use Migration\Logger\Logger;
 use Migration\Reader\Map;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class VolumeTest
@@ -25,12 +25,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -49,6 +49,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     protected $readerGroups;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
@@ -60,14 +63,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->source = $this->getMock(
-            'Migration\Resource\Source',
+            'Migration\ResourceModel\Source',
             ['getDocumentList', 'getRecordsCount', 'getDocument'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\Resource\Destination',
+            'Migration\ResourceModel\Destination',
             ['getRecordsCount', 'getDocument'],
             [],
             '',
@@ -100,19 +103,23 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->progress,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->logger
         );
     }
 
+    /**
+     * @return void
+     */
     public function testPerform()
     {
         $fields = ['field1' => []];
 
-        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
 
-        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
         $this->map->expects($this->once())->method('getDocumentMap')->with('document1')->willReturn('document2');

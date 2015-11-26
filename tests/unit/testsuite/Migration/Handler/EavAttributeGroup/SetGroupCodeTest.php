@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\EavAttributeGroup;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 use Migration\Step\DatabaseStage;
 
 /**
@@ -13,15 +13,20 @@ use Migration\Step\DatabaseStage;
  */
 class SetGroupCodeTest extends \PHPUnit_Framework_TestCase
 {
+    /**
+     * @return void
+     */
     public function testHandle()
     {
-        /** @var \Migration\Resource\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record $oppositeRecord|\PHPUnit_Framework_MockObject_MockObject */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $fieldName = 'fieldname';
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
@@ -32,9 +37,9 @@ class SetGroupCodeTest extends \PHPUnit_Framework_TestCase
 
         $config = $this->getMockBuilder('Migration\Config')
             ->disableOriginalConstructor()->setMethods(['getSource'])->getMock();
-        $source = $this->getMockBuilder('Migration\Resource\Source')
+        $source = $this->getMockBuilder('Migration\ResourceModel\Source')
             ->disableOriginalConstructor()->setMethods(['getAdapter', 'addDocumentPrefix'])->getMock();
-        $adapter = $this->getMockBuilder('Migration\Resource\Adapter\Mysql')
+        $adapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')
             ->disableOriginalConstructor()->setMethods(['fetchCol', 'getSelect'])->getMock();
 
         $config->expects($this->once())->method('getSource')->willReturn(['type' => DatabaseStage::SOURCE_TYPE]);

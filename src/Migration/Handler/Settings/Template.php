@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\Settings;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
 /**

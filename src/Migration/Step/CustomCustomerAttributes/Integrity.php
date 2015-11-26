@@ -12,7 +12,7 @@ use Migration\Reader\Groups;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
-use Migration\Resource;
+use Migration\ResourceModel;
 
 /**
  * Class Integrity
@@ -27,8 +27,8 @@ class Integrity extends AbstractIntegrity
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
-     * @param Resource\Source $source
-     * @param Resource\Destination $destination
+     * @param ResourceModel\Source $source
+     * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
@@ -36,8 +36,8 @@ class Integrity extends AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
-        Resource\Source $source,
-        Resource\Destination $destination,
+        ResourceModel\Source $source,
+        ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         $mapConfigOption = 'customer_attr_map_file'
@@ -59,8 +59,8 @@ class Integrity extends AbstractIntegrity
             $dstDocuments[] = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
         }
 
-        $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
-        $this->check($dstDocuments, MapInterface::TYPE_DEST);
+        $this->check($srcDocuments, MapInterface::TYPE_SOURCE, false);
+        $this->check($dstDocuments, MapInterface::TYPE_DEST, false);
         $this->progress->finish();
         return $this->checkForErrors();
     }

@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\EavAttribute;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 
 /**
  * Class ConvertModelTest
@@ -27,6 +27,9 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
      */
     protected $classMap;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->classMap = $this->getMockBuilder('Migration\Reader\ClassMap')->setMethods(['convertClassName'])
@@ -37,15 +40,20 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         $this->handler->setField($this->fieldName);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleConvert()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()->getMock();
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->classMap->expects($this->once())->method('convertClassName')
             ->with('some\class_name')
@@ -59,15 +67,18 @@ class ConvertModelTest extends \PHPUnit_Framework_TestCase
         $this->handler->handle($recordToHandle, $oppositeRecord);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleGetDestination()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\Resource\Record')
+        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\Resource\Record')->disableOriginalConstructor()
+        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('Some\Class\Name'));

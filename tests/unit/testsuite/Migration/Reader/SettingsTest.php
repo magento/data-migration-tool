@@ -15,10 +15,21 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      */
     protected $settings;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $config = $this->getConfigFile('tests/unit/testsuite/Migration/_files/settings.xml');
-        $this->settings = new Settings($config);
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        $this->settings = new Settings($config, $validationState);
     }
 
     /**
@@ -54,6 +65,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      * @param string $node
      * @param bool $isIgnored
      * @dataProvider dataProviderNodesIgnore
+     * @return void
      */
     public function testIsNodeIgnored($node, $isIgnored)
     {
@@ -81,6 +93,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      * @param string $node
      * @param bool $isMapped
      * @dataProvider dataProviderNodeIsMapped
+     * @return void
      */
     public function testIsNodeMapped($node, $isMapped)
     {
@@ -108,6 +121,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      * @param string $node
      * @param string $nodeMap
      * @dataProvider dataProviderNodesMap
+     * @return void
      */
     public function testGetNodeMap($node, $nodeMap)
     {
@@ -135,6 +149,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      * @param string $node
      * @param string $valueHandler
      * @dataProvider dataProviderValueHandler
+     * @return void
      */
     public function testGetValueHandler($node, $valueHandler)
     {
@@ -144,17 +159,39 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($valueHandler, $result);
     }
 
+    /**
+     * @return void
+     */
     public function testNoConfigFile()
     {
         $config = $this->getConfigFile('invalid_file_name');
         $this->setExpectedException('Migration\Exception', 'Invalid map filename:');
-        new Settings($config);
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        new Settings($config, $validationState);
     }
 
+    /**
+     * @return void
+     */
     public function testInvalidConfigFile()
     {
         $config = $this->getConfigFile('tests/unit/testsuite/Migration/_files/settings-invalid.xml');
         $this->setExpectedException('Migration\Exception', 'XML file is invalid.');
-        new Settings($config);
+
+        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+            ->disableOriginalConstructor()
+            ->setMethods(['isValidationRequired'])
+            ->getMock();
+
+        $validationState->expects($this->any())->method('isValidationRequired')->willReturn(true);
+
+        new Settings($config, $validationState);
     }
 }

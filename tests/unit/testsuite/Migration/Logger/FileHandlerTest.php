@@ -5,6 +5,8 @@
 
 namespace Migration\Logger;
 
+use Magento\Framework\App\Filesystem\DirectoryList;
+
 class FileHandlerTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -15,12 +17,17 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $filesystem;
+    protected $file;
 
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $config;
+
+    /**
+     * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $filesystem;
 
     /**
      * @var string
@@ -36,10 +43,13 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
      * @var int
      */
     protected $handlerLevel = 1;
-    
+
+    /**
+     * @return void
+     */
     protected function setUp()
     {
-        $this->filesystem = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
+        $this->file = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
             ->disableOriginalConstructor()
             ->setMethods(['filePutContents', 'getRealPath', 'createDirectory'])
             ->getMock();
@@ -47,29 +57,45 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getOption'])
             ->getMock();
-        $this->fileHandler = new FileHandler($this->filesystem, $this->config);
+        $directoryRead = $this->getMockBuilder('\Magento\Framework\Filesystem\Directory\ReadInterface')
+            ->disableOriginalConstructor()
+            ->getMock();
+        $directoryRead->expects($this->any())->method('getAbsolutePath')->willReturn('/path/to/var');
+        $this->filesystem = $this->getMockBuilder('\Magento\Framework\Filesystem')
+            ->disableOriginalConstructor()
+            ->setMethods(['getDirectoryRead'])
+            ->getMock();
+        $this->filesystem->expects($this->any())->method('getDirectoryRead')->with(DirectoryList::VAR_DIR)
+            ->willReturn($directoryRead);
+        $this->fileHandler = new FileHandler($this->file, $this->config, $this->filesystem);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleSuccess()
     {
         $extra = ['mode' => 'application mode'];
         $record = ['message' => $this->message, 'level' => $this->recordLevel, 'extra' => $extra];
         $this->fileHandler->setLevel($this->handlerLevel);
         $file = 'file/path/file.log';
-        $this->filesystem->expects($this->any())->method('filePutContents')->willReturn(1);
-        $this->filesystem->expects($this->any())->method('getRealPath')->willReturnMap(
+        $this->file->expects($this->any())->method('filePutContents')->willReturn(1);
+        $this->file->expects($this->any())->method('getRealPath')->willReturnMap(
             [
                 [$file, false],
                 ['file/path', false],
                 ['file', '/existing_path/file']
             ]
         );
-        $this->filesystem->expects($this->once())->method('createDirectory')->willReturn(true);
+        $this->file->expects($this->once())->method('createDirectory')->willReturn(true);
         $this->config->expects($this->any())->method('getOption')->with('log_file')->willReturn($file);
         $result = $this->fileHandler->handle($record);
         $this->assertFalse($result);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleSuccessWithoutBubble()
     {
         $extra = ['mode' => 'application mode'];
@@ -77,20 +103,23 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
         $this->fileHandler->setLevel($this->handlerLevel);
         $this->fileHandler->setBubble(false);
         $file = 'file/path/file.log';
-        $this->filesystem->expects($this->any())->method('filePutContents')->willReturn(1);
-        $this->filesystem->expects($this->any())->method('getRealPath')->willReturnMap(
+        $this->file->expects($this->any())->method('filePutContents')->willReturn(1);
+        $this->file->expects($this->any())->method('getRealPath')->willReturnMap(
             [
                 [$file, false],
                 ['file/path', false],
                 ['file', '/existing_path/file']
             ]
         );
-        $this->filesystem->expects($this->once())->method('createDirectory')->willReturn(true);
+        $this->file->expects($this->once())->method('createDirectory')->willReturn(true);
         $this->config->expects($this->any())->method('getOption')->with('log_file')->willReturn($file);
         $result = $this->fileHandler->handle($record);
         $this->assertTrue($result);
     }
 
+    /**
+     * @return void
+     */
     public function testHandleError()
     {
         $extra = ['mode' => 'application mode'];

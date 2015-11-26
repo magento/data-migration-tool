@@ -12,6 +12,10 @@ namespace Migration\Step\Map;
 class VolumeTest extends \PHPUnit_Framework_TestCase
 {
 
+    /**
+     * @throws \Migration\Exception
+     * @return void
+     */
     public function testPerform()
     {
         $progress = $this->getMock(

@@ -9,9 +9,9 @@ use Migration\App\Step\AbstractDelta;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
-use Migration\Resource\Source;
-use Migration\Resource\Destination;
-use Migration\Resource;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel;
 
 class Delta extends AbstractDelta
 {
@@ -36,7 +36,7 @@ class Delta extends AbstractDelta
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
      * @param Destination $destination
-     * @param Resource\RecordFactory $recordFactory
+     * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Data $data
      */
@@ -46,7 +46,7 @@ class Delta extends AbstractDelta
         GroupsFactory $groupsFactory,
         Logger $logger,
         Destination $destination,
-        Resource\RecordFactory $recordFactory,
+        ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Data $data
     ) {
@@ -63,8 +63,8 @@ class Delta extends AbstractDelta
     }
 
     /**
-     * @param Resource\Document $sourceDocument
-     * @param Resource\Document $destinationDocument
+     * @param ResourceModel\Document $sourceDocument
+     * @param ResourceModel\Document $destinationDocument
      * @return \Migration\RecordTransformer
      */
     protected function getRecordTransformer($sourceDocument, $destinationDocument)

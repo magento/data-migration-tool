@@ -8,8 +8,8 @@ namespace Migration\Step\Eav;
 use Migration\Reader\Map;
 use Migration\Reader\MapInterface;
 use Migration\RecordTransformerFactory;
-use Migration\Resource\Destination;
-use Migration\Resource\Source;
+use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 
 /**
  * Class HelperTest
@@ -41,6 +41,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     protected $factory;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
@@ -51,10 +54,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
-        $this->source = $this->getMockBuilder('Migration\Resource\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\Resource\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
         $this->factory = $this->getMockBuilder('Migration\RecordTransformerFactory')->disableOriginalConstructor()
@@ -64,6 +67,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory);
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecordsCount()
     {
         $this->source->expects($this->once())->method('getRecordsCount')->with('some_document')
@@ -71,6 +77,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $this->helper->getSourceRecordsCount('some_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecordsCount()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
@@ -81,6 +90,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals(5, $this->helper->getDestinationRecordsCount('some_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecords()
     {
         $this->source->expects($this->once())->method('getRecordsCount')->will($this->returnValue(1));
@@ -94,6 +106,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getSourceRecords('test_source_document', ['key', 'field']));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecords()
     {
         $this->map->expects($this->once())->method('getDocumentMap')
@@ -109,6 +124,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals($result, $this->helper->getDestinationRecords('test_source_document', ['key', 'field']));
     }
 
+    /**
+     * @return void
+     */
     public function testGetSourceRecordsNoKey()
     {
         $row = ['key' => 'key_value', 'field' => 'field_value'];
@@ -119,6 +137,9 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$row], $this->helper->getSourceRecords('test_source_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetDestinationRecordsNoKey()
     {
         $row = ['key' => 'key_value', 'field' => 'field_value'];
@@ -132,11 +153,14 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals([$row], $this->helper->getDestinationRecords('test_source_document'));
     }
 
+    /**
+     * @return void
+     */
     public function testGetRecordTransformer()
     {
-        $sourceDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
+        $sourceDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
             ->getMock();
-        $destinationDocument = $this->getMockBuilder('Migration\Resource\Document')->disableOriginalConstructor()
+        $destinationDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
             ->getMock();
         $recordTransformer = $this->getMockBuilder('Migration\RecordTransformer')->disableOriginalConstructor()
             ->setMethods(['init'])

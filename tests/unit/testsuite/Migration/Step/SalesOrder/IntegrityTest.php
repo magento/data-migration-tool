@@ -23,12 +23,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $logger;
 
     /**
-     * @var \Migration\Resource\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $source;
 
     /**
-     * @var \Migration\Resource\Destination|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $destination;
 
@@ -52,10 +52,19 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     protected $helper;
 
+    /**
+     * @return void
+     */
     public function setUp()
     {
         $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
-        $this->source = $this->getMock('\Migration\Resource\Source', ['getDocumentList', 'getDocument'], [], '', false);
+        $this->source = $this->getMock(
+            '\Migration\ResourceModel\Source',
+            ['getDocumentList', 'getDocument'],
+            [],
+            '',
+            false
+        );
         $this->progress = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
@@ -71,7 +80,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->destination = $this->getMock(
-            '\Migration\Resource\Destination',
+            '\Migration\ResourceModel\Destination',
             ['getDocumentList', 'getDocument', 'getRecords'],
             [],
             '',
@@ -102,20 +111,21 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      * @covers \Migration\Step\SalesOrder\Integrity::checkEavEntities
      * @covers \Migration\Step\SalesOrder\Integrity::getEavEntities
      * @covers \Migration\Step\SalesOrder\Integrity::getIterationsCount
+     * @return void
      */
     public function testPerform()
     {
-        $fields = ['field1' => []];
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
         $destinationRecord = ['attribute_code' => 'eav_entity'];
         $this->helper->expects($this->any())->method('getDocumentList')->willReturn(['source_doc' => 'dest_doc']);
         $this->helper->expects($this->once())->method('getDestEavDocument')->willReturn('eav_entity_int');
         $this->helper->expects($this->once())->method('getEavAttributes')->willReturn(['eav_entity']);
         $this->progress->expects($this->once())->method('start')->with(3);
         $this->progress->expects($this->any())->method('advance');
-        $structure = $this->getMockBuilder('\Migration\Resource\Structure')
+        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->willReturn($fields);
-        $document = $this->getMockBuilder('\Migration\Resource\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
         $document->expects($this->any())->method('getStructure')->willReturn($structure);
         $this->source->expects($this->any())->method('getDocumentList')->willReturn(['source_doc']);
         $this->destination->expects($this->once())->method('getDocumentList')->willReturn(['dest_doc']);

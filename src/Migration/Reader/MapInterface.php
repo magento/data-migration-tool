@@ -23,6 +23,14 @@ interface MapInterface
 
     /**
      * @param string $document
+     * @param string $field
+     * @param string $type
+     * @return mixed
+     */
+    public function isFieldDataTypeIgnored($document, $field, $type);
+
+    /**
+     * @param string $document
      * @param string $type
      * @return mixed
      */

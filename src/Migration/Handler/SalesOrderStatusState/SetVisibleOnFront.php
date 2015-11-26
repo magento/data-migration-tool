@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SalesOrderStatusState;
 
-use Migration\Resource\Record;
+use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 use Migration\Handler\HandlerInterface;
 
