@@ -150,7 +150,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE]
         );
         $result &= !array_diff_key(
-            array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
+            array_keys($this->destination->getStructure(self::DESTINATION)->getFields()),
             $this->structure[MapInterface::TYPE_DEST][self::DESTINATION]
         );
         $this->progress->advance();
