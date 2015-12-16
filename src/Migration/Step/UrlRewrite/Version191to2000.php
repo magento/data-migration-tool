@@ -145,10 +145,14 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= array_keys($this->source->getStructure(self::SOURCE)->getFields())
-            == $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE];
-        $result &= array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
-            == $this->structure[MapInterface::TYPE_DEST][self::DESTINATION];
+        $result &= !array_diff_key(
+            array_keys($this->source->getStructure(self::SOURCE)->getFields()),
+            $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE]
+        );
+        $result &= !array_diff_key(
+            array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
+            $this->structure[MapInterface::TYPE_DEST][self::DESTINATION]
+        );
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
