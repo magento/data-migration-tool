@@ -47,8 +47,7 @@ class Volume extends AbstractVolume
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         ProgressBar\LogLevelProcessor $progressBar,
-        Helper $helper,
-        Logger $logger
+        Helper $helper
     ) {
         $this->source = $source;
         $this->destination = $destination;
