@@ -42,7 +42,7 @@ class Volume extends AbstractVolume
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerList;
+    protected $readerGroups;
 
     /**
      * @param Logger $logger
