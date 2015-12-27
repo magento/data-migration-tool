@@ -1259,6 +1259,18 @@
                 <document>sequence_shipment*</document>
             </ignore>
             <ignore>
+                <document>sequence_rma_item_*</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token_order_payment_link</document>
+            </ignore>
+            <ignore>
+                <document>search_synonyms</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
@@ -1654,6 +1666,9 @@
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <field>catalog_category_product.entity_id</field>
             </ignore>
         </field_rules>
     </destination>
