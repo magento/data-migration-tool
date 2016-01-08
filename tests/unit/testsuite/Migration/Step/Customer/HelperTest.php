@@ -232,6 +232,32 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                         Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 1,
                         'entity_id' => '1',
                         'attribute_id' => '12',
+                        'value' => '86a375aacb17606c185d31c8d3e320ce'
+                    ]
+                ],
+                [
+                    self::ATTRIBUTE => '86a375aacb17606c185d31c8d3e320ce::0'
+                ]
+            ],
+            [
+                [
+                    [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 1,
+                        'entity_id' => '1',
+                        'attribute_id' => '12',
+                        'value' => 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855'
+                    ]
+                ],
+                [
+                    self::ATTRIBUTE => 'e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855::1'
+                ]
+            ],
+            [
+                [
+                    [
+                        Helper::UPGRADE_CUSTOMER_PASSWORD_HASH => 1,
+                        'entity_id' => '1',
+                        'attribute_id' => '12',
                         'value' => '123123q:UmPvGtih25eQCjC5f6NMwqkds500x2Jd'
                     ]
                 ],
