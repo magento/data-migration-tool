@@ -377,15 +377,11 @@ class Helper
      */
     private function explodePasswordHash($passwordHash)
     {
-        $passwordHashMap = [
-            self::PASSWORD_HASH => '',
-            self::PASSWORD_SALT => ''
-        ];
         $explodedPassword = explode(':', $passwordHash, 2);
-        foreach ($passwordHashMap as $key => $defaultValue) {
-            $passwordHashMap[$key] = (isset($explodedPassword[$key])) ? $explodedPassword[$key] : $defaultValue;
-        }
-
-        return $passwordHashMap;
+        $explodedPassword[self::PASSWORD_SALT] = isset($explodedPassword[self::PASSWORD_SALT])
+            ? $explodedPassword[self::PASSWORD_SALT]
+            : ''
+        ;
+        return $explodedPassword;
     }
 }
