@@ -509,20 +509,6 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Delete backed up documents
-     * @return void
-     */
-    public function deleteBackups()
-    {
-        foreach (array_keys($this->readerGroups->getGroup('documents')) as $documentName) {
-            $documentName = $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
-            if ($documentName) {
-                $this->destination->deleteDocumentBackup($documentName);
-            }
-        }
-    }
-
-    /**
      * Remove ignored attributes from source records
      *
      * @param array $sourceRecords

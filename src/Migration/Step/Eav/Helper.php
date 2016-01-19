@@ -13,6 +13,7 @@ use Migration\RecordTransformerFactory;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Document;
 use Migration\ResourceModel\Source;
+use Migration\Reader\GroupsFactory;
 
 /**
  * Class Helper
@@ -35,21 +36,29 @@ class Helper
     protected $factory;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerGroups;
+
+    /**
      * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
      * @param RecordTransformerFactory $factory
+     * @param GroupsFactory $groupsFactory
      */
     public function __construct(
         MapFactory $mapFactory,
         Source $source,
         Destination $destination,
-        RecordTransformerFactory $factory
+        RecordTransformerFactory $factory,
+        GroupsFactory $groupsFactory
     ) {
         $this->map = $mapFactory->create('eav_map_file');
         $this->source = $source;
         $this->destination = $destination;
         $this->factory = $factory;
+        $this->readerGroups = $groupsFactory->create('eav_document_groups_file');
     }
 
     /**
@@ -133,5 +142,20 @@ class Helper
             'destDocument' => $destinationDocument,
             'mapReader' => $this->map
         ])->init();
+    }
+
+
+    /**
+     * Delete backed up documents
+     * @return void
+     */
+    public function deleteBackups()
+    {
+        foreach (array_keys($this->readerGroups->getGroup('documents')) as $documentName) {
+            $documentName = $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
+            if ($documentName) {
+                $this->destination->deleteDocumentBackup($documentName);
+            }
+        }
     }
 }

@@ -65,7 +65,11 @@ class Volume extends AbstractVolume
         $this->validateAttributes();
         $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
-        return $this->checkForErrors(Logger::ERROR);
+        $result = $this->checkForErrors(Logger::ERROR);
+        if ($result) {
+            $this->helper->deleteBackups();
+        }
+        return $result;
     }
 
     /**
