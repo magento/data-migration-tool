@@ -1326,9 +1326,7 @@
             </transform>
             <transform>
                 <field>enterprise_logging_event.x_forwarded_ip</field>
-                <handler class="Migration\Handler\ConvertIp">
-                    <param name="isIpPacked" value="0"/>
-                </handler>
+                <handler class="Migration\Handler\ConvertIp"/>
             </transform>
             <transform>
                 <field>rating_option_vote.remote_ip_long</field>
