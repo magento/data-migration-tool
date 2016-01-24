@@ -67,6 +67,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
     protected $config;
 
     /**
+     * @var \Migration\Step\Map\Helper|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $helper;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -130,6 +135,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['debug'])
             ->getMock();
 
+        $this->helper = $this->getMockBuilder('\Migration\Step\Map\Helper')->disableOriginalConstructor()
+            ->setMethods(['getFieldsUpdateOnDuplicate'])
+            ->getMock();
+
         $this->data = new Data(
             $this->progressBar,
             $this->source,
@@ -139,7 +148,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $mapFactory,
             $this->progress,
             $this->logger,
-            $this->config
+            $this->config,
+            $this->helper
         );
     }
 
@@ -226,6 +236,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('clearDocument')->with($dstDocName);
         $this->logger->expects($this->any())->method('debug')->with('migrating', ['table' => $sourceDocName])
             ->willReturn(true);
+        $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
+            ->willReturn(false);
         $this->data->perform();
     }
 

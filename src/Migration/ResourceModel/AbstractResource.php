@@ -129,11 +129,13 @@ abstract class AbstractResource
      *
      * @param string $documentName
      * @param bool $usePrefix
+     * @param array|bool $distinctFields
      * @return int
      */
-    public function getRecordsCount($documentName, $usePrefix = true)
+    public function getRecordsCount($documentName, $usePrefix = true, $distinctFields = [])
     {
-        return $this->adapter->getRecordsCount($usePrefix ? $this->addDocumentPrefix($documentName) : $documentName);
+        $documentName = $usePrefix ? $this->addDocumentPrefix($documentName) : $documentName;
+        return $this->adapter->getRecordsCount($documentName, $distinctFields);
     }
 
     /**

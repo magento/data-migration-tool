@@ -18,7 +18,7 @@ class Destination extends AbstractResource
      *
      * @param string $documentName
      * @param \Migration\ResourceModel\Record\Collection|array $records
-     * @param bool $updateOnDuplicate
+     * @param bool|array $updateOnDuplicate
      * @return $this
      */
     public function saveRecords($documentName, $records, $updateOnDuplicate = false)

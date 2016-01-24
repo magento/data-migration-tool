@@ -105,6 +105,7 @@
         <customer_attribute_groups_file>etc/ce-to-ee/1.6.2.0/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
         <delta_document_groups_file>etc/ce-to-ee/deltalog.xml.dist</delta_document_groups_file>
         <order_grids_document_groups_file>etc/ce-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
+        <map_document_groups>etc/ce-to-ee/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/ce-to-ee/class-map.xml.dist</class_map>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.

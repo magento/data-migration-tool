@@ -42,6 +42,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $volume;
 
     /**
+     * @var \Migration\Step\Map\Helper|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $helper;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -77,12 +82,17 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
+        $this->helper = $this->getMockBuilder('\Migration\Step\Map\Helper')->disableOriginalConstructor()
+            ->setMethods(['getFieldsUpdateOnDuplicate'])
+            ->getMock();
+
         $this->volume = new Volume(
             $this->logger,
             $this->source,
             $this->destination,
             $mapFactory,
-            $this->progress
+            $this->progress,
+            $this->helper
         );
     }
 
@@ -97,6 +107,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
+            ->willReturn(false);
         $this->assertTrue($this->volume->perform());
     }
 
@@ -111,6 +123,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('getRecordsCount');
+        $this->helper->expects($this->never())->method('getFieldsUpdateOnDuplicate');
         $this->assertTrue($this->volume->perform());
     }
 
@@ -129,6 +142,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             Logger::WARNING,
             'Mismatch of entities in the document: ' . $dstDocName
         );
+        $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
+            ->willReturn(false);
         $this->assertFalse($this->volume->perform());
     }
 }
