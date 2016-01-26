@@ -94,7 +94,7 @@ class Data implements StageInterface, RollbackInterface
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerList;
+    protected $readerGroups;
 
     /**
      * @param Source $source

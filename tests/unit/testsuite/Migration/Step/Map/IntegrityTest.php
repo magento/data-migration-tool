@@ -142,7 +142,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->map->expects($this->any())->method('isDocumentIgnored')->willReturn(false);
         $this->logger->expects($this->exactly(1))->method('error')
-            ->with('Source documents are missing or not mapped: document1');
+            ->with('Source documents are not mapped: document1');
 
         $this->integrity->perform();
     }
@@ -159,7 +159,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document1', 'document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->logger->expects($this->once())->method('error')
-            ->with('Destination documents are missing or not mapped: document1');
+            ->with('Destination documents are not mapped: document1');
 
         $this->integrity->perform();
     }
@@ -215,10 +215,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('field2'));
 
         $this->logger->expects($this->at(0))->method('error')->with(
-            'Source fields are missing or not mapped. Document: document. Fields: field1'
+            'Source fields are not mapped. Document: document. Fields: field1'
         );
         $this->logger->expects($this->at(1))->method('error')->with(
-            'Destination fields are missing or not mapped. Document: document. Fields: field2'
+            'Destination fields are not mapped. Document: document. Fields: field2'
         );
 
         $this->integrity->perform();

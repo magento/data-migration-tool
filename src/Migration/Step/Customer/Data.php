@@ -54,11 +54,6 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     protected $progress;
 
     /**
-     * @var \Migration\Reader\Groups
-     */
-    protected $readerList;
-
-    /**
      * @var Logger
      */
     protected $logger;

@@ -56,7 +56,7 @@ class Data implements StageInterface
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerList;
+    protected $readerGroups;
 
     /**
      * @var Logger

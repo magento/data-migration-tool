@@ -20,7 +20,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerList;
+    protected $readerGroups;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress

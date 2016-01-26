@@ -31,6 +31,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $progress;
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @param Destination $destination
      * @param Logger $logger
      * @param ProgressBar\LogLevelProcessor $progress
@@ -113,9 +118,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function checkForErrors()
     {
-        $checkMissingDocuments = $this->checkMissingDocuments();
-        $checkMissingDocumentFields = $this->checkMissingDocumentFields();
-        return $checkMissingDocuments && $checkMissingDocumentFields;
+        $checkDocuments = $this->checkDocuments();
+        $checkDocumentFields = $this->checkDocumentFields();
+        return $checkDocuments && $checkDocumentFields;
     }
 
     /**
