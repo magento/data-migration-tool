@@ -145,12 +145,34 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= array_keys($this->source->getStructure(self::SOURCE)->getFields())
-            == $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE];
-        $result &= array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
-            == $this->structure[MapInterface::TYPE_DEST][self::DESTINATION];
         $this->progress->advance();
-        $this->progress->finish();
+        $sourceFieldsDiff = array_diff(
+            $this->structure[MapInterface::TYPE_SOURCE][self::SOURCE],
+            array_keys($this->source->getStructure(self::SOURCE)->getFields())
+        );
+        $destinationFieldsDiff= array_diff(
+            $this->structure[MapInterface::TYPE_DEST][self::DESTINATION],
+            array_keys($this->destination->getStructure(self::DESTINATION)->getFields())
+        );
+        if ($sourceFieldsDiff) {
+            $this->logger->error(sprintf(
+                'Source fields are missing. Document: %s. Fields: %s',
+                self::SOURCE,
+                implode(',', $sourceFieldsDiff)
+            ));
+            $result = false;
+        }
+        if ($destinationFieldsDiff) {
+            $this->logger->error(sprintf(
+                'Destination fields are missing. Document: %s. Fields: %s',
+                self::DESTINATION,
+                implode(',', $destinationFieldsDiff)
+            ));
+            $result = false;
+        }
+        if ($result) {
+            $this->progress->finish();
+        }
         return (bool)$result;
     }
 
