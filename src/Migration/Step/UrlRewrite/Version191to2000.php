@@ -268,7 +268,10 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $destRecord->setValue('metadata', $metadata);
 
         $destRecord->setValue('entity_id', $record->getValue('product_id') ?: $record->getValue('category_id'));
-        $destRecord->setValue('redirect_type', $this->redirectTypesMapping[$record->getValue('options')]);
+        $redirectType = isset($this->redirectTypesMapping[$record->getValue('options')])
+            ? $this->redirectTypesMapping[$record->getValue('options')]
+            : $this->redirectTypesMapping[''];
+        $destRecord->setValue('redirect_type', $redirectType);
     }
 
     /**
