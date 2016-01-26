@@ -144,7 +144,6 @@ class Helper
         ])->init();
     }
 
-
     /**
      * Delete backed up documents
      * @return void
