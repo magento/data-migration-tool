@@ -87,11 +87,6 @@ abstract class AbstractIntegrity implements StageInterface
     protected $progress;
 
     /**
-     * @var bool
-     */
-    protected $hasMappedDocuments = true;
-
-    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param ResourceModel\Source $source
@@ -133,8 +128,6 @@ abstract class AbstractIntegrity implements StageInterface
     {
         $documents = $this->filterIgnoredDocuments($documents, $type);
         if (!empty($documents)) {
-            $this->hasMappedDocuments = false;
-
             $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
             $destDocuments = array_flip($destination->getDocumentList());
@@ -149,7 +142,6 @@ abstract class AbstractIntegrity implements StageInterface
                 if (!isset($destDocuments[$destinationDocumentName]) || !$sourceDocument || !$destinationDocument) {
                     $this->notMappedDocuments[$type][$sourceDocumentName] = true;
                 } else {
-                    $this->hasMappedDocuments = true;
                     if ($verifyFields) {
                         $this->verifyFields($sourceDocument, $destinationDocument, $type);
                     }
@@ -206,10 +198,6 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkForErrors()
     {
-        if (!$this->hasMappedDocuments) {
-            $this->logger->error('Mapped documents are missing or not found. Check your configuration.');
-            return false;
-        }
         $checkDocuments = $this->checkDocuments();
         $checkDocumentFields = $this->checkDocumentFields();
         $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
