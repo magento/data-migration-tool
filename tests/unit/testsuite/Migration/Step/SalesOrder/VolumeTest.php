@@ -136,8 +136,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(
             [
-                [$destDocumentName, true, 1],
-                [$eavDocumentName, true, 1]
+                [$destDocumentName, true, [], 1],
+                [$eavDocumentName, true, [], 1]
             ]
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')->with('eav_entity_int')
@@ -170,8 +170,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(
             [
-                [$destDocumentName, true, 1],
-                [$eavDocumentName, true, 1]
+                [$destDocumentName, true, [], 1],
+                [$eavDocumentName, true, [], 1]
             ]
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')
@@ -208,8 +208,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getRecordsCount')->with($sourceDocumentName)->willReturn(1);
         $this->destination->expects($this->any())->method('getRecordsCount')->willReturnMap(
             [
-                [$destDocumentName, true, 2],
-                [$eavDocumentName, true, 1]
+                [$destDocumentName, true, [], 2],
+                [$eavDocumentName, true, [], 1]
             ]
         );
         $this->initialData->expects($this->once())->method('getDestEavAttributesCount')->with('eav_entity_int')

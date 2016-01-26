@@ -118,7 +118,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
-            ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, null]]);
+            ->willReturnMap([['config_data', true, [], 3], ['document_to_clear', true, [], null]]);
         $this->assertTrue($this->volume->perform());
     }
 
@@ -160,7 +160,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->any())->method('getRecordsCount')
-            ->willReturnMap([['config_data', true, 3], ['document_to_clear', true, 1]]);
+            ->willReturnMap([['config_data', true, [], 3], ['document_to_clear', true, [], 1]]);
         $this->logger->expects($this->once())->method('addRecord')->with(
             Logger::WARNING,
             'Log documents in the destination resource are not cleared'

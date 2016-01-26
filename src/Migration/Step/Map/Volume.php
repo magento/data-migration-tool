@@ -38,23 +38,31 @@ class Volume extends AbstractVolume
     protected $progressBar;
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @param Logger $logger
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param ProgressBar\LogLevelProcessor $progressBar
+     * @param Helper $helper
      */
     public function __construct(
         Logger $logger,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
-        ProgressBar\LogLevelProcessor $progressBar
+        ProgressBar\LogLevelProcessor $progressBar,
+        Helper $helper
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
+        $this->helper = $helper;
         parent::__construct($logger);
     }
 
@@ -71,7 +79,8 @@ class Volume extends AbstractVolume
             if (!$destinationName) {
                 continue;
             }
-            $sourceCount = $this->source->getRecordsCount($sourceDocName);
+            $distinctFields = $this->helper->getFieldsUpdateOnDuplicate($destinationName);
+            $sourceCount = $this->source->getRecordsCount($sourceDocName, true, $distinctFields);
             $destinationCount = $this->destination->getRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
                 $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
