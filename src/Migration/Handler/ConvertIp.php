@@ -23,9 +23,9 @@ class ConvertIp extends AbstractHandler implements HandlerInterface
         if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
             || filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
         ) {
-            $newValue = (int) ip2long($value);
+            $newValue = (int)ip2long($value);
         } else if (@inet_ntop($value) !== false) {
-            $newValue = (int) ip2long(inet_ntop($value));
+            $newValue = (int)ip2long(inet_ntop($value));
         } else {
             $newValue = 0;
         }
