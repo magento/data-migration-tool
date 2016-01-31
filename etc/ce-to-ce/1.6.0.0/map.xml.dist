@@ -1065,6 +1065,15 @@
             <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
+            <ignore>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1393,6 +1402,12 @@
             <ignore>
                 <document>oauth_token_request_log</document>
             </ignore>
+            <ignore>
+                <document>admin_user_session</document>
+            </ignore>
+            <ignore>
+                <document>password_reset_request_event</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1659,13 +1674,22 @@
                 <field>checkout_agreement.mode</field>
             </ignore>
             <ignore>
+                <field>catalog_category_product.entity_id</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
-                <field>catalog_category_product.entity_id</field>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
             </ignore>
         </field_rules>
     </destination>
