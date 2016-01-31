@@ -999,10 +999,34 @@
                 <field>newsletter_template.template_text_preprocessed</field>
             </ignore>
             <ignore>
+                <field>catalogrule.sub_is_enable</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.sub_simple_action</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.sub_discount_amount</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule_product.sub_simple_action</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule_product.sub_discount_amount</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
             </ignore>
         </field_rules>
     </source>
@@ -1281,6 +1305,12 @@
             <ignore>
                 <document>customer_grid_flat</document>
             </ignore>
+            <ignore>
+                <document>admin_user_session</document>
+            </ignore>
+            <ignore>
+                <document>password_reset_request_event</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1474,13 +1504,22 @@
                 <field>checkout_agreement.mode</field>
             </ignore>
             <ignore>
+                <field>catalog_category_product.entity_id</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
-                <field>catalog_category_product.entity_id</field>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
             </ignore>
         </field_rules>
     </destination>
