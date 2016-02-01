@@ -167,22 +167,6 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     /**
      * @return void
      */
-    public function testPerformWithDocNotExists()
-    {
-        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document1']));
-        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
-            ->will($this->returnValue(['document2']));
-        $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
-        $this->logger->expects($this->any())->method('error')
-            ->with('Mapped documents are missing or not found. Check your configuration.');
-
-        $this->integrity->perform();
-    }
-
-    /**
-     * @return void
-     */
     public function testPerformWithSourceFieldErrors()
     {
         $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
