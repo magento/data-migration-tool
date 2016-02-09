@@ -16,6 +16,12 @@ This edition of tool supports the following versions for migration:
 
 *	Community Edition (CE) version 1.6.x, 1.7.x, 1.8.x, 1.9.x
 
+*	Enterprise Edition (EE) version 1.11.x, 1.12.x, 1.13.x, 1.14.x
+
+Also the following versions are already supported if you choose to migrate from Magento 1 CE to Magento 2 EE:
+
+*    1.6.x, 1.7.x, 1.8.x, 1.9.x
+
 ## Prerequisites
 Before you start your migration, you must do all of the following:
 
@@ -46,11 +52,13 @@ This section discusses how to install the Magento Data Migration Tool. You can i
 To install the migration tool from GitHub, use the following steps:
 
 1.	Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v1.0/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
-2. Go to Magento 2 root directory.
+2.  Go to Magento 2 root directory.
 3.	Enter the following commands:
 
-		composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool-ce
-		composer require magento/data-migration-tool:dev-master
+		composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
+		composer require magento/data-migration-tool:<version>
+
+	where `<version>` is release version (e.g. 2.0.2)
 
 3.	Wait while dependencies are updated.
 
@@ -92,4 +100,4 @@ To update `composer.json`:
 9.	Wait while dependencies are installed.
 
 ## For more details
-See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration User Guide</a>.
+See the <a href="http://devdocs.magento.com/guides/v2.0/migration/bk-migration-guide.html">Migration User Guide</a>.

@@ -12,6 +12,13 @@ use Migration\ResourceModel\Record;
 
 class Helper
 {
+    /**#@+
+     * Exploded password hash keys
+     */
+    const PASSWORD_HASH = 0;
+    const PASSWORD_SALT = 1;
+    /**#@-*/
+
     /**
      * @var array
      */
@@ -346,15 +353,35 @@ class Helper
     private function upgradeCustomerHash($recordAttributesData, $entityId)
     {
         if (isset($recordAttributesData[$entityId]['password_hash'])) {
-            list($hash, $salt) = explode(':', $recordAttributesData[$entityId]['password_hash'], 2);
+            $hash = $this->explodePasswordHash($recordAttributesData[$entityId]['password_hash']);
 
-            if (strlen($hash) == 32) {
-                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '0']);
-            } elseif (strlen($hash) == 64) {
-                $recordAttributesData[$entityId]['password_hash'] = implode(':', [$hash, $salt, '1']);
+            if (strlen($hash[self::PASSWORD_HASH]) == 32) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(
+                    ':',
+                    [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '0']
+                );
+            } elseif (strlen($hash[self::PASSWORD_HASH]) == 64) {
+                $recordAttributesData[$entityId]['password_hash'] = implode(
+                    ':',
+                    [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '1']
+                );
             }
         }
 
         return $recordAttributesData;
+    }
+
+    /**
+     * @param string $passwordHash
+     * @return array
+     */
+    private function explodePasswordHash($passwordHash)
+    {
+        $explodedPassword = explode(':', $passwordHash, 2);
+        $explodedPassword[self::PASSWORD_SALT] = isset($explodedPassword[self::PASSWORD_SALT])
+            ? $explodedPassword[self::PASSWORD_SALT]
+            : ''
+        ;
+        return $explodedPassword;
     }
 }

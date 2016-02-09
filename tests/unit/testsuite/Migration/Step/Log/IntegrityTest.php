@@ -139,4 +139,41 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->assertTrue($this->log->perform());
     }
+
+
+    /**
+     * @covers \Migration\Step\Log\Integrity::getIterationsCount
+     * @return void
+     */
+    public function testPerformMissingDocument()
+    {
+        $fields = ['field1' => ['DATA_TYPE' => 'int']];
+
+        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+            ->disableOriginalConstructor()->setMethods([])->getMock();
+        $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
+        $this->source->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document1']));
+        $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
+            ->will($this->returnValue(['document2']));
+        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
+        $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
+
+        $this->map->expects($this->any())->method('getDocumentMap')->willReturnMap(
+            [
+                ['document1', MapInterface::TYPE_SOURCE, 'document2'],
+                ['document2', MapInterface::TYPE_DEST, 'document1']
+            ]
+        );
+
+        $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
+        $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
+        $this->logger
+            ->expects($this->once())
+            ->method('error')
+            ->with('Destination documents are missing: document_to_clear');
+
+        $this->assertFalse($this->log->perform());
+    }
 }

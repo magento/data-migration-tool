@@ -35,9 +35,10 @@ interface AdapterInterface
      * Returns number of records of document
      *
      * @param string $documentName
+     * @param array|bool $distinctFields
      * @return int
      */
-    public function getRecordsCount($documentName);
+    public function getRecordsCount($documentName, $distinctFields = []);
 
     /**
      * Load Page
@@ -56,7 +57,7 @@ interface AdapterInterface
      *
      * @param string $documentName
      * @param array $records
-     * @param bool $updateOnDuplicate
+     * @param bool|array $updateOnDuplicate
      * @return int
      */
     public function insertRecords($documentName, $records, $updateOnDuplicate = false);

@@ -94,7 +94,7 @@ class Data implements StageInterface, RollbackInterface
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerList;
+    protected $readerGroups;
 
     /**
      * @param Source $source
@@ -504,20 +504,6 @@ class Data implements StageInterface, RollbackInterface
             );
             if ($destinationDocument !== false) {
                 $this->destination->rollbackDocument($destinationDocument->getName());
-            }
-        }
-    }
-
-    /**
-     * Delete backed up documents
-     * @return void
-     */
-    public function deleteBackups()
-    {
-        foreach (array_keys($this->readerGroups->getGroup('documents')) as $documentName) {
-            $documentName = $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
-            if ($documentName) {
-                $this->destination->deleteDocumentBackup($documentName);
             }
         }
     }

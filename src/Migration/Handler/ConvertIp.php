@@ -13,19 +13,6 @@ use Migration\ResourceModel\Record;
 class ConvertIp extends AbstractHandler implements HandlerInterface
 {
     /**
-     * @var null
-     */
-    protected $isIpPacked = null;
-
-    /**
-     * @param int $isIpPacked
-     */
-    public function __construct($isIpPacked = 1)
-    {
-        $this->isIpPacked = $isIpPacked;
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
@@ -33,11 +20,16 @@ class ConvertIp extends AbstractHandler implements HandlerInterface
         $this->validate($recordToHandle);
 
         $value = $recordToHandle->getValue($this->field);
-        if (!$value) {
-            $recordToHandle->setValue($this->field, 0);
-            return;
+        if (filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV4)
+            || filter_var($value, FILTER_VALIDATE_IP, FILTER_FLAG_IPV6)
+        ) {
+            $newValue = (int)ip2long($value);
+        } else if (@inet_ntop($value) !== false) {
+            $newValue = (int)ip2long(inet_ntop($value));
+        } else {
+            $newValue = 0;
         }
-        $newValue = $this->isIpPacked ? ip2long(inet_ntop($value)) : ip2long($value);
+
         $recordToHandle->setValue($this->field, $newValue);
     }
 }

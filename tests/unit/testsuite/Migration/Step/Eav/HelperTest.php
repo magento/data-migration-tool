@@ -42,6 +42,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $factory;
 
     /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerGroups;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -58,13 +63,26 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getRecordsCount', 'getRecords'])
             ->getMock();
         $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
-            ->setMethods(['getRecordsCount', 'getRecords'])
+            ->setMethods(['getRecordsCount', 'getRecords', 'deleteDocumentBackup'])
             ->getMock();
         $this->factory = $this->getMockBuilder('Migration\RecordTransformerFactory')->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
+        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
+        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $groupsFactory->expects($this->any())
+            ->method('create')
+            ->with('eav_document_groups_file')
+            ->willReturn($this->readerGroups);
 
-        $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory);
+        $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 
     /**
@@ -181,5 +199,19 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             $recordTransformer,
             $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
         );
+    }
+
+    /**
+     * @return void
+     */
+    public function testDeleteBackups()
+    {
+        $this->readerGroups->expects($this->once())->method('getGroup')->with('documents')
+            ->willReturn(['some_document' => 0]);
+        $this->map->expects($this->once())->method('getDocumentMap')
+            ->with('some_document', MapInterface::TYPE_SOURCE)
+            ->will($this->returnValue('some_dest_document'));
+        $this->destination->expects($this->once())->method('deleteDocumentBackup')->with('some_dest_document');
+        $this->helper->deleteBackups();
     }
 }

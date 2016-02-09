@@ -49,8 +49,14 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getAttributes', 'getAttributeSets', 'getAttributeGroups'])
             ->getMock();
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
-            ->setMethods(['getDestinationRecords', 'getSourceRecordsCount', 'getDestinationRecordsCount'])
-            ->getMock();
+            ->setMethods(
+                [
+                    'getDestinationRecords',
+                    'getSourceRecordsCount',
+                    'getDestinationRecordsCount',
+                    'deleteBackups'
+                ]
+            )->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
             ->setMethods(['warning', 'addRecord'])
             ->getMock();
@@ -130,6 +136,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
+        $this->helper->expects($this->once())->method('deleteBackups');
         $this->logger->expects($this->never())->method('addRecord');
 
         $this->assertTrue($this->volume->perform());
@@ -182,6 +189,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeSets')->willReturn(1);
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(1);
+        $this->helper->expects($this->never())->method('deleteBackups');
         $this->logger->expects($this->atLeastOnce())->method('addRecord');
 
         $this->assertFalse($this->volume->perform());

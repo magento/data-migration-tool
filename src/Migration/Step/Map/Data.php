@@ -77,6 +77,11 @@ class Data implements StageInterface
     protected $copyDirectly;
 
     /**
+     * @var Helper
+     */
+    protected $helper;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
@@ -86,6 +91,9 @@ class Data implements StageInterface
      * @param Progress $progress
      * @param Logger $logger
      * @param Config $config
+     * @param Helper $helper
+     *
+     * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
@@ -96,7 +104,8 @@ class Data implements StageInterface
         MapFactory $mapFactory,
         Progress $progress,
         Logger $logger,
-        Config $config
+        Config $config,
+        Helper $helper
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -108,6 +117,7 @@ class Data implements StageInterface
         $this->logger = $logger;
         $this->config = $config;
         $this->copyDirectly = (bool)$this->config->getOption('direct_document_copy');
+        $this->helper = $helper;
     }
 
     /**
@@ -156,7 +166,8 @@ class Data implements StageInterface
                     }
                     $this->source->setLastLoadedRecord($sourceDocName, end($items));
                     $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
-                    $this->destination->saveRecords($destinationName, $destinationRecords);
+                    $fieldsUpdateOnDuplicate = $this->helper->getFieldsUpdateOnDuplicate($destinationName);
+                    $this->destination->saveRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
                 }
             }
             $this->source->setLastLoadedRecord($sourceDocName, []);

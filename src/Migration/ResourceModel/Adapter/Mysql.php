@@ -80,10 +80,13 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function getRecordsCount($documentName)
+    public function getRecordsCount($documentName, $distinctFields = [])
     {
+        $distinctFields = ($distinctFields && is_array($distinctFields))
+            ? 'DISTINCT ' . implode(',', $distinctFields)
+            : '*';
         $select = $this->resourceAdapter->select();
-        $select->from($documentName, 'COUNT(*)');
+        $select->from($documentName, 'COUNT(' . $distinctFields . ')');
         $result = $this->resourceAdapter->fetchOne($select);
         return $result;
     }
@@ -113,7 +116,11 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     {
         $this->resourceAdapter->rawQuery("SET @OLD_INSERT_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO'");
         if ($updateOnDuplicate) {
-            $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+            if (is_array($updateOnDuplicate)) {
+                $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records, $updateOnDuplicate);
+            } else {
+                $result = $this->resourceAdapter->insertOnDuplicate($documentName, $records);
+            }
         } else if (!is_array(reset($records))) {
             $result = $this->resourceAdapter->insert($documentName, $records);
         } else {

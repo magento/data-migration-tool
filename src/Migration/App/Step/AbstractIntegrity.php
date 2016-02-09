@@ -52,6 +52,20 @@ abstract class AbstractIntegrity implements StageInterface
     protected $missingDocumentFields;
 
     /**
+     * Not mapped documents
+     *
+     * @var array
+     */
+    protected $notMappedDocuments;
+
+    /**
+     * Not mapped document fields
+     *
+     * @var array
+     */
+    protected $notMappedDocumentFields;
+
+    /**
      * Mismatch in data type of fields
      *
      * @var array
@@ -71,11 +85,6 @@ abstract class AbstractIntegrity implements StageInterface
      * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
-
-    /**
-     * @var bool
-     */
-    protected $hasMappedDocuments = true;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
@@ -119,8 +128,6 @@ abstract class AbstractIntegrity implements StageInterface
     {
         $documents = $this->filterIgnoredDocuments($documents, $type);
         if (!empty($documents)) {
-            $this->hasMappedDocuments = false;
-
             $source = $type == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             $destination = $type == MapInterface::TYPE_SOURCE ? $this->destination : $this->source;
             $destDocuments = array_flip($destination->getDocumentList());
@@ -133,9 +140,8 @@ abstract class AbstractIntegrity implements StageInterface
                 $destinationDocument = $destination->getDocument($destinationDocumentName);
 
                 if (!isset($destDocuments[$destinationDocumentName]) || !$sourceDocument || !$destinationDocument) {
-                    $this->missingDocuments[$type][$sourceDocumentName] = true;
+                    $this->notMappedDocuments[$type][$sourceDocumentName] = true;
                 } else {
-                    $this->hasMappedDocuments = true;
                     if ($verifyFields) {
                         $this->verifyFields($sourceDocument, $destinationDocument, $type);
                     }
@@ -175,7 +181,7 @@ abstract class AbstractIntegrity implements StageInterface
             $mappedField = $this->map->getFieldMap($sourceDocument->getName(), $sourceField, $type);
             if ($mappedField) {
                 if (!isset($destFields[$mappedField])) {
-                    $this->missingDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
+                    $this->notMappedDocumentFields[$type][$sourceDocument->getName()][] = $mappedField;
                 } else if ($sourceFieldMetaData['DATA_TYPE'] != $destFields[$mappedField]['DATA_TYPE']
                     && !$this->map->isFieldDataTypeIgnored($sourceDocument->getName(), $sourceField, $type)
                 ) {
@@ -192,68 +198,99 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkForErrors()
     {
-        if (!$this->hasMappedDocuments) {
-            $this->logger->error('Mapped documents are missing or not found. Check your configuration.');
-            return false;
-        }
-        $checkMissingDocuments = $this->checkMissingDocuments();
-        $checkMissingDocumentFields = $this->checkMissingDocumentFields();
+        $checkDocuments = $this->checkDocuments();
+        $checkDocumentFields = $this->checkDocumentFields();
         $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
-        return $checkMissingDocuments && $checkMissingDocumentFields && $checkMismatchDocumentFieldDataTypes;
+        return $checkDocuments && $checkDocumentFields && $checkMismatchDocumentFieldDataTypes;
     }
 
     /**
      * @return bool
      */
-    public function checkMissingDocuments()
+    public function checkDocuments()
     {
-        $isSuccess = true;
-        if (isset($this->missingDocuments[MapInterface::TYPE_SOURCE])) {
-            $isSuccess = false;
-            $this->logger->error(sprintf(
-                'Source documents are missing or not mapped: %s',
-                implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_SOURCE]))
-            ));
-        }
+        $check = function ($errors, $errorMessagePattern, $type) {
+            $isSuccess = true;
+            if (isset($errors[$type])) {
+                $isSuccess = false;
+                $this->logger->error(sprintf(
+                    $errorMessagePattern,
+                    implode(',', array_keys($errors[$type]))
+                ));
+            }
+            return $isSuccess;
+        };
+        $missingDocumentsSource = $check(
+            $this->missingDocuments,
+            'Source documents are missing: %s',
+            MapInterface::TYPE_SOURCE
+        );
+        $missingDocumentsDestination = $check(
+            $this->missingDocuments,
+            'Destination documents are missing: %s',
+            MapInterface::TYPE_DEST
+        );
+        $notMappedDocumentsSource = $check(
+            $this->notMappedDocuments,
+            'Source documents are not mapped: %s',
+            MapInterface::TYPE_SOURCE
+        );
+        $notMappedDocumentsDestination = $check(
+            $this->notMappedDocuments,
+            'Destination documents are not mapped: %s',
+            MapInterface::TYPE_DEST
+        );
 
-        if (isset($this->missingDocuments[MapInterface::TYPE_DEST])) {
-            $isSuccess = false;
-            $this->logger->error(sprintf(
-                'Destination documents are missing or not mapped: %s',
-                implode(',', array_keys($this->missingDocuments[MapInterface::TYPE_DEST]))
-            ));
-        }
-        return $isSuccess;
+        return $missingDocumentsSource
+            && $missingDocumentsDestination
+            && $notMappedDocumentsSource
+            && $notMappedDocumentsDestination;
     }
 
     /**
      * @return bool
      */
-    public function checkMissingDocumentFields()
+    public function checkDocumentFields()
     {
-        $isSuccess = true;
-        if (isset($this->missingDocumentFields[MapInterface::TYPE_SOURCE])) {
-            $isSuccess = false;
-            foreach ($this->missingDocumentFields[MapInterface::TYPE_SOURCE] as $document => $fields) {
-                $this->logger->error(sprintf(
-                    'Source fields are missing or not mapped. Document: %s. Fields: %s',
-                    $document,
-                    implode(',', $fields)
-                ));
+        $check = function ($errors, $errorMessagePattern, $type) {
+            $isSuccess = true;
+            if (isset($errors[$type])) {
+                $isSuccess = false;
+                foreach ($errors[$type] as $document => $fields) {
+                    $this->logger->error(sprintf(
+                        $errorMessagePattern,
+                        $document,
+                        implode(',', $fields)
+                    ));
+                }
             }
-        }
+            return $isSuccess;
+        };
+        $missingDocumentsSource = $check(
+            $this->missingDocumentFields,
+            'Source fields are missing. Document: %s. Fields: %s',
+            MapInterface::TYPE_SOURCE
+        );
+        $missingDocumentsDestination = $check(
+            $this->missingDocumentFields,
+            'Destination fields are missing. Document: %s. Fields: %s',
+            MapInterface::TYPE_DEST
+        );
+        $notMappedDocumentsSource = $check(
+            $this->notMappedDocumentFields,
+            'Source fields are not mapped. Document: %s. Fields: %s',
+            MapInterface::TYPE_SOURCE
+        );
+        $notMappedDocumentsDestination = $check(
+            $this->notMappedDocumentFields,
+            'Destination fields are not mapped. Document: %s. Fields: %s',
+            MapInterface::TYPE_DEST
+        );
 
-        if (isset($this->missingDocumentFields[MapInterface::TYPE_DEST])) {
-            $isSuccess = false;
-            foreach ($this->missingDocumentFields[MapInterface::TYPE_DEST] as $document => $fields) {
-                $this->logger->error(sprintf(
-                    'Destination fields are missing or not mapped. Document: %s. Fields: %s',
-                    $document,
-                    implode(',', $fields)
-                ));
-            }
-        }
-        return $isSuccess;
+        return $missingDocumentsSource
+            && $missingDocumentsDestination
+            && $notMappedDocumentsSource
+            && $notMappedDocumentsDestination;
     }
 
     /**
