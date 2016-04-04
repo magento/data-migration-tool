@@ -887,6 +887,10 @@
                 <field>catalog_product_entity_media_gallery.value_id</field>
                 <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
             </transform>
+            <transform>
+                <field>catalogsearch_query.synonym_for</field>
+                <handler class="\Migration\Handler\Synonym"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
@@ -1030,6 +1034,9 @@
             </ignore>
             <ignore>
                 <field>catalogrule_product.sub_discount_amount</field>
+            </ignore>
+            <ignore>
+                <field>catalogsearch_query.synonym_for</field>
             </ignore>
             <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
@@ -1331,6 +1338,12 @@
             </ignore>
             <ignore>
                 <document>password_reset_request_event</document>
+            </ignore>
+            <ignore>
+                <document>oauth_token_request_log</document>
+            </ignore>
+            <ignore>
+                <document>design_config_grid_flat</document>
             </ignore>
         </document_rules>
         <field_rules>
