@@ -96,7 +96,7 @@
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_media</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Media</to>
+        <to />
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_msrp</from>

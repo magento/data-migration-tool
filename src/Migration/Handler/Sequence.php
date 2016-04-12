@@ -1,0 +1,55 @@
+<?php
+/**
+ * Copyright © 2015 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+namespace Migration\Handler;
+
+use Migration\ResourceModel\Record;
+use Migration\ResourceModel\Destination;
+
+/**
+ * Handler to create new record in Sequence table
+ */
+class Sequence extends AbstractHandler implements HandlerInterface
+{
+    /**
+     * @var string
+     */
+    protected $table;
+
+    /**
+     * @var Destination
+     */
+    protected $destination;
+
+    /**
+     * @var array
+     */
+    protected $sequenceTablesCleaned = [];
+
+    /**
+     * @param string $table
+     */
+    public function __construct($table, Destination $destination)
+    {
+        $this->table = $table;
+        $this->destination = $destination;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function handle(Record $recordToHandle, Record $oppositeRecord)
+    {
+        if (!in_array($this->table, $this->sequenceTablesCleaned)) {
+            $this->destination->clearDocument($this->table);
+            $this->sequenceTablesCleaned[] = $this->table;
+        }
+        $this->validate($recordToHandle);
+        $id = $recordToHandle->getValue($this->field);
+        if ($id && $this->table) {
+            $this->destination->saveRecords($this->table, [['sequence_value' => $id]]);
+        }
+    }
+}

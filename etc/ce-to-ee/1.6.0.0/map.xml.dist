@@ -826,6 +826,82 @@
                 <field>sales_flat_quote_item.base_hidden_tax_amount</field>
                 <to>quote_item.base_discount_tax_compensation_amount</to>
             </move>
+            <move>
+                <field>catalog_category_entity_datetime.entity_id</field>
+                <to>catalog_category_entity_datetime.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_decimal.entity_id</field>
+                <to>catalog_category_entity_decimal.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_int.entity_id</field>
+                <to>catalog_category_entity_int.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_text.entity_id</field>
+                <to>catalog_category_entity_text.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_varchar.entity_id</field>
+                <to>catalog_category_entity_varchar.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_datetime.entity_id</field>
+                <to>catalog_product_entity_datetime.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_decimal.entity_id</field>
+                <to>catalog_product_entity_decimal.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_gallery.entity_id</field>
+                <to>catalog_product_entity_gallery.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_int.entity_id</field>
+                <to>catalog_product_entity_int.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_text.entity_id</field>
+                <to>catalog_product_entity_text.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_varchar.entity_id</field>
+                <to>catalog_product_entity_varchar.row_id</to>
+            </move>
+            <move>
+                <field>catalogrule_customer_group.rule_id</field>
+                <to>catalogrule_customer_group.row_id</to>
+            </move>
+            <move>
+                <field>catalogrule_website.rule_id</field>
+                <to>catalogrule_website.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_customer_group.rule_id</field>
+                <to>salesrule_customer_group.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_product_attribute.rule_id</field>
+                <to>salesrule_product_attribute.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_website.rule_id</field>
+                <to>salesrule_website.row_id</to>
+            </move>
+            <move>
+                <field>cms_block_store.block_id</field>
+                <to>cms_block_store.row_id</to>
+            </move>
+            <move>
+                <field>cms_page_store.page_id</field>
+                <to>cms_page_store.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_tier_price.entity_id</field>
+                <to>catalog_product_entity_tier_price.row_id</to>
+            </move>
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
@@ -929,6 +1005,42 @@
             <transform>
                 <field>catalog_product_entity_media_gallery.value_id</field>
                 <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
+            </transform>
+            <transform>
+                <field>catalogrule.rule_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_catalogrule"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>salesrule.rule_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_salesrule"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_category_entity.entity_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_catalog_category"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity.entity_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_product"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_block.block_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_cms_block"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_page.page_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_cms_page"/>
+                </handler>
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -1070,6 +1182,9 @@
             </ignore>
             <ignore>
                 <field>salesrule.website_ids</field>
+            </ignore>
+            <ignore>
+                <field>catalogsearch_query.synonym_for</field>
             </ignore>
             <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
@@ -1684,6 +1799,60 @@
             <ignore>
                 <document>oauth_token_request_log</document>
             </ignore>
+            <ignore>
+                <document>oauth_token_request_log</document>
+            </ignore>
+            <ignore>
+                <document>design_config_grid_flat</document>
+            </ignore>
+            <ignore>
+                <document>admin_user_session</document>
+            </ignore>
+            <ignore>
+                <document>magento_salesrule_filter</document>
+            </ignore>
+            <ignore>
+                <document>multiinventory_warehouse</document>
+            </ignore>
+            <ignore>
+                <document>password_reset_request_event</document>
+            </ignore>
+            <ignore>
+                <document>queue_lock</document>
+            </ignore>
+            <ignore>
+                <document>quote_preview</document>
+            </ignore>
+            <ignore>
+                <document>search_synonyms</document>
+            </ignore>
+            <ignore>
+                <document>sequence_catalog_category</document>
+            </ignore>
+            <ignore>
+                <document>sequence_catalogrule</document>
+            </ignore>
+            <ignore>
+                <document>sequence_cms_block</document>
+            </ignore>
+            <ignore>
+                <document>sequence_cms_page</document>
+            </ignore>
+            <ignore>
+                <document>sequence_product</document>
+            </ignore>
+            <ignore>
+                <document>sequence_salesrule</document>
+            </ignore>
+            <ignore>
+                <document>staging_update</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token_order_payment_link</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -1750,6 +1919,42 @@
             <transform>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
                 <handler class="\Migration\Handler\Gallery\SetEntityId"/>
+            </transform>
+            <transform>
+                <field>catalog_category_entity.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalogrule.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="rule_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_block.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="block_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_page.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="page_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>salesrule.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="rule_id"/>
+                </handler>
             </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
@@ -2608,6 +2813,66 @@
             </ignore>
             <ignore>
                 <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.created_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.created_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.created_in</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.row_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_product.entity_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.row_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery_value.row_id</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.row_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.row_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.row_id</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.row_id</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
