@@ -16,6 +16,12 @@ class Config
 
     const CONFIGURATION_SCHEMA = 'config.xsd';
 
+    const EDITION_MIGRATE_CE_TO_CE = 'ce-to-ce';
+
+    const EDITION_MIGRATE_CE_TO_EE = 'ce-to-ee';
+
+    const EDITION_MIGRATE_EE_TO_EE = 'ee-to-ee';
+
     /**
      * @var \DOMXPath
      */
