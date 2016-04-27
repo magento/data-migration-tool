@@ -317,9 +317,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
-     * @return void
+     * @return \Magento\Framework\Db\Select
      */
-    protected function collectCmsPageRewrites()
+    protected function selectCmsPageRewrites()
     {
         $this->progress->advance();
         /** @var \Magento\Framework\Db\Select $select */
@@ -339,6 +339,16 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             'cps.page_id = cp.page_id',
             []
         )->group(['request_path', 'cps.store_id']);
+
+        return $select;
+    }
+
+    /**
+     * @return void
+     */
+    protected function collectCmsPageRewrites()
+    {
+        $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         $this->destination->saveRecords(self::DESTINATION, $urlRewrites);
     }
@@ -352,19 +362,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         if (!$countVolume) {
             return 1;
         }
-        /** @var \Magento\Framework\Db\Select $select */
-        $select = $this->source->getAdapter()->getSelect();
-        $select->from(
-            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
-            [
-                new \Zend_Db_Expr('COUNT(*)'),
-            ]
-        )
-        ->joinLeft(
-            ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
-            'cps.page_id = cp.page_id',
-            []
-        );
-        return $select->getAdapter()->fetchOne($select);
+        $select = $this->selectCmsPageRewrites();
+        $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
+        return count($urlRewrites);
     }
 }
