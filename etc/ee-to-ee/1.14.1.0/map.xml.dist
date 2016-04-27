@@ -1848,6 +1848,9 @@
             <ignore>
                 <document>admin_passwords</document>
             </ignore>
+            <ignore>
+                <document>oauth_token_request_log</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>

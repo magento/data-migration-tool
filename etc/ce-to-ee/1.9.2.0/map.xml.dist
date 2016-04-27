@@ -1574,6 +1574,9 @@
             <ignore>
                 <document>visual_merchandiser_rule</document>
             </ignore>
+            <ignore>
+                <document>oauth_token_request_log</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
