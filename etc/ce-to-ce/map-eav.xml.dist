@@ -81,6 +81,13 @@
                 <field>customer_eav_attribute.data_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
             </transform>
+            <transform>
+                <field>customer_eav_attribute.is_visible</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="middlename"/>
+                    <param name="value" value="0"/>
+                </handler>
+            </transform>
 
             <transform>
                 <field>eav_entity_type.entity_model</field>
