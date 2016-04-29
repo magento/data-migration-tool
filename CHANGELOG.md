@@ -1,3 +1,10 @@
+2.0.5
+=============
+* Added support for:
+
+    * Magento CE version 2.0.5
+    * Magento EE version 2.0.5
+
 2.0.2
 =============
 * There is now one GitHub repository for both the Magento CE and EE migration tools
