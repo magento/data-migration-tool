@@ -2109,11 +2109,21 @@
             </transform>
             <transform>
                 <field>cataloginventory_stock.website_id</field>
-                <handler class="\Migration\Handler\SetDefaultWebsiteId"/>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0" />
+                </handler>
             </transform>
             <transform>
                 <field>cataloginventory_stock_item.website_id</field>
-                <handler class="\Migration\Handler\SetDefaultWebsiteId"/>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0" />
+                </handler>
+            </transform>
+            <transform>
+                <field>cataloginventory_stock_status.website_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0" />
+                </handler>
             </transform>
             <transform>
                 <field>rating.is_active</field>
