@@ -128,11 +128,7 @@ class Volume extends AbstractVolume
     {
         foreach ($this->helper->getDestinationRecords('catalog_eav_attribute') as $attribute) {
             foreach (['frontend_input_renderer'] as $field) {
-                if ($attribute[$field] !== null
-                    // @Todo: remove this after MAGETWO-51403 completion
-                    && $attribute[$field] != 'Magento\Catalog\Block\Adminhtml\Product\Helper\Form\BaseImage'
-                    && !class_exists($attribute[$field]
-                    )) {
+                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
                     $this->errors[] = 'Incorrect value: '. $attribute[$field]
                         . ' in: catalog_eav_attribute.' . $field
                         . ' for attribute_id=' . $attribute['attribute_id'];

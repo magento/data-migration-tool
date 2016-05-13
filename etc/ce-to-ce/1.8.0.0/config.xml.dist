@@ -68,6 +68,10 @@
             <data>Migration\Step\SalesIncrement\Data</data>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
+        <step title="PostProcessing Step">
+            <integrity>Migration\Step\PostProcessing\Integrity</integrity>
+            <data>Migration\Step\PostProcessing\Data</data>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Customer Attributes Step">
