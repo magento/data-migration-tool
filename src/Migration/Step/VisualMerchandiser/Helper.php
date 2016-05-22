@@ -119,7 +119,7 @@ class Helper
         $attributeCodes = array_keys($this->readerAttributes->getGroup($this->entityName));
 
         $sourceData['attribute_id'] = $this->eavAttributes['catalog_category']['automatic_sorting']['attribute_id'];
-        $sourceData['entity_id'] = $recordData['category_id'];
+        $sourceData['row_id'] = $recordData['category_id'];
         $sourceData['store_id'] = self::DEFAULT_STORE_ID;
         $sourceData['value'] = (array_key_exists($recordData['automatic_sort'], $this->attributeMapping)) ?
             $this->attributeMapping[$recordData['automatic_sort']] :

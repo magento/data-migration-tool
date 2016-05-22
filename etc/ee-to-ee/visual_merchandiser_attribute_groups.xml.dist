@@ -13,7 +13,7 @@
         <attribute>value_id</attribute>
         <attribute>attribute_id</attribute>
         <attribute>store_id</attribute>
-        <attribute>entity_id</attribute>
+        <attribute>row_id</attribute>
         <attribute>value</attribute>
     </group>
 </groups>
