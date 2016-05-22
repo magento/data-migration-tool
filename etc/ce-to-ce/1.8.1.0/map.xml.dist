@@ -1539,6 +1539,9 @@
                 <field>catalog_category_product.entity_id</field>
             </ignore>
             <ignore>
+                <field>cms_page.meta_title</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>

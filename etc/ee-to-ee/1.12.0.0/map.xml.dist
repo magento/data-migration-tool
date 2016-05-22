@@ -2445,6 +2445,9 @@
                 <field>salesrule.row_id</field>
             </ignore>
             <ignore>
+                <field>cms_page.meta_title</field>
+            </ignore>
+            <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
