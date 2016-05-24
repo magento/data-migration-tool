@@ -29,6 +29,26 @@ class Sequence extends AbstractHandler implements HandlerInterface
     protected $sequenceTablesCleaned = [];
 
     /**
+     * @var string
+     */
+    private $createdVersionField = 'created_in';
+
+    /**
+     * @var string
+     */
+    private $updatedVersionField = 'updated_in';
+
+    /**
+     * @var int
+     */
+    private $minVersion = 1;
+
+    /**
+     * @var int
+     */
+    private $maxVersion = 2147483647;
+
+    /**
      * @param string $table
      */
     public function __construct($table, Destination $destination)
@@ -51,5 +71,7 @@ class Sequence extends AbstractHandler implements HandlerInterface
         if ($id && $this->table) {
             $this->destination->saveRecords($this->table, [['sequence_value' => $id]]);
         }
+        $oppositeRecord->setValue($this->createdVersionField, $this->minVersion);
+        $oppositeRecord->setValue($this->updatedVersionField, $this->maxVersion);
     }
 }
