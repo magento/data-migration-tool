@@ -1,3 +1,10 @@
+2.0.7
+=============
+* Added support for:
+
+    * Magento CE version 2.0.7
+    * Magento EE version 2.0.7
+
 2.0.5
 =============
 * Added support for:
