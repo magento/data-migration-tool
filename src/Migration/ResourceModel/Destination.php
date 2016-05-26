@@ -60,6 +60,7 @@ class Destination extends AbstractResource
         $config['password'] = !empty($destination[$destinationType]['password'])
             ? $destination[$destinationType]['password']
             : '';
+        $config['initStatements'] = $destination[$destinationType]['initStatements'];
         return $config;
     }
 

@@ -36,6 +36,7 @@ class Source extends AbstractResource
         $config['password'] = !empty($source[$sourceType]['password'])
             ? $source[$sourceType]['password']
             : '';
+        $config['initStatements'] = $source[$sourceType]['initStatements'];
         return $config;
     }
 

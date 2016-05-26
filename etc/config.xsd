@@ -74,6 +74,7 @@
         <xs:attribute name="host" type="xs:string" use="required"/>
         <xs:attribute name="user" type="xs:string" use="required"/>
         <xs:attribute name="password" type="xs:string" use="optional"/>
+        <xs:attribute name="initStatements" type="xs:string" use="required"/>
     </xs:complexType>
 
     <xs:simpleType name="resourceType">

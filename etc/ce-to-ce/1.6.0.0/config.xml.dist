@@ -87,10 +87,10 @@
         </step>
     </steps>
     <source>
-        <database host="localhost" name="magento1" user="root"/>
+        <database host="localhost" name="magento1" user="root" initStatements="SET NAMES utf8;" />
     </source>
     <destination>
-        <database host="localhost" name="magento2" user="root"/>
+        <database host="localhost" name="magento2" user="root" initStatements="SET NAMES utf8;" />
     </destination>
     <options>
         <map_file>etc/ce-to-ce/1.6.0.0/map.xml.dist</map_file>
