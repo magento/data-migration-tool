@@ -32,6 +32,11 @@ class InitialData
     protected $attributeGroups;
 
     /**
+     * @var array;
+     */
+    protected $entityTypes;
+
+    /**
      * @var Source
      */
     protected $source;
@@ -74,6 +79,17 @@ class InitialData
         $this->initAttributeSets();
         $this->initAttributeGroups();
         $this->initAttributes();
+        $this->initEntityTypes();
+    }
+
+    protected function initEntityTypes()
+    {
+        if ($this->entityTypes === null) {
+            $destinationRecords = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_code']);
+            foreach ($destinationRecords as $id => $record) {
+                $this->entityTypes['dest'][$id] = $record;
+            }
+        }
     }
 
     /**
@@ -121,6 +137,16 @@ class InitialData
             'eav_attribute_group',
             ['attribute_set_id', 'attribute_group_name']
         );
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param string $type
+     * @return mixed
+     */
+    public function getEntityTypes($type)
+    {
+        return $this->entityTypes[$type];
     }
 
     /**

@@ -149,8 +149,11 @@ class Volume extends AbstractVolume
         }
 
         $sourceRecords = $this->helper->getSourceRecordsCount('eav_attribute_group');
+        $addedRecords = count($this->helper->getAddedGroups());
         $initialDestRecords = count($this->initialData->getAttributeGroups('dest'));
-        if ($this->helper->getDestinationRecordsCount('eav_attribute_group') != $sourceRecords + $initialDestRecords) {
+        if ($this->helper->getDestinationRecordsCount('eav_attribute_group') !=
+            $sourceRecords + $addedRecords + $initialDestRecords
+        ) {
             $this->errors[] = 'Mismatch of entities in the document: eav_attribute_group';
         }
     }

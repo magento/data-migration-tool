@@ -41,6 +41,11 @@ class Helper
     protected $readerGroups;
 
     /**
+     * @var \Migration\ResourceModel\Record[]
+     */
+    protected $addedGroups ;
+
+    /**
      * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
@@ -156,5 +161,15 @@ class Helper
                 $this->destination->deleteDocumentBackup($documentName);
             }
         }
+    }
+
+    public function getAddedGroups()
+    {
+        return $this->addedGroups;
+    }
+
+    public function setAddedGroups(array $addedGroups)
+    {
+        $this->addedGroups = $addedGroups;
     }
 }

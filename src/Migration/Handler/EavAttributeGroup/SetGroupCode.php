@@ -63,6 +63,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
         $newValue = preg_replace('/[^a-z0-9]+/', '-', strtolower($recordToHandle->getValue('attribute_group_name')));
         $newValue = ($newValue == 'migration-general') ? 'product-details' : $newValue;
         $newValue = ($newValue == 'migration-prices') ? 'advanced-pricing' : $newValue;
+        $newValue = ($newValue == 'migration-design') ? 'design' : $newValue;
         $recordToHandle->setValue($this->field, $newValue);
     }
 

@@ -199,6 +199,9 @@ class Data implements StageInterface, RollbackInterface
                     $recordsToSave->addRecord($destinationRecord);
                 }
             }
+
+            $recordsToSave = $this->adjustAttributeSetsAndGroups($recordsToSave, $documentName);
+
             $this->destination->clearDocument($destinationDocument->getName());
             $this->saveRecords($destinationDocument, $recordsToSave);
             if ($documentName == 'eav_attribute_set') {
@@ -208,6 +211,57 @@ class Data implements StageInterface, RollbackInterface
                 $this->loadNewAttributeGroups();
             }
         }
+    }
+
+    /**
+     * @param Record\Collection $recordsToSave
+     * @param string $documentName
+     * @return Record\Collection
+     */
+    protected function adjustAttributeSetsAndGroups($recordsToSave, $documentName)
+    {
+        if ('eav_attribute_group' == $documentName) {
+            $entityTypes = $this->initialData->getEntityTypes('dest');
+            $typeIdOfCatalogProduct = array_key_exists('catalog_product', $entityTypes) ?
+                $entityTypes['catalog_product']['entity_type_id'] : null;
+
+            if ($typeIdOfCatalogProduct) {
+                $eavAttributeSetRecords = $this->source->getRecords(
+                    'eav_attribute_set', 0, $this->source->getRecordsCount('eav_attribute_set')
+                );
+                $catalogProductSetIds = [];
+                foreach ($eavAttributeSetRecords as $record) {
+                    if ($typeIdOfCatalogProduct === $record['entity_type_id']) {
+                        $catalogProductSetIds[] = $record['attribute_set_id'];
+                    }
+                }
+
+                $addedGroups = [];
+                $destinationDocument = $this->destination->getDocument(
+                    $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
+                );
+                foreach ($catalogProductSetIds as $id) {
+                    $destinationRecord = $this->factory->create(
+                        [
+                            'document' => $destinationDocument,
+                            'data' => [
+                                'attribute_group_id' => null,
+                                'attribute_set_id' => $id,
+                                'attribute_group_name' => 'Schedule Design Update',
+                                'sort_order' => '55',
+                                'default_id' => '0',
+                                'attribute_group_code' => 'schedule-design-update',
+                                'tab_group_code' => 'advanced',
+                            ]
+                        ]
+                    );
+                    $addedGroups[] = $destinationRecord;
+                    $recordsToSave->addRecord($destinationRecord);
+                }
+                $this->helper->setAddedGroups($addedGroups);
+            }
+        }
+        return $recordsToSave;
     }
 
     /**
@@ -302,8 +356,134 @@ class Data implements StageInterface, RollbackInterface
             $destinationRecord = $this->factory->create(['document' => $destinationDocument, 'data' => $record]);
             $recordsToSave->addRecord($destinationRecord);
         }
+
+        $recordsToSave = $this->adjustEntityAttributes($recordsToSave);
+
         $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
+    }
+
+    /**
+     * @param Record\Collection $recordsToSave
+     * @return Record\Collection
+     * @throws \Migration\Exception
+     */
+    public function adjustEntityAttributes($recordsToSave)
+    {
+        $entityTypes = $this->initialData->getEntityTypes('dest');
+        $typeIdOfCatalogProduct = array_key_exists('catalog_product', $entityTypes) ?
+            $entityTypes['catalog_product']['entity_type_id'] : null;
+
+        if (!$typeIdOfCatalogProduct) {
+            return $recordsToSave;
+        }
+
+        $catalogProductSetIds = [];
+        $catalogProductDefaultSetId = null;
+        $migratedSets = $this->helper->getDestinationRecords('eav_attribute_set');
+        foreach ($migratedSets as $record) {
+            if ($typeIdOfCatalogProduct === $record['entity_type_id']) {
+                $catalogProductSetIds[] = $record['attribute_set_id'];
+                if ('Default' == $record['attribute_set_name']) {
+                    $catalogProductDefaultSetId = $record['attribute_set_id'];
+                }
+            }
+        }
+
+        if (!$catalogProductDefaultSetId || !$catalogProductSetIds) {
+            return $recordsToSave;
+        }
+
+        $scheduleGroupsMigrated = [];
+        $migratedGroups = $this->helper->getDestinationRecords('eav_attribute_group');
+        foreach ($migratedGroups as $group) {
+            if ('schedule-design-update' == $group['attribute_group_code'] &&
+                $catalogProductDefaultSetId != $group['attribute_set_id']
+            ) {
+                $scheduleGroupsMigrated[] = $group;
+            }
+        }
+
+        $customDesignAttributeId = null;
+        foreach ($this->helper->getDestinationRecords('eav_attribute') as $record) {
+            if ('custom_design' == $record['attribute_code'] &&
+                $typeIdOfCatalogProduct == $record['entity_type_id']
+            ) {
+                $customDesignAttributeId = $record['attribute_id'];
+                break;
+            }
+        }
+
+        if (!$customDesignAttributeId) {
+            return $recordsToSave;
+        }
+
+        $sourceDocName = 'eav_entity_attribute';
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE)
+        );
+        $this->destination->backupDocument($destinationDocument->getName());
+        $newRecordsToSave = $destinationDocument->getRecords();
+
+        foreach ($recordsToSave as $v) {
+            /** @var Record $v */
+            if (in_array($v->getValue('attribute_set_id'), $catalogProductSetIds) &&
+                $v->getValue('attribute_id') == $customDesignAttributeId
+            ) {
+                $unset[] = $v;
+                continue;
+            }
+            $newRecordsToSave->addRecord($v);
+        }
+
+
+        $customLayoutAttribute = null;
+        foreach ($this->helper->getDestinationRecords('eav_attribute') as $record) {
+            if ('custom_layout' == $record['attribute_code']
+            ) {
+                $customLayoutAttribute = $record;
+                break;
+            }
+        }
+        if (!$customLayoutAttribute) {
+            return $recordsToSave;
+        }
+
+        $recordsToSave = $newRecordsToSave;
+
+        $sourceDocument = $this->source->getDocument('eav_entity_attribute');
+        foreach ($scheduleGroupsMigrated as $group) {
+            $param = [
+                'entity_attribute_id' => null,
+                'entity_type_id' => $typeIdOfCatalogProduct,
+                'attribute_set_id' => $group['attribute_set_id'],
+                'attribute_group_id' => $group['attribute_group_id'],
+                'attribute_id' => $customDesignAttributeId,
+                'sort_order' => 40,
+            ];
+            $destinationRecord = $this->factory->create([
+                'document' => $sourceDocument,
+                'data' => $param
+            ]);
+            /** Adding custom_design */
+            $recordsToSave->addRecord($destinationRecord);
+
+            $param = [
+                'entity_attribute_id' => null,
+                'entity_type_id' => $typeIdOfCatalogProduct,
+                'attribute_set_id' => $group['attribute_set_id'],
+                'attribute_group_id' => $group['attribute_group_id'],
+                'attribute_id' => $customLayoutAttribute['attribute_id'],
+                'sort_order' => 50,
+            ];
+            $destinationRecord = $this->factory->create([
+                'document' => $sourceDocument,
+                'data' => $param
+            ]);
+            /** Adding custom_layout */
+            $recordsToSave->addRecord($destinationRecord);
+        }
+        return $recordsToSave;
     }
 
     /**
