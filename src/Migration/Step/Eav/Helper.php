@@ -184,9 +184,9 @@ class Helper
      */
     public function getDesignAttributeAndGroupsData()
     {
-        $catalogProductSetIds = [];
         $scheduleGroupsMigrated = [];
-        $catalogProductDefaultSetId = null;
+        $catalogProductSetIdsMigrated = [];
+        $catalogProductSetIdDefault = null;
         $entityTypeIdCatalogProduct = null;
         $customLayoutAttributeId = null;
         $customDesignAttributeId = null;
@@ -199,15 +199,16 @@ class Helper
         }
         foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
             if ($entityTypeIdCatalogProduct === $record['entity_type_id']) {
-                $catalogProductSetIds[] = $record['attribute_set_id'];
                 if ('Default' == $record['attribute_set_name']) {
-                    $catalogProductDefaultSetId = $record['attribute_set_id'];
+                    $catalogProductSetIdDefault = $record['attribute_set_id'];
+                } else {
+                    $catalogProductSetIdsMigrated[] = $record['attribute_set_id'];
                 }
             }
         }
         foreach ($this->getDestinationRecords('eav_attribute_group') as $group) {
             if ('schedule-design-update' == $group['attribute_group_code'] &&
-                $catalogProductDefaultSetId != $group['attribute_set_id']
+                $catalogProductSetIdDefault != $group['attribute_set_id']
             ) {
                 $scheduleGroupsMigrated[] = $group;
             }
@@ -227,7 +228,7 @@ class Helper
 
         return [
             'scheduleGroupsMigrated' => $scheduleGroupsMigrated,
-            'catalogProductSetIds' => $catalogProductSetIds,
+            'catalogProductSetIdsMigrated' => $catalogProductSetIdsMigrated,
             'customLayoutAttributeId' => $customLayoutAttributeId,
             'customDesignAttributeId' => $customDesignAttributeId,
             'entityTypeIdCatalogProduct' => $entityTypeIdCatalogProduct

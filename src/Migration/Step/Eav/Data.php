@@ -375,7 +375,7 @@ class Data implements StageInterface, RollbackInterface
         $recordsToSaveFiltered = $entityAttributeDocument->getRecords();
         foreach ($recordsToSave as $record) {
             /** @var Record $record */
-            if (in_array($record->getValue('attribute_set_id'), $data['catalogProductSetIds']) &&
+            if (in_array($record->getValue('attribute_set_id'), $data['catalogProductSetIdsMigrated']) &&
                 $record->getValue('attribute_id') == $data['customDesignAttributeId']
             ) {
                 continue;
