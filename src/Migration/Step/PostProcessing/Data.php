@@ -86,7 +86,7 @@ class Data implements StageInterface
     }
 
     /**
-     * Delete leftovers of ignored product attributes in eav value tables
+     * Delete remains of ignored product attributes in eav value tables
      *
      * @return void
      */

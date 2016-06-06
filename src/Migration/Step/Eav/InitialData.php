@@ -72,6 +72,7 @@ class InitialData
 
     /**
      * Load EAV data before migration
+     *
      * @return void
      */
     public function init()
@@ -82,6 +83,11 @@ class InitialData
         $this->initEntityTypes();
     }
 
+    /**
+     * Load all entity types
+     *
+     * @return void
+     */
     protected function initEntityTypes()
     {
         if ($this->entityTypes === null) {
@@ -94,6 +100,7 @@ class InitialData
 
     /**
      * Load all attributes from source and destination
+     *
      * @return void
      */
     protected function initAttributes()
@@ -129,6 +136,7 @@ class InitialData
 
     /**
      * Load attribute group data before migration
+     *
      * @return void
      */
     protected function initAttributeGroups()
@@ -142,7 +150,7 @@ class InitialData
     /**
      * @codeCoverageIgnore
      * @param string $type
-     * @return mixed
+     * @return array
      */
     public function getEntityTypes($type)
     {

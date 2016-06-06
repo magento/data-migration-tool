@@ -163,13 +163,74 @@ class Helper
         }
     }
 
+    /**
+     * @return \Migration\ResourceModel\Record[]
+     */
     public function getAddedGroups()
     {
         return $this->addedGroups;
     }
 
+    /**
+     * @param array $addedGroups
+     */
     public function setAddedGroups(array $addedGroups)
     {
         $this->addedGroups = $addedGroups;
+    }
+
+    /**
+     * @return array
+     */
+    public function getDesignAttributeAndGroupsData()
+    {
+        $catalogProductSetIds = [];
+        $scheduleGroupsMigrated = [];
+        $catalogProductDefaultSetId = null;
+        $entityTypeIdCatalogProduct = null;
+        $customLayoutAttributeId = null;
+        $customDesignAttributeId = null;
+
+        foreach ($this->getDestinationRecords('eav_entity_type', ['entity_type_code']) as $id => $record) {
+            if ($id == 'catalog_product') {
+                $entityTypeIdCatalogProduct = $record['entity_type_id'];
+                break;
+            }
+        }
+        foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
+            if ($entityTypeIdCatalogProduct === $record['entity_type_id']) {
+                $catalogProductSetIds[] = $record['attribute_set_id'];
+                if ('Default' == $record['attribute_set_name']) {
+                    $catalogProductDefaultSetId = $record['attribute_set_id'];
+                }
+            }
+        }
+        foreach ($this->getDestinationRecords('eav_attribute_group') as $group) {
+            if ('schedule-design-update' == $group['attribute_group_code'] &&
+                $catalogProductDefaultSetId != $group['attribute_set_id']
+            ) {
+                $scheduleGroupsMigrated[] = $group;
+            }
+        }
+        foreach ($this->getDestinationRecords('eav_attribute') as $record) {
+            if ($record['entity_type_id'] == $entityTypeIdCatalogProduct) {
+                switch ($record['attribute_code']) {
+                    case 'custom_layout':
+                        $customLayoutAttributeId = $record['attribute_id'];
+                        break;
+                    case 'custom_design':
+                        $customDesignAttributeId = $record['attribute_id'];
+                        break;
+                }
+            }
+        }
+
+        return [
+            'scheduleGroupsMigrated' => $scheduleGroupsMigrated,
+            'catalogProductSetIds' => $catalogProductSetIds,
+            'customLayoutAttributeId' => $customLayoutAttributeId,
+            'customDesignAttributeId' => $customDesignAttributeId,
+            'entityTypeIdCatalogProduct' => $entityTypeIdCatalogProduct
+        ];
     }
 }
