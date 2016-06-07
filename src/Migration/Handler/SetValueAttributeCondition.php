@@ -58,6 +58,9 @@ class SetValueAttributeCondition extends AbstractHandler implements HandlerInter
     {
         $this->validate($recordToHandle);
         if ($this->checkAttributeIdCode($recordToHandle->getValue('attribute_id'), $this->attributeCode)) {
+            if ('null' === $this->value) {
+                $this->value = null;
+            }
             $recordToHandle->setValue($this->field, $this->value);
         }
     }

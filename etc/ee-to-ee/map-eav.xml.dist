@@ -93,7 +93,13 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
-
+            <transform>
+                <field>customer_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="created_at"/>
+                    <param name="value" value="null"/>
+                </handler>
+            </transform>
             <transform>
                 <field>eav_entity_type.entity_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
