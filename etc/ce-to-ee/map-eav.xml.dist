@@ -34,6 +34,10 @@
                 </handler>
             </transform>
             <transform>
+                <field>eav_attribute.frontend_input</field>
+                <handler class="\Migration\Handler\GetDestinationValue" />
+            </transform>
+            <transform>
                 <field>eav_attribute.is_required</field>
                 <handler class="\Migration\Handler\GetDestinationValue"/>
             </transform>
