@@ -101,7 +101,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null
+                'data_model' => null,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
             ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
@@ -111,7 +114,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null
+                'data_model' => null,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
             ]
         ];
         $this->progress->expects($this->once())->method('start');
@@ -156,7 +162,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => 1,
                 'source_model' => 1,
                 'frontend_input_renderer' => 1,
-                'data_model' => 1],
+                'data_model' => 1,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
+            ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
                 'attribute_code' => 'attribute_code_2',
@@ -165,7 +175,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => 1,
                 'source_model' => 1,
                 'frontend_input_renderer' => 1,
-                'data_model' => 1]
+                'data_model' => 1,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
+            ],
         ];
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
