@@ -29,12 +29,6 @@
             </transform>
             <transform>
                 <field>eav_attribute.frontend_input</field>
-                <handler class="\Migration\Handler\Convert">
-                    <param name="map" value="[datetime:date]"/>
-                </handler>
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_input</field>
                 <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
