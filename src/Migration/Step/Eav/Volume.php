@@ -135,7 +135,7 @@ class Volume extends AbstractVolume
             }
 
             if (!empty($conditions)) {
-                $this->validateCustomConditions($conditions);
+                $this->validateCustomConditions($attribute, $conditions);
             }
         }
     }
