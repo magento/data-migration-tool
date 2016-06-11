@@ -113,9 +113,8 @@ class Volume extends AbstractVolume
      * @param array  $conditions
      * @return void
      */
-    private function validateDestinationEavTable($tableName, array $conditions = [])
+    protected function validateDestinationEavTable($tableName, array $conditions = [])
     {
-
         if (!isset($this->eavAttributesForValidation[$tableName])) {
             $this->errors[] = 'Table ' . $tableName . ' can not be validated. Fields must be set.';
             return;
@@ -133,7 +132,6 @@ class Volume extends AbstractVolume
                     );
                 }
             }
-
             if (!empty($conditions)) {
                 $this->validateCustomConditions($attribute, $conditions);
             }
@@ -145,7 +143,8 @@ class Volume extends AbstractVolume
      * @param array $conditions
      * @return void
      */
-    private function validateCustomConditions(array $attribute, array $conditions) {
+    protected function validateCustomConditions(array $attribute, array $conditions)
+    {
         foreach ($conditions as $condition) {
             if (method_exists($this, $condition)) {
                 $this->$condition($attribute);
@@ -155,8 +154,9 @@ class Volume extends AbstractVolume
 
     /**
      * @param $attribute
+     * @return void
      */
-    private function checkAttributesMismatch($attribute)
+    protected function checkAttributesMismatch($attribute)
     {
         $sourceAttributes = $this->initialData->getAttributes('source');
 
@@ -173,7 +173,7 @@ class Volume extends AbstractVolume
     /**
      * @return void
      */
-    public function validateAttributeSetsAndGroups()
+    protected function validateAttributeSetsAndGroups()
     {
         $sourceRecords = $this->helper->getSourceRecordsCount('eav_attribute_set');
         $initialDestRecords = count($this->initialData->getAttributeSets('dest'));
