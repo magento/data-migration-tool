@@ -36,6 +36,31 @@ class Volume extends AbstractVolume
     protected $groups;
 
     /**
+     * Eav Attributes that can be validated
+     * @var array
+     */
+    private $eavAttributesForValidation = [
+        'eav_attribute' => [
+            'attribute_model',
+            'backend_model',
+            'frontend_model',
+            'source_model',
+        ],
+        'catalog_eav_attribute' => [
+            'frontend_input_renderer',
+        ],
+        'customer_eav_attribute' => [
+            'data_model',
+        ],
+        'eav_entity_type' => [
+            'entity_model',
+            'attribute_model',
+            'increment_model',
+            'entity_attribute_collection',
+        ]
+    ];
+
+    /**
      * @param Helper $helper
      * @param InitialData $initialData
      * @param Logger $logger
@@ -77,70 +102,78 @@ class Volume extends AbstractVolume
      */
     protected function validateAttributes()
     {
-        $this->validateEavAttributes();
-        $this->validateCatalogEavAttributes();
-        $this->validateCustomerEavAttributes();
+        $this->validateDestinationEavTable('eav_attribute', ['checkAttributesMismatch']);
+        $this->validateDestinationEavTable('catalog_eav_attribute');
+        $this->validateDestinationEavTable('customer_eav_attribute');
+        $this->validateDestinationEavTable('eav_entity_type');
     }
 
     /**
+     * @param string $tableName
+     * @param array  $conditions
      * @return void
      */
-    protected function validateEavAttributes()
+    protected function validateDestinationEavTable($tableName, array $conditions = [])
     {
-        $sourceAttrbutes = $this->initialData->getAttributes('source');
-        foreach ($this->helper->getDestinationRecords('eav_attribute') as $attribute) {
-            if (isset($sourceAttrbutes[$attribute['attribute_id']])
-                && $sourceAttrbutes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code']
-            ) {
-                $this->errors[] = 'Source and Destination attributes mismatch. Attribute id: '
-                    . $attribute['attribute_id'];
-            }
+        if (!isset($this->eavAttributesForValidation[$tableName])) {
+            $this->errors[] = 'Table ' . $tableName . ' can not be validated. Fields must be set.';
+            return;
+        }
 
-            foreach (['attribute_model', 'backend_model', 'frontend_model', 'source_model'] as $field) {
+        $tableFields = $this->eavAttributesForValidation[$tableName];
+        $destinationRecords = $this->helper->getDestinationRecords($tableName);
+
+        foreach ($destinationRecords as $attribute) {
+            foreach ($tableFields as $field) {
                 if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
-                    $this->errors[] = 'Incorrect value: '. $attribute[$field]
-                        .' in: eav_attribute.' . $field
-                        .' for attribute_code=' . $attribute['attribute_code'];
+                    $this->errors[] = sprintf(
+                        'Class %s does not exist but mentioned in: %s.%s for %s=%s',
+                        $attribute[$field], $tableName, $field, key($attribute), current($attribute)
+                    );
                 }
             }
+            if (!empty($conditions)) {
+                $this->validateCustomConditions($attribute, $conditions);
+            }
+        }
+    }
+
+    /**
+     * @param array $attribute
+     * @param array $conditions
+     * @return void
+     */
+    protected function validateCustomConditions(array $attribute, array $conditions)
+    {
+        foreach ($conditions as $condition) {
+            if (method_exists($this, $condition)) {
+                $this->$condition($attribute);
+            }
+        }
+    }
+
+    /**
+     * @param $attribute
+     * @return void
+     */
+    protected function checkAttributesMismatch($attribute)
+    {
+        $sourceAttributes = $this->initialData->getAttributes('source');
+
+        if (isset($sourceAttributes[$attribute['attribute_id']])
+            && ($sourceAttributes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code'])
+        ) {
+            $this->errors[] = sprintf(
+                'Source and Destination attributes mismatch. Attribute id:%s',
+                $attribute['attribute_id']
+            );
         }
     }
 
     /**
      * @return void
      */
-    protected function validateCustomerEavAttributes()
-    {
-        foreach ($this->helper->getDestinationRecords('customer_eav_attribute') as $attribute) {
-            foreach (['data_model'] as $field) {
-                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
-                    $this->errors[] = 'Incorrect value: customer_eav_attribute.' . $field
-                        . ' for attribute_id=' . $attribute['attribute_id'];
-                }
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    protected function validateCatalogEavAttributes()
-    {
-        foreach ($this->helper->getDestinationRecords('catalog_eav_attribute') as $attribute) {
-            foreach (['frontend_input_renderer'] as $field) {
-                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
-                    $this->errors[] = 'Incorrect value: '. $attribute[$field]
-                        . ' in: catalog_eav_attribute.' . $field
-                        . ' for attribute_id=' . $attribute['attribute_id'];
-                }
-            }
-        }
-    }
-
-    /**
-     * @return void
-     */
-    public function validateAttributeSetsAndGroups()
+    protected function validateAttributeSetsAndGroups()
     {
         $sourceRecords = $this->helper->getSourceRecordsCount('eav_attribute_set');
         $initialDestRecords = count($this->initialData->getAttributeSets('dest'));

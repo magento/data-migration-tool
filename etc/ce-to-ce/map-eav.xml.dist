@@ -121,7 +121,9 @@
             </transform>
             <transform>
                 <field>eav_entity_type.increment_model</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
             </transform>
             <transform>
                 <field>eav_entity_type.additional_attribute_table</field>
