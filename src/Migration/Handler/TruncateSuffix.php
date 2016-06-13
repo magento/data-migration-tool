@@ -113,7 +113,7 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
             )
                 ->where('ea.attribute_code IN (?)', $this->attributeCodes)
                 ->where('eet.entity_type_code = ?', $this->entityTypeCode);
-            $this->attributeIds = array_column($query->getAdapter()->fetchAll($query), 'attribute_id');
+            $this->attributeIds = $query->getAdapter()->fetchCol($query);
         }
         return $this->attributeIds;
     }
