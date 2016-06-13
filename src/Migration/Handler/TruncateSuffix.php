@@ -83,7 +83,6 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
-
         if (!$this->canStart || $this->getSuffix() == '') {
             return;
         }
