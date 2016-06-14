@@ -9,6 +9,7 @@ use Migration\App\Step\AbstractVolume;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\GroupsFactory;
+use Migration\ResourceModel\Destination;
 
 /**
  * Class Volume
@@ -34,6 +35,16 @@ class Volume extends AbstractVolume
      * @var \Migration\Reader\Groups
      */
     protected $groups;
+
+    /**
+     * @var Destination
+     */
+    protected $destination;
+
+    /**
+     * @var array
+     */
+    protected $tableKeys;
 
     /**
      * Eav Attributes that can be validated
@@ -66,18 +77,21 @@ class Volume extends AbstractVolume
      * @param Logger $logger
      * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
+     * @param Destination $destination
      */
     public function __construct(
         Helper $helper,
         InitialData $initialData,
         Logger $logger,
         ProgressBar\LogLevelProcessor $progress,
-        GroupsFactory $groupsFactory
+        GroupsFactory $groupsFactory,
+        Destination $destination
     ) {
         $this->initialData = $initialData;
         $this->helper = $helper;
         $this->progress = $progress;
         $this->groups = $groupsFactory->create('eav_document_groups_file');
+        $this->destination = $destination;
         parent::__construct($logger);
     }
 
@@ -123,12 +137,14 @@ class Volume extends AbstractVolume
         $tableFields = $this->eavAttributesForValidation[$tableName];
         $destinationRecords = $this->helper->getDestinationRecords($tableName);
 
+        $primaryKeyName = $this->getPrimaryKeyName($tableName);
+
         foreach ($destinationRecords as $attribute) {
             foreach ($tableFields as $field) {
-                if ($attribute[$field] !== null && !class_exists($attribute[$field])) {
+                if (!empty($attribute[$field]) && !class_exists($attribute[$field])) {
                     $this->errors[] = sprintf(
                         'Class %s does not exist but mentioned in: %s.%s for %s=%s',
-                        $attribute[$field], $tableName, $field, key($attribute), current($attribute)
+                        $attribute[$field], $tableName, $field, $primaryKeyName, $attribute[$primaryKeyName]
                     );
                 }
             }
@@ -189,5 +205,27 @@ class Volume extends AbstractVolume
         ) {
             $this->errors[] = 'Mismatch of entities in the document: eav_attribute_group';
         }
+    }
+
+    /**
+     * @param string $documentName
+     * @return mixed
+     */
+    protected function getPrimaryKeyName($documentName)
+    {
+        if (isset($this->tableKeys[$documentName])) {
+            return $this->tableKeys[$documentName];
+        }
+
+        $this->tableKeys[$documentName] = null;
+        $destinationFields = $this->destination->getDocument($documentName)->getStructure()->getFields();
+        foreach ($destinationFields as $params) {
+            if ($params['PRIMARY']) {
+                $this->tableKeys[$documentName] = $params['COLUMN_NAME'];
+                break;
+            }
+        }
+
+        return $this->tableKeys[$documentName];
     }
 }
