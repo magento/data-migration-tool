@@ -129,7 +129,8 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
             $query = $adapter->getSelect()->from($this->source->addDocumentPrefix('core_config_data'), ['value'])
                 ->where('path = ?', $this->suffixPath)
                 ->limit(1);
-            $this->suffix = $query->getAdapter()->fetchOne($query) !== false ?: self::DEFAULT_SUFFIX;
+            $result = $query->getAdapter()->fetchOne($query);
+            $this->suffix = $result !== false ? $result : self::DEFAULT_SUFFIX;
         }
         return $this->suffix;
     }
