@@ -814,6 +814,9 @@
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
                     <param name="attributeCode" value="page_layout"/>
                 </handler>
+            </transform>
+            <transform>
+                <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\TruncateSuffix">
                     <param name="suffixPath" value="catalog/seo/category_url_suffix"/>
                     <param name="attributeCodes" value="[url_path]"/>
@@ -826,6 +829,9 @@
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
                     <param name="attributeCode" value="page_layout"/>
                 </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\TruncateSuffix">
                     <param name="suffixPath" value="catalog/seo/product_url_suffix"/>
                     <param name="attributeCodes" value="[url_key,url_path]"/>
