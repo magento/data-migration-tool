@@ -86,7 +86,7 @@ class Data implements StageInterface
     }
 
     /**
-     * Delete remains of ignored product attributes in eav value tables
+     * Deletes product attributes in eav value tables for non existing attributes
      *
      * @return void
      */
@@ -102,6 +102,9 @@ class Data implements StageInterface
         }
     }
 
+    /**
+     * @return array
+     */
     protected function getMissingProductAttributeIds()
     {
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
