@@ -203,7 +203,6 @@ class Data implements StageInterface, RollbackInterface
                 $recordsToSave = $this->addScheduleDesignToAttributeGroups($recordsToSave, $documentName);
             }
 
-
             $this->destination->clearDocument($destinationDocument->getName());
             $this->saveRecords($destinationDocument, $recordsToSave);
             if ($documentName == 'eav_attribute_set') {
@@ -230,7 +229,8 @@ class Data implements StageInterface, RollbackInterface
             ['eas' => $this->source->addDocumentPrefix('eav_attribute_set')],
             ['attribute_set_id']
         )->where(
-            'entity_type_id = ?', self::ENTITY_TYPE_ID_CATALOG_PRODUCT
+            'entity_type_id = ?',
+            self::ENTITY_TYPE_ID_CATALOG_PRODUCT
         );
         $catalogProductSetIds = $select->getAdapter()->fetchCol($select);
         $addedGroups = [];
@@ -286,7 +286,8 @@ class Data implements StageInterface, RollbackInterface
             /** @var Record $destinationRecord */
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
 
-            $mappingValue = $this->getMappingValue($sourceRecord, ['entity_type_id', 'attribute_code']);
+            $entityTypeMappedId = $this->getEntityTypeIdMappedByCode($sourceRecord->getValue('entity_type_id'), true);
+            $mappingValue = $entityTypeMappedId . '-' . $sourceRecord->getValue('attribute_code');
             if (isset($destinationRecords[$mappingValue])) {
                 $destinationRecordData = $destinationRecords[$mappingValue];
                 unset($destinationRecords[$mappingValue]);
@@ -304,6 +305,10 @@ class Data implements StageInterface, RollbackInterface
             /** @var Record $destinationRecord */
             $destinationRecord = $this->factory->create(['document' => $destinationDocument, 'data' => $record]);
             $destinationRecord->setValue('attribute_id', null);
+            $destinationRecord->setValue(
+                'entity_type_id',
+                $this->getEntityTypeIdMappedByCode($destinationRecord->getValue('entity_type_id'), false)
+            );
             $recordsToSave->addRecord($destinationRecord);
         }
         $this->destination->clearDocument($destinationDocument->getName());
@@ -368,7 +373,18 @@ class Data implements StageInterface, RollbackInterface
      */
     public function processDesignEntityAttributes($recordsToSave)
     {
-        $data = $this->helper->getDesignAttributeAndGroupsData();
+        foreach ($this->helper->getDestinationRecords('eav_entity_type') as $record) {
+            if ('catalog_product' == $record['entity_type_code']) {
+                $entityTypeIdCatalogProduct = $record['entity_type_id'];
+                break;
+            }
+        }
+        $entityTypeIdCatalogProductMapped = $this->getEntityTypeIdMappedByCode($entityTypeIdCatalogProduct, false);
+        $data = $this->helper->getDesignAttributeAndGroupsData(
+            $entityTypeIdCatalogProduct,
+            $entityTypeIdCatalogProductMapped
+        );
+
         $entityAttributeDocument = $this->destination->getDocument(
             $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
         );
@@ -387,7 +403,7 @@ class Data implements StageInterface, RollbackInterface
         foreach ($data['scheduleGroupsMigrated'] as $group) {
             $dataRecord = [
                 'entity_attribute_id' => null,
-                'entity_type_id' => $data['entityTypeIdCatalogProduct'],
+                'entity_type_id' => $entityTypeIdCatalogProductMapped,
                 'attribute_set_id' => $group['attribute_set_id'],
                 'attribute_group_id' => $group['attribute_group_id'],
                 'attribute_id' => $data['customDesignAttributeId'],
@@ -402,7 +418,7 @@ class Data implements StageInterface, RollbackInterface
 
             $dataRecord = [
                 'entity_attribute_id' => null,
-                'entity_type_id' => $data['entityTypeIdCatalogProduct'],
+                'entity_type_id' => $entityTypeIdCatalogProductMapped,
                 'attribute_set_id' => $group['attribute_set_id'],
                 'attribute_group_id' => $group['attribute_group_id'],
                 'attribute_id' => $data['customLayoutAttributeId'],
@@ -571,10 +587,35 @@ class Data implements StageInterface, RollbackInterface
             ['entity_type_id', 'attribute_code']
         );
         foreach ($this->initialData->getAttributes('dest') as $key => $attributeData) {
+            list($entityTypeId, $attributeCode) = explode('-', $key);
+            $key = $this->getEntityTypeIdMappedByCode($entityTypeId, false) . '-' . $attributeCode;
             $this->destAttributeOldNewMap[$attributeData['attribute_id']] = $this->newAttributes[$key]['attribute_id'];
         }
 
         return $this->newAttributes;
+    }
+
+    /**
+     * Returns destination entity type id for correspondent source entity type id and vise versa
+     * Linking between two values is performed using entity_type_code
+     * @param int|string $initialEntityTypeId
+     * @param bool $returnDestId
+     * @return mixed
+     */
+    protected function getEntityTypeIdMappedByCode($initialEntityTypeId, $returnDestId = true)
+    {
+        $id = $initialEntityTypeId;
+        $entityTypesFrom = $this->initialData->getEntityTypes($returnDestId ? 'source' : 'dest', 'entity_type_id');
+        $entityTypesTo = $this->initialData->getEntityTypes($returnDestId ? 'dest' : 'source', 'entity_type_code');
+
+        if (isset($entityTypesFrom[$initialEntityTypeId])) {
+            $entityTypeCode = $entityTypesFrom[$initialEntityTypeId]['entity_type_code'];
+            if (isset($entityTypesTo[$entityTypeCode])) {
+                $id = $entityTypesTo[$entityTypeCode]['entity_type_id'];
+            }
+        }
+
+        return $id;
     }
 
     /**
@@ -586,7 +627,11 @@ class Data implements StageInterface, RollbackInterface
         $id = null;
         $key = null;
         if (isset($this->initialData->getAttributes('source')[$sourceAttributeId])) {
-            $key = $this->initialData->getAttributes('source')[$sourceAttributeId]['entity_type_id'] . '-'
+            $entityTypeId = $this->getEntityTypeIdMappedByCode(
+                $this->initialData->getAttributes('source')[$sourceAttributeId]['entity_type_id'],
+                true
+            );
+            $key = $entityTypeId . '-'
                 . $this->initialData->getAttributes('source')[$sourceAttributeId]['attribute_code'];
         }
 
