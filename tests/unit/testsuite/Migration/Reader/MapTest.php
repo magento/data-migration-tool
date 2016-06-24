@@ -130,21 +130,23 @@ class MapTest extends \PHPUnit_Framework_TestCase
     /**
      * @return void
      */
-    public function testGetHandlerConfig()
+    public function testGetHandlerConfigs()
     {
         $handlerConfig = [
-            'class' => '\Migration\Handler\SetValue',
-            'params' => [
-                'default_value' => 10
+            [
+                'class' => '\Migration\Handler\SetValue',
+                'params' => [
+                    'default_value' => 10
+                ]
             ]
         ];
 
         $this->assertEquals(
             $handlerConfig,
-            $this->map->getHandlerConfig('source-document', 'field-with-handler', MapInterface::TYPE_SOURCE)
+            $this->map->getHandlerConfigs('source-document', 'field-with-handler', MapInterface::TYPE_SOURCE)
         );
 
-        $this->assertEquals([], $this->map->getHandlerConfig(
+        $this->assertEquals([], $this->map->getHandlerConfigs(
             'source-document',
             'some-field',
             MapInterface::TYPE_SOURCE
