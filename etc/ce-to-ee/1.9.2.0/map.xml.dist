@@ -276,6 +276,24 @@
                 <document>protx_api_debug</document>
             </ignore>
             <ignore>
+            	<document>xmlconnect_application</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_config_data</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_history</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_images</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_notification_template</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_queue</document>
+            </ignore>
+            <ignore>
                 <document>googlecheckout_notification</document>
             </ignore>
             <ignore>
