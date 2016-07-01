@@ -80,19 +80,19 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
-        $this->deleteIgnoredProductAttributeValues();
+        $this->deleteMissingProductAttributeValues();
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
     /**
-     * Delete remains of ignored product attributes in eav value tables
+     * Deletes product attributes in eav value tables for non existing attributes
      *
      * @return void
      */
-    protected function deleteIgnoredProductAttributeValues()
+    protected function deleteMissingProductAttributeValues()
     {
-        $attributeIds = $this->getIgnoredProductAttributeIds();
+        $attributeIds = $this->getMissingProductAttributeIds();
         if (!$attributeIds) {
             return ;
         }
@@ -105,17 +105,28 @@ class Data implements StageInterface
     /**
      * @return array
      */
-    protected function getIgnoredProductAttributeIds()
+    protected function getMissingProductAttributeIds()
     {
-        $attributeCodes = array_keys($this->readerAttributes->getGroup('ignore'));
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        $select = $adapter->getSelect()->from(
-            ['ea' => $this->helper->getEavAttributeDocument()],
-            ['attribute_id']
-        )->where('ea.attribute_code IN (?)', $attributeCodes
-        )->where('ea.entity_type_id = 4');
-        return $select->getAdapter()->fetchCol($select);
+        $adapter = $this->destination->getAdapter();
+
+        $selects = [];
+        foreach ($this->helper->getProductDestinationDocumentFields() as $document => $fields) {
+            $selects[] = $adapter->getSelect()->from(
+                ['ea' => $this->helper->getEavAttributeDocument()],
+                []
+            )->joinRight(
+                ['j' => $document],
+                'j.attribute_id = ea.attribute_id',
+                ['attribute_id']
+            )->where(
+                'ea.attribute_id IS NULL'
+            )->group(
+                'j.attribute_id'
+            );
+        }
+        $query = $adapter->getSelect()->union($selects, \Zend_Db_Select::SQL_UNION);
+        return $query->getAdapter()->fetchCol($query);
     }
 
     /**

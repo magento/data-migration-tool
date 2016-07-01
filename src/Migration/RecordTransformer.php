@@ -96,8 +96,8 @@ class RecordTransformer
         $handlerManager = $this->handlerManagerFactory->create();
         $fields = $document->getStructure()->getFields();
         foreach (array_keys($fields) as $field) {
-            $handlerConfig = $this->mapReader->getHandlerConfig($document->getName(), $field, $type);
-            if (!empty($handlerConfig)) {
+            $handlerConfigs = $this->mapReader->getHandlerConfigs($document->getName(), $field, $type);
+            foreach ($handlerConfigs as $handlerConfig) {
                 $handlerKey = md5($field . $handlerConfig['class']);
                 $handlerManager->initHandler($field, $handlerConfig, $handlerKey);
             }

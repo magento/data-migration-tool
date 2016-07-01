@@ -173,6 +173,7 @@ class Helper
 
     /**
      * @param array $addedGroups
+     * @return void
      */
     public function setAddedGroups(array $addedGroups)
     {
@@ -180,25 +181,20 @@ class Helper
     }
 
     /**
+     * @param int|string $entityTypeIdCatalogProduct
+     * @param int|string $entityTypeIdCatalogProductMapped
      * @return array
      */
-    public function getDesignAttributeAndGroupsData()
+    public function getDesignAttributeAndGroupsData($entityTypeIdCatalogProduct, $entityTypeIdCatalogProductMapped)
     {
         $scheduleGroupsMigrated = [];
         $catalogProductSetIdsMigrated = [];
         $catalogProductSetIdDefault = null;
-        $entityTypeIdCatalogProduct = null;
         $customLayoutAttributeId = null;
         $customDesignAttributeId = null;
 
-        foreach ($this->getDestinationRecords('eav_entity_type', ['entity_type_code']) as $id => $record) {
-            if ($id == 'catalog_product') {
-                $entityTypeIdCatalogProduct = $record['entity_type_id'];
-                break;
-            }
-        }
         foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
-            if ($entityTypeIdCatalogProduct === $record['entity_type_id']) {
+            if ($entityTypeIdCatalogProduct == $record['entity_type_id']) {
                 if ('Default' == $record['attribute_set_name']) {
                     $catalogProductSetIdDefault = $record['attribute_set_id'];
                 } else {
@@ -214,7 +210,7 @@ class Helper
             }
         }
         foreach ($this->getDestinationRecords('eav_attribute') as $record) {
-            if ($record['entity_type_id'] == $entityTypeIdCatalogProduct) {
+            if ($record['entity_type_id'] == $entityTypeIdCatalogProductMapped) {
                 switch ($record['attribute_code']) {
                     case 'custom_layout':
                         $customLayoutAttributeId = $record['attribute_id'];
