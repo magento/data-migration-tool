@@ -159,9 +159,9 @@ class InitialData
      * @param string $keyField
      * @return array
      */
-    public function getEntityTypes($type, $keyField = 'entity_type_code')
+    public function getEntityTypesWithKeyField($type, $keyField)
     {
-        return $keyField ? $this->entityTypes[$type][$keyField] : $this->entityTypes[$type];
+        return $this->entityTypes[$type][$keyField];
     }
 
     /**

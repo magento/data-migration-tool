@@ -194,7 +194,7 @@ class Helper
         $customDesignAttributeId = null;
 
         foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
-            if ($entityTypeIdCatalogProduct === $record['entity_type_id']) {
+            if ($entityTypeIdCatalogProduct == $record['entity_type_id']) {
                 if ('Default' == $record['attribute_set_name']) {
                     $catalogProductSetIdDefault = $record['attribute_set_id'];
                 } else {
