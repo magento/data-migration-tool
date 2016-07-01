@@ -1438,6 +1438,10 @@
                     <param name="table" value="sequence_cms_page"/>
                 </handler>
             </transform>
+            <transform>
+                <field>catalogsearch_query.synonym_for</field>
+                <handler class="\Migration\Handler\Synonym"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
