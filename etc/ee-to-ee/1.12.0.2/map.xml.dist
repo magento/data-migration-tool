@@ -2539,6 +2539,9 @@
                 <field>cms_page.meta_title</field>
             </ignore>
             <ignore>
+                <field>magento_catalogevent_event.status</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
