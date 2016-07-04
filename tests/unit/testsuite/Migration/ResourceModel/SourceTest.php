@@ -57,10 +57,12 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
+            'database' => [
+                'host' => 'localhost',
+                'password' => 'upass',
+                'dbname' => 'dbname',
+                'username' => 'uname'
+            ]
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getSource'], [], '', false);
         $config = [
@@ -68,9 +70,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             'version' => '1.14.1.0',
             'database' => [
                 'host' => 'localhost',
-                'name' => 'dbname',
-                'user' => 'uname',
                 'password' => 'upass',
+                'name' => 'dbname',
+                'user' => 'uname'
             ]
         ];
         $this->config->expects($this->once())

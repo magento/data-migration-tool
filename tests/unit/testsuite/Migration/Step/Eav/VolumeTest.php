@@ -36,6 +36,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $destination;
+
+    /**
      * @var \Migration\Step\Eav\Volume
      */
     protected $volume;
@@ -77,13 +82,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with('eav_document_groups_file')
             ->willReturn($this->readerGroups);
+        $this->destination = $this->getMockBuilder('\Migration\ResourceModel\Destination')
+            ->disableOriginalConstructor()
+            ->setMethods(['getDocument'])
+            ->getMock();
 
         $this->volume = new Volume(
             $this->helper,
             $this->initialData,
             $this->logger,
             $this->progress,
-            $groupsFactory
+            $groupsFactory,
+            $this->destination
         );
     }
 
@@ -144,6 +154,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
         $this->helper->expects($this->once())->method('deleteBackups');
         $this->logger->expects($this->never())->method('addRecord');
+
+        $documentsMap = $this->getDocumentsMap();
+        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
 
         $this->assertTrue($this->volume->perform());
     }
@@ -206,6 +219,44 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->never())->method('deleteBackups');
         $this->logger->expects($this->atLeastOnce())->method('addRecord');
 
+        $documentsMap = $this->getDocumentsMap();
+        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
+
         $this->assertFalse($this->volume->perform());
+    }
+
+    protected function getDocumentsMap()
+    {
+        $structureFields = [
+            'eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'catalog_eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'customer_eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'eav_entity_type' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+        ];
+        $documentsMap = [];
+        foreach ($structureFields as $documentName => $structure) {
+            $structure = new \Migration\ResourceModel\Structure($structureFields[$documentName]);
+            $destDocument = $this->getMock('\Migration\ResourceModel\Document', ['getStructure'], [], '', false);
+            $destDocument->expects($this->once())->method('getStructure')->willReturn($structure);
+            $documentsMap[] = [$documentName, $destDocument];
+        }
+
+        return $documentsMap;
     }
 }
