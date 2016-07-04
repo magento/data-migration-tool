@@ -401,7 +401,7 @@ class Data implements StageInterface, RollbackInterface
         $recordsToSave = $recordsToSaveFiltered;
 
         foreach ($data['scheduleGroupsMigrated'] as $group) {
-            if(isset($data['customDesignAttributeId']) && $data['customDesignAttributeId']) {
+            if (isset($data['customDesignAttributeId']) && $data['customDesignAttributeId']) {
                 $dataRecord = [
                     'entity_attribute_id' => null,
                     'entity_type_id' => $entityTypeIdCatalogProductMapped,
@@ -418,7 +418,7 @@ class Data implements StageInterface, RollbackInterface
                 $recordsToSave->addRecord($destinationRecord);
             }
 
-            if(isset($data['customLayoutAttributeId']) && $data['customLayoutAttributeId']) {
+            if (isset($data['customLayoutAttributeId']) && $data['customLayoutAttributeId']) {
                 $dataRecord = [
                     'entity_attribute_id' => null,
                     'entity_type_id' => $entityTypeIdCatalogProductMapped,

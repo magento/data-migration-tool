@@ -225,6 +225,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->assertFalse($this->volume->perform());
     }
 
+    /**
+     * @return array
+     */
     protected function getDocumentsMap()
     {
         $structureFields = [
