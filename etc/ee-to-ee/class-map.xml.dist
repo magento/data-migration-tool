@@ -304,7 +304,7 @@
     </rename>
     <rename>
         <from>eav/entity_increment_numeric</from>
-        <to>Magento\Eav\Model\Entity\Increment\Numeric</to>
+        <to>Magento\Eav\Model\Entity\Increment\NumericValue</to>
     </rename>
     <rename>
         <from>giftmessage/adminhtml_product_helper_form_config</from>
