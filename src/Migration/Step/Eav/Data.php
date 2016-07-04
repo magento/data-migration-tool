@@ -401,35 +401,39 @@ class Data implements StageInterface, RollbackInterface
         $recordsToSave = $recordsToSaveFiltered;
 
         foreach ($data['scheduleGroupsMigrated'] as $group) {
-            $dataRecord = [
-                'entity_attribute_id' => null,
-                'entity_type_id' => $entityTypeIdCatalogProductMapped,
-                'attribute_set_id' => $group['attribute_set_id'],
-                'attribute_group_id' => $group['attribute_group_id'],
-                'attribute_id' => $data['customDesignAttributeId'],
-                'sort_order' => 40,
-            ];
-            $destinationRecord = $this->factory->create([
-                'document' => $entityAttributeDocument,
-                'data' => $dataRecord
-            ]);
-            /** Adding custom_design */
-            $recordsToSave->addRecord($destinationRecord);
+            if(isset($data['customDesignAttributeId']) && $data['customDesignAttributeId']) {
+                $dataRecord = [
+                    'entity_attribute_id' => null,
+                    'entity_type_id' => $entityTypeIdCatalogProductMapped,
+                    'attribute_set_id' => $group['attribute_set_id'],
+                    'attribute_group_id' => $group['attribute_group_id'],
+                    'attribute_id' => $data['customDesignAttributeId'],
+                    'sort_order' => 40,
+                ];
+                $destinationRecord = $this->factory->create([
+                    'document' => $entityAttributeDocument,
+                    'data' => $dataRecord
+                ]);
+                /** Adding custom_design */
+                $recordsToSave->addRecord($destinationRecord);
+            }
 
-            $dataRecord = [
-                'entity_attribute_id' => null,
-                'entity_type_id' => $entityTypeIdCatalogProductMapped,
-                'attribute_set_id' => $group['attribute_set_id'],
-                'attribute_group_id' => $group['attribute_group_id'],
-                'attribute_id' => $data['customLayoutAttributeId'],
-                'sort_order' => 50,
-            ];
-            $destinationRecord = $this->factory->create([
-                'document' => $entityAttributeDocument,
-                'data' => $dataRecord
-            ]);
-            /** Adding custom_layout */
-            $recordsToSave->addRecord($destinationRecord);
+            if(isset($data['customLayoutAttributeId']) && $data['customLayoutAttributeId']) {
+                $dataRecord = [
+                    'entity_attribute_id' => null,
+                    'entity_type_id' => $entityTypeIdCatalogProductMapped,
+                    'attribute_set_id' => $group['attribute_set_id'],
+                    'attribute_group_id' => $group['attribute_group_id'],
+                    'attribute_id' => $data['customLayoutAttributeId'],
+                    'sort_order' => 50,
+                ];
+                $destinationRecord = $this->factory->create([
+                    'document' => $entityAttributeDocument,
+                    'data' => $dataRecord
+                ]);
+                /** Adding custom_layout */
+                $recordsToSave->addRecord($destinationRecord);
+            }
         }
 
         return $recordsToSave;
