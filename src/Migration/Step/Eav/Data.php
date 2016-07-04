@@ -605,8 +605,10 @@ class Data implements StageInterface, RollbackInterface
     protected function getEntityTypeIdMappedByCode($initialEntityTypeId, $returnDestId = true)
     {
         $id = $initialEntityTypeId;
-        $entityTypeIdsFrom = $this->initialData->getEntityTypesWithKeyField($returnDestId ? 'source' : 'dest', 'entity_type_id');
-        $entityTypeCodesTo = $this->initialData->getEntityTypesWithKeyField($returnDestId ? 'dest' : 'source', 'entity_type_code');
+        $entityTypeIdsFrom =
+            $this->initialData->getEntityTypesWithKeyField($returnDestId ? 'source' : 'dest', 'entity_type_id');
+        $entityTypeCodesTo =
+            $this->initialData->getEntityTypesWithKeyField($returnDestId ? 'dest' : 'source', 'entity_type_code');
 
         if (isset($entityTypeIdsFrom[$initialEntityTypeId])) {
             $entityTypeCode = $entityTypeIdsFrom[$initialEntityTypeId]['entity_type_code'];

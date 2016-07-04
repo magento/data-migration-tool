@@ -13,6 +13,7 @@ use Migration\ResourceModel\Document;
 
 /**
  * Class Version11410to2000
+ * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -190,6 +191,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param \Migration\ResourceModel\Destination $destination
      * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\ResourceModel\RecordFactory $recordFactory
+     * @param \Migration\Step\UrlRewrite\Helper $helper
      * @param string $stage
      * @throws \Migration\Exception
      */

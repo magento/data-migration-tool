@@ -105,6 +105,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         return $map[$sourceType];
     }
 
+    /**
+     * @return int
+     */
     protected function getIterationsCount()
     {
         return count(array_keys($this->helper->getProductDestinationDocumentFields()));

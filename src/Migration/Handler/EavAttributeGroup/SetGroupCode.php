@@ -47,6 +47,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
 
     /**
      * {@inheritdoc}
+     * @SuppressWarnings(PHPMD.NPathComplexity)
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

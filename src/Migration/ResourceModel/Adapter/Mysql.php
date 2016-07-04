@@ -15,6 +15,7 @@ use Migration\ResourceModel\Document;
 class Mysql implements \Migration\ResourceModel\AdapterInterface
 {
     const BACKUP_DOCUMENT_PREFIX = 'migration_backup_';
+
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface
      */

@@ -51,8 +51,8 @@ class Helper
      */
     public function getProductDestinationDocumentFields()
     {
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE) 
-            ? 'entity_id' 
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'entity_id'
             : 'row_id';
         return [
             $this->getDestinationDocumentName('catalog_product_entity_datetime') => [
@@ -109,5 +109,4 @@ class Helper
     {
         return $this->destination->addDocumentPrefix($document);
     }
-
 }

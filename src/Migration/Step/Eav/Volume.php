@@ -144,7 +144,11 @@ class Volume extends AbstractVolume
                 if (!empty($attribute[$field]) && !class_exists($attribute[$field])) {
                     $this->errors[] = sprintf(
                         'Class %s does not exist but mentioned in: %s.%s for %s=%s',
-                        $attribute[$field], $tableName, $field, $primaryKeyName, $attribute[$primaryKeyName]
+                        $attribute[$field],
+                        $tableName,
+                        $field,
+                        $primaryKeyName,
+                        $attribute[$primaryKeyName]
                     );
                 }
             }
@@ -169,7 +173,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @param $attribute
+     * @param array $attribute
      * @return void
      */
     protected function checkAttributesMismatch($attribute)

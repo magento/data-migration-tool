@@ -14,7 +14,6 @@ use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
 
-
 /**
  * Class Data
  */
@@ -96,7 +95,7 @@ class Data implements StageInterface
         if (!$attributeIds) {
             return ;
         }
-        foreach ($this->helper->getProductDestinationDocumentFields() as $document => $fields) {
+        foreach (array_keys($this->helper->getProductDestinationDocumentFields()) as $document) {
             $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $this->destination->deleteRecords($document, 'attribute_id', $attributeIds);
         }
@@ -111,7 +110,7 @@ class Data implements StageInterface
         $adapter = $this->destination->getAdapter();
 
         $selects = [];
-        foreach ($this->helper->getProductDestinationDocumentFields() as $document => $fields) {
+        foreach (array_keys($this->helper->getProductDestinationDocumentFields()) as $document) {
             $selects[] = $adapter->getSelect()->from(
                 ['ea' => $this->helper->getEavAttributeDocument()],
                 []

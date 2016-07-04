@@ -68,8 +68,8 @@ class Helper
      */
     public function getDestinationDocumentFields()
     {
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE) 
-            ? 'entity_id' 
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'entity_id'
             : 'row_id';
         return [
             self::DESTINATION_DOCUMENT_NAME => [

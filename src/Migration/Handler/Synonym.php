@@ -9,11 +9,15 @@ use Migration\ResourceModel\Adapter\Mysql;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Record;
 use Migration\ResourceModel\Source;
+
 /**
  * Handler for synonyms
  */
 class Synonym extends AbstractHandler implements HandlerInterface
 {
+    /**
+     * @var string
+     */
     protected $synonymsTable = 'search_synonyms';
 
     /**
@@ -31,6 +35,10 @@ class Synonym extends AbstractHandler implements HandlerInterface
      */
     protected $destination;
 
+    /**
+     * @param Source $source
+     * @param Destination $destination
+     */
     public function __construct(Source $source, Destination $destination)
     {
         $this->source = $source;
@@ -55,7 +63,7 @@ class Synonym extends AbstractHandler implements HandlerInterface
     }
 
     /**
-     * @param $storeId
+     * @param int|string $storeId
      * @return array
      */
     protected function getWebsiteId($storeId)

@@ -110,7 +110,6 @@ class Config
         return $steps;
     }
 
-
     /**
      * Get step data
      *

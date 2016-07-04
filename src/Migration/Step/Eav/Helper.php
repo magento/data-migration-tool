@@ -184,6 +184,7 @@ class Helper
      * @param int|string $entityTypeIdCatalogProduct
      * @param int|string $entityTypeIdCatalogProductMapped
      * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
     public function getDesignAttributeAndGroupsData($entityTypeIdCatalogProduct, $entityTypeIdCatalogProductMapped)
     {

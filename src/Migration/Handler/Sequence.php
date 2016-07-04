@@ -50,6 +50,7 @@ class Sequence extends AbstractHandler implements HandlerInterface
 
     /**
      * @param string $table
+     * @param Destination $destination
      */
     public function __construct($table, Destination $destination)
     {

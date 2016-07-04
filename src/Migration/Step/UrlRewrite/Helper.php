@@ -41,8 +41,8 @@ class Helper
     /**
      * Fields processor
      *
-     * @param $resourceType
-     * @param $tableName
+     * @param string $resourceType
+     * @param string $tableName
      * @param array $fields
      * @param bool $inKeys
      * @return array
@@ -55,8 +55,8 @@ class Helper
     /**
      * Rename fields of staging module
      *
-     * @param $resourceType
-     * @param $tableName
+     * @param string $resourceType
+     * @param string $tableName
      * @param array $fields
      * @param bool $inKeys
      * @return array
@@ -67,7 +67,7 @@ class Helper
         $fieldStaging = $this->stagingConfig['field_staging'];
         $tablesStaging = $this->stagingConfig['tables'];
 
-        if(empty($this->editionMigrate)
+        if (empty($this->editionMigrate)
             || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE
             || $resourceType == MapInterface::TYPE_SOURCE
             || !in_array($tableName, $tablesStaging)
@@ -78,7 +78,7 @@ class Helper
             $fields[$fieldStaging] = $fields[$fieldEntityId];
             unset($fields[$fieldEntityId]);
         } else {
-            $map = function($item) use ($fieldEntityId, $fieldStaging) {
+            $map = function ($item) use ($fieldEntityId, $fieldStaging) {
                 return $item == $fieldEntityId ? $fieldStaging : $item;
             };
             $fields = array_map($map, $fields);
