@@ -159,6 +159,9 @@
                 <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
+                <document>cataloginventory_stock_status</document>
+            </ignore>
+            <ignore>
                 <document>cataloginventory_stock_status_idx</document>
             </ignore>
             <ignore>
@@ -1458,12 +1461,6 @@
             </transform>
             <transform>
                 <field>cataloginventory_stock_item.website_id</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0" />
-                </handler>
-            </transform>
-            <transform>
-                <field>cataloginventory_stock_status.website_id</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="0" />
                 </handler>
