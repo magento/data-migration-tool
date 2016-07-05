@@ -133,6 +133,7 @@
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
         <edition_migrate>ce-to-ce</edition_migrate>
+        <edition_number>1.9.2.2</edition_number>
         <crypt_key />
     </options>
 </config>

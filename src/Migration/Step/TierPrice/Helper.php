@@ -19,6 +19,25 @@ class Helper
      * @var string
      */
     protected $editionMigrate = '';
+    /**
+     * @var string
+     */
+    protected $editionNumber = '';
+
+    /**
+     * @var array
+     */
+    protected $notExistsGroupPriceTable = [
+        '1.11.0.0',
+        '1.11.0.1',
+        '1.11.0.1',
+        '1.11.0.2',
+        '1.11.1.0',
+        '1.11.2.0',
+        '1.6.0.0',
+        '1.6.1.0',
+        '1.6.2.0'
+    ];
 
     /**
      * @param Config $config
@@ -27,6 +46,7 @@ class Helper
         Config $config
     ) {
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->editionNumber = $config->getOption('edition_number');
     }
 
     /**
@@ -42,7 +62,7 @@ class Helper
      */
     public function getSourceDocumentFields()
     {
-        return [
+        $sourceDocumentFields = [
             self::DESTINATION_DOCUMENT_NAME => [
                 'value_id',
                 'entity_id',
@@ -52,15 +72,18 @@ class Helper
                 'value',
                 'website_id',
             ],
-            'catalog_product_entity_group_price' => [
+        ];
+        if (!empty($this->editionNumber) && !in_array($this->editionNumber, $this->notExistsGroupPriceTable)) {
+            $sourceDocumentFields['catalog_product_entity_group_price'] = [
                 'value_id',
                 'entity_id',
                 'all_groups',
                 'customer_group_id',
                 'value',
                 'website_id',
-            ],
-        ];
+            ];
+        }
+        return $sourceDocumentFields;
     }
 
     /**

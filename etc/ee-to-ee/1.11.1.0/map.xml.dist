@@ -1723,6 +1723,18 @@
                 <field>sales_flat_order_payment.customer_payment_id</field>
             </ignore>
             <ignore>
+                <field>catalogrule.customer_group_ids</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.website_ids</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.customer_group_ids</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.website_ids</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
@@ -1748,6 +1760,12 @@
             </ignore>
             <ignore>
                 <datatype>enterprise_reminder_rule.to_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_reminder_rule.active_from</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_reminder_rule.active_to</datatype>
             </ignore>
         </field_rules>
     </source>
