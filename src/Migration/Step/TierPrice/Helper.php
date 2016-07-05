@@ -68,9 +68,7 @@ class Helper
      */
     public function getDestinationDocumentFields()
     {
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
-            ? 'entity_id'
-            : 'row_id';
+        $entityIdName = $this->getEntityIdNameMap()['destination'];
         return [
             self::DESTINATION_DOCUMENT_NAME => [
                 'value_id',
@@ -82,5 +80,17 @@ class Helper
                 'website_id',
             ],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function getEntityIdNameMap()
+    {
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'entity_id'
+            : 'row_id';
+
+        return ['source' => 'entity_id', 'destination' => $entityIdName];
     }
 }

@@ -96,7 +96,7 @@ class Data implements StageInterface
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($items as $recordData) {
-                    unset($recordData['value_id']);
+                    $recordData = $this->transformRecord($recordData);
                     $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $destRecord */
@@ -113,5 +113,21 @@ class Data implements StageInterface
 
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
+    }
+
+    /**
+     * @param array $recordData
+     * @return array
+     */
+    protected function transformRecord(array $recordData)
+    {
+        $entityIdNameMap = $this->helper->getEntityIdNameMap();
+        if ($entityIdNameMap['destination'] != $entityIdNameMap['source']) {
+            $recordData[$entityIdNameMap['destination']] = $recordData[$entityIdNameMap['source']];
+            unset($recordData[$entityIdNameMap['source']]);
+        }
+        unset($recordData['value_id']);
+
+        return $recordData;
     }
 }
