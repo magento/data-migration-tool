@@ -19,6 +19,7 @@ class Helper
      * @var string
      */
     protected $editionMigrate = '';
+    
     /**
      * @var string
      */
