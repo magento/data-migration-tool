@@ -236,7 +236,7 @@ class Data implements StageInterface, RollbackInterface
 
     /**
      * Add attribute groups to Magento 1 which are needed for Magento 2
-     * 
+     *
      * @param Record\Collection $recordsToSave
      * @param string $documentName
      * @param array $groupsData
@@ -382,7 +382,7 @@ class Data implements StageInterface, RollbackInterface
         }
 
         $recordsToSave = $this->processDesignEntityAttributes($recordsToSave);
-        $recordsToSave = $this->moveFieldsToGroup($recordsToSave);
+        $recordsToSave = $this->moveAttributes($recordsToSave);
 
         $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
@@ -393,49 +393,92 @@ class Data implements StageInterface, RollbackInterface
      *
      * @param Record\Collection $recordsToSave
      * @return Record\Collection
-     * @throws \Migration\Exception
      */
-    private function moveFieldsToGroup($recordsToSave)
+    private function moveAttributes($recordsToSave)
+    {
+        $this->moveAttributeToGroup($recordsToSave, 'price', 'product-details');
+        $this->moveAttributeToGroup($recordsToSave, 'shipment_type', 'bundle-items');
+        $this->addAttributeToGroup($recordsToSave, 'quantity_and_stock_status', 'product-details');
+        return $recordsToSave;
+    }
+
+    /**
+     * Move attribute to other attribute group
+     *
+     * @param Record\Collection $recordsToSave
+     * @param string $attributeCode
+     * @param string $attributeGroupCode
+     * @return Record\Collection
+     */
+    private function moveAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode)
     {
         $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
         $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
         $attributeSetGroups = [];
         foreach ($attributeGroups as $attributeGroup) {
-            if ($attributeGroup['attribute_group_code'] == 'product-details') {
-                $attributeSetGroups[$attributeGroup['attribute_set_id']]['product-details'] =
+            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode) {
+                $attributeSetGroups[$attributeGroup['attribute_set_id']][$attributeGroupCode] =
                     $attributeGroup['attribute_group_id'];
             }
         }
-        $quantityAttribute = null;
         foreach ($recordsToSave as $record) {
             $attributeId = $record->getValue('attribute_id');
             if (!isset($attributes[$attributeId])) {
                 continue;
             }
-            if ($attributes[$attributeId]['attribute_code'] == 'price') {
+            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
                 $record->setValue(
                     'attribute_group_id',
-                    $attributeSetGroups[$record->getValue('attribute_set_id')]['product-details']
+                    $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeGroupCode]
                 );
             }
-            if ($attributes[$attributeId]['attribute_code'] == 'quantity_and_stock_status') {
-                $attributeSetGroups[$record->getValue('attribute_set_id')]['quantity_and_stock_status'] =
+        }
+        return $recordsToSave;
+    }
+
+    /**
+     * Add attribute to attribute group
+     *
+     * @param $recordsToSave
+     * @param $attributeCode
+     * @param $attributeGroupCode
+     * @return mixed
+     */
+    private function addAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode)
+    {
+        $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
+        $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
+        $attributeSetGroups = [];
+        foreach ($attributeGroups as $attributeGroup) {
+            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode) {
+                $attributeSetGroups[$attributeGroup['attribute_set_id']][$attributeGroupCode] =
+                    $attributeGroup['attribute_group_id'];
+            }
+        }
+        $attribute = null;
+        foreach ($recordsToSave as $record) {
+            $attributeId = $record->getValue('attribute_id');
+            if (!isset($attributes[$attributeId])) {
+                continue;
+            }
+            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
+                $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeCode] =
                     $record->getValue('attribute_group_id');
-                $quantityAttribute = $record->getData();
+                $attribute = $record->getData();
             }
         }
         $destinationDocument = $this->destination->getDocument(
             $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
         );
         foreach ($attributeSetGroups as $attributeSetId => $attributeSetGroup) {
-            if (!isset($attributeSetGroup['quantity_and_stock_status'])) {
-                $quantityAttribute['attribute_set_id'] = $attributeSetId;
-                $quantityAttribute['attribute_group_id'] = $attributeSetGroup['product-details'];
-                $quantityAttribute['entity_attribute_id'] = null;
+            if (!isset($attributeSetGroup[$attributeCode])) {
+                $attribute['attribute_set_id'] = $attributeSetId;
+                $attribute['attribute_group_id'] = $attributeSetGroup[$attributeGroupCode];
+                $attribute['entity_attribute_id'] = null;
                 $destinationRecord = $this->factory->create(
                     [
                         'document' => $destinationDocument,
-                        'data' => $quantityAttribute
+                        'data' => $attribute
                     ]
                 );
                 $recordsToSave->addRecord($destinationRecord);
