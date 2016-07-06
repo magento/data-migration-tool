@@ -439,10 +439,10 @@ class Data implements StageInterface, RollbackInterface
     /**
      * Add attribute to attribute group
      *
-     * @param $recordsToSave
-     * @param $attributeCode
-     * @param $attributeGroupCode
-     * @return mixed
+     * @param Record\Collection $recordsToSave
+     * @param string $attributeCode
+     * @param string $attributeGroupCode
+     * @return Record\Collection
      */
     private function addAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode)
     {
@@ -701,7 +701,6 @@ class Data implements StageInterface, RollbackInterface
             $newAttributeGroup = $this->newAttributeGroups[$newKey];
             $this->destAttributeGroupsOldNewMap[$record['attribute_group_id']] =
                 $newAttributeGroup['attribute_group_id'];
-
         }
     }
 
