@@ -2027,19 +2027,7 @@
                 <document>catalog_product_index_group_price</document>
             </ignore>
             <ignore>
-                <document>catalogrule_customer_group</document>
-            </ignore>
-            <ignore>
-                <document>catalogrule_website</document>
-            </ignore>
-            <ignore>
                 <document>salesrule_coupon_aggregated_updated</document>
-            </ignore>
-            <ignore>
-                <document>salesrule_customer_group</document>
-            </ignore>
-            <ignore>
-                <document>salesrule_website</document>
             </ignore>
             <ignore>
                 <document>catalog_product_index_price</document>
@@ -2568,6 +2556,9 @@
             </ignore>
             <ignore>
                 <datatype>magento_reminder_rule.to_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
         </field_rules>
     </destination>
