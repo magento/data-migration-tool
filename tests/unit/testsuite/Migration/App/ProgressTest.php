@@ -161,4 +161,47 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
         $this->progress->saveResult($step, 'integrity', 'true');
 
     }
+
+    /**
+     * @return void
+     * @dataProvider saveProcessedEntitiesDataProvider
+     */
+    public function testSaveProcessedEntities($data, $step, $stage, $processed, $saveData)
+    {
+        $this->file->expects($this->once())->method('getData')->willReturn($data);
+        $this->file->expects($this->once())->method('saveData')->with($saveData);
+
+        $this->progress->saveProcessedEntities($step, $stage, $processed);
+    }
+
+    /**
+     * @return array
+     */
+    public function saveProcessedEntitiesDataProvider()
+    {
+        $step = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $data = ['test_step' => ['dummy_array']];
+        return [
+            'class' => [
+                'data' => $data,
+                'step' => $step,
+                'stage' => 'run1',
+                'processed' => ['table1'],
+                'saveData' => [
+                    'test_step' => ['dummy_array'],
+                    get_class($step) => ['run1' => [\Migration\App\Progress::PROCESS_KEY => ['table1']]],
+                ],
+            ],
+            'string_name' => [
+                'data' => $data,
+                'step' => 'step',
+                'stage' => 'run2',
+                'processed' => ['table2'],
+                'saveData' => [
+                    'test_step' => ['dummy_array'],
+                    'step' => ['run2' => [\Migration\App\Progress::PROCESS_KEY => ['table2']]],
+                ],
+            ]
+        ];
+    }
 }
