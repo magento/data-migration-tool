@@ -104,6 +104,21 @@ class Data implements StageInterface, RollbackInterface
     protected $readerAttributes;
 
     /**
+     * @var array
+     */
+    protected $groupsDataToAdd = [
+        [
+            'attribute_group_name' => 'Schedule Design Update',
+            'attribute_group_code' => 'schedule-design-update',
+            'sort_order' => '55',
+        ], [
+            'attribute_group_name' => 'Bundle Items',
+            'attribute_group_code' => 'bundle-items',
+            'sort_order' => '16',
+        ]
+    ];
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapFactory $mapFactory
@@ -205,7 +220,7 @@ class Data implements StageInterface, RollbackInterface
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }
-                $recordsToSave = $this->addScheduleDesignToAttributeGroups($recordsToSave, $documentName);
+                $recordsToSave = $this->addAttributeGroups($recordsToSave, $documentName, $this->groupsDataToAdd);
             }
 
             $this->destination->clearDocument($destinationDocument->getName());
@@ -220,13 +235,14 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Add Schedule Design to attribute groups of Magento 1
-     *
+     * Add attribute groups to Magento 1 which are needed for Magento 2
+     * 
      * @param Record\Collection $recordsToSave
      * @param string $documentName
+     * @param array $groupsData
      * @return Record\Collection
      */
-    protected function addScheduleDesignToAttributeGroups($recordsToSave, $documentName)
+    protected function addAttributeGroups($recordsToSave, $documentName, array $groupsData)
     {
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->source->getAdapter()->getSelect();
@@ -242,23 +258,25 @@ class Data implements StageInterface, RollbackInterface
         $destinationDocument = $this->destination->getDocument(
             $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
         );
-        foreach ($catalogProductSetIds as $id) {
-            $destinationRecord = $this->factory->create(
-                [
-                    'document' => $destinationDocument,
-                    'data' => [
-                        'attribute_group_id' => null,
-                        'attribute_set_id' => $id,
-                        'attribute_group_name' => 'Schedule Design Update',
-                        'sort_order' => '55',
-                        'default_id' => '0',
-                        'attribute_group_code' => 'schedule-design-update',
-                        'tab_group_code' => 'advanced',
+        foreach ($groupsData as $group) {
+            foreach ($catalogProductSetIds as $id) {
+                $destinationRecord = $this->factory->create(
+                    [
+                        'document' => $destinationDocument,
+                        'data' => [
+                            'attribute_group_id' => null,
+                            'attribute_set_id' => $id,
+                            'attribute_group_name' => $group['attribute_group_name'],
+                            'sort_order' => $group['sort_order'],
+                            'default_id' => '0',
+                            'attribute_group_code' => $group['attribute_group_code'],
+                            'tab_group_code' => 'advanced',
+                        ]
                     ]
-                ]
-            );
-            $addedGroups[] = $destinationRecord;
-            $recordsToSave->addRecord($destinationRecord);
+                );
+                $addedGroups[] = $destinationRecord;
+                $recordsToSave->addRecord($destinationRecord);
+            }
         }
         $this->helper->setAddedGroups($addedGroups);
 
