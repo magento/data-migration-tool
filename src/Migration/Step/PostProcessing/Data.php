@@ -45,11 +45,6 @@ class Data implements StageInterface
     protected $helper;
 
     /**
-     * @var \Migration\Reader\Groups
-     */
-    protected $readerAttributes;
-
-    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
@@ -70,7 +65,6 @@ class Data implements StageInterface
         $this->progress = $progress;
         $this->logger = $logger;
         $this->helper = $helper;
-        $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
     }
 
     /**

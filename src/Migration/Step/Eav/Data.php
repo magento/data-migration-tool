@@ -99,6 +99,11 @@ class Data implements StageInterface, RollbackInterface
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerAttributes;
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapFactory $mapFactory
@@ -215,8 +220,8 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Add Schedule Design to attribute groups of Magento 1 
-     * 
+     * Add Schedule Design to attribute groups of Magento 1
+     *
      * @param Record\Collection $recordsToSave
      * @param string $documentName
      * @return Record\Collection
@@ -359,9 +364,67 @@ class Data implements StageInterface, RollbackInterface
         }
 
         $recordsToSave = $this->processDesignEntityAttributes($recordsToSave);
+        $recordsToSave = $this->moveFieldsToGroup($recordsToSave);
 
         $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
+    }
+
+    /**
+     * Move some fields to other attribute groups
+     *
+     * @param Record\Collection $recordsToSave
+     * @return Record\Collection
+     * @throws \Migration\Exception
+     */
+    private function moveFieldsToGroup($recordsToSave)
+    {
+        $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
+        $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
+        $attributeSetGroups = [];
+        foreach ($attributeGroups as $attributeGroup) {
+            if ($attributeGroup['attribute_group_code'] == 'product-details') {
+                $attributeSetGroups[$attributeGroup['attribute_set_id']]['product-details'] =
+                    $attributeGroup['attribute_group_id'];
+            }
+        }
+        $quantityAttribute = null;
+        foreach ($recordsToSave as $record) {
+            $attributeId = $record->getValue('attribute_id');
+            if (!isset($attributes[$attributeId])) {
+                continue;
+            }
+            if ($attributes[$attributeId]['attribute_code'] == 'price') {
+                $record->setValue(
+                    'attribute_group_id',
+                    $attributeSetGroups[$record->getValue('attribute_set_id')]['product-details']
+                );
+            }
+            if ($attributes[$attributeId]['attribute_code'] == 'quantity_and_stock_status') {
+                $attributeSetGroups[$record->getValue('attribute_set_id')]['quantity_and_stock_status'] =
+                    $record->getValue('attribute_group_id');
+                $quantityAttribute = $record->getData();
+            }
+        }
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
+        );
+        foreach ($attributeSetGroups as $attributeSetId => $attributeSetGroup) {
+            if (!isset($attributeSetGroup['quantity_and_stock_status'])) {
+                $quantityAttribute['attribute_set_id'] = $attributeSetId;
+                $quantityAttribute['attribute_group_id'] = $attributeSetGroup['product-details'];
+                $quantityAttribute['entity_attribute_id'] = '';
+                $destinationRecord = $this->factory->create(
+                    [
+                        'document' => $destinationDocument,
+                        'data' => $quantityAttribute
+                    ]
+                );
+                $recordsToSave->addRecord($destinationRecord);
+            }
+        }
+
+        return $recordsToSave;
     }
 
     /**
@@ -371,8 +434,9 @@ class Data implements StageInterface, RollbackInterface
      * @return Record\Collection
      * @throws \Migration\Exception
      */
-    public function processDesignEntityAttributes($recordsToSave)
+    private function processDesignEntityAttributes($recordsToSave)
     {
+        $entityTypeIdCatalogProduct = 0;
         foreach ($this->helper->getDestinationRecords('eav_entity_type') as $record) {
             if ('catalog_product' == $record['entity_type_code']) {
                 $entityTypeIdCatalogProduct = $record['entity_type_id'];
@@ -574,9 +638,9 @@ class Data implements StageInterface, RollbackInterface
             $newKey = $this->destAttributeSetsOldNewMap[$record['attribute_set_id']] . '-'
                 . $record['attribute_group_name'];
             $newAttributeGroup = $this->newAttributeGroups[$newKey];
-            $this->destAttributeGroupsOldNewMap[
-                $record['attribute_group_id']] = $newAttributeGroup['attribute_group_id'
-            ];
+            $this->destAttributeGroupsOldNewMap[$record['attribute_group_id']] =
+                $newAttributeGroup['attribute_group_id'];
+
         }
     }
 
