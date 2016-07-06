@@ -431,7 +431,7 @@ class Data implements StageInterface, RollbackInterface
             if (!isset($attributeSetGroup['quantity_and_stock_status'])) {
                 $quantityAttribute['attribute_set_id'] = $attributeSetId;
                 $quantityAttribute['attribute_group_id'] = $attributeSetGroup['product-details'];
-                $quantityAttribute['entity_attribute_id'] = '';
+                $quantityAttribute['entity_attribute_id'] = null;
                 $destinationRecord = $this->factory->create(
                     [
                         'document' => $destinationDocument,
