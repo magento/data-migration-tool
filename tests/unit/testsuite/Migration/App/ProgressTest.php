@@ -163,10 +163,16 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @param array $data
+     * @param string $step
+     * @param string $stage
+     * @param array $processed
+     * @param array $saveData
+     *
      * @return void
      * @dataProvider saveProcessedEntitiesDataProvider
      */
-    public function testSaveProcessedEntities($data, $step, $stage, $processed, $saveData)
+    public function testSaveProcessedEntities(array $data, $step, $stage, array $processed, array $saveData)
     {
         $this->file->expects($this->once())->method('getData')->willReturn($data);
         $this->file->expects($this->once())->method('saveData')->with($saveData);

@@ -13,7 +13,6 @@ use Migration\App\ProgressBar;
 use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
-use Migration\Reader\GroupsFactory;
 
 /**
  * Class Data
@@ -59,7 +58,6 @@ class Data implements StageInterface
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
-     * @param GroupsFactory $groupsFactory
      * @param Helper $helper
      * @param Logger $logger
      * @param Progress $progress
@@ -68,7 +66,6 @@ class Data implements StageInterface
         ProgressBar\LogLevelProcessor $progressBar,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
-        GroupsFactory $groupsFactory,
         Logger $logger,
         Helper $helper,
         Progress $progress

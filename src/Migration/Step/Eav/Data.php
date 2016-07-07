@@ -22,6 +22,7 @@ use Migration\ResourceModel\Source;
  * Class Data
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.TooManyFields)
  * @codeCoverageIgnoreStart
  */
 class Data implements StageInterface, RollbackInterface
