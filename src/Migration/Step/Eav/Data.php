@@ -99,6 +99,26 @@ class Data implements StageInterface, RollbackInterface
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerAttributes;
+
+    /**
+     * @var array
+     */
+    protected $groupsDataToAdd = [
+        [
+            'attribute_group_name' => 'Schedule Design Update',
+            'attribute_group_code' => 'schedule-design-update',
+            'sort_order' => '55',
+        ], [
+            'attribute_group_name' => 'Bundle Items',
+            'attribute_group_code' => 'bundle-items',
+            'sort_order' => '16',
+        ]
+    ];
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapFactory $mapFactory
@@ -200,7 +220,7 @@ class Data implements StageInterface, RollbackInterface
                     );
                     $recordsToSave->addRecord($destinationRecord);
                 }
-                $recordsToSave = $this->addScheduleDesignToAttributeGroups($recordsToSave, $documentName);
+                $recordsToSave = $this->addAttributeGroups($recordsToSave, $documentName, $this->groupsDataToAdd);
             }
 
             $this->destination->clearDocument($destinationDocument->getName());
@@ -215,13 +235,14 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Add Schedule Design to attribute groups of Magento 1 
-     * 
+     * Add attribute groups to Magento 1 which are needed for Magento 2
+     *
      * @param Record\Collection $recordsToSave
      * @param string $documentName
+     * @param array $groupsData
      * @return Record\Collection
      */
-    protected function addScheduleDesignToAttributeGroups($recordsToSave, $documentName)
+    protected function addAttributeGroups($recordsToSave, $documentName, array $groupsData)
     {
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->source->getAdapter()->getSelect();
@@ -237,23 +258,25 @@ class Data implements StageInterface, RollbackInterface
         $destinationDocument = $this->destination->getDocument(
             $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
         );
-        foreach ($catalogProductSetIds as $id) {
-            $destinationRecord = $this->factory->create(
-                [
-                    'document' => $destinationDocument,
-                    'data' => [
-                        'attribute_group_id' => null,
-                        'attribute_set_id' => $id,
-                        'attribute_group_name' => 'Schedule Design Update',
-                        'sort_order' => '55',
-                        'default_id' => '0',
-                        'attribute_group_code' => 'schedule-design-update',
-                        'tab_group_code' => 'advanced',
+        foreach ($groupsData as $group) {
+            foreach ($catalogProductSetIds as $id) {
+                $destinationRecord = $this->factory->create(
+                    [
+                        'document' => $destinationDocument,
+                        'data' => [
+                            'attribute_group_id' => null,
+                            'attribute_set_id' => $id,
+                            'attribute_group_name' => $group['attribute_group_name'],
+                            'sort_order' => $group['sort_order'],
+                            'default_id' => '0',
+                            'attribute_group_code' => $group['attribute_group_code'],
+                            'tab_group_code' => 'advanced',
+                        ]
                     ]
-                ]
-            );
-            $addedGroups[] = $destinationRecord;
-            $recordsToSave->addRecord($destinationRecord);
+                );
+                $addedGroups[] = $destinationRecord;
+                $recordsToSave->addRecord($destinationRecord);
+            }
         }
         $this->helper->setAddedGroups($addedGroups);
 
@@ -359,9 +382,110 @@ class Data implements StageInterface, RollbackInterface
         }
 
         $recordsToSave = $this->processDesignEntityAttributes($recordsToSave);
+        $recordsToSave = $this->moveAttributes($recordsToSave);
 
         $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
+    }
+
+    /**
+     * Move some fields to other attribute groups
+     *
+     * @param Record\Collection $recordsToSave
+     * @return Record\Collection
+     */
+    private function moveAttributes($recordsToSave)
+    {
+        $this->moveAttributeToGroup($recordsToSave, 'price', 'product-details');
+        $this->moveAttributeToGroup($recordsToSave, 'shipment_type', 'bundle-items');
+        $this->addAttributeToGroup($recordsToSave, 'quantity_and_stock_status', 'product-details');
+        return $recordsToSave;
+    }
+
+    /**
+     * Move attribute to other attribute group
+     *
+     * @param Record\Collection $recordsToSave
+     * @param string $attributeCode
+     * @param string $attributeGroupCode
+     * @return Record\Collection
+     */
+    private function moveAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode)
+    {
+        $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
+        $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
+        $attributeSetGroups = [];
+        foreach ($attributeGroups as $attributeGroup) {
+            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode) {
+                $attributeSetGroups[$attributeGroup['attribute_set_id']][$attributeGroupCode] =
+                    $attributeGroup['attribute_group_id'];
+            }
+        }
+        foreach ($recordsToSave as $record) {
+            $attributeId = $record->getValue('attribute_id');
+            if (!isset($attributes[$attributeId])) {
+                continue;
+            }
+            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
+                $record->setValue(
+                    'attribute_group_id',
+                    $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeGroupCode]
+                );
+            }
+        }
+        return $recordsToSave;
+    }
+
+    /**
+     * Add attribute to attribute group
+     *
+     * @param Record\Collection $recordsToSave
+     * @param string $attributeCode
+     * @param string $attributeGroupCode
+     * @return Record\Collection
+     */
+    private function addAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode)
+    {
+        $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
+        $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
+        $attributeSetGroups = [];
+        foreach ($attributeGroups as $attributeGroup) {
+            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode) {
+                $attributeSetGroups[$attributeGroup['attribute_set_id']][$attributeGroupCode] =
+                    $attributeGroup['attribute_group_id'];
+            }
+        }
+        $attribute = null;
+        foreach ($recordsToSave as $record) {
+            $attributeId = $record->getValue('attribute_id');
+            if (!isset($attributes[$attributeId])) {
+                continue;
+            }
+            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
+                $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeCode] =
+                    $record->getValue('attribute_group_id');
+                $attribute = $record->getData();
+            }
+        }
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
+        );
+        foreach ($attributeSetGroups as $attributeSetId => $attributeSetGroup) {
+            if (!isset($attributeSetGroup[$attributeCode])) {
+                $attribute['attribute_set_id'] = $attributeSetId;
+                $attribute['attribute_group_id'] = $attributeSetGroup[$attributeGroupCode];
+                $attribute['entity_attribute_id'] = null;
+                $destinationRecord = $this->factory->create(
+                    [
+                        'document' => $destinationDocument,
+                        'data' => $attribute
+                    ]
+                );
+                $recordsToSave->addRecord($destinationRecord);
+            }
+        }
+
+        return $recordsToSave;
     }
 
     /**
@@ -371,8 +495,9 @@ class Data implements StageInterface, RollbackInterface
      * @return Record\Collection
      * @throws \Migration\Exception
      */
-    public function processDesignEntityAttributes($recordsToSave)
+    private function processDesignEntityAttributes($recordsToSave)
     {
+        $entityTypeIdCatalogProduct = 0;
         foreach ($this->helper->getDestinationRecords('eav_entity_type') as $record) {
             if ('catalog_product' == $record['entity_type_code']) {
                 $entityTypeIdCatalogProduct = $record['entity_type_id'];
@@ -574,9 +699,8 @@ class Data implements StageInterface, RollbackInterface
             $newKey = $this->destAttributeSetsOldNewMap[$record['attribute_set_id']] . '-'
                 . $record['attribute_group_name'];
             $newAttributeGroup = $this->newAttributeGroups[$newKey];
-            $this->destAttributeGroupsOldNewMap[
-                $record['attribute_group_id']] = $newAttributeGroup['attribute_group_id'
-            ];
+            $this->destAttributeGroupsOldNewMap[$record['attribute_group_id']] =
+                $newAttributeGroup['attribute_group_id'];
         }
     }
 

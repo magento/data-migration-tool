@@ -51,11 +51,6 @@ class Data implements StageInterface
     protected $helper;
 
     /**
-     * @var \Migration\Reader\Groups
-     */
-    protected $readerAttributes;
-
-    /**
      * @var array
      */
     protected $deletedDocumentRowsCount;
@@ -83,7 +78,6 @@ class Data implements StageInterface
         $this->progressBar = $progressBar;
         $this->logger = $logger;
         $this->helper = $helper;
-        $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
         $this->progress = $progress;
     }
 
