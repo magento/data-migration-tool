@@ -10,6 +10,7 @@ use Migration\Handler;
 use Migration\ResourceModel;
 use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
+use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
@@ -32,6 +33,11 @@ class Data implements StageInterface
     /**
      * @var ProgressBar\LogLevelProcessor
      */
+    protected $progressBar;
+
+    /**
+     * @var Progress
+     */
     protected $progress;
 
     /**
@@ -50,27 +56,35 @@ class Data implements StageInterface
     protected $readerAttributes;
 
     /**
-     * @param ProgressBar\LogLevelProcessor $progress
+     * @var array
+     */
+    protected $deletedDocumentRowsCount;
+
+    /**
+     * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param GroupsFactory $groupsFactory
      * @param Helper $helper
      * @param Logger $logger
+     * @param Progress $progress
      */
     public function __construct(
-        ProgressBar\LogLevelProcessor $progress,
+        ProgressBar\LogLevelProcessor $progressBar,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         GroupsFactory $groupsFactory,
         Logger $logger,
-        Helper $helper
+        Helper $helper,
+        Progress $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
-        $this->progress = $progress;
+        $this->progressBar = $progressBar;
         $this->logger = $logger;
         $this->helper = $helper;
         $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
+        $this->progress = $progress;
     }
 
     /**
@@ -78,9 +92,9 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progressBar->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $this->deleteMissingProductAttributeValues();
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -96,9 +110,20 @@ class Data implements StageInterface
             return ;
         }
         foreach (array_keys($this->helper->getProductDestinationDocumentFields()) as $document) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+            $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
+
+            $rowsCountBefore = $this->destination->getRecordsCount($document);
             $this->destination->deleteRecords($document, 'attribute_id', $attributeIds);
+            $deletedCount = $rowsCountBefore - $this->destination->getRecordsCount($document);
+            if (!empty($deletedCount)) {
+                $this->deletedDocumentRowsCount[$document] = $deletedCount;
+            }
         }
+        $this->progress->saveProcessedEntities(
+            'PostProcessing',
+            'deletedDocumentRowsCount',
+            $this->deletedDocumentRowsCount
+        );
     }
 
     /**
