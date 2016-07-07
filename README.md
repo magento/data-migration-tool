@@ -100,4 +100,4 @@ To update `composer.json`:
 9.	Wait while dependencies are installed.
 
 ## For more details
-See the <a href="http://devdocs.magento.com/guides/v2.0/migration/bk-migration-guide.html">Migration User Guide</a>.
+See the <a href="http://devdocs.magento.com/guides/v2.1/migration/bk-migration-guide.html">Migration User Guide</a>.
