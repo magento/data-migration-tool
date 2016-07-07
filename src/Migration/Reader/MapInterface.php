@@ -72,5 +72,5 @@ interface MapInterface
      * @param string $type
      * @return mixed
      */
-    public function getHandlerConfig($document, $field, $type);
+    public function getHandlerConfigs($document, $field, $type);
 }

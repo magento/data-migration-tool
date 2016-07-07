@@ -16,6 +16,7 @@ use Migration\Exception;
 class Encrypt extends AbstractHandler
 {
     const CRYPT_KEY = 'crypt_key';
+
     /**
      * @var \Magento\Framework\Encryption\Encryptor
      */

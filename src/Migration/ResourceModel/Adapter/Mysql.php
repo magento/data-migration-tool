@@ -15,6 +15,7 @@ use Migration\ResourceModel\Document;
 class Mysql implements \Migration\ResourceModel\AdapterInterface
 {
     const BACKUP_DOCUMENT_PREFIX = 'migration_backup_';
+
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface
      */
@@ -36,6 +37,11 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     protected $triggers = [];
 
     /**
+     * @var array
+     */
+    protected $initSelectParts = [];
+
+    /**
      * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
      * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
      * @param array $config
@@ -45,10 +51,14 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
         array $config
     ) {
-        $configData['config'] = $config;
+        $configData['config'] = $config['database'];
         $this->resourceAdapter = $adapterFactory->create($configData);
+        $this->resourceAdapter->disallowDdlCache();
         $this->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
+        $this->initSelectParts = (isset($config['init_select_parts']) && is_array($config['init_select_parts']))
+            ? $config['init_select_parts']
+            : [];
     }
 
     /**
@@ -85,7 +95,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $distinctFields = ($distinctFields && is_array($distinctFields))
             ? 'DISTINCT ' . implode(',', $distinctFields)
             : '*';
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($documentName, 'COUNT(' . $distinctFields . ')');
         $result = $this->resourceAdapter->fetchOne($select);
         return $result;
@@ -96,7 +106,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
     {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($documentName, '*');
         if ($identityField && $identityId !== null) {
             $select->where("`$identityField` >= ?", ($identityId == 0 ? $identityId : $identityId + 1));
@@ -212,7 +222,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $pageSize,
         $getProcessed = false
     ) {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($deltaLogName, [])
             ->join($documentName, "$documentName.$idKey = $deltaLogName.$idKey", '*')
             ->where("`operation` in ('INSERT', 'UPDATE')")
@@ -229,7 +239,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false)
     {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($deltaLogName, [$idKey])
             ->where("`operation` = 'DELETE'")
             ->limit($pageSize, $pageNumber * $pageSize);
@@ -258,7 +268,11 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function getSelect()
     {
-        return $this->resourceAdapter->select();
+        $select = $this->resourceAdapter->select();
+        foreach ($this->initSelectParts as $partKey => $partValue) {
+            $select->setPart($partKey, $partValue);
+        }
+        return $select;
     }
 
     /**
@@ -312,7 +326,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $tableCopy = $this->getTableDdlCopy($documentName, $backupTableName);
         if (!$this->resourceAdapter->isTableExists($backupTableName)) {
             $this->createTableByDdl($tableCopy);
-            $select = $this->resourceAdapter->select()->from($documentName);
+            $select = $this->getSelect()->from($documentName);
             $query = $this->resourceAdapter->insertFromSelect($select, $tableCopy->getName());
             $this->resourceAdapter->query($query);
         }
@@ -326,7 +340,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $backupTableName = self::BACKUP_DOCUMENT_PREFIX . $documentName;
         if ($this->resourceAdapter->isTableExists($backupTableName)) {
             $this->resourceAdapter->truncateTable($documentName);
-            $select = $this->resourceAdapter->select()->from($backupTableName);
+            $select = $this->getSelect()->from($backupTableName);
             $query = $this->resourceAdapter->insertFromSelect($select, $documentName);
             $this->resourceAdapter->query($query);
             $this->resourceAdapter->dropTable($backupTableName);

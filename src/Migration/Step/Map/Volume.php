@@ -11,6 +11,7 @@ use Migration\Reader\MapInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
+use Migration\App\Progress;
 use Migration\App\ProgressBar;
 
 class Volume extends AbstractVolume
@@ -38,9 +39,20 @@ class Volume extends AbstractVolume
     protected $progressBar;
 
     /**
+     *
+     * @var Progress
+     */
+    protected $progress;
+
+    /**
      * @var Helper
      */
     protected $helper;
+
+    /**
+     * @var array
+     */
+    protected $deletedDocumentRowsCount;
 
     /**
      * @param Logger $logger
@@ -49,6 +61,7 @@ class Volume extends AbstractVolume
      * @param MapFactory $mapFactory
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Helper $helper
+     * @param Progress $progress
      */
     public function __construct(
         Logger $logger,
@@ -56,13 +69,15 @@ class Volume extends AbstractVolume
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         ProgressBar\LogLevelProcessor $progressBar,
-        Helper $helper
+        Helper $helper,
+        Progress $progress
     ) {
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapFactory->create('map_file');
         $this->progressBar = $progressBar;
         $this->helper = $helper;
+        $this->progress = $progress;
         parent::__construct($logger);
     }
 
@@ -81,12 +96,34 @@ class Volume extends AbstractVolume
             }
             $distinctFields = $this->helper->getFieldsUpdateOnDuplicate($destinationName);
             $sourceCount = $this->source->getRecordsCount($sourceDocName, true, $distinctFields);
-            $destinationCount = $this->destination->getRecordsCount($destinationName);
+            $destinationCount = $this->getDestinationRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
                 $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
             }
         }
         $this->progressBar->finish();
         return $this->checkForErrors();
+    }
+
+    /**
+     * Get count of records in destination table
+     *
+     * @param string $destinationName
+     * @return int
+     */
+    public function getDestinationRecordsCount($destinationName)
+    {
+        if (null === $this->deletedDocumentRowsCount) {
+            $this->deletedDocumentRowsCount = $this->progress->getProcessedEntities(
+                'PostProcessing',
+                'deletedDocumentRowsCount'
+            );
+        }
+
+        $destinationCount = $this->destination->getRecordsCount($destinationName);
+        if (!empty($this->deletedDocumentRowsCount[$destinationName])) {
+            $destinationCount -= $this->deletedDocumentRowsCount[$destinationName];
+        }
+        return $destinationCount;
     }
 }

@@ -58,10 +58,19 @@
             <data>Migration\Step\OrderGrids\Data</data>
             <volume>Migration\Step\OrderGrids\Volume</volume>
         </step>
+        <step title="Tier Price Step">
+            <integrity>Migration\Step\TierPrice\Integrity</integrity>
+            <data>Migration\Step\TierPrice\Data</data>
+            <volume>Migration\Step\TierPrice\Volume</volume>
+        </step>
         <step title="SalesIncrement Step">
             <integrity>Migration\Step\SalesIncrement\Integrity</integrity>
             <data>Migration\Step\SalesIncrement\Data</data>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
+        </step>
+        <step title="PostProcessing Step">
+            <integrity>Migration\Step\PostProcessing\Integrity</integrity>
+            <data>Migration\Step\PostProcessing\Data</data>
         </step>
     </steps>
     <steps mode="delta">
@@ -123,6 +132,8 @@
         <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
+        <edition_migrate>ce-to-ee</edition_migrate>
+        <edition_number>1.6.1.0</edition_number>
         <crypt_key />
     </options>
 </config>

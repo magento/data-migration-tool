@@ -140,7 +140,6 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->assertTrue($this->log->perform());
     }
 
-
     /**
      * @covers \Migration\Step\Log\Integrity::getIterationsCount
      * @return void

@@ -18,6 +18,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      * @var Integrity
      */
     protected $integrity;
+
     /**
      * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */

@@ -74,7 +74,6 @@ class Volume extends AbstractVolume
         return $this->checkForErrors();
     }
 
-
     /**
      * Get iterations count for step
      *

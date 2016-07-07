@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2015 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -159,6 +159,9 @@
                 <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
+                <document>cataloginventory_stock_status</document>
+            </ignore>
+            <ignore>
                 <document>cataloginventory_stock_status_idx</document>
             </ignore>
             <ignore>
@@ -274,6 +277,24 @@
             </ignore>
             <ignore>
                 <document>protx_api_debug</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_application</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_config_data</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_history</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_images</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_notification_template</document>
+            </ignore>
+            <ignore>
+            	<document>xmlconnect_queue</document>
             </ignore>
             <ignore>
                 <document>googlecheckout_notification</document>
@@ -496,6 +517,15 @@
             </ignore>
             <ignore>
                 <document>permission_variable</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_attributes</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_items</document>
+            </ignore>
+            <ignore>
+                <document>googlebase_types</document>
             </ignore>
             <rename>
                 <document>catalogsearch_query</document>
@@ -807,10 +837,26 @@
                 </handler>
             </transform>
             <transform>
+                <field>catalog_category_entity_varchar.value</field>
+                <handler class="\Migration\Handler\TruncateSuffix">
+                    <param name="suffixPath" value="catalog/seo/category_url_suffix"/>
+                    <param name="attributeCodes" value="[url_path]"/>
+                    <param name="entityTypeCode" value="catalog_category"/>
+                </handler>
+            </transform>
+            <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
                     <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
                     <param name="attributeCode" value="page_layout"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity_varchar.value</field>
+                <handler class="\Migration\Handler\TruncateSuffix">
+                    <param name="suffixPath" value="catalog/seo/product_url_suffix"/>
+                    <param name="attributeCodes" value="[url_key,url_path]"/>
+                    <param name="entityTypeCode" value="catalog_product"/>
                 </handler>
             </transform>
             <transform>
@@ -882,6 +928,10 @@
             <transform>
                 <field>sendfriend_log.ip</field>
                 <handler class="\Migration\Handler\ConvertIp"/>
+            </transform>
+            <transform>
+                <field>catalogsearch_query.synonym_for</field>
+                <handler class="\Migration\Handler\Synonym"/>
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -1013,6 +1063,99 @@
                 <field>newsletter_template.template_text_preprocessed</field>
             </ignore>
             <ignore>
+                <field>catalogrule.sub_is_enable</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.sub_simple_action</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.sub_discount_amount</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule_product.sub_simple_action</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule_product.sub_discount_amount</field>
+            </ignore>
+            <ignore>
+                <field>catalogsearch_query.synonym_for</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.customer_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.invoice_status_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.invoice_type</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.is_virtual</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.real_order_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.total_due</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.total_paid</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice_item.shipment_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.base_custbalance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.currency_base_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.currency_code</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.currency_rate</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.custbalance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.is_hold</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.is_multi_payment</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.real_order_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.tax_percent</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.tracking_numbers</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_address.address_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_address.gift_message_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_address.tax_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.cc_raw_request</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.cc_raw_response</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order_payment.customer_payment_id</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
@@ -1023,6 +1166,15 @@
             </ignore>
             <ignore>
                 <datatype>rating_option_vote.remote_ip_long</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
             </ignore>
         </field_rules>
     </source>
@@ -1230,6 +1382,18 @@
                 <document>sequence_shipment*</document>
             </ignore>
             <ignore>
+                <document>sequence_rma_item_*</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token_order_payment_link</document>
+            </ignore>
+            <ignore>
+                <document>search_synonyms</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
@@ -1290,7 +1454,16 @@
                 <document>customer_grid_flat</document>
             </ignore>
             <ignore>
+                <document>admin_user_session</document>
+            </ignore>
+            <ignore>
+                <document>password_reset_request_event</document>
+            </ignore>
+            <ignore>
                 <document>oauth_token_request_log</document>
+            </ignore>
+            <ignore>
+                <document>design_config_grid_flat</document>
             </ignore>
         </document_rules>
         <field_rules>
@@ -1302,11 +1475,15 @@
             </transform>
             <transform>
                 <field>cataloginventory_stock.website_id</field>
-                <handler class="\Migration\Handler\SetDefaultWebsiteId"/>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0" />
+                </handler>
             </transform>
             <transform>
                 <field>cataloginventory_stock_item.website_id</field>
-                <handler class="\Migration\Handler\SetDefaultWebsiteId"/>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0" />
+                </handler>
             </transform>
             <transform>
                 <field>rating.is_active</field>
@@ -1485,6 +1662,12 @@
                 <field>checkout_agreement.mode</field>
             </ignore>
             <ignore>
+                <field>catalog_category_product.entity_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.meta_title</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
@@ -1495,6 +1678,15 @@
             </ignore>
             <ignore>
                 <datatype>rating_option_vote.remote_ip_long</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>oauth_token.callback_url</datatype>
             </ignore>
         </field_rules>
     </destination>

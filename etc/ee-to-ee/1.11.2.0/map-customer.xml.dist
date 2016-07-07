@@ -159,6 +159,15 @@
             <ignore>
                 <field>customer_address_entity.vat_request_success</field>
             </ignore>
+            <ignore>
+                <field>customer_entity.failures_num</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.first_failure</field>
+            </ignore>
+            <ignore>
+                <field>customer_entity.lock_expires</field>
+            </ignore>
         </field_rules>
     </destination>
 </map>

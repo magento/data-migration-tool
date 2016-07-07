@@ -72,7 +72,6 @@ class Helper
         return ['sales_flat_order' => 'sales_order'];
     }
 
-
     /**
      * @return string
      */

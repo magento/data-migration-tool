@@ -29,9 +29,7 @@
             </transform>
             <transform>
                 <field>eav_attribute.frontend_input</field>
-                <handler class="\Migration\Handler\Convert">
-                    <param name="map" value="[datetime:date]"/>
-                </handler>
+                <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
                 <field>eav_attribute.is_required</field>
@@ -68,10 +66,6 @@
                 <field>catalog_eav_attribute.is_visible</field>
                 <handler class="\Migration\Handler\GetDestinationValue"/>
             </transform>
-            <transform>
-                <field>catalog_eav_attribute.apply_to</field>
-                <handler class="\Migration\Handler\GetDestinationValue"/>
-            </transform>
 
             <transform>
                 <field>customer_eav_attribute.input_filter</field>
@@ -88,7 +82,13 @@
                     <param name="value" value="0"/>
                 </handler>
             </transform>
-
+            <transform>
+                <field>customer_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="created_at"/>
+                    <param name="value" value="null"/>
+                </handler>
+            </transform>
             <transform>
                 <field>eav_entity_type.entity_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
@@ -117,7 +117,9 @@
             </transform>
             <transform>
                 <field>eav_entity_type.increment_model</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
             </transform>
             <transform>
                 <field>eav_entity_type.additional_attribute_table</field>

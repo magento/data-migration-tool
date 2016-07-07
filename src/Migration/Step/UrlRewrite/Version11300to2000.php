@@ -13,6 +13,7 @@ use Migration\ResourceModel\Document;
 
 /**
  * Class Version11300to2000
+ * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -104,6 +105,11 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected $suffixData;
 
     /**
+     * @var \Migration\Step\UrlRewrite\Helper
+     */
+    protected $helper;
+
+    /**
      * @var array
      */
     protected $structure = [
@@ -180,6 +186,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param \Migration\ResourceModel\Destination $destination
      * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\ResourceModel\RecordFactory $recordFactory
+     * @param \Migration\Step\UrlRewrite\Helper $helper
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -191,6 +198,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         \Migration\ResourceModel\Destination $destination,
         \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory,
         \Migration\ResourceModel\RecordFactory $recordFactory,
+        \Migration\Step\UrlRewrite\Helper $helper,
         $stage
     ) {
         $this->progress = $progress;
@@ -201,6 +209,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->recordFactory = $recordFactory;
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         $this->stage = $stage;
+        $this->helper = $helper;
         parent::__construct($config);
     }
 
@@ -417,6 +426,12 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                         $storeRow = $row;
                         $storeRow['store_id'] = $storeId;
                         $storeRow['value'] = $storeRow['value'] . '-' . $urlKey;
+                        $storeRow = $this->helper->processFields(
+                            MapInterface::TYPE_DEST,
+                            $destinationName,
+                            $storeRow,
+                            true
+                        );
                         $records->addRecord($this->recordFactory->create(['data' => $storeRow]));
                         if (!isset($this->resolvedDuplicates[$destinationName])) {
                             $this->resolvedDuplicates[$destinationName] = 0;
@@ -424,6 +439,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                         $this->resolvedDuplicates[$destinationName]++;
                     }
                 }
+                $row = $this->helper->processFields(MapInterface::TYPE_DEST, $destinationName, $row, true);
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
             }
             $this->destination->saveRecords($destinationName, $records, true);
@@ -450,6 +466,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                     $errors = true;
                     continue;
                 }
+                $documentFields = $this->helper->processFields($resourceName, $documentName, $documentFields);
                 $structure = array_keys($document->getStructure()->getFields());
                 if (!(empty(array_diff($structure, $documentFields))
                     && empty(array_diff($documentFields, $structure)))

@@ -1,3 +1,17 @@
+2.1.0
+=============
+* Added support for migration of Magento 1 CE stores upgraded to 1.6 and later versions from versions earlier than 1.6 version
+* Added support for migration for the following versions:
+
+    * Magento CE v. 1.9.2.4, v. 2.1.0
+    * Magento EE v. 1.14.2.4, v.2.1.0
+
+* Fixed bugs:
+    * Fixed an issue with RMA creation after migration
+    * Fixed an issue with URL Rewrite duplication for CMS Pages
+    * [Issue#59](https://github.com/magento/data-migration-tool/issues/59) Wrong URL addresses for products and categories
+    * [Issue#36](https://github.com/magento/data-migration-tool/issues/36) `Incorrect table name` error on products grid page
+
 2.0.7
 =============
 * Added support for:
