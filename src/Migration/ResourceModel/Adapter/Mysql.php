@@ -45,6 +45,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
         array $config
     ) {
+        $config['initStatements'] = 'SET NAMES utf8';
         $configData['config'] = $config;
         $this->resourceAdapter = $adapterFactory->create($configData);
         $this->setForeignKeyChecks(0);
