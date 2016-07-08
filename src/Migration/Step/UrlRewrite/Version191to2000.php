@@ -109,6 +109,12 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     ];
 
     /**
+     * Skipped records count, i.e. custom rewrites
+     * @var int
+     */
+    protected $skippedRecordsCount = 0;
+
+    /**
      * @param \Migration\Config $config
      * @param Source $source
      * @param Destination $destination
@@ -193,6 +199,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
 
         $pageNumber = 0;
+        $destinationCustomRecords = [];
+        $uniqueKeyCache = [];
         while (!empty($bulk = $this->source->getRecords(self::SOURCE, $pageNumber))) {
             $pageNumber++;
             $destinationRecords = $destDocument->getRecords();
@@ -214,6 +222,18 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
                     $destProductCategoryRecord->setValue('product_id', $record->getValue('product_id'));
                     $destProductCategoryRecords->addRecord($destProductCategoryRecord);
                 }
+                $uniqueKeyCache[] = $record->getValue('request_path') . '|' . $record->getValue('store_id');
+
+                if (!$record->getValue('is_system') 
+                    && !$record->getValue('product_id')
+                    && !$record->getValue('category_id')
+                ) {
+                    $destRecord->setValue('entity_type', 'custom');
+                    $destRecord->setValue('entity_id', 0);
+                    $destinationCustomRecords[] = $destRecord;
+                    continue;
+                }
+
 
                 $destinationRecords->addRecord($destRecord);
             }
@@ -221,7 +241,20 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
+
         $this->collectCmsPageRewrites();
+
+
+        // add custom rewrites
+        foreach ($destinationCustomRecords as $key => $destRecord) {
+            $uniqueKey = $destRecord->getValue('request_path') . '|' . $destRecord->getValue('store_id');
+            if (in_array($uniqueKey, $uniqueKeyCache)) {
+                unset($destinationCustomRecords[$key]);
+                $this->skippedRecordsCount++;
+            }
+        }
+        $this->destination->saveRecords(self::DESTINATION, $destinationCustomRecords);
+
         $this->progress->finish();
         return true;
     }
@@ -247,7 +280,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) ==
+
+        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) - $this->countCustomRewritesSkipped() ==
             $this->destination->getRecordsCount(self::DESTINATION);
         if (!$result) {
             $this->logger->error('Mismatch of entities in the document: url_rewrite');
@@ -367,5 +401,48 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         return count($urlRewrites);
+    }
+
+    /**
+     * @return int
+     */
+    protected function countCustomRewritesSkipped()
+    {
+        $select = $this->destination->getAdapter()->getSelect();
+        $select->from(
+            ['r' => $this->destination->addDocumentPrefix(self::DESTINATION)],
+            [
+                'key' => 'CONCAT(r.request_path, "|", r.store_id)',
+            ]
+        );
+        $rows = $this->destination->getAdapter()->loadDataFromSelect($select);
+
+        $uniqueKeyCache = [];
+        foreach ($rows as $row) {
+            $uniqueKeyCache[] = $row['key'];
+        }
+        
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from(
+            ['r' => $this->source->addDocumentPrefix(self::SOURCE)],
+            [
+                'key' => 'CONCAT(r.request_path, "|", r.store_id)',
+            ]
+        )->where(
+            '`r`.`is_system` = 0'
+        )->where(
+            '`r`.`category_id` IS NULL'
+        )->where(
+            '`r`.`product_id` IS NULL'
+        );
+        $rows = $this->source->getAdapter()->loadDataFromSelect($select);
+
+        $customRewritesCache = [];
+        foreach ($rows as $row) {
+            $customRewritesCache[] = $row['key'];
+        }
+        
+
+        return count(array_intersect($customRewritesCache, $uniqueKeyCache));
     }
 }
