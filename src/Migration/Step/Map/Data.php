@@ -268,7 +268,7 @@ class Data implements StageInterface
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            $handlerConfig = $this->map->getHandlerConfig($document->getName(), $fieldName, $type);
+            $handlerConfig = $this->map->getHandlerConfigs($document->getName(), $fieldName, $type);
             if (!empty($handlerConfig)) {
                 $result = true;
                 break;

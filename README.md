@@ -25,11 +25,11 @@ Also the following versions are already supported if you choose to migrate from 
 ## Prerequisites
 Before you start your migration, you must do all of the following:
 
-*	Set up a Magento 2.0 system that meets our <a href="http://devdocs.magento.com/guides/v1.0/install-gde/system-requirements.html">system requirements</a>.
+*	Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v1.0/install-gde/system-requirements.html">system requirements</a>.
 
 	Set up your system using a topology and design that at least matches your existing Magento 1.x system.
 
-*	Do not start Magento 2.0 cron jobs.
+*	Do not start Magento 2 cron jobs.
 
 *	Back up or <a href="https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html">dump</a> your Magento 2 database as soon after installation as possible.
 
@@ -39,14 +39,14 @@ Before you start your migration, you must do all of the following:
 
 *	To provide redundancy in the event of unexpected issues, we advise you to replicate your Magento 1.x database.
 
-*	Migrate Magento 1.x extension and custom code to Magento 2.0.
+*	Migrate Magento 1.x extension and custom code to Magento 2.
 
 	Reach out to your extension providers to see if they have been ported yet.
 
 ## Install the Data Migration Tool
 This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
 
-**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.0.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
+**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.1.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
 
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
@@ -58,7 +58,7 @@ To install the migration tool from GitHub, use the following steps:
 		composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
 		composer require magento/data-migration-tool:<version>
 
-	where `<version>` is release version (e.g. 2.0.2)
+	where `<version>` is release version (e.g. 2.1.0)
 
 3.	Wait while dependencies are updated.
 
@@ -91,13 +91,13 @@ To update `composer.json`:
 
 	Exact version example:
 
-		composer require magento/data-migration-tool:2.0.0
+		composer require magento/data-migration-tool:2.1.0
 
 	Next significant release example:
 
-		composer require magento/data-migration-tool:~2.0.0
+		composer require magento/data-migration-tool:~2.0
 
 9.	Wait while dependencies are installed.
 
 ## For more details
-See the <a href="http://devdocs.magento.com/guides/v2.0/migration/bk-migration-guide.html">Migration User Guide</a>.
+See the <a href="http://devdocs.magento.com/guides/v2.1/migration/bk-migration-guide.html">Migration User Guide</a>.

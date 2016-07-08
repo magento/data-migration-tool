@@ -128,7 +128,6 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getDocument')->with('document1')->willReturn($document);
         $this->destination->expects($this->once())->method('getDocument')->with('document2')->willReturn($document);
 
-
         $this->destination->expects($this->any())->method('getRecordsCount')
             ->willReturnMap([['document2', true, [], 3]]);
         $this->assertTrue($this->volume->perform());

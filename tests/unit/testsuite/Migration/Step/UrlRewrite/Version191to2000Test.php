@@ -69,12 +69,14 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
 
         $select = $this->getMockBuilder('Magento\Framework\DB\Select')
-            ->setMethods(['from', 'joinLeft'])
+            ->setMethods(['from', 'joinLeft', 'where', 'group'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $select->expects($this->any())->method('from')->willReturnSelf();
         $select->expects($this->any())->method('joinLeft')->willReturnSelf();
+        $select->expects($this->any())->method('where')->willReturnSelf();
+        $select->expects($this->any())->method('group')->willReturnSelf();
 
         $sourceAdapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
             ->setMethods(['getSelect', 'loadDataFromSelect'])

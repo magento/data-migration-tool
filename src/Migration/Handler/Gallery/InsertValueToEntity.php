@@ -8,6 +8,7 @@ namespace Migration\Handler\Gallery;
 use Migration\Handler\AbstractHandler;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Record;
+use Migration\Config;
 
 /**
  * Class InsertValueToEntity
@@ -30,12 +31,20 @@ class InsertValueToEntity extends AbstractHandler
     protected $entityField = 'entity_id';
 
     /**
+     * @var string
+     */
+    protected $editionMigrate = '';
+
+    /**
      * @param Destination $destination
+     * @param Config $config
      */
     public function __construct(
-        Destination $destination
+        Destination $destination,
+        Config $config
     ) {
         $this->destination = $destination;
+        $this->editionMigrate = $config->getOption('edition_migrate');
     }
 
     /**
@@ -44,8 +53,11 @@ class InsertValueToEntity extends AbstractHandler
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? $this->entityField
+            : 'row_id';
         $record['value_id'] = $recordToHandle->getValue($this->field);
-        $record['entity_id'] = $recordToHandle->getValue($this->entityField);
+        $record[$entityIdName] = $recordToHandle->getValue($this->entityField);
         $this->destination->saveRecords($this->valueToEntityDocument, [$record]);
     }
 }

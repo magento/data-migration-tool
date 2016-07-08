@@ -66,7 +66,7 @@ class Progress
      * @param array $processedEntities
      * @return void
      */
-    protected function saveProcessedEntities($object, $stage, array $processedEntities)
+    public function saveProcessedEntities($object, $stage, array $processedEntities)
     {
         $data = $this->file->getData();
         $name = $this->getName($object);
@@ -140,6 +140,12 @@ class Progress
      */
     protected function getName($object)
     {
-        return get_class($object);
+        if (is_string($object)) {
+            $name = $object;
+        } else {
+            $name = get_class($object);
+        }
+        
+        return $name;
     }
 }

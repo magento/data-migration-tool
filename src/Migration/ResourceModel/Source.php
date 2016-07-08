@@ -6,6 +6,8 @@
 
 namespace Migration\ResourceModel;
 
+use \Migration\Config;
+
 /**
  * ResourceModel source class
  */
@@ -30,12 +32,16 @@ class Source extends AbstractResource
     {
         $source = $this->configReader->getSource();
         $sourceType = $source['type'];
-        $config['host'] = $source[$sourceType]['host'];
-        $config['dbname'] = $source[$sourceType]['name'];
-        $config['username'] = $source[$sourceType]['user'];
-        $config['password'] = !empty($source[$sourceType]['password'])
+        $config['database']['host'] = $source[$sourceType]['host'];
+        $config['database']['dbname'] = $source[$sourceType]['name'];
+        $config['database']['username'] = $source[$sourceType]['user'];
+        $config['database']['password'] = !empty($source[$sourceType]['password'])
             ? $source[$sourceType]['password']
             : '';
+        $editionMigrate = $this->configReader->getOption('edition_migrate');
+        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
+            $config['init_select_parts'] = ['disable_staging_preview' => true];
+        }
         return $config;
     }
 

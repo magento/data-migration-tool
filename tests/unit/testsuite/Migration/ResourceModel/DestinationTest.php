@@ -62,10 +62,12 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
+            'database' => [
+                'host' => 'localhost',
+                'dbname' => 'dbname',
+                'username' => 'uname',
+                'password' => 'upass',
+            ]
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination'], [], '', false);
         $this->config->expects($this->any())

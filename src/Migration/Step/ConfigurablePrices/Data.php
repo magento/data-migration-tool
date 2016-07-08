@@ -13,6 +13,7 @@ use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
 use Migration\ResourceModel\Adapter\Mysql;
+use Migration\Config;
 
 /**
  * Class Data
@@ -55,12 +56,18 @@ class Data implements StageInterface
     protected $helper;
 
     /**
+     * @var string
+     */
+    protected $editionMigrate = '';
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param ResourceModel\RecordFactory $recordFactory
      * @param Logger $logger
      * @param Helper $helper
+     * @param Config $config
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
@@ -68,7 +75,8 @@ class Data implements StageInterface
         ResourceModel\Destination $destination,
         ResourceModel\RecordFactory $recordFactory,
         Logger $logger,
-        \Migration\Step\ConfigurablePrices\Helper $helper
+        \Migration\Step\ConfigurablePrices\Helper $helper,
+        Config $config
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
@@ -77,6 +85,7 @@ class Data implements StageInterface
         $this->recordFactory = $recordFactory;
         $this->logger = $logger;
         $this->helper = $helper;
+        $this->editionMigrate = $config->getOption('edition_migrate');
     }
 
     /**
@@ -145,6 +154,9 @@ class Data implements StageInterface
      */
     protected function getConfigurablePrice()
     {
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'entity_id'
+            : 'row_id';
         $priceAttributeId = $this->getPriceAttributeId();
         $entitiesExpr = new \Zend_Db_Expr(
             'select product_id from ' . $this->source->addDocumentPrefix('catalog_product_super_attribute')
@@ -173,7 +185,7 @@ class Data implements StageInterface
             ->joinInner(
                 ['supl' => $this->source->addDocumentPrefix('catalog_product_super_link')],
                 'mt.entity_id = supl.parent_id',
-                ['entity_id' =>'product_id']
+                [$entityIdName => 'product_id']
             )
             ->joinInner(
                 ['pint' => $this->source->addDocumentPrefix('catalog_product_entity_int')],

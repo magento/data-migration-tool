@@ -106,7 +106,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
-            ->setMethods(['getDocumentMap', 'getHandlerConfig'])
+            ->setMethods(['getDocumentMap', 'getHandlerConfigs'])
             ->getMock();
 
         /** @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject $config */
@@ -175,7 +175,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $dstDocName = 'config_data';
         $this->progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $this->map->expects($this->once())->method('getDocumentMap')->will($this->returnValue($dstDocName));
-        $this->map->expects($this->any())->method('getHandlerConfig')->willReturn(['class' => 'Handler\Class']);
+        $this->map->expects($this->any())->method('getHandlerConfigs')->willReturn(['class' => 'Handler\Class']);
 
         $sourceDocument = $this->getMock(
             '\Migration\ResourceModel\Document',

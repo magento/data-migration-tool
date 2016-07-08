@@ -50,7 +50,16 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->destDocument = $this->getMock('Migration\ResourceModel\Document', ['getStructure'], [], '', false);
-        $this->mapReader = $this->getMock('Migration\Reader\MapInterface');
+        $this->mapReader = $this->getMockForAbstractClass(
+            'Migration\Reader\MapInterface',
+            [],
+            '',
+            false
+        );
+        $this->mapReader->expects($this->any())->method('getHandlerConfigs')->willReturn([
+            ['class' => 'FirstHandlerFullyQualifiedName', 'params' => []],
+            ['class' => 'SecondHandlerFullyQualifiedName', 'params' => []]
+        ]);
         $this->handlerManagerFactory = $this->getMock(
             'Migration\Handler\ManagerFactory',
             ['create'],

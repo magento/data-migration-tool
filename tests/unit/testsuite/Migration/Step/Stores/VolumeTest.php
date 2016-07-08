@@ -18,6 +18,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      * @var Volume
      */
     protected $volume;
+
     /**
      * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */

@@ -338,6 +338,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],
             'cps.page_id = cp.page_id',
             []
+        )->where(
+            'cp.is_active = 1'
         )->group(['request_path', 'cps.store_id']);
 
         return $select;

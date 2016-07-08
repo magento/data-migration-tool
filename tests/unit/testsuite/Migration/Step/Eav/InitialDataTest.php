@@ -76,16 +76,37 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             'source' => ['id_1' => 'value_1','id_2' => 'value_2'],
             'dest' => ['id_1' => 'value_1','id_2' => 'value_2']
         ];
+        $eavEntityTypes = [
+            'source' => [
+                ['entity_type_id' => '1', 'entity_type_code' => 'customer'],
+                ['entity_type_id' => '2', 'entity_type_code' => 'customer_address'],
+                ['entity_type_id' => '3', 'entity_type_code' => 'catalog_category'],
+                ['entity_type_id' => '4', 'entity_type_code' => 'catalog_product'],
+                ['entity_type_id' => '5', 'entity_type_code' => 'order'],
+                ['entity_type_id' => '6', 'entity_type_code' => 'invoice'],
+                ['entity_type_id' => '7', 'entity_type_code' => 'creditmemo'],
+                ['entity_type_id' => '8', 'entity_type_code' => 'shipment']
+            ],
+            'dest' => [
+                ['entity_type_id' => '1', 'entity_type_code' => 'customer'],
+                ['entity_type_id' => '2', 'entity_type_code' => 'customer_address'],
+                ['entity_type_id' => '3', 'entity_type_code' => 'catalog_category'],
+                ['entity_type_id' => '4', 'entity_type_code' => 'catalog_product'],
+                ['entity_type_id' => '5', 'entity_type_code' => 'some_m2_type']
+            ],
+        ];
         $attributeSets = ['attr_set_1', 'attr_set_2'];
         $attributeGroups = ['attr_group_1', 'attr_group_2'];
-        $this->helper->expects($this->once())->method('getSourceRecords')->willReturnMap(
-            [['eav_attribute', ['attribute_id'], $dataAttributes['source']]]
-        );
+        $this->helper->expects($this->any())->method('getSourceRecords')->willReturnMap([
+            ['eav_attribute', ['attribute_id'], $dataAttributes['source']],
+            ['eav_entity_type', [], $eavEntityTypes['source']]
+        ]);
         $this->helper->expects($this->any())->method('getDestinationRecords')->willReturnMap(
             [
                 ['eav_attribute', ['entity_type_id', 'attribute_code'], $dataAttributes['dest']],
                 ['eav_attribute_set', ['attribute_set_id'], $attributeSets],
-                ['eav_attribute_group', ['attribute_set_id', 'attribute_group_name'], $attributeGroups]
+                ['eav_attribute_group', ['attribute_set_id', 'attribute_group_name'], $attributeGroups],
+                ['eav_entity_type', [], $eavEntityTypes['dest']]
             ]
         );
         $this->initialData->init();
