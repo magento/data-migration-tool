@@ -8,8 +8,8 @@ namespace Migration\App\ProgressBar;
 use Migration\App\ProgressBarFactory;
 use Symfony\Component\Console\Output\NullOutput;
 use Symfony\Component\Console\Output\ConsoleOutput;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Migration\Logger\Manager as LogManager;
-use Migration\App\ProgressBar;
 use Migration\Config;
 
 /**
@@ -23,11 +23,6 @@ class LogLevelProcessor
      * @var LogManager
      */
     protected $logManager;
-
-    /**
-     * @var \Symfony\Component\Console\Helper\ProgressBar
-     */
-    protected $progressBar;
 
     /**
      * @var NullOutput
@@ -50,6 +45,11 @@ class LogLevelProcessor
     protected $config;
 
     /**
+     * @var ProgressBar
+     */
+    private $progressBar;
+
+    /**
      * @param LogManager $logManager
      * @param ProgressBarFactory $progressBarFactory
      * @param NullOutput $nullOutput
@@ -68,17 +68,18 @@ class LogLevelProcessor
         $this->consoleOutput = $consoleOutput;
         $this->progressBarFactory = $progressBarFactory;
         $this->config = $config;
-        $this->initProgressBar();
-
     }
 
     /**
-     * @return void
+     * @return ProgressBar
      */
-    protected function initProgressBar()
+    protected function getProgressBar()
     {
-        $this->progressBar = $this->progressBarFactory->create($this->getOutputInstance());
-        $this->progressBar->setFormat($this->config->getOption(self::PROGRESS_BAR_FORMAT_OPTION));
+        if (null == $this->progressBar) {
+            $this->progressBar = $this->progressBarFactory->create($this->getOutputInstance());
+            $this->progressBar->setFormat($this->config->getOption(self::PROGRESS_BAR_FORMAT_OPTION));
+        }
+        return $this->progressBar;
     }
 
     /**
@@ -102,8 +103,8 @@ class LogLevelProcessor
         if ($this->canRun($forceLogLevel)) {
             echo PHP_EOL;
             $max = ($max == 0) ? 1: $max;
-            $this->progressBar->start($max);
-            $this->progressBar->setOverwrite(true);
+            $this->getProgressBar()->start($max);
+            $this->getProgressBar()->setOverwrite(true);
         }
     }
 
@@ -114,7 +115,7 @@ class LogLevelProcessor
     public function advance($forceLogLevel = false)
     {
         if ($this->canRun($forceLogLevel)) {
-            $this->progressBar->advance();
+            $this->getProgressBar()->advance();
         }
     }
 
@@ -125,7 +126,7 @@ class LogLevelProcessor
     public function finish($forceLogLevel = false)
     {
         if ($this->canRun($forceLogLevel)) {
-            $this->progressBar->finish();
+            $this->getProgressBar()->finish();
         }
     }
 

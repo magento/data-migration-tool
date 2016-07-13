@@ -19,13 +19,13 @@ class MigrateDeltaCommand extends AbstractMigrateCommand
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
-     * @param \Migration\Mode\Delta\Proxy $deltaMode
+     * @param \Migration\Mode\Delta $deltaMode
      */
     public function __construct(
         \Migration\Config $config,
         \Migration\Logger\Manager $logManager,
         \Migration\App\Progress $progress,
-        \Migration\Mode\Delta\Proxy $deltaMode
+        \Migration\Mode\Delta $deltaMode
     ) {
         $this->deltaMode = $deltaMode;
         parent::__construct($config, $logManager, $progress);

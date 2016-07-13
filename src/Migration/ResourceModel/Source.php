@@ -62,7 +62,7 @@ class Source extends AbstractResource
      */
     public function loadPage($documentName, $pageNumber)
     {
-        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
+        return $this->getAdapter()->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
     }
 
     /**
@@ -87,7 +87,7 @@ class Source extends AbstractResource
             }
         }
 
-        $records = $this->adapter->loadPage(
+        $records = $this->getAdapter()->loadPage(
             $this->addDocumentPrefix($documentName),
             $pageNumber,
             $pageSize,
@@ -141,7 +141,7 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta(
+        $this->getAdapter()->createDelta(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey
@@ -159,7 +159,7 @@ class Source extends AbstractResource
      */
     public function getChangedRecords($documentName, $idKey, $pageNumber = 0, $getProcessed = false)
     {
-        return $this->adapter->loadChangedRecords(
+        return $this->getAdapter()->loadChangedRecords(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
@@ -179,7 +179,7 @@ class Source extends AbstractResource
      */
     public function getDeletedRecords($documentName, $idKey, $getProcessed = false)
     {
-        return $this->adapter->loadDeletedRecords(
+        return $this->getAdapter()->loadDeletedRecords(
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             0,

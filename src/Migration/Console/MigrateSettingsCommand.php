@@ -19,13 +19,13 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
-     * @param \Migration\Mode\Settings\Proxy $settingsMode
+     * @param \Migration\Mode\Settings $settingsMode
      */
     public function __construct(
         \Migration\Config $config,
         \Migration\Logger\Manager $logManager,
         \Migration\App\Progress $progress,
-        \Migration\Mode\Settings\Proxy $settingsMode
+        \Migration\Mode\Settings $settingsMode
     ) {
         $this->settingsMode = $settingsMode;
         parent::__construct($config, $logManager, $progress);
