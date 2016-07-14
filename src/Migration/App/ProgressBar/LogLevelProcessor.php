@@ -6,9 +6,10 @@
 namespace Migration\App\ProgressBar;
 
 use Migration\App\ProgressBarFactory;
-use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\ConsoleOutput;
 use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Console\Output\NullOutput;
+use Migration\App\ConsoleOutputFactory;
 use Migration\Logger\Manager as LogManager;
 use Migration\Config;
 
@@ -30,9 +31,14 @@ class LogLevelProcessor
     protected $nullOutput;
 
     /**
-     * @var ConsoleOutput
+     * @var OutputInterface
      */
     protected $consoleOutput;
+
+    /**
+     * @var ConsoleOutputFactory
+     */
+    protected $consoleOutputFactory;
 
     /**
      * @var ProgressBarFactory
@@ -53,19 +59,19 @@ class LogLevelProcessor
      * @param LogManager $logManager
      * @param ProgressBarFactory $progressBarFactory
      * @param NullOutput $nullOutput
-     * @param ConsoleOutput $consoleOutput
+     * @param ConsoleOutputFactory $consoleOutputFactory
      * @param Config $config
      */
     public function __construct(
         LogManager $logManager,
         ProgressBarFactory $progressBarFactory,
         NullOutput $nullOutput,
-        ConsoleOutput $consoleOutput,
+        ConsoleOutputFactory $consoleOutputFactory,
         Config $config
     ) {
         $this->logManager = $logManager;
         $this->nullOutput = $nullOutput;
-        $this->consoleOutput = $consoleOutput;
+        $this->consoleOutputFactory = $consoleOutputFactory;
         $this->progressBarFactory = $progressBarFactory;
         $this->config = $config;
     }
@@ -83,12 +89,14 @@ class LogLevelProcessor
     }
 
     /**
-     * @return ConsoleOutput|NullOutput
+     * @return OutputInterface
      */
     protected function getOutputInstance()
     {
-        if ($this->logManager->getLogLevel() == LogManager::LOG_LEVEL_ERROR) {
-            return $this->nullOutput;
+        if (null == $this->consoleOutput) {
+            $this->consoleOutput = LogManager::LOG_LEVEL_ERROR == $this->logManager->getLogLevel() ?
+                $this->nullOutput :
+                $this->consoleOutputFactory->create();
         }
         return $this->consoleOutput;
     }

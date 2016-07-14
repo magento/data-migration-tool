@@ -76,6 +76,9 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
                 'dbname' => 'dbname',
                 'username' => 'uname',
                 'password' => 'upass',
+            ],
+            'init_select_parts' => [
+                'disable_staging_preview' => true
             ]
         ]];
         $this->config = $this->getMock(
@@ -85,12 +88,12 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->config->expects($this->once())
+        $this->config->expects($this->any())
             ->method('getDestination')
-            ->will($this->returnValue($destinationConfig));
-        $this->config->expects($this->once())
+            ->willReturn($destinationConfig);
+        $this->config->expects($this->any())
             ->method('getSource')
-            ->will($this->returnValue($config));
+            ->willReturn($config);
         $this->adapter = $this->getMock(
             '\Migration\ResourceModel\Adapter\Mysql',
             ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
@@ -154,10 +157,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $structureData = ['id' => 'int'];
         $structure = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
         $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with($optionName)
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            [$optionName, $prefix]
+        ]);
         $this->documentFactory->expects($this->any())
             ->method('create')
             ->with($this->equalTo(['structure' => $structure, 'documentName' => $resourceName]))
@@ -194,11 +197,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWrongDocument()
     {
-        $prefix = 'prefix_';
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('dest_prefix')
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['dest_prefix', 'prefix_']
+        ]);
         $this->adapter->expects($this->any())
             ->method('getDocumentList')
             ->willReturn(['document']);
@@ -212,12 +214,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     public function testGetRecordsCount()
     {
         $prefix = 'prefix_';
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('dest_prefix')
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['dest_prefix', $prefix]
+        ]);
         $resourceName = 'core_config_data';
-
         $this->adapter->expects($this->any())
             ->method('getRecordsCount')
             ->with($prefix . $resourceName)
@@ -233,8 +234,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $pageNumber = 2;
-        $this->config->expects($this->at(0))->method('getOption')->with('bulk_size')->will($this->returnValue(100));
-        $this->config->expects($this->at(1))->method('getOption')->with('dest_prefix')->will($this->returnValue(100));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['bulk_size', 100],
+            ['dest_prefix', 100],
+        ]);
         $this->adapter->expects($this->once())->method('loadPage');
         $this->resourceDestination->getRecords($resourceName, $pageNumber);
     }
@@ -244,6 +248,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAdapter()
     {
+        $this->config->expects($this->once())->method('getOption')->with('edition_migrate')->willReturn('ce-to-ee');
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }
