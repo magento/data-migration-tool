@@ -16,6 +16,11 @@ class Destination extends AbstractResource
     const CONFIG_DOCUMENT_PREFIX = 'dest_prefix';
 
     /**
+     * @var string
+     */
+    protected $documentPrefix;
+
+    /**
      * Save data into destination resource
      *
      * @param string $documentName
@@ -83,7 +88,10 @@ class Destination extends AbstractResource
      */
     protected function getDocumentPrefix()
     {
-        return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        if (null === $this->documentPrefix) {
+            $this->documentPrefix = $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        }
+        return $this->documentPrefix;
     }
 
     /**
