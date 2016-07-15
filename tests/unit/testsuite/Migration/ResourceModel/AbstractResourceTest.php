@@ -71,10 +71,12 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $destinationConfig['version'] = '2.0.0.0';
 
         $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
+            'database' => [
+                'host' => 'localhost',
+                'dbname' => 'dbname',
+                'username' => 'uname',
+                'password' => 'upass',
+            ]
         ]];
         $this->config = $this->getMock(
             '\Migration\Config',

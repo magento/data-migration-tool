@@ -6,12 +6,10 @@
 namespace Migration\Handler\Rule;
 
 use Migration\Handler\AbstractHandler;
-use Migration\Reader\MapFactory;
-use Migration\Reader\Map;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Record;
-use Migration\ResourceModel\Source;
 use Migration\ResourceModel\RecordFactory;
+use Migration\Config;
 
 /**
  * Class NormalizationIds
@@ -35,18 +33,26 @@ class NormalizationIds extends AbstractHandler
     protected $normalizationField;
 
     /**
+     * @var string
+     */
+    protected $editionMigrate = '';
+
+    /**
      * @param Destination $destination
+     * @param Config $config
      * @param null|string $normalizationDocument
      * @param null|string $normalizationField
      */
     public function __construct(
         Destination $destination,
+        Config $config,
         $normalizationDocument = null,
         $normalizationField = null
     ) {
         $this->normalizationDocument = $normalizationDocument;
         $this->normalizationField = $normalizationField;
         $this->destination = $destination;
+        $this->editionMigrate = $config->getOption('edition_migrate');
     }
 
     /**
@@ -59,9 +65,12 @@ class NormalizationIds extends AbstractHandler
         $this->validate($recordToHandle);
         $ids = explode(',', $recordToHandle->getValue($this->field));
         $normalizedRecords = [];
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'rule_id'
+            : 'row_id';
         foreach ($ids as $id) {
             $normalizedRecords[] = [
-                'rule_id' => $recordToHandle->getValue('rule_id'),
+                $entityIdName => $recordToHandle->getValue('rule_id'),
                 $this->normalizationField => $id
             ];
         }

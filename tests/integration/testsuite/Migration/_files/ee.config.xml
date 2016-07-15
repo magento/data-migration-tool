@@ -72,10 +72,10 @@
         </step>
     </steps>
     <source>
-        <database host="localhost" name="magento1_integration" user="root" password=""/>
+        <database host="localhost" name="magento1_integration" user="root"/>
     </source>
     <destination>
-        <database host="localhost" name="magento2_integration" user="root" password=""/>
+        <database host="localhost" name="magento2_integration" user="root"/>
     </destination>
     <options>
         <map_file>tests/integration/testsuite/Migration/_files/map.xml</map_file>
@@ -91,5 +91,6 @@
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
+        <edition_migrate>ee-to-ee</edition_migrate>
     </options>
 </config>

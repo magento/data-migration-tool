@@ -12,6 +12,7 @@ use Migration\Reader\MapInterface;
 use Migration\ResourceModel;
 
 /**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  * Class AbstractIntegrity
  */
 abstract class AbstractIntegrity implements StageInterface

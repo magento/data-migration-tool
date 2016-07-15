@@ -23,6 +23,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      * Attribute name
      */
     const ATTRIBUTE = 'password_hash';
+
     /**
      * @var Helper
      */

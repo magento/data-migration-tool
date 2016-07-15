@@ -18,6 +18,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
      * @var Data
      */
     protected $data;
+
     /**
      * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
      */

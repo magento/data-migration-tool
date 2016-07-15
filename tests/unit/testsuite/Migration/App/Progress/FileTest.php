@@ -14,6 +14,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
      * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $filesystemDriver;
+
     /**
      * @var \Magento\Framework\Filesystem|\PHPUnit_Framework_MockObject_MockObject
      */

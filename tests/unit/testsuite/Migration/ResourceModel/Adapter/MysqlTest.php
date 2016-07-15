@@ -24,10 +24,12 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $config = [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
+            'database' => [
+                'host' => 'localhost',
+                'dbname' => 'dbname',
+                'username' => 'uname',
+                'password' => 'upass',
+            ]
         ];
         $adapterConfigs = ['config' => [
             'host' => 'localhost',

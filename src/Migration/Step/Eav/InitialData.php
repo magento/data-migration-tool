@@ -32,6 +32,11 @@ class InitialData
     protected $attributeGroups;
 
     /**
+     * @var array;
+     */
+    protected $entityTypes;
+
+    /**
      * @var Source
      */
     protected $source;
@@ -67,6 +72,7 @@ class InitialData
 
     /**
      * Load EAV data before migration
+     *
      * @return void
      */
     public function init()
@@ -74,10 +80,33 @@ class InitialData
         $this->initAttributeSets();
         $this->initAttributeGroups();
         $this->initAttributes();
+        $this->initEntityTypes();
+    }
+
+    /**
+     * Load all entity types
+     *
+     * @return void
+     */
+    protected function initEntityTypes()
+    {
+        if ($this->entityTypes === null) {
+            $sourceRecords = $this->helper->getSourceRecords('eav_entity_type');
+            foreach ($sourceRecords as $record) {
+                $this->entityTypes['source']['entity_type_id'][$record['entity_type_id']] = $record;
+                $this->entityTypes['source']['entity_type_code'][$record['entity_type_code']] = $record;
+            }
+            $destinationRecords = $this->helper->getDestinationRecords('eav_entity_type');
+            foreach ($destinationRecords as $record) {
+                $this->entityTypes['dest']['entity_type_id'][$record['entity_type_id']] = $record;
+                $this->entityTypes['dest']['entity_type_code'][$record['entity_type_code']] = $record;
+            }
+        }
     }
 
     /**
      * Load all attributes from source and destination
+     *
      * @return void
      */
     protected function initAttributes()
@@ -113,6 +142,7 @@ class InitialData
 
     /**
      * Load attribute group data before migration
+     *
      * @return void
      */
     protected function initAttributeGroups()
@@ -121,6 +151,17 @@ class InitialData
             'eav_attribute_group',
             ['attribute_set_id', 'attribute_group_name']
         );
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param string $type
+     * @param string $keyField
+     * @return array
+     */
+    public function getEntityTypesWithKeyField($type, $keyField)
+    {
+        return $this->entityTypes[$type][$keyField];
     }
 
     /**

@@ -16,7 +16,4 @@
         <document key="entity_id">catalog_category_entity</document>
         <document key="value_id">catalog_category_entity_varchar</document>
     </group>
-    <group name="merchandiser_category_values">
-        <attribute>automatic_sort</attribute>
-    </group>
 </groups>

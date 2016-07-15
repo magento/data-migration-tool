@@ -41,6 +41,11 @@ class Helper
     protected $readerGroups;
 
     /**
+     * @var \Migration\ResourceModel\Record[]
+     */
+    protected $addedGroups ;
+
+    /**
      * @param MapFactory $mapFactory
      * @param Source $source
      * @param Destination $destination
@@ -156,5 +161,74 @@ class Helper
                 $this->destination->deleteDocumentBackup($documentName);
             }
         }
+    }
+
+    /**
+     * @return \Migration\ResourceModel\Record[]
+     */
+    public function getAddedGroups()
+    {
+        return $this->addedGroups;
+    }
+
+    /**
+     * @param array $addedGroups
+     * @return void
+     */
+    public function setAddedGroups(array $addedGroups)
+    {
+        $this->addedGroups = $addedGroups;
+    }
+
+    /**
+     * @param int|string $entityTypeIdCatalogProduct
+     * @param int|string $entityTypeIdCatalogProductMapped
+     * @return array
+     * @SuppressWarnings(PHPMD.CyclomaticComplexity)
+     */
+    public function getDesignAttributeAndGroupsData($entityTypeIdCatalogProduct, $entityTypeIdCatalogProductMapped)
+    {
+        $scheduleGroupsMigrated = [];
+        $catalogProductSetIdsMigrated = [];
+        $catalogProductSetIdDefault = null;
+        $customLayoutAttributeId = null;
+        $customDesignAttributeId = null;
+
+        foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
+            if ($entityTypeIdCatalogProduct == $record['entity_type_id']) {
+                if ('Default' == $record['attribute_set_name']) {
+                    $catalogProductSetIdDefault = $record['attribute_set_id'];
+                } else {
+                    $catalogProductSetIdsMigrated[] = $record['attribute_set_id'];
+                }
+            }
+        }
+        foreach ($this->getDestinationRecords('eav_attribute_group') as $group) {
+            if ('schedule-design-update' == $group['attribute_group_code'] &&
+                $catalogProductSetIdDefault != $group['attribute_set_id']
+            ) {
+                $scheduleGroupsMigrated[] = $group;
+            }
+        }
+        foreach ($this->getDestinationRecords('eav_attribute') as $record) {
+            if ($record['entity_type_id'] == $entityTypeIdCatalogProductMapped) {
+                switch ($record['attribute_code']) {
+                    case 'custom_layout':
+                        $customLayoutAttributeId = $record['attribute_id'];
+                        break;
+                    case 'custom_design':
+                        $customDesignAttributeId = $record['attribute_id'];
+                        break;
+                }
+            }
+        }
+
+        return [
+            'scheduleGroupsMigrated' => $scheduleGroupsMigrated,
+            'catalogProductSetIdsMigrated' => $catalogProductSetIdsMigrated,
+            'customLayoutAttributeId' => $customLayoutAttributeId,
+            'customDesignAttributeId' => $customDesignAttributeId,
+            'entityTypeIdCatalogProduct' => $entityTypeIdCatalogProduct
+        ];
     }
 }
