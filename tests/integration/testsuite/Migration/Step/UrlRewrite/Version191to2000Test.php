@@ -8,9 +8,9 @@ namespace Migration\Step\UrlRewrite;
 
 /**
  * UrlRewrite step test class
- * @dbFixture url_rewrite_11410
+ * @dbFixture url_rewrite_191
  */
-class Version11410to2000Test extends \PHPUnit_Framework_TestCase
+class Version191o2000Test extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var string
@@ -58,7 +58,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     public function testIntegrity()
     {
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version11410to2000',
+            '\Migration\Step\UrlRewrite\Version191to2000',
             [
                 'logger' => $this->logger,
                 'config' => $this->config,
@@ -69,21 +69,6 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         $result = $urlRewrite->perform();
         ob_end_clean();
         $this->assertTrue($result);
-
-        $messages = [];
-        $messages[] = 'There are duplicates in URL rewrites';
-        $messages[] = 'Request path: test1.html Store ID: 1 Target path: catalog/category/view/id/6';
-        $messages[] = 'Request path: test1.html Store ID: 1 Target path: contacts';
-        $messages[] = 'Request path: test5.html Store ID: 1 Target path: contacts';
-        $messages[] = 'Request path: test5.html Store ID: 1 Target path: catalog/category/view/id/8';
-
-        $logOutput = \Migration\Logger\Logger::getMessages();
-        $this->assertFalse(empty($logOutput[\Monolog\Logger::INFO]));
-        $errors = implode("\n", $logOutput[\Monolog\Logger::INFO]);
-
-        foreach ($messages as $text) {
-            $this->assertContains($text, $errors);
-        }
     }
 
     /**
@@ -92,7 +77,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     public function testData()
     {
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version11410to2000',
+            '\Migration\Step\UrlRewrite\Version191to2000',
             [
                 'logger' => $this->logger,
                 'config' => $this->config,
@@ -107,12 +92,11 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertTrue(empty($logOutput[\Monolog\Logger::ERROR]));
-        $this->assertEquals(48, $destination->getRecordsCount('url_rewrite'));
-        $this->assertEquals(11, $destination->getRecordsCount('catalog_category_entity_varchar'));
-        $this->assertEquals(4, $destination->getRecordsCount('catalog_product_entity_varchar'));
+        $this->assertEquals(5, $destination->getRecordsCount('url_rewrite'));
+        $this->assertEquals(3, $destination->getRecordsCount('catalog_url_rewrite_product_category'));
 
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version11410to2000',
+            '\Migration\Step\UrlRewrite\Version191to2000',
             [
                 'logger' => $this->logger,
                 'config' => $this->config,
