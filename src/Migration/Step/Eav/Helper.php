@@ -181,18 +181,18 @@ class Helper
     }
 
     /**
-     * @param int|string $entityTypeIdCatalogProduct
-     * @param int|string $entityTypeIdCatalogProductMapped
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getDesignAttributeAndGroupsData($entityTypeIdCatalogProduct, $entityTypeIdCatalogProductMapped)
+    public function getDesignAttributeAndGroupsData()
     {
         $scheduleGroupsMigrated = [];
         $catalogProductSetIdsMigrated = [];
         $catalogProductSetIdDefault = null;
         $customLayoutAttributeId = null;
         $customDesignAttributeId = null;
+        $entityTypeIdCatalogProduct = $this->getDestinationRecords('eav_entity_type', ['entity_type_code'])
+            ['catalog_product']['entity_type_id'];
 
         foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
             if ($entityTypeIdCatalogProduct == $record['entity_type_id']) {
@@ -211,7 +211,7 @@ class Helper
             }
         }
         foreach ($this->getDestinationRecords('eav_attribute') as $record) {
-            if ($record['entity_type_id'] == $entityTypeIdCatalogProductMapped) {
+            if ($record['entity_type_id'] == $entityTypeIdCatalogProduct) {
                 switch ($record['attribute_code']) {
                     case 'custom_layout':
                         $customLayoutAttributeId = $record['attribute_id'];
