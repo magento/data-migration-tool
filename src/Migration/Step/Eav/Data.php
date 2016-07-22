@@ -63,11 +63,6 @@ class Data implements StageInterface, RollbackInterface
     protected $mapEntityTypeIdsSourceDest = [];
 
     /**
-     * @var array;
-     */
-    protected $entityTypesWithOldAttributeSetIds = [];
-
-    /**
      * @var Helper
      */
     protected $helper;
@@ -216,7 +211,6 @@ class Data implements StageInterface, RollbackInterface
 
         $recordsToSave = $destinationDocument->getRecords();
         foreach ($destinationRecords as $record) {
-            $this->entityTypesWithOldAttributeSetIds[] = $record['entity_type_code'];
             $record['entity_type_id'] = null;
             $destinationRecord = $this->factory->create([
                 'document' => $destinationDocument,
@@ -365,7 +359,7 @@ class Data implements StageInterface, RollbackInterface
         $recordsToSave = $destinationDocument->getRecords();
         $entityTypesMigrated = $this->helper->getDestinationRecords($destinationDocument->getName());
         foreach ($entityTypesMigrated as $record) {
-            if (in_array($record['entity_type_code'], $this->entityTypesWithOldAttributeSetIds)) {
+            if (isset($this->mapAttributeSetIdsDestOldNew[$record['default_attribute_set_id']])) {
                 $record['default_attribute_set_id'] =
                     $this->mapAttributeSetIdsDestOldNew[$record['default_attribute_set_id']];
             }
@@ -408,12 +402,11 @@ class Data implements StageInterface, RollbackInterface
             /** @var Record $destinationRecord */
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
 
-            if (!isset($this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')])) {
-                continue;
-            }
-            $mappedId = $this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')];
-            $mappedKey = $mappedId . '-' . $sourceRecord->getValue('attribute_code');
-            if (isset($destinationRecords[$mappedKey])) {
+            $mappedId = isset($this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')])
+                ? $this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')]
+                : null;
+            $mappedKey = $mappedId === null ? null : $mappedId . '-' . $sourceRecord->getValue('attribute_code');
+            if ($mappedKey !== null && isset($destinationRecords[$mappedKey])) {
                 $destinationRecordData = $destinationRecords[$mappedKey];
                 unset($destinationRecords[$mappedKey]);
             } else {
@@ -688,11 +681,10 @@ class Data implements StageInterface, RollbackInterface
                 $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destinationRecord */
                 $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-                if (!isset($this->mapAttributeIdsSourceDest[$sourceRecord->getValue($mappingField)])) {
-                    continue;
-                }
-                $mappedId = $this->mapAttributeIdsSourceDest[$sourceRecord->getValue($mappingField)];
-                if (isset($destinationRecords[$mappedId])) {
+                $mappedId = isset($this->mapAttributeIdsSourceDest[$sourceRecord->getValue($mappingField)])
+                    ? $this->mapAttributeIdsSourceDest[$sourceRecord->getValue($mappingField)]
+                    : null;
+                if ($mappedId !== null && isset($destinationRecords[$mappedId])) {
                     $destinationRecordData = $destinationRecords[$mappedId];
                     unset($destinationRecords[$mappedId]);
                 } else {
@@ -745,15 +737,10 @@ class Data implements StageInterface, RollbackInterface
             $this->mapEntityTypeIdsDestOldNew[$entityTypeIdOld] = $entityTypeMigrated['entity_type_id'];
         }
         foreach ($this->initialData->getEntityTypes('source') as $entityTypeIdSource => $recordSource) {
-            $mapFound = false;
             foreach ($this->initialData->getEntityTypes('dest') as $entityTypeIdDest => $recordDest) {
                 if ($recordSource['entity_type_code'] == $recordDest['entity_type_code']) {
                     $this->mapEntityTypeIdsSourceDest[$entityTypeIdSource] = $entityTypeIdDest;
-                    $mapFound = true;
                 }
-            }
-            if (!$mapFound) {
-                $this->mapEntityTypeIdsSourceDest[$entityTypeIdSource] = $entityTypeIdSource;
             }
         }
     }
@@ -813,18 +800,13 @@ class Data implements StageInterface, RollbackInterface
             $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] = $newAttributes[$keyMapped]['attribute_id'];
         }
         foreach ($this->initialData->getAttributes('source') as $idSource => $attributeSource) {
-            $mapFound = false;
             foreach ($this->initialData->getAttributes('dest') as $keyDest => $attributeDest) {
                 list($entityTypeIdDest, $attributeCodeDest) = explode('-', $keyDest);
                 $keyDestMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeIdDest] . '-' . $attributeCodeDest;
                 $keySource = $attributeSource['entity_type_id'] . '-' . $attributeSource['attribute_code'];
                 if ($keySource == $keyDestMapped) {
                     $this->mapAttributeIdsSourceDest[$idSource] = $attributeDest['attribute_id'];
-                    $mapFound = true;
                 }
-            }
-            if (!$mapFound) {
-                $this->mapAttributeIdsSourceDest[$idSource] = $idSource;
             }
         }
     }
