@@ -9,6 +9,6 @@
     },
     "autoload": {
         "psr-4": {"Migration\\": ["src/Migration", "tests/unit/testsuite/Migration"]},
-        "files" : ["src/Migration/cli_commands.php"]
+        "files" : ["src/Migration/cli_commands.php", "registration.php"]
     }
 }

@@ -62,6 +62,9 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                 'password' => 'upass',
                 'dbname' => 'dbname',
                 'username' => 'uname'
+            ],
+            'init_select_parts' => [
+                'disable_staging_preview' => true
             ]
         ]];
         $this->config = $this->getMock('\Migration\Config', ['getOption', 'getSource'], [], '', false);
@@ -107,10 +110,10 @@ class SourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadPage()
     {
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('bulk_size')
-            ->will($this->returnValue($this->bulkSize));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['bulk_size', $this->bulkSize]
+        ]);
         $this->adapter->expects($this->any())->method('loadPage')->with('table', 2)->willReturn(['1', '2']);
         $this->assertEquals(['1', '2'], $this->resourceSource->loadPage('table', 2));
     }
@@ -122,9 +125,10 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->expects($this->once())->method('createDelta')
             ->with('spfx_document', 'spfx_m2_cl_document', 'key_field');
-        $this->config->expects($this->any())->method('getOption')
-            ->with(Source::CONFIG_DOCUMENT_PREFIX)
-            ->willReturn('spfx_');
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            [Source::CONFIG_DOCUMENT_PREFIX, 'spfx_']
+        ]);
         $this->resourceSource->createDelta('document', 'key_field');
     }
 
@@ -135,12 +139,11 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->expects($this->once())->method('loadChangedRecords')
             ->with('document', 'm2_cl_document', 'key_field', 0, 100);
-        $this->config->expects($this->any())->method('getOption')->willReturnMap(
-            [
-                ['source_prefix', ''],
-                ['bulk_size', 100]
-            ]
-        );
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['source_prefix', ''],
+            ['bulk_size', 100]
+        ]);
         $this->resourceSource->getChangedRecords('document', 'key_field');
     }
 
@@ -151,12 +154,11 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->adapter->expects($this->once())->method('loadDeletedRecords')
             ->with('m2_cl_document', 'key_field', 0, 100);
-        $this->config->expects($this->any())->method('getOption')->willReturnMap(
-            [
-                ['source_prefix', ''],
-                ['bulk_size', 100]
-            ]
-        );
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['source_prefix', ''],
+            ['bulk_size', 100]
+        ]);
         $this->resourceSource->getDeletedRecords('document', 'key_field');
     }
 }

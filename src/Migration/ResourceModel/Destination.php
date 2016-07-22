@@ -43,13 +43,13 @@ class Destination extends AbstractResource
                 $data[] = $row;
             }
             if ($i == $pageSize) {
-                $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
+                $this->getAdapter()->insertRecords($documentName, $data, $updateOnDuplicate);
                 $data = [];
                 $i = 0;
             }
         }
         if ($i > 0) {
-            $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
+            $this->getAdapter()->insertRecords($documentName, $data, $updateOnDuplicate);
         }
         return $this;
     }
@@ -80,7 +80,7 @@ class Destination extends AbstractResource
      */
     public function clearDocument($documentName)
     {
-        $this->adapter->deleteAllRecords($this->addDocumentPrefix($documentName));
+        $this->getAdapter()->deleteAllRecords($this->addDocumentPrefix($documentName));
     }
 
     /**
@@ -135,7 +135,7 @@ class Destination extends AbstractResource
             $data[] = $row->getData();
         }
         if (!empty($data)) {
-            $this->adapter->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
+            $this->getAdapter()->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
         }
     }
 }
