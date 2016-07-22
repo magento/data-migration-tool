@@ -207,6 +207,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
                 if ($record->getValue('is_system')
                     && $record->getValue('product_id')
                     && $record->getValue('category_id')
+                    && $record->getValue('request_path') !== null
                 ) {
                     $destProductCategoryRecord = $this->recordFactory->create(['document' => $destProductCategory]);
                     $destProductCategoryRecord->setValue('url_rewrite_id', $record->getValue('url_rewrite_id'));
