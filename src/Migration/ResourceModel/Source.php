@@ -26,6 +26,11 @@ class Source extends AbstractResource
     protected $lastLoadedIdentityId = [];
 
     /**
+     * @var string
+     */
+    protected $documentPrefix;
+
+    /**
      * {@inheritdoc}
      */
     protected function getResourceConfig()
@@ -50,7 +55,10 @@ class Source extends AbstractResource
      */
     protected function getDocumentPrefix()
     {
-        return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        if (null === $this->documentPrefix) {
+            $this->documentPrefix = $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        }
+        return $this->documentPrefix;
     }
 
     /**

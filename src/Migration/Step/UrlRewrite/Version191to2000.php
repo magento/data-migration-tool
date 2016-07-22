@@ -183,7 +183,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      */
     protected function data()
     {
-        $this->progress->start($this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites());
+        $this->progress->start(
+            ceil($this->source->getRecordsCount(self::SOURCE) / $this->source->getPageSize(self::SOURCE))
+        );
 
         $sourceDocument = $this->source->getDocument(self::SOURCE);
         $destDocument = $this->destination->getDocument(self::DESTINATION);
@@ -218,6 +220,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
 
                 $destinationRecords->addRecord($destRecord);
             }
+
+            $this->progress->advance();
             $this->destination->saveRecords(self::DESTINATION, $destinationRecords);
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
