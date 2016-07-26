@@ -30,7 +30,7 @@ class GetEventStatusTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->any())->method('getValue')->willReturnMap(
             [
                 ['date_start', $dateStart],
-                ['date_end', $dateEnd]   
+                ['date_end', $dateEnd]
             ]
         );
         $record->expects($this->once())->method('setValue')->with('status', $status);
@@ -64,7 +64,7 @@ class GetEventStatusTest extends \PHPUnit_Framework_TestCase
                 'date_end' => date('Y-m-d H:i:s', strtotime('+5 days')),
                 'status' => GetEventStatus::EVENT_UPCOMING
             ]
-        ]; 
+        ];
         
     }
 }
