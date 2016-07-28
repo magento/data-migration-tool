@@ -402,11 +402,13 @@ class Data implements StageInterface, RollbackInterface
             /** @var Record $destinationRecord */
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
 
-            $mappedId = isset($this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')])
-                ? $this->mapEntityTypeIdsSourceDest[$sourceRecord->getValue('entity_type_id')]
-                : null;
-            $mappedKey = $mappedId === null ? null : $mappedId . '-' . $sourceRecord->getValue('attribute_code');
-            if ($mappedKey !== null && isset($destinationRecords[$mappedKey])) {
+            $mappedKey = null;
+            $entityTypeId = $sourceRecord->getValue('entity_type_id');
+            if (isset($this->mapEntityTypeIdsSourceDest[$entityTypeId])) {
+                $mappedId = $this->mapEntityTypeIdsSourceDest[$entityTypeId];
+                $mappedKey = $mappedId . '-' . $sourceRecord->getValue('attribute_code');
+            }
+            if ($mappedKey && isset($destinationRecords[$mappedKey])) {
                 $destinationRecordData = $destinationRecords[$mappedKey];
                 unset($destinationRecords[$mappedKey]);
             } else {
@@ -797,7 +799,8 @@ class Data implements StageInterface, RollbackInterface
         foreach ($this->initialData->getAttributes('dest') as $keyOld => $attributeOld) {
             list($entityTypeId, $attributeCodeDest) = explode('-', $keyOld);
             $keyMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeId] . '-' . $attributeCodeDest;
-            $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] = $newAttributes[$keyMapped]['attribute_id'];
+            $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']]
+                = $newAttributes[$keyMapped]['attribute_id'];
         }
         foreach ($this->initialData->getAttributes('source') as $idSource => $attributeSource) {
             foreach ($this->initialData->getAttributes('dest') as $keyDest => $attributeDest) {

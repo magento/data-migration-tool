@@ -74,6 +74,13 @@ abstract class AbstractIntegrity implements StageInterface
     protected $mismatchDocumentFieldDataTypes;
 
     /**
+     * Incompatible data in field of document
+     *
+     * @var array
+     */
+    protected $incompatibleDocumentFieldsData;
+
+    /**
      * Map reader
      *
      * @var \Migration\Reader\MapInterface
@@ -202,13 +209,18 @@ abstract class AbstractIntegrity implements StageInterface
         $checkDocuments = $this->checkDocuments();
         $checkDocumentFields = $this->checkDocumentFields();
         $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
-        return $checkDocuments && $checkDocumentFields && $checkMismatchDocumentFieldDataTypes;
+        $checkDocumentFieldsData = $this->checkDocumentFieldsData();
+        return
+            $checkDocuments
+            && $checkDocumentFields
+            && $checkMismatchDocumentFieldDataTypes
+            && $checkDocumentFieldsData;
     }
 
     /**
      * @return bool
      */
-    public function checkDocuments()
+    protected function checkDocuments()
     {
         $check = function ($errors, $errorMessagePattern, $type) {
             $isSuccess = true;
@@ -251,7 +263,7 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * @return bool
      */
-    public function checkDocumentFields()
+    protected function checkDocumentFields()
     {
         $check = function ($errors, $errorMessagePattern, $type) {
             $isSuccess = true;
@@ -297,7 +309,7 @@ abstract class AbstractIntegrity implements StageInterface
     /**
      * @return bool
      */
-    public function checkMismatchDocumentFieldDataTypes()
+    protected function checkMismatchDocumentFieldDataTypes()
     {
         if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE])) {
             foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE] as $document => $fields) {
@@ -318,5 +330,36 @@ abstract class AbstractIntegrity implements StageInterface
             }
         }
         return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkDocumentFieldsData()
+    {
+        $isSuccess = true;
+        if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE])) {
+            foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] as $errorDetail) {
+                $this->logger->error(sprintf(
+                    'Incompatibility in data. Source document: %s. Field: %s. Error: %s',
+                    $errorDetail['document'],
+                    $errorDetail['field'],
+                    $errorDetail['error']
+                ));
+            }
+            $isSuccess = false;
+        }
+        if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
+            foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
+                $this->logger->error(sprintf(
+                    'Incompatibility in data. Destination document: %s. Field: %s. Error: %s',
+                    $errorDetail['document'],
+                    $errorDetail['field'],
+                    $errorDetail['error']
+                ));
+            }
+            $isSuccess = false;
+        }
+        return $isSuccess;
     }
 }

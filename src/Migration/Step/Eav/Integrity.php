@@ -11,6 +11,7 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
+use Migration\Step\Eav\Integrity\AttributeGroupNames as AttributeGroupNamesIntegrity;
 
 /**
  * Class Integrity
@@ -23,12 +24,18 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected $groups;
 
     /**
+     * @var AttributeGroupNamesIntegrity
+     */
+    protected $attributeGroupNamesIntegrity;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
+     * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -38,9 +45,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
+        AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity,
         $mapConfigOption = 'eav_map_file'
     ) {
         $this->groups = $groupsFactory->create('eav_document_groups_file');
+        $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -60,6 +69,15 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
         $this->progress->finish();
         return $this->checkForErrors();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function checkDocumentFieldsData()
+    {
+        $this->incompatibleDocumentFieldsData = $this->attributeGroupNamesIntegrity->checkAttributeGroupNames();
+        return parent::checkDocumentFieldsData();
     }
 
     /**
