@@ -218,6 +218,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check documents
+     *
      * @return bool
      */
     protected function checkDocuments()
@@ -261,6 +263,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check fields of document
+     *
      * @return bool
      */
     protected function checkDocumentFields()
@@ -307,6 +311,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check mismatch in data types of document field
+     *
      * @return bool
      */
     protected function checkMismatchDocumentFieldDataTypes()
@@ -333,6 +339,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check data in document fields
+     *
      * @return bool
      */
     protected function checkDocumentFieldsData()

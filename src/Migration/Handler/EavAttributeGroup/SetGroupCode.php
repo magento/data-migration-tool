@@ -38,7 +38,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     /**
      * @var AttributeGroupNameToCodeMap
      */
-    protected $groupNameToCodeMap;
+    private $groupNameToCodeMap;
 
     /**
      * @param Config $config

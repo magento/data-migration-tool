@@ -21,12 +21,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $groups;
+    private $groups;
 
     /**
      * @var AttributeGroupNamesIntegrity
      */
-    protected $attributeGroupNamesIntegrity;
+    private $attributeGroupNamesIntegrity;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
@@ -66,18 +66,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
-
+        $this->incompatibleDocumentFieldsData = $this->attributeGroupNamesIntegrity->checkAttributeGroupNames();
         $this->progress->finish();
         return $this->checkForErrors();
-    }
-
-    /**
-     * @return bool
-     */
-    protected function checkDocumentFieldsData()
-    {
-        $this->incompatibleDocumentFieldsData = $this->attributeGroupNamesIntegrity->checkAttributeGroupNames();
-        return parent::checkDocumentFieldsData();
     }
 
     /**

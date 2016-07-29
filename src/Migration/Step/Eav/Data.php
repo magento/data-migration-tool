@@ -799,8 +799,8 @@ class Data implements StageInterface, RollbackInterface
         foreach ($this->initialData->getAttributes('dest') as $keyOld => $attributeOld) {
             list($entityTypeId, $attributeCodeDest) = explode('-', $keyOld);
             $keyMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeId] . '-' . $attributeCodeDest;
-            $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']]
-                = $newAttributes[$keyMapped]['attribute_id'];
+            $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] =
+                $newAttributes[$keyMapped]['attribute_id'];
         }
         foreach ($this->initialData->getAttributes('source') as $idSource => $attributeSource) {
             foreach ($this->initialData->getAttributes('dest') as $keyDest => $attributeDest) {

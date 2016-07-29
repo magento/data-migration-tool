@@ -17,22 +17,22 @@ class AttributeGroupNames
     /**
      * @var Helper
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @var AttributeGroupNameToCodeMap
      */
-    protected $groupNameToCodeMap;
+    private $groupNameToCodeMap;
 
     /**
      * @var string
      */
-    protected $attributeGroupDocument = 'eav_attribute_group';
+    private $attributeGroupDocument = 'eav_attribute_group';
 
     /**
      * @var string
      */
-    protected $attributeGroupFieldName = 'attribute_group_name';
+    private $attributeGroupFieldName = 'attribute_group_name';
 
     /**
      * @param Helper $helper
@@ -47,6 +47,8 @@ class AttributeGroupNames
     }
 
     /**
+     * Check product attribute sets contain all required attribute group names
+     *
      * @return bool
      */
     public function checkAttributeGroupNames()
