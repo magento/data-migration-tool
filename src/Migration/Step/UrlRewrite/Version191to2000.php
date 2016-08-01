@@ -253,13 +253,33 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
         $result = true;
         $this->progress->start(1);
         $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) ==
-            $this->destination->getRecordsCount(self::DESTINATION);
+            ($this->destination->getRecordsCount(self::DESTINATION) + $this->getCmsPageUrlRewriteMatchedRecordsCount());
         if (!$result) {
             $this->logger->error('Mismatch of entities in the document: url_rewrite');
         }
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
+    }
+
+    /**
+     * Get amount of records of cms_page that matches the same request paths into core_url_rewrite
+     *
+     * @return int
+     */
+    protected function getCmsPageUrlRewriteMatchedRecordsCount()
+    {
+        $select = $this->source->getAdapter()->getSelect();
+        $select->distinct()->from(
+            ['cur' => $this->source->addDocumentPrefix(self::SOURCE)],
+            new \Zend_Db_Expr('COUNT(cur.url_rewrite_id)')
+        )->join(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+            'cur.request_path = cp.identifier',
+            []
+        );
+
+        return $this->source->getAdapter()->fetchOne($select);
     }
 
     /**
@@ -357,7 +377,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
-        $this->destination->saveRecords(self::DESTINATION, $urlRewrites);
+        $this->destination->saveRecords(self::DESTINATION, $urlRewrites, ['request_path' => 'request_path']);
     }
 
     /**
