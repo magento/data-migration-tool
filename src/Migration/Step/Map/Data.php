@@ -249,7 +249,7 @@ class Data implements StageInterface
             );
         } catch (\Exception $e) {
             $this->copyDirectly = false;
-            $this->logger->error(
+            $this->logger->warning(
                 'Document ' . $sourceDocument->getName() . ' can not be copied directly because of error: '
                 . $e->getMessage()
             );

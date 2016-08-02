@@ -144,7 +144,7 @@ class Helper
     {
         $entityIds = $this->getEntityTypeIdByCode(array_column($this->entityTypeTablesMap, 'entity_type_code'));
         foreach ($this->entityTypeTablesMap as &$entityTypeTable) {
-            $entityTypeTable['entity_type_id'] = $entityIds[$entityTypeTable['entity_type_code']]
+            $entityTypeTable['entity_type_id'] = isset($entityIds[$entityTypeTable['entity_type_code']])
                 ? $entityIds[$entityTypeTable['entity_type_code']]
                 : null;
         }

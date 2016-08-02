@@ -200,7 +200,6 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $destinationRecords = $destDocument->getRecords();
             $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($bulk as $recordData) {
-                $this->progress->advance();
                 /** @var Record $record */
                 $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destRecord */
