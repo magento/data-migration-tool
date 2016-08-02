@@ -73,7 +73,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap', 'isDocumentIgnored'])
             ->getMock();
-        $this->attributeGroupNameToCodeMap = $this->getMockBuilder('Migration\Model\Eav\AttributeGroupNameToCodeMap')
+        $this->attributeGroupNameToCodeMap = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeGroupNames')
             ->setMethods(['checkAttributeGroupNames'])
             ->disableOriginalConstructor()
             ->getMock();
