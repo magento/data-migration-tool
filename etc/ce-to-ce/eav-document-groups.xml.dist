@@ -15,9 +15,8 @@
         <document>customer_eav_attribute</document>
         <document>eav_entity_type</document>
     </group>
-    <group name="mapped_documents">
+    <group name="documents_attribute_extended">
         <document key="attribute_id">catalog_eav_attribute</document>
         <document key="attribute_id">customer_eav_attribute</document>
-        <document key="entity_type_code">eav_entity_type</document>
     </group>
 </groups>

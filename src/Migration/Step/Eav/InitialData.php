@@ -91,16 +91,8 @@ class InitialData
     protected function initEntityTypes()
     {
         if ($this->entityTypes === null) {
-            $sourceRecords = $this->helper->getSourceRecords('eav_entity_type');
-            foreach ($sourceRecords as $record) {
-                $this->entityTypes['source']['entity_type_id'][$record['entity_type_id']] = $record;
-                $this->entityTypes['source']['entity_type_code'][$record['entity_type_code']] = $record;
-            }
-            $destinationRecords = $this->helper->getDestinationRecords('eav_entity_type');
-            foreach ($destinationRecords as $record) {
-                $this->entityTypes['dest']['entity_type_id'][$record['entity_type_id']] = $record;
-                $this->entityTypes['dest']['entity_type_code'][$record['entity_type_code']] = $record;
-            }
+            $this->entityTypes['source'] = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
+            $this->entityTypes['dest'] = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
         }
     }
 
@@ -156,12 +148,11 @@ class InitialData
     /**
      * @codeCoverageIgnore
      * @param string $type
-     * @param string $keyField
      * @return array
      */
-    public function getEntityTypesWithKeyField($type, $keyField)
+    public function getEntityTypes($type)
     {
-        return $this->entityTypes[$type][$keyField];
+        return $this->entityTypes[$type];
     }
 
     /**

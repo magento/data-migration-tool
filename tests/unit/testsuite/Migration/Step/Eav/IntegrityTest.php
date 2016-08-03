@@ -48,6 +48,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $map;
 
     /**
+     * @var \Migration\Model\Eav\AttributeGroupNameToCodeMap|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $attributeGroupNameToCodeMap;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -67,6 +72,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap', 'isDocumentIgnored'])
+            ->getMock();
+        $this->attributeGroupNameToCodeMap = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeGroupNames')
+            ->setMethods(['checkAttributeGroupNames'])
+            ->disableOriginalConstructor()
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
@@ -92,7 +101,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->attributeGroupNameToCodeMap
         );
     }
 

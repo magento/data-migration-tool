@@ -11,6 +11,7 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
+use Migration\Step\Eav\Integrity\AttributeGroupNames as AttributeGroupNamesIntegrity;
 
 /**
  * Class Integrity
@@ -20,7 +21,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $groups;
+    private $groups;
+
+    /**
+     * @var AttributeGroupNamesIntegrity
+     */
+    private $attributeGroupNamesIntegrity;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
@@ -29,6 +35,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
+     * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -38,9 +45,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
+        AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity,
         $mapConfigOption = 'eav_map_file'
     ) {
         $this->groups = $groupsFactory->create('eav_document_groups_file');
+        $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -57,7 +66,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
-
+        $this->incompatibleDocumentFieldsData = $this->attributeGroupNamesIntegrity->checkAttributeGroupNames();
         $this->progress->finish();
         return $this->checkForErrors();
     }
