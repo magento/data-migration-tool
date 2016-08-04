@@ -92,7 +92,7 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
 
         $logOutput = \Migration\Logger\Logger::getMessages();
         $this->assertTrue(empty($logOutput[\Monolog\Logger::ERROR]));
-        $this->assertEquals(9, $destination->getRecordsCount('url_rewrite'));
+        $this->assertEquals(8, $destination->getRecordsCount('url_rewrite'));
         $this->assertEquals(4, $destination->getRecordsCount('catalog_url_rewrite_product_category'));
 
         $urlRewrite = $this->objectManager->create(

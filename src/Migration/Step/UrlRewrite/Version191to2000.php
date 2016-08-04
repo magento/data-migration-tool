@@ -225,7 +225,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
-        $this->collectCmsPageRewrites();
+        $this->saveCmsPageRewrites();
         $this->progress->finish();
         return true;
     }
@@ -251,8 +251,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) ==
-            ($this->destination->getRecordsCount(self::DESTINATION) + $this->getCmsPageUrlRewriteMatchedRecordsCount());
+        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites() ==
+            ($this->destination->getRecordsCount(self::DESTINATION));
         if (!$result) {
             $this->logger->error('Mismatch of entities in the document: url_rewrite');
         }
@@ -262,23 +262,23 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
-     * Get amount of records of cms_page that matches the same request paths into core_url_rewrite
+     * Get request_paths from core_url_rewrite that matches cms_page.identifier
      *
-     * @return int
+     * @return \Magento\Framework\Db\Select
      */
-    protected function getCmsPageUrlRewriteMatchedRecordsCount()
+    protected function getUrlRewriteRequestPathsSelect()
     {
         $select = $this->source->getAdapter()->getSelect();
-        $select->distinct()->from(
+        $select->from(
             ['cur' => $this->source->addDocumentPrefix(self::SOURCE)],
-            new \Zend_Db_Expr('COUNT(cur.url_rewrite_id)')
-        )->join(
+            ['cur.request_path']
+        )->joinLeft(
             ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
             'cur.request_path = cp.identifier',
             []
         );
 
-        return $this->source->getAdapter()->fetchOne($select);
+        return $select;
     }
 
     /**
@@ -364,6 +364,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             []
         )->where(
             'cp.is_active = 1'
+        )->where(
+            'cp.identifier NOT IN(?)',
+            $this->getUrlRewriteRequestPathsSelect()
         )->group(['request_path', 'cps.store_id']);
 
         return $select;
@@ -372,7 +375,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     /**
      * @return void
      */
-    protected function collectCmsPageRewrites()
+    protected function saveCmsPageRewrites()
     {
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
@@ -380,14 +383,10 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
-     * @param bool $countVolume
      * @return int
      */
-    protected function countCmsPageRewrites($countVolume = false)
+    protected function countCmsPageRewrites()
     {
-        if (!$countVolume) {
-            return 1;
-        }
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         return count($urlRewrites);
