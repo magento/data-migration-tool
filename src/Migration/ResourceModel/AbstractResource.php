@@ -95,11 +95,11 @@ abstract class AbstractResource
      */
     public function getDocument($documentName)
     {
-        $documentList = $this->getDocumentList();
-        if (!in_array($documentName, $documentList)) {
+        try {
+            $structure = $this->getStructure($documentName);
+        } catch (\Exception $e) {
             return false;
         }
-        $structure = $this->getStructure($documentName);
         return $this->documentFactory->create(['structure' => $structure, 'documentName' => $documentName]);
     }
 
