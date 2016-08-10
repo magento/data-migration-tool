@@ -98,7 +98,11 @@ abstract class AbstractResource
         $document = false;
         try {
             $structure = $this->getStructure($documentName);
-            $document = $this->documentFactory->create(['structure' => $structure, 'documentName' => $documentName]);
+            if ($structure instanceof \Migration\ResourceModel\Structure) {
+                $document = $this->documentFactory->create(
+                    ['structure' => $structure, 'documentName' => $documentName]
+                );
+            }
         } catch (\Exception $e) {}
 
         return $document;
