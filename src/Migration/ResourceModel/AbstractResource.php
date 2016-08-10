@@ -103,7 +103,9 @@ abstract class AbstractResource
                     ['structure' => $structure, 'documentName' => $documentName]
                 );
             }
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+
+        }
 
         return $document;
     }
