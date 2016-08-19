@@ -47,6 +47,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerAttributes;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -72,6 +77,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
+        $this->readerAttributes = $this->getMockBuilder('\Migration\Reader\Groups')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
         $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
@@ -79,9 +88,12 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('eav_document_groups_file')
-            ->willReturn($this->readerGroups);
-
+            ->willReturnMap(
+                [
+                    ['eav_document_groups_file', $this->readerGroups],
+                    ['eav_attribute_groups_file', $this->readerAttributes]
+                ]
+            );
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 

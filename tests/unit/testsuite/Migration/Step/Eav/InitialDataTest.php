@@ -55,7 +55,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])
             ->getMock();
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
-            ->setMethods(['getSourceRecords', 'getDestinationRecords'])
+            ->setMethods(['getSourceRecords', 'getDestinationRecords', 'clearIgnored'])
             ->getMock();
         $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);
     }
@@ -100,6 +100,10 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->any())->method('getSourceRecords')->willReturnMap([
             ['eav_attribute', ['attribute_id'], $dataAttributes['source']],
             ['eav_entity_type', [], $eavEntityTypes['source']]
+        ]);
+        $this->helper->expects($this->any())->method('clearIgnored')->willReturnMap([
+            [$dataAttributes['source'], $dataAttributes['source']],
+            [$eavEntityTypes['source'], $eavEntityTypes['source']]
         ]);
         $this->helper->expects($this->any())->method('getDestinationRecords')->willReturnMap(
             [

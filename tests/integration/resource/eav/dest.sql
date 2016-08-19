@@ -133,6 +133,7 @@ ENGINE=InnoDB
 ;
 INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`, `attribute_group_code`, `tab_group_code`) VALUES (7, 4, 'Product Details', 10, 1, 'product-details', 'basic');
 INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`, `attribute_group_code`, `tab_group_code`) VALUES (1, 1, 'General', 1, 1, NULL, NULL);
+INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`, `attribute_group_code`, `tab_group_code`) VALUES (8, 4, 'Design', 11, 1, 'design', 'advanced');
 
 CREATE TABLE `eav_entity_attribute` (
   `entity_attribute_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT COMMENT 'Entity Attribute Id',

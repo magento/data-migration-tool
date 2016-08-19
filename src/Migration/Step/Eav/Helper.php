@@ -41,9 +41,14 @@ class Helper
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerAttributes;
+
+    /**
      * @var \Migration\ResourceModel\Record[]
      */
-    protected $addedGroups ;
+    protected $addedGroups;
 
     /**
      * @param MapFactory $mapFactory
@@ -64,6 +69,7 @@ class Helper
         $this->destination = $destination;
         $this->factory = $factory;
         $this->readerGroups = $groupsFactory->create('eav_document_groups_file');
+        $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
     }
 
     /**
@@ -230,5 +236,36 @@ class Helper
             'customDesignAttributeId' => $customDesignAttributeId,
             'entityTypeIdCatalogProduct' => $entityTypeIdCatalogProduct
         ];
+    }
+
+    /**
+     * @param array $sourceRecords
+     * @return array
+     */
+    public function clearIgnored($sourceRecords)
+    {
+        foreach (array_keys($this->readerAttributes->getGroup('ignore')) as $attributeToClear) {
+            $sourceRecords = $this->clearIgnoredAttributes($sourceRecords, $attributeToClear);
+        }
+        return $sourceRecords;
+    }
+
+    /**
+     * Remove ignored attributes from source records
+     *
+     * @param array $sourceRecords
+     * @param array $attributeToClear
+     * @return array
+     */
+    protected function clearIgnoredAttributes($sourceRecords, $attributeToClear)
+    {
+        foreach ($sourceRecords as $attrNum => $sourceAttribute) {
+            if (
+                isset($sourceAttribute['attribute_code']) && ($sourceAttribute['attribute_code'] == $attributeToClear)
+            ) {
+                unset($sourceRecords[$attrNum]);
+            }
+        }
+        return $sourceRecords;
     }
 }
