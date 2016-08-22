@@ -55,7 +55,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             ->setMethods([])
             ->getMock();
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
-            ->setMethods(['getSourceRecords', 'getDestinationRecords', 'clearIgnored'])
+            ->setMethods(['getSourceRecords', 'getDestinationRecords'])
             ->getMock();
         $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);
     }

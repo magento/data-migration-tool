@@ -383,7 +383,7 @@ class Data implements StageInterface, RollbackInterface
             $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE)
         );
         $this->destination->backupDocument($destinationDocument->getName());
-        $sourceRecords = $this->initialData->getAttributes('source');;
+        $sourceRecords = $this->helper->clearIgnored($this->initialData->getAttributes('source'));
         $destinationRecords = $this->initialData->getAttributes('dest');
 
         $recordsToSave = $destinationDocument->getRecords();

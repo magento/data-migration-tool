@@ -106,11 +106,7 @@ class InitialData
         if ($this->attributes === null) {
             $sourceDocument = 'eav_attribute';
 
-            foreach (
-                $this->helper->clearIgnored(
-                    $this->helper->getSourceRecords($sourceDocument, ['attribute_id'])
-                ) as $id => $record
-            ) {
+            foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {
                 $this->attributes['source'][$id] = $record;
             }
 
