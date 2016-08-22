@@ -239,29 +239,18 @@ class Helper
     }
 
     /**
-     * @param array $sourceRecords
-     * @return array
-     */
-    public function clearIgnored($sourceRecords)
-    {
-        foreach (array_keys($this->readerAttributes->getGroup('ignore')) as $attributeToClear) {
-            $sourceRecords = $this->clearIgnoredAttributes($sourceRecords, $attributeToClear);
-        }
-        return $sourceRecords;
-    }
-
-    /**
      * Remove ignored attributes from source records
      *
      * @param array $sourceRecords
-     * @param array $attributeToClear
      * @return array
      */
-    protected function clearIgnoredAttributes($sourceRecords, $attributeToClear)
+    public function clearIgnoredAttributes($sourceRecords)
     {
+        $ignoredAttributes = array_keys($this->readerAttributes->getGroup('ignore'));
         foreach ($sourceRecords as $attrNum => $sourceAttribute) {
             if (
-                isset($sourceAttribute['attribute_code']) && ($sourceAttribute['attribute_code'] == $attributeToClear)
+                isset($sourceAttribute['attribute_code'])
+                    && (in_array($sourceAttribute['attribute_code'], $ignoredAttributes))
             ) {
                 unset($sourceRecords[$attrNum]);
             }

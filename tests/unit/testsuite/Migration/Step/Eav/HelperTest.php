@@ -226,4 +226,33 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->once())->method('deleteDocumentBackup')->with('some_dest_document');
         $this->helper->deleteBackups();
     }
+
+    /**
+     * @return void
+     */
+    public function testClearIgnoredAttributes()
+    {
+        $allSourceRecords = [
+            0 => [
+                'attribute_code' => 'ignored_attribute'
+            ],
+            1 => [
+                'attribute_code' => 'attribute_1'
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2'
+            ]
+        ];
+        $clearedSourceRecords = [
+            1 => [
+                'attribute_code' => 'attribute_1'
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2'
+            ]
+        ];
+        $this->readerAttributes->expects($this->once())->method('getGroup')->with('ignore')
+            ->willReturn(['ignored_attribute' => 0]);
+        $this->assertEquals($clearedSourceRecords, $this->helper->clearIgnoredAttributes($allSourceRecords));
+    }
 }

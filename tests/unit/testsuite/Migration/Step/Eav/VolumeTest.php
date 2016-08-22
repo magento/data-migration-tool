@@ -60,7 +60,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                     'getSourceRecordsCount',
                     'getDestinationRecordsCount',
                     'deleteBackups',
-                    'clearIgnored'
+                    'clearIgnoredAttributes'
                 ]
             )->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
@@ -154,7 +154,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
         $this->helper->expects($this->once())->method('deleteBackups');
-        $this->helper->expects($this->any())->method('clearIgnored')->with($eavAttributes)->willReturn($eavAttributes);
+        $this->helper->expects($this->any())->method('clearIgnoredAttributes')->with($eavAttributes)
+            ->willReturn($eavAttributes);
         $this->logger->expects($this->never())->method('addRecord');
 
         $documentsMap = $this->getDocumentsMap();

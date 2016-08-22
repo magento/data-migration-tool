@@ -178,7 +178,7 @@ class Volume extends AbstractVolume
      */
     protected function checkAttributesMismatch($attribute)
     {
-        $sourceAttributes = $this->helper->clearIgnored($this->initialData->getAttributes('source'));
+        $sourceAttributes = $this->helper->clearIgnoredAttributes($this->initialData->getAttributes('source'));
 
         if (isset($sourceAttributes[$attribute['attribute_id']])
             && ($sourceAttributes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code'])
