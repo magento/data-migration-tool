@@ -1084,6 +1084,12 @@
         <ignore>
             <path>system/page_cache/debug</path>
         </ignore>
+        <ignore>
+            <path>design/theme/template</path>
+        </ignore>
+        <ignore>
+            <path>design/theme/template_ua_regexp</path>
+        </ignore>
         <rename>
             <path>admin/security/session_cookie_lifetime</path>
             <to>admin/security/session_lifetime</to>
@@ -1339,14 +1345,6 @@
         <rename>
             <path>design/header/logo_src_small</path>
             <to>design/header/logo_src</to>
-        </rename>
-        <rename>
-            <path>design/theme/template</path>
-            <to>design/theme/theme_id</to>
-        </rename>
-        <rename>
-            <path>design/theme/template_ua_regexp</path>
-            <to>design/theme/ua_regexp</to>
         </rename>
         <rename>
             <path>enterprise_giftregistry/general/enabled</path>
