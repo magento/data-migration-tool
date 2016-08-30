@@ -1039,10 +1039,9 @@
         <ignore>
             <path>system/page_cache/debug</path>
         </ignore>
-        <rename>
+        <ignore>
             <path>admin/security/session_cookie_lifetime</path>
-            <to>admin/security/session_lifetime</to>
-        </rename>
+        </ignore>
         <rename>
             <path>api/config/charset</path>
             <to>webapi/soap/charset</to>
