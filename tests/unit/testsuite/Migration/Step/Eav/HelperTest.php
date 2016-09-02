@@ -47,6 +47,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerAttributes;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -72,6 +77,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
+        $this->readerAttributes = $this->getMockBuilder('\Migration\Reader\Groups')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
         $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
@@ -79,9 +88,12 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('eav_document_groups_file')
-            ->willReturn($this->readerGroups);
-
+            ->willReturnMap(
+                [
+                    ['eav_document_groups_file', $this->readerGroups],
+                    ['eav_attribute_groups_file', $this->readerAttributes]
+                ]
+            );
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 
@@ -213,5 +225,34 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('some_dest_document'));
         $this->destination->expects($this->once())->method('deleteDocumentBackup')->with('some_dest_document');
         $this->helper->deleteBackups();
+    }
+
+    /**
+     * @return void
+     */
+    public function testClearIgnoredAttributes()
+    {
+        $allSourceRecords = [
+            0 => [
+                'attribute_code' => 'ignored_attribute'
+            ],
+            1 => [
+                'attribute_code' => 'attribute_1'
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2'
+            ]
+        ];
+        $clearedSourceRecords = [
+            1 => [
+                'attribute_code' => 'attribute_1'
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2'
+            ]
+        ];
+        $this->readerAttributes->expects($this->once())->method('getGroup')->with('ignore')
+            ->willReturn(['ignored_attribute' => 0]);
+        $this->assertEquals($clearedSourceRecords, $this->helper->clearIgnoredAttributes($allSourceRecords));
     }
 }

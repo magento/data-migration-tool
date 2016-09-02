@@ -2278,6 +2278,10 @@
                     <param name="fieldCopy" value="rule_id"/>
                 </handler>
             </transform>
+            <transform>
+                <field>magento_catalogevent_event.status</field>
+                <handler class="\Migration\Handler\GetEventStatus"/>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>

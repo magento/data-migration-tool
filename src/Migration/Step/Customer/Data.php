@@ -110,10 +110,10 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
+        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        
         foreach ($sourceDocuments as $sourceDocName) {
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $sourceDocument = $this->source->getDocument($sourceDocName);
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
@@ -156,31 +156,19 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                     $recordTransformer->transform($record, $destRecord);
                     $destinationRecords->addRecord($destRecord);
                 }
+
                 $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
                 $this->helper->updateAttributeData($attributeType, $sourceDocName, $destinationRecords);
 
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
+
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
         $this->helper->updateEavAttributes();
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
         return true;
-    }
-
-    /**
-     * Get iterations count for step
-     *
-     * @return int
-     */
-    protected function getIterationsCount()
-    {
-        $iterations = 0;
-        foreach (array_keys($this->readerGroups->getGroup('source_documents')) as $document) {
-            $iterations += $this->source->getRecordsCount($document);
-        }
-
-        return $iterations;
     }
 }

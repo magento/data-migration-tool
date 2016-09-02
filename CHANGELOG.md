@@ -1,3 +1,18 @@
+2.1.1
+=============
+* Improvements in migration of Magento 1 CE stores upgraded to 1.6 and later versions from versions earlier than 1.6 version
+* Performance improvements in migration process
+* Added support for migration for the following versions:
+
+    * Magento CE version 2.1.1
+    * Magento EE version 2.1.1
+
+* Fixed bugs:
+    * Fixed an issue with URL Rewrite duplication in CMS Pages and Catalog
+    * [Issue#112](https://github.com/magento/data-migration-tool/issues/112) Errors on EAV step
+    * [Issue#75](https://github.com/magento/data-migration-tool/issues/75) Data Migration hung at Customer Attributes Step
+    * [Issue#64](https://github.com/magento/data-migration-tool/issues/64) Migration does not run on PHP 7 after DI compilation
+
 2.1.0
 =============
 * Added support for migration of Magento 1 CE stores upgraded to 1.6 and later versions from versions earlier than 1.6 version

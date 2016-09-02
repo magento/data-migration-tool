@@ -112,7 +112,9 @@ class Helper
                         ]
                     ]
                 ]
-            ]
+            ],
+            'Migration\ResourceModel\Source' => ['shared' => false],
+            'Migration\ResourceModel\Destination' => ['shared' => false],
         ]);
         return $this->objectManager;
     }

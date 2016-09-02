@@ -7,6 +7,7 @@ namespace Migration\Step\SalesIncrement;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Adapter\Mysql;
 
 /**
  * Class Helper
@@ -69,27 +70,22 @@ class Helper
      */
     protected $entityTypeTablesMap = [
         [
-            'entity_type_id' => 5,
             'entity_type_code' => 'order',
             'entity_type_table' => 'sequence_order',
             'column' => 'sequence_value'
         ], [
-            'entity_type_id' => 6,
             'entity_type_code' => 'invoice',
             'entity_type_table' => 'sequence_invoice',
             'column' => 'sequence_value'
         ], [
-            'entity_type_id' => 7,
             'entity_type_code' => 'creditmemo',
             'entity_type_table' => 'sequence_creditmemo',
             'column' => 'sequence_value'
         ], [
-            'entity_type_id' => 8,
             'entity_type_code' => 'shipment',
             'entity_type_table' => 'sequence_shipment',
             'column' => 'sequence_value'
         ], [
-            'entity_type_id' => 9,
             'entity_type_code' => 'rma_item',
             'entity_type_table' => 'sequence_rma_item',
             'column' => 'sequence_value'
@@ -146,6 +142,12 @@ class Helper
      */
     public function getEntityTypeTablesMap()
     {
+        $entityIds = $this->getEntityTypeIdByCode(array_column($this->entityTypeTablesMap, 'entity_type_code'));
+        foreach ($this->entityTypeTablesMap as &$entityTypeTable) {
+            $entityTypeTable['entity_type_id'] = isset($entityIds[$entityTypeTable['entity_type_code']])
+                ? $entityIds[$entityTypeTable['entity_type_code']]
+                : null;
+        }
         return $this->entityTypeTablesMap;
     }
 
@@ -192,5 +194,27 @@ class Helper
         return ($storeId !== false)
             ? $this->destination->addDocumentPrefix($table) . '_' . $storeId
             : $this->destination->addDocumentPrefix($table);
+    }
+
+    /**
+     * @param array $entityTypeCodes
+     * @return array
+     */
+    protected function getEntityTypeIdByCode($entityTypeCodes)
+    {
+        /** @var Mysql $adapter */
+        $adapter = $this->destination->getAdapter();
+        $query = $adapter->getSelect()
+            ->from(
+                ['et' => $this->destination->addDocumentPrefix('eav_entity_type')],
+                ['entity_type_id', 'entity_type_code']
+            )
+            ->where('et.entity_type_code IN (?)', $entityTypeCodes);
+        $entityTypeIds = [];
+        foreach ($query->getAdapter()->fetchAll($query) as $record) {
+            $entityTypeIds[$record['entity_type_code']] = $record['entity_type_id'];
+        }
+        return $entityTypeIds;
+        
     }
 }

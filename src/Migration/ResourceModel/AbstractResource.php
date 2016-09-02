@@ -52,6 +52,11 @@ abstract class AbstractResource
     protected $documentCollection;
 
     /**
+     * @var AdapterFactory
+     */
+    protected $adapterFactory;
+
+    /**
      * @var array
      */
     protected $documentList;
@@ -76,7 +81,7 @@ abstract class AbstractResource
         \Migration\ResourceModel\Document\Collection $documentCollection
     ) {
         $this->configReader = $configReader;
-        $this->adapter = $adapterFactory->create(['config' => $this->getResourceConfig()]);
+        $this->adapterFactory = $adapterFactory;
         $this->documentFactory = $documentFactory;
         $this->structureFactory = $structureFactory;
         $this->documentCollection = $documentCollection;
@@ -90,12 +95,19 @@ abstract class AbstractResource
      */
     public function getDocument($documentName)
     {
-        $documentList = $this->getDocumentList();
-        if (!in_array($documentName, $documentList)) {
-            return false;
+        $document = false;
+        try {
+            $structure = $this->getStructure($documentName);
+            if ($structure instanceof \Migration\ResourceModel\Structure) {
+                $document = $this->documentFactory->create(
+                    ['structure' => $structure, 'documentName' => $documentName]
+                );
+            }
+        } catch (\Exception $e) {
+
         }
-        $structure = $this->getStructure($documentName);
-        return $this->documentFactory->create(['structure' => $structure, 'documentName' => $documentName]);
+
+        return $document;
     }
 
     /**
@@ -106,7 +118,7 @@ abstract class AbstractResource
      */
     public function getStructure($documentName)
     {
-        $data = $this->adapter->getDocumentStructure($this->addDocumentPrefix($documentName));
+        $data = $this->getAdapter()->getDocumentStructure($this->addDocumentPrefix($documentName));
         return $this->structureFactory->create(['documentName' => $documentName, 'data' => $data]);
     }
 
@@ -117,7 +129,10 @@ abstract class AbstractResource
      */
     public function getDocumentList()
     {
-        $this->documentList = $this->adapter->getDocumentList();
+        if (null !== $this->documentList) {
+            return $this->documentList;
+        }
+        $this->documentList = $this->getAdapter()->getDocumentList();
         foreach ($this->documentList as &$documentName) {
             $documentName = $this->removeDocumentPrefix($documentName);
         }
@@ -135,7 +150,7 @@ abstract class AbstractResource
     public function getRecordsCount($documentName, $usePrefix = true, $distinctFields = [])
     {
         $documentName = $usePrefix ? $this->addDocumentPrefix($documentName) : $documentName;
-        return $this->adapter->getRecordsCount($documentName, $distinctFields);
+        return $this->getAdapter()->getRecordsCount($documentName, $distinctFields);
     }
 
     /**
@@ -235,7 +250,7 @@ abstract class AbstractResource
     public function getRecords($documentName, $pageNumber, $pageSize = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
-        return $this->adapter->loadPage($this->addDocumentPrefix($documentName), $pageNumber, $pageSize);
+        return $this->getAdapter()->loadPage($this->addDocumentPrefix($documentName), $pageNumber, $pageSize);
     }
 
     /**
@@ -248,7 +263,7 @@ abstract class AbstractResource
      */
     public function deleteRecords($documentName, $idKey, $ids)
     {
-        $this->adapter->deleteRecords($documentName, $idKey, $ids);
+        $this->getAdapter()->deleteRecords($documentName, $idKey, $ids);
     }
 
     /**
@@ -258,6 +273,9 @@ abstract class AbstractResource
      */
     public function getAdapter()
     {
+        if (null == $this->adapter) {
+            $this->adapter = $this->adapterFactory->create(['config' => $this->getResourceConfig()]);
+        }
         return $this->adapter;
     }
 

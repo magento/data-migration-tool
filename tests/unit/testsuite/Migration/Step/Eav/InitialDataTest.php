@@ -101,6 +101,10 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             ['eav_attribute', ['attribute_id'], $dataAttributes['source']],
             ['eav_entity_type', [], $eavEntityTypes['source']]
         ]);
+        $this->helper->expects($this->any())->method('clearIgnored')->willReturnMap([
+            [$dataAttributes['source'], $dataAttributes['source']],
+            [$eavEntityTypes['source'], $eavEntityTypes['source']]
+        ]);
         $this->helper->expects($this->any())->method('getDestinationRecords')->willReturnMap(
             [
                 ['eav_attribute', ['entity_type_id', 'attribute_code'], $dataAttributes['dest']],

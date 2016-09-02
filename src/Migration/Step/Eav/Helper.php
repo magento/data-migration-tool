@@ -41,9 +41,14 @@ class Helper
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups
+     */
+    protected $readerAttributes;
+
+    /**
      * @var \Migration\ResourceModel\Record[]
      */
-    protected $addedGroups ;
+    protected $addedGroups;
 
     /**
      * @param MapFactory $mapFactory
@@ -64,6 +69,7 @@ class Helper
         $this->destination = $destination;
         $this->factory = $factory;
         $this->readerGroups = $groupsFactory->create('eav_document_groups_file');
+        $this->readerAttributes = $groupsFactory->create('eav_attribute_groups_file');
     }
 
     /**
@@ -181,18 +187,18 @@ class Helper
     }
 
     /**
-     * @param int|string $entityTypeIdCatalogProduct
-     * @param int|string $entityTypeIdCatalogProductMapped
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
-    public function getDesignAttributeAndGroupsData($entityTypeIdCatalogProduct, $entityTypeIdCatalogProductMapped)
+    public function getDesignAttributeAndGroupsData()
     {
         $scheduleGroupsMigrated = [];
         $catalogProductSetIdsMigrated = [];
         $catalogProductSetIdDefault = null;
         $customLayoutAttributeId = null;
         $customDesignAttributeId = null;
+        $entityTypeIdCatalogProduct = $this->getDestinationRecords('eav_entity_type', ['entity_type_code'])
+            ['catalog_product']['entity_type_id'];
 
         foreach ($this->getDestinationRecords('eav_attribute_set') as $record) {
             if ($entityTypeIdCatalogProduct == $record['entity_type_id']) {
@@ -211,7 +217,7 @@ class Helper
             }
         }
         foreach ($this->getDestinationRecords('eav_attribute') as $record) {
-            if ($record['entity_type_id'] == $entityTypeIdCatalogProductMapped) {
+            if ($record['entity_type_id'] == $entityTypeIdCatalogProduct) {
                 switch ($record['attribute_code']) {
                     case 'custom_layout':
                         $customLayoutAttributeId = $record['attribute_id'];
@@ -230,5 +236,25 @@ class Helper
             'customDesignAttributeId' => $customDesignAttributeId,
             'entityTypeIdCatalogProduct' => $entityTypeIdCatalogProduct
         ];
+    }
+
+    /**
+     * Remove ignored attributes from source records
+     *
+     * @param array $sourceRecords
+     * @return array
+     */
+    public function clearIgnoredAttributes($sourceRecords)
+    {
+        $ignoredAttributes = array_keys($this->readerAttributes->getGroup('ignore'));
+        foreach ($sourceRecords as $attrNum => $sourceAttribute) {
+            if (
+                isset($sourceAttribute['attribute_code'])
+                    && (in_array($sourceAttribute['attribute_code'], $ignoredAttributes))
+            ) {
+                unset($sourceRecords[$attrNum]);
+            }
+        }
+        return $sourceRecords;
     }
 }

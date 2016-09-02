@@ -183,7 +183,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
      */
     protected function data()
     {
-        $this->progress->start($this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites());
+        $this->progress->start(
+            ceil($this->source->getRecordsCount(self::SOURCE) / $this->source->getPageSize(self::SOURCE))
+        );
 
         $sourceDocument = $this->source->getDocument(self::SOURCE);
         $destDocument = $this->destination->getDocument(self::DESTINATION);
@@ -198,7 +200,6 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $destinationRecords = $destDocument->getRecords();
             $destProductCategoryRecords = $destProductCategory->getRecords();
             foreach ($bulk as $recordData) {
-                $this->progress->advance();
                 /** @var Record $record */
                 $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destRecord */
@@ -207,6 +208,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
                 if ($record->getValue('is_system')
                     && $record->getValue('product_id')
                     && $record->getValue('category_id')
+                    && $record->getValue('request_path') !== null
                 ) {
                     $destProductCategoryRecord = $this->recordFactory->create(['document' => $destProductCategory]);
                     $destProductCategoryRecord->setValue('url_rewrite_id', $record->getValue('url_rewrite_id'));
@@ -217,11 +219,13 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
 
                 $destinationRecords->addRecord($destRecord);
             }
+
+            $this->progress->advance();
             $this->destination->saveRecords(self::DESTINATION, $destinationRecords);
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
 
         }
-        $this->collectCmsPageRewrites();
+        $this->saveCmsPageRewrites();
         $this->progress->finish();
         return true;
     }
@@ -247,14 +251,34 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     {
         $result = true;
         $this->progress->start(1);
-        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites(true) ==
-            $this->destination->getRecordsCount(self::DESTINATION);
+        $result &= $this->source->getRecordsCount(self::SOURCE) + $this->countCmsPageRewrites() ==
+            ($this->destination->getRecordsCount(self::DESTINATION));
         if (!$result) {
             $this->logger->error('Mismatch of entities in the document: url_rewrite');
         }
         $this->progress->advance();
         $this->progress->finish();
         return (bool)$result;
+    }
+
+    /**
+     * Get request_paths from core_url_rewrite that matches cms_page.identifier
+     *
+     * @return \Magento\Framework\Db\Select
+     */
+    protected function getUrlRewriteRequestPathsSelect()
+    {
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from(
+            ['cur' => $this->source->addDocumentPrefix(self::SOURCE)],
+            ['cur.request_path']
+        )->joinLeft(
+            ['cp' => $this->source->addDocumentPrefix($this->cmsPageTableName)],
+            'cur.request_path = cp.identifier',
+            []
+        );
+
+        return $select;
     }
 
     /**
@@ -340,6 +364,9 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             []
         )->where(
             'cp.is_active = 1'
+        )->where(
+            'cp.identifier NOT IN(?)',
+            $this->getUrlRewriteRequestPathsSelect()
         )->group(['request_path', 'cps.store_id']);
 
         return $select;
@@ -348,22 +375,18 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     /**
      * @return void
      */
-    protected function collectCmsPageRewrites()
+    protected function saveCmsPageRewrites()
     {
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
-        $this->destination->saveRecords(self::DESTINATION, $urlRewrites);
+        $this->destination->saveRecords(self::DESTINATION, $urlRewrites, ['request_path' => 'request_path']);
     }
 
     /**
-     * @param bool $countVolume
      * @return int
      */
-    protected function countCmsPageRewrites($countVolume = false)
+    protected function countCmsPageRewrites()
     {
-        if (!$countVolume) {
-            return 1;
-        }
         $select = $this->selectCmsPageRewrites();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         return count($urlRewrites);

@@ -6,10 +6,11 @@
 namespace Migration\App\ProgressBar;
 
 use Migration\App\ProgressBarFactory;
+use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\NullOutput;
-use Symfony\Component\Console\Output\ConsoleOutput;
+use Migration\App\ConsoleOutputFactory;
 use Migration\Logger\Manager as LogManager;
-use Migration\App\ProgressBar;
 use Migration\Config;
 
 /**
@@ -25,19 +26,19 @@ class LogLevelProcessor
     protected $logManager;
 
     /**
-     * @var \Symfony\Component\Console\Helper\ProgressBar
-     */
-    protected $progressBar;
-
-    /**
      * @var NullOutput
      */
     protected $nullOutput;
 
     /**
-     * @var ConsoleOutput
+     * @var OutputInterface
      */
     protected $consoleOutput;
+
+    /**
+     * @var ConsoleOutputFactory
+     */
+    protected $consoleOutputFactory;
 
     /**
      * @var ProgressBarFactory
@@ -50,44 +51,52 @@ class LogLevelProcessor
     protected $config;
 
     /**
+     * @var ProgressBar
+     */
+    private $progressBar;
+
+    /**
      * @param LogManager $logManager
      * @param ProgressBarFactory $progressBarFactory
      * @param NullOutput $nullOutput
-     * @param ConsoleOutput $consoleOutput
+     * @param ConsoleOutputFactory $consoleOutputFactory
      * @param Config $config
      */
     public function __construct(
         LogManager $logManager,
         ProgressBarFactory $progressBarFactory,
         NullOutput $nullOutput,
-        ConsoleOutput $consoleOutput,
+        ConsoleOutputFactory $consoleOutputFactory,
         Config $config
     ) {
         $this->logManager = $logManager;
         $this->nullOutput = $nullOutput;
-        $this->consoleOutput = $consoleOutput;
+        $this->consoleOutputFactory = $consoleOutputFactory;
         $this->progressBarFactory = $progressBarFactory;
         $this->config = $config;
-        $this->initProgressBar();
-
     }
 
     /**
-     * @return void
+     * @return ProgressBar
      */
-    protected function initProgressBar()
+    protected function getProgressBar()
     {
-        $this->progressBar = $this->progressBarFactory->create($this->getOutputInstance());
-        $this->progressBar->setFormat($this->config->getOption(self::PROGRESS_BAR_FORMAT_OPTION));
+        if (null == $this->progressBar) {
+            $this->progressBar = $this->progressBarFactory->create($this->getOutputInstance());
+            $this->progressBar->setFormat($this->config->getOption(self::PROGRESS_BAR_FORMAT_OPTION));
+        }
+        return $this->progressBar;
     }
 
     /**
-     * @return ConsoleOutput|NullOutput
+     * @return OutputInterface
      */
     protected function getOutputInstance()
     {
-        if ($this->logManager->getLogLevel() == LogManager::LOG_LEVEL_ERROR) {
-            return $this->nullOutput;
+        if (null == $this->consoleOutput) {
+            $this->consoleOutput = LogManager::LOG_LEVEL_ERROR == $this->logManager->getLogLevel() ?
+                $this->nullOutput :
+                $this->consoleOutputFactory->create();
         }
         return $this->consoleOutput;
     }
@@ -102,8 +111,8 @@ class LogLevelProcessor
         if ($this->canRun($forceLogLevel)) {
             echo PHP_EOL;
             $max = ($max == 0) ? 1: $max;
-            $this->progressBar->start($max);
-            $this->progressBar->setOverwrite(true);
+            $this->getProgressBar()->start($max);
+            $this->getProgressBar()->setOverwrite(true);
         }
     }
 
@@ -114,7 +123,7 @@ class LogLevelProcessor
     public function advance($forceLogLevel = false)
     {
         if ($this->canRun($forceLogLevel)) {
-            $this->progressBar->advance();
+            $this->getProgressBar()->advance();
         }
     }
 
@@ -125,7 +134,7 @@ class LogLevelProcessor
     public function finish($forceLogLevel = false)
     {
         if ($this->canRun($forceLogLevel)) {
-            $this->progressBar->finish();
+            $this->getProgressBar()->finish();
         }
     }
 
