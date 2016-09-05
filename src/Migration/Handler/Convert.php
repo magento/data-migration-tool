@@ -43,7 +43,9 @@ class Convert extends AbstractHandler implements HandlerInterface
             $resultMap[$key] = $value;
         }
         $this->map = $resultMap;
-        if ($defaultValue) $this->defaultValue = $defaultValue;
+        if ($defaultValue) {
+            $this->defaultValue = $defaultValue;
+        }
     }
 
     /**
