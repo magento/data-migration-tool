@@ -61,7 +61,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
                 'host' => 'localhost',
                 'password' => 'upass',
                 'dbname' => 'dbname',
-                'username' => 'uname'
+                'username' => 'uname',
+                'initStatements' => 'SET NAMES utf8;',
             ],
             'init_select_parts' => [
                 'disable_staging_preview' => true
@@ -112,7 +113,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     {
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            ['bulk_size', $this->bulkSize]
+            ['bulk_size', $this->bulkSize],
+            ['init_statements_source', 'SET NAMES utf8;']
         ]);
         $this->adapter->expects($this->any())->method('loadPage')->with('table', 2)->willReturn(['1', '2']);
         $this->assertEquals(['1', '2'], $this->resourceSource->loadPage('table', 2));
@@ -127,7 +129,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
             ->with('spfx_document', 'spfx_m2_cl_document', 'key_field');
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            [Source::CONFIG_DOCUMENT_PREFIX, 'spfx_']
+            [Source::CONFIG_DOCUMENT_PREFIX, 'spfx_'],
+            ['init_statements_source', 'SET NAMES utf8;']
         ]);
         $this->resourceSource->createDelta('document', 'key_field');
     }
@@ -142,7 +145,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
             ['source_prefix', ''],
-            ['bulk_size', 100]
+            ['bulk_size', 100],
+            ['init_statements_source', 'SET NAMES utf8;']
         ]);
         $this->resourceSource->getChangedRecords('document', 'key_field');
     }
@@ -157,7 +161,8 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
             ['source_prefix', ''],
-            ['bulk_size', 100]
+            ['bulk_size', 100],
+            ['init_statements_source', 'SET NAMES utf8;']
         ]);
         $this->resourceSource->getDeletedRecords('document', 'key_field');
     }

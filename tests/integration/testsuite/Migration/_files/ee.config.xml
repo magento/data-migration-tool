@@ -92,5 +92,7 @@
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
         <edition_migrate>ee-to-ee</edition_migrate>
+        <init_statements_source>SET NAMES utf8;</init_statements_source>
+        <init_statements_destination>SET NAMES utf8;</init_statements_destination>
     </options>
 </config>
