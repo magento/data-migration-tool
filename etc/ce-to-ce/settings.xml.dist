@@ -1013,6 +1013,9 @@
             <path>web/secure/base_url</path>
         </ignore>
         <ignore>
+            <path>web/secure/base_link_url</path>
+        </ignore>
+        <ignore>
             <path>web/unsecure/base_js_url</path>
         </ignore>
         <ignore>
@@ -1023,6 +1026,9 @@
         </ignore>
         <ignore>
             <path>web/unsecure/base_url</path>
+        </ignore>
+        <ignore>
+            <path>web/unsecure/base_link_url</path>
         </ignore>
         <ignore>
             <path>catalog/search/solr_server_password</path>
