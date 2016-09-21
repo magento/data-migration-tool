@@ -246,15 +246,33 @@ class Helper
      */
     public function clearIgnoredAttributes($sourceRecords)
     {
-        $ignoredAttributes = array_keys($this->readerAttributes->getGroup('ignore'));
+        $entityTypesCodeToId = $this->getEntityTypesCodeToId();
+        $ignoredAttributes = $this->readerAttributes->getGroup('ignore');
+        foreach ($ignoredAttributes as $attributeCode => $attributeTypes) {
+            $ignoredAttributes[$attributeCode] = [];
+            foreach ($attributeTypes as $attributeType) {
+                $ignoredAttributes[$attributeCode][] = $entityTypesCodeToId[$attributeType];
+            }
+        }
         foreach ($sourceRecords as $attrNum => $sourceAttribute) {
-            if (
-                isset($sourceAttribute['attribute_code'])
-                    && (in_array($sourceAttribute['attribute_code'], $ignoredAttributes))
+            if (in_array($sourceAttribute['attribute_code'], array_keys($ignoredAttributes))
+                && in_array($sourceAttribute['entity_type_id'], $ignoredAttributes[$sourceAttribute['attribute_code']])
             ) {
                 unset($sourceRecords[$attrNum]);
             }
         }
         return $sourceRecords;
+    }
+
+    /**
+     * @return array
+     */
+    private function getEntityTypesCodeToId()
+    {
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from($this->source->addDocumentPrefix('eav_entity_type'), ['entity_type_code', 'entity_type_id']);
+        $entityTypeIds = $select->getAdapter()->fetchPairs($select);
+        return $entityTypeIds;
     }
 }

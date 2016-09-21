@@ -84,7 +84,6 @@
             <volume>Migration\Step\VisualMerchandiser\Volume</volume>
         </step>
         <step title="PostProcessing Step">
-            <integrity>Migration\Step\PostProcessing\Integrity</integrity>
             <data>Migration\Step\PostProcessing\Data</data>
         </step>
     </steps>
