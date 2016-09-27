@@ -3,7 +3,7 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Model\PostProcessing;
+namespace Migration\Step\PostProcessing\Model;
 
 use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;

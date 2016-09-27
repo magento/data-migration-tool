@@ -9,7 +9,7 @@ use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
-use Migration\Model\PostProcessing\EavLeftoverData as EavLeftoverDataModel;
+use \Migration\Step\PostProcessing\Model\EavLeftoverData as EavLeftoverDataModel;
 
 /**
  * Class EavLeftoverDataCleaner
