@@ -133,6 +133,8 @@
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
         <edition_migrate>ce-to-ce</edition_migrate>
         <edition_number>1.7.0.2</edition_number>
+        <init_statements_source>SET NAMES utf8;</init_statements_source>
+        <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key />
     </options>
 </config>

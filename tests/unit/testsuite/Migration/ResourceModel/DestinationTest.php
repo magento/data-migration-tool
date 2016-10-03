@@ -66,7 +66,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
                 'host' => 'localhost',
                 'dbname' => 'dbname',
                 'username' => 'uname',
-                'password' => 'upass'
+                'password' => 'upass',
+                'initStatements' => 'SET NAMES utf8;',
             ],
             'init_select_parts' => [
                 'disable_staging_preview' => true
@@ -113,7 +114,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
             ['bulk_size', 3],
-            ['dest_prefix', $prefix]
+            ['dest_prefix', $prefix],
+            ['init_statements_destination', 'SET NAMES utf8;']
         ]);
         $this->adapter->expects($this->at(0))
             ->method('insertRecords')
@@ -170,7 +172,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('deleteAllRecords')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            ['dest_prefix', 'pfx_']
+            ['dest_prefix', 'pfx_'],
+            ['init_statements_destination', 'SET NAMES utf8;']
         ]);
         $this->resourceDestination->clearDocument($docName);
     }
@@ -184,7 +187,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('backupDocument')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            ['dest_prefix', 'pfx_']
+            ['dest_prefix', 'pfx_'],
+            ['init_statements_destination', 'SET NAMES utf8;']
         ]);
         $this->resourceDestination->backupDocument($docName);
     }
@@ -198,7 +202,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('rollbackDocument')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            ['dest_prefix', 'pfx_']
+            ['dest_prefix', 'pfx_'],
+            ['init_statements_destination', 'SET NAMES utf8;']
         ]);
         $this->resourceDestination->rollbackDocument($docName);
     }
@@ -212,7 +217,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('deleteBackup')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
-            ['dest_prefix', 'pfx_']
+            ['dest_prefix', 'pfx_'],
+            ['init_statements_destination', 'SET NAMES utf8;']
         ]);
         $this->resourceDestination->deleteDocumentBackup($docName);
     }
