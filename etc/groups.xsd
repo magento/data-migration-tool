@@ -39,6 +39,7 @@
         <xs:simpleContent>
             <xs:extension base="notEmptyString">
                 <xs:attribute name="key" type="notEmptyString" use="optional"/>
+                <xs:attribute name="type" type="notEmptyString" use="optional"/>
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
