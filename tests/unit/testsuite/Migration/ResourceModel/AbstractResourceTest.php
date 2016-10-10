@@ -248,7 +248,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAdapter()
     {
-        $this->config->expects($this->once())->method('getOption')->with('edition_migrate')->willReturn('ce-to-ee');
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([['edition_migrate', 'ce-to-ee']]);
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }
