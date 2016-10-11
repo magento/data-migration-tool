@@ -1,3 +1,17 @@
+2.1.2
+=============
+* Added support for migration for the following versions:
+
+    * Magento CE version 1.9.3.0, 2.1.2
+    * Magento EE version 1.14.3.0, 2.1.2
+
+* Fixed bugs:
+    * CMS pages with custom layout were not fully functional after migration
+    * Some pages in the Admin Panel could not be displayed due to incorrect redirects
+    * [Issue #96](https://github.com/magento/data-migration-tool/issues/96): Incorrect UTF-8 character conversion (<code>?</code> appeared instead of symbols)
+    * Issues [#115](https://github.com/magento/data-migration-tool/issues/115), [#159](https://github.com/magento/data-migration-tool/issues/159), [#134](https://github.com/magento/data-migration-tool/issues/134): EAV attributes can now be fully ignored by specifying their entity types
+    * [Issue #161](https://github.com/magento/data-migration-tool/issues/161): The <code>advanced/modules_disable_output</code> keys are now ignored by using wildcards (instead of specifying their full names) in the configuration file
+
 2.1.1
 =============
 * Improvements in migration of Magento 1 CE stores upgraded to 1.6 and later versions from versions earlier than 1.6 version
@@ -58,4 +72,3 @@
     *   [Issue#46](https://github.com/magento/data-migration-tool-ce/issues/46) Improved URL rewrite validation
     *   [Issue#33](https://github.com/magento/data-migration-tool-ce/issues/33) Resolved issue that resulted in the `inet_ntop(): Invalid in_addr value` error
     *   [Issue#12](https://github.com/magento/data-migration-tool-ce/issues/12) Duplicate entries in the `catalogsearch_query` table are no longer migrated
-
