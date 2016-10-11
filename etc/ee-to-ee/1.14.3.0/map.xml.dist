@@ -9,9 +9,6 @@
     <source>
         <document_rules>
             <ignore>
-                <document>customer_flowpassword</document>
-            </ignore>
-            <ignore>
                 <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
@@ -685,6 +682,9 @@
             </ignore>
             <ignore>
                 <document>enterprise_cms_page_version</document>
+            </ignore>
+            <ignore>
+                <document>customer_flowpassword</document>
             </ignore>
             <rename>
                 <document>catalogsearch_query</document>
@@ -1717,6 +1717,15 @@
                 <field>sales_flat_order_payment.customer_payment_id</field>
             </ignore>
             <ignore>
+                <field>sales_bestsellers_aggregated_daily.product_type_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_bestsellers_aggregated_monthly.product_type_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_bestsellers_aggregated_yearly.product_type_id</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
@@ -1757,18 +1766,6 @@
             </ignore>
             <ignore>
                 <datatype>enterprise_reminder_rule.to_date</datatype>
-            </ignore>
-            <ignore>
-                <field>sales_bestsellers_aggregated_daily.product_type_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_bestsellers_aggregated_monthly.product_type_id</field>
-            </ignore>
-            <ignore>
-                <field>sales_bestsellers_aggregated_yearly.product_type_id</field>
-            </ignore>
-            <ignore>
-                <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
         </field_rules>
     </source>
