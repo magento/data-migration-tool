@@ -19,4 +19,38 @@
         <document key="attribute_id">catalog_eav_attribute</document>
         <document key="attribute_id">customer_eav_attribute</document>
     </group>
+    <group name="documents_leftover_values">
+        <document>catalog_category_entity_datetime</document>
+        <document>catalog_category_entity_decimal</document>
+        <document>catalog_category_entity_int</document>
+        <document>catalog_category_entity_text</document>
+        <document>catalog_category_entity_varchar</document>
+        <document>catalog_eav_attribute</document>
+        <document>catalog_product_entity_datetime</document>
+        <document>catalog_product_entity_decimal</document>
+        <document>catalog_product_entity_gallery</document>
+        <document>catalog_product_entity_int</document>
+        <document>catalog_product_entity_media_gallery</document>
+        <document>catalog_product_entity_text</document>
+        <document>catalog_product_entity_varchar</document>
+        <document>customer_address_entity_datetime</document>
+        <document>customer_address_entity_decimal</document>
+        <document>customer_address_entity_int</document>
+        <document>customer_address_entity_text</document>
+        <document>customer_address_entity_varchar</document>
+        <document>customer_eav_attribute</document>
+        <document>customer_eav_attribute_website</document>
+        <document>customer_entity_datetime</document>
+        <document>customer_entity_decimal</document>
+        <document>customer_entity_int</document>
+        <document>customer_entity_text</document>
+        <document>customer_entity_varchar</document>
+        <document>customer_form_attribute</document>
+        <document>eav_attribute_label</document>
+        <document>eav_attribute_option</document>
+        <document>eav_entity_attribute</document>
+        <document>eav_form_element</document>
+        <document>salesrule_product_attribute</document>
+        <document>weee_tax</document>
+    </group>
 </groups>

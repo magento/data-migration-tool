@@ -43,6 +43,10 @@ class Source extends AbstractResource
         $config['database']['password'] = !empty($source[$sourceType]['password'])
             ? $source[$sourceType]['password']
             : '';
+        $initStatements = $this->configReader->getOption('init_statements_source');
+        if (!empty($initStatements)) {
+            $config['database']['initStatements'] = $initStatements;
+        }
         $editionMigrate = $this->configReader->getOption('edition_migrate');
         if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
             $config['init_select_parts'] = ['disable_staging_preview' => true];

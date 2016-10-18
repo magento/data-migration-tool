@@ -69,7 +69,6 @@
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
         <step title="PostProcessing Step">
-            <integrity>Migration\Step\PostProcessing\Integrity</integrity>
             <data>Migration\Step\PostProcessing\Data</data>
         </step>
     </steps>
@@ -134,6 +133,8 @@
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
         <edition_migrate>ce-to-ee</edition_migrate>
         <edition_number>1.7.0.1</edition_number>
+        <init_statements_source>SET NAMES utf8;</init_statements_source>
+        <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key />
     </options>
 </config>

@@ -91,7 +91,13 @@ class Groups
             /** @var \DOMElement $item */
             foreach ($node->childNodes as $item) {
                 if ($item->nodeType == XML_ELEMENT_NODE) {
-                    $result[$item->nodeValue] = $item->getAttribute('key');
+                    if ($item->hasAttribute('key')) {
+                        $result[$item->nodeValue] = $item->getAttribute('key');
+                    } else if ($item->hasAttribute('type')) {
+                        $result[$item->nodeValue][] = $item->getAttribute('type');
+                    } else {
+                        $result[$item->nodeValue] = '';
+                    }
                 }
             }
         }
