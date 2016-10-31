@@ -142,7 +142,7 @@ abstract class AbstractIntegrity implements StageInterface
 
             foreach ($documents as $sourceDocumentName) {
                 $this->progress->advance();
-                $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, $type);
+                $destinationDocumentName = $this->getMappedDocumentName($sourceDocumentName, $type);
 
                 $sourceDocument = $source->getDocument($sourceDocumentName);
                 $destinationDocument = $destination->getDocument($destinationDocumentName);
@@ -157,6 +157,16 @@ abstract class AbstractIntegrity implements StageInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * @param string $sourceDocumentName
+     * @param string $type
+     * @return mixed
+     */
+    protected function getMappedDocumentName($sourceDocumentName, $type)
+    {
+        return $this->map->getDocumentMap($sourceDocumentName, $type);
     }
 
     /**
