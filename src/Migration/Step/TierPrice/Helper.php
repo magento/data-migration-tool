@@ -43,37 +43,46 @@ class Helper
     }
 
     /**
-     * @return string
+     * @return array
      */
-    public function getDestinationName()
-    {
-        return 'catalog_product_entity_tier_price';
-    }
-
     public function getSourceDocuments()
     {
-        return array_keys($this->getDocumentList());
+
+        $map = $this->getDocumentsMap();
+        return array_keys($map[MapInterface::TYPE_SOURCE]);
     }
 
+    /**
+     * @return array
+     */
     public function getDestinationDocuments()
     {
-        $documentList = $this->getDocumentList();
-        return [reset($documentList)];
+        $map = $this->getDocumentsMap();
+        return array_keys($map[MapInterface::TYPE_DEST]);
     }
 
-    public function getDocumentList()
+    /**
+     * @param string $documentName
+     * @param string $type
+     * @return mixed
+     */
+    public function getMappedDocumentName($documentName, $type)
+    {
+        $map = $this->getDocumentsMap();
+        return $map[$type][$documentName];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDocumentsMap()
     {
         $sourceDocuments = ['catalog_product_entity_tier_price' => 'catalog_product_entity_tier_price'];
         if (!empty($this->editionNumber) && !in_array($this->editionNumber, $this->notExistsGroupPriceTable)) {
             $sourceDocuments['catalog_product_entity_group_price'] = 'catalog_product_entity_tier_price';
         }
-        return $sourceDocuments;
-    }
-
-    public function getDocumentsMap()
-    {
         return [
-            MapInterface::TYPE_SOURCE => $this->getDocumentList(),
+            MapInterface::TYPE_SOURCE => $sourceDocuments,
             MapInterface::TYPE_DEST => ['catalog_product_entity_tier_price' => 'catalog_product_entity_tier_price'],
         ];
     }

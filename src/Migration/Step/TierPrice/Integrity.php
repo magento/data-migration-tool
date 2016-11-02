@@ -89,9 +89,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * {@inheritdoc}
      */
-    protected function getMappedDocumentName($sourceDocumentName, $type)
+    protected function getMappedDocumentName($documentName, $type)
     {
-        $documentsMap = $this->helper->getDocumentsMap();
-        return $documentsMap[$type][$sourceDocumentName];
+        return $this->helper->getMappedDocumentName($documentName, $type);
     }
 }

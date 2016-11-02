@@ -62,13 +62,18 @@ class Volume extends AbstractVolume
     public function perform()
     {
         $sourceDocuments = $this->helper->getSourceDocuments();
-        $this->progress->start(count($sourceDocuments));
+        $destinationDocuments = $this->helper->getDestinationDocuments();
+        $this->progress->start(count($sourceDocuments) + count($destinationDocuments));
 
-        $sourceTotal        = 0;
-        $destinationTotal   = $this->destination->getRecordsCount($this->helper->getDestinationName());
+        $sourceTotal = 0;
+        $destinationTotal = 0;
 
-        foreach ($sourceDocuments as $sourceName) {
-            $sourceTotal += $this->source->getRecordsCount($sourceName);
+        foreach ($sourceDocuments as $documentName) {
+            $sourceTotal += $this->source->getRecordsCount($documentName);
+            $this->progress->advance();
+        }
+        foreach ($destinationDocuments as $documentName) {
+            $destinationTotal += $this->destination->getRecordsCount($documentName);
             $this->progress->advance();
         }
 

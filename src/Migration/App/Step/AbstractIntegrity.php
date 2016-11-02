@@ -160,13 +160,13 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
-     * @param string $sourceDocumentName
+     * @param string $documentName
      * @param string $type
      * @return mixed
      */
-    protected function getMappedDocumentName($sourceDocumentName, $type)
+    protected function getMappedDocumentName($documentName, $type)
     {
-        return $this->map->getDocumentMap($sourceDocumentName, $type);
+        return $this->map->getDocumentMap($documentName, $type);
     }
 
     /**

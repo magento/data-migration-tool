@@ -8,6 +8,7 @@ namespace Migration\Step\TierPrice;
 use Migration\App\Step\StageInterface;
 use Migration\Reader\Map;
 use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 use Migration\ResourceModel;
 use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
@@ -98,10 +99,6 @@ class Data implements StageInterface
         $sourceDocuments = $this->helper->getSourceDocuments();
         $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
 
-        $destinationName = $this->helper->getDestinationName();
-        $this->destination->clearDocument($destinationName);
-        $destDocument = $this->destination->getDocument($destinationName);
-
         foreach ($sourceDocuments as $sourceDocName) {
 
             $pageNumber = 0;
@@ -109,7 +106,11 @@ class Data implements StageInterface
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
 
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
+
                 $pageNumber++;
+                $destinationName = $this->helper->getMappedDocumentName($sourceDocName, MapInterface::TYPE_SOURCE);
+                $destDocument = $this->destination->getDocument($destinationName);
                 $destinationRecords = $destDocument->getRecords();
 
                 $sourceDocument = $this->source->getDocument($sourceDocName);
@@ -124,7 +125,6 @@ class Data implements StageInterface
                 $recordTransformer->init();
 
                 foreach ($items as $recordData) {
-                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
                     $recordData['value_id'] = null;
