@@ -47,7 +47,6 @@ class Helper
      */
     public function getSourceDocuments()
     {
-
         $map = $this->getDocumentsMap();
         return array_keys($map[MapInterface::TYPE_SOURCE]);
     }

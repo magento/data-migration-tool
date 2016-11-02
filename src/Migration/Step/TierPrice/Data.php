@@ -96,6 +96,9 @@ class Data implements StageInterface
      */
     public function perform()
     {
+        foreach ($this->helper->getDestinationDocuments() as $documentName) {
+            $this->destination->clearDocument($documentName);
+        }
         $sourceDocuments = $this->helper->getSourceDocuments();
         $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
 
