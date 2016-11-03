@@ -58,7 +58,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         $mapConfigOption = 'tier_price_map_file'
-
     ) {
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
         $this->helper = $helper;
