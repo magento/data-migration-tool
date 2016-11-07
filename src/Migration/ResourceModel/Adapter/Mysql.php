@@ -37,28 +37,18 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     protected $triggers = [];
 
     /**
-     * @var array
-     */
-    protected $initSelectParts = [];
-
-    /**
-     * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Migration\DB\Adapter\Pdo\MysqlFactory $adapterFactory
      * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
-     * @param array $config
+     * @param string $resourceType
      */
     public function __construct(
-        \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Migration\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
-        array $config
+        $resourceType
     ) {
-        $configData['config'] = $config['database'];
-        $this->resourceAdapter = $adapterFactory->create($configData);
-        $this->resourceAdapter->disallowDdlCache();
-        $this->setForeignKeyChecks(0);
+        $this->resourceAdapter = $adapterFactory->create($resourceType);
+        $this->resourceAdapter->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
-        $this->initSelectParts = (isset($config['init_select_parts']) && is_array($config['init_select_parts']))
-            ? $config['init_select_parts']
-            : [];
     }
 
     /**
@@ -67,8 +57,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function setForeignKeyChecks($value)
     {
-        $value = (int) $value;
-        $this->resourceAdapter->query("SET FOREIGN_KEY_CHECKS={$value};");
+        $this->resourceAdapter->setForeignKeyChecks($value);
     }
 
     /**
@@ -268,11 +257,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function getSelect()
     {
-        $select = $this->resourceAdapter->select();
-        foreach ($this->initSelectParts as $partKey => $partValue) {
-            $select->setPart($partKey, $partValue);
-        }
-        return $select;
+        return $this->resourceAdapter->select();
     }
 
     /**

@@ -33,30 +33,6 @@ class Source extends AbstractResource
     /**
      * {@inheritdoc}
      */
-    protected function getResourceConfig()
-    {
-        $source = $this->configReader->getSource();
-        $sourceType = $source['type'];
-        $config['database']['host'] = $source[$sourceType]['host'];
-        $config['database']['dbname'] = $source[$sourceType]['name'];
-        $config['database']['username'] = $source[$sourceType]['user'];
-        $config['database']['password'] = !empty($source[$sourceType]['password'])
-            ? $source[$sourceType]['password']
-            : '';
-        $initStatements = $this->configReader->getOption('init_statements_source');
-        if (!empty($initStatements)) {
-            $config['database']['initStatements'] = $initStatements;
-        }
-        $editionMigrate = $this->configReader->getOption('edition_migrate');
-        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
-            $config['init_select_parts'] = ['disable_staging_preview' => true];
-        }
-        return $config;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     protected function getDocumentPrefix()
     {
         if (null === $this->documentPrefix) {
@@ -214,5 +190,13 @@ class Source extends AbstractResource
         }
 
         return $documentName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResourceType()
+    {
+        return Config::RESOURCE_TYPE_SOURCE;
     }
 }

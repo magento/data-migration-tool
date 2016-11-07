@@ -16,6 +16,10 @@ class Config
 
     const CONFIGURATION_SCHEMA = 'config.xsd';
 
+    const RESOURCE_TYPE_SOURCE = 'source';
+
+    const RESOURCE_TYPE_DESTINATION = 'destination';
+
     const EDITION_MIGRATE_CE_TO_CE = 'ce-to-ce';
 
     const EDITION_MIGRATE_CE_TO_EE = 'ce-to-ee';
@@ -137,18 +141,20 @@ class Config
     }
 
     /**
-     * Get source configuration
+     * Returns configuration array for $resourceType connection
      *
+     * @param string $resourceType type, one of two: self::CONNECTION_TYPE_SOURCE or self::CONNECTION_TYPE_DESTINATION
      * @return array
      */
-    public function getSource()
+    public function getResourceConfig($resourceType)
     {
+        $this->validateResourceType($resourceType);
         $params = [];
-        $sourceNode = $this->config->query('//source');
+        $sourceNode = $this->config->query('//' . $resourceType);
         if ($sourceNode->item(0)->attributes->getNamedItem('version')) {
             $params['version'] = $sourceNode->item(0)->attributes->getNamedItem('version')->nodeValue;
         }
-        $source = $this->config->query('//source/*[1]');
+        $source = $this->config->query('//' . $resourceType . '/*[1]');
         /** @var \DOMElement $item */
         foreach ($source as $item) {
             $params['type'] = $item->nodeName;
@@ -165,31 +171,35 @@ class Config
     }
 
     /**
+     * Get source configuration
+     *
+     * @return array
+     */
+    public function getSource()
+    {
+        return $this->getResourceConfig(self::RESOURCE_TYPE_SOURCE);
+    }
+
+    /**
      * Get destination configuration
      *
      * @return array
      */
     public function getDestination()
     {
-        $params = [];
-        $sourceNode = $this->config->query('//destination');
-        if ($sourceNode->item(0)->attributes->getNamedItem('version')) {
-            $params['version'] = $sourceNode->item(0)->attributes->getNamedItem('version')->nodeValue;
+        return $this->getResourceConfig(self::RESOURCE_TYPE_DESTINATION);
+    }
+
+    /**
+     * @param string $type
+     * @throws Exception
+     * @return void
+     */
+    protected function validateResourceType($type)
+    {
+        if (!in_array($type, [self::RESOURCE_TYPE_SOURCE, self::RESOURCE_TYPE_DESTINATION])) {
+            throw new Exception('Unknown resource type: ' . $type);
         }
-        $source = $this->config->query('//destination/*[1]');
-        /** @var \DOMElement $item */
-        foreach ($source as $item) {
-            $params['type'] = $item->nodeName;
-            $params[$item->nodeName] = [];
-            /** @var \DOMNamedNodeMap $attribute */
-            if ($item->hasAttributes()) {
-                /** @var \DOMAttr $attribute */
-                foreach ($item->attributes as $attribute) {
-                    $params[$item->nodeName][$attribute->name] = $attribute->value;
-                }
-            }
-        }
-        return $params;
     }
 
     /**
