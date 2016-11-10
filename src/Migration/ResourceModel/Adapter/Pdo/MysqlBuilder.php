@@ -3,16 +3,17 @@
  * Copyright © 2016 Magento. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\DB\Adapter\Pdo;
+namespace Migration\ResourceModel\Adapter\Pdo;
 
 use Magento\Framework\ObjectManagerInterface;
-use Migration\DB\Adapter\Pdo\Mysql as DatabaseAdapter;
+use Magento\Framework\DB\Adapter\Pdo\Mysql;
+use Magento\Framework\DB\SelectFactory;
 use Migration\Config;
 
 /**
- * Factory class for @see DatabaseAdapter
+ * Builder class for @see Mysql
  */
-class MysqlFactory
+class MysqlBuilder
 {
     /**
      * Object Manager instance
@@ -41,7 +42,7 @@ class MysqlFactory
     public function __construct(
         ObjectManagerInterface $objectManager,
         Config $config,
-        $instanceName = '\\Migration\\DB\\Adapter\\Pdo\\Mysql'
+        $instanceName = '\\Magento\\Framework\\DB\\Adapter\\Pdo\\Mysql'
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;
@@ -52,39 +53,53 @@ class MysqlFactory
      * Create class instance with specified parameters
      *
      * @param string $resourceType
-     * @return DatabaseAdapter
+     * @return Mysql
      */
-    public function create($resourceType)
+    public function build($resourceType)
     {
-        $config = $this->getResourceConfig($resourceType);
-        $this->config->getResourceConfig($resourceType);
-        $instance = $this->objectManager->create($this->instanceName, ['config' => $config]);
+        $instance = $this->objectManager->create(
+            $this->instanceName,
+            [
+                'config' => $this->getConfig($resourceType),
+                'selectFactory' => $this->getSelectFactory()
+            ]
+        );
         $instance->disallowDdlCache();
         return $instance;
     }
 
     /**
-     * Returns well-formed configuration array of $resourceType resource for @see DatabaseAdapter
+     * Returns well-formed configuration array of $resourceType resource for @see Mysql
      *
      * @param string $resourceType
      * @return array
      */
-    private function getResourceConfig($resourceType)
+    private function getConfig($resourceType)
     {
         $resource = $this->config->getResourceConfig($resourceType);
         $type = $resource['type'];
-        $config['database']['host'] = $resource[$type]['host'];
-        $config['database']['dbname'] = $resource[$type]['name'];
-        $config['database']['username'] = $resource[$type]['user'];
-        $config['database']['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
-        $initStatements = $this->config->getOption('init_statements_' . $type);
+        $config['host'] = $resource[$type]['host'];
+        $config['dbname'] = $resource[$type]['name'];
+        $config['username'] = $resource[$type]['user'];
+        $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
+
+        $initStatements = $this->config->getOption('init_statements_' . $resourceType);
         if (!empty($initStatements)) {
-            $config['database']['initStatements'] = $initStatements;
-        }
-        $editionMigrate = $this->config->getOption('edition_migrate');
-        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
-            $config['init_select_parts'] = ['disable_staging_preview' => true];
+            $config['initStatements'] = $initStatements;
         }
         return $config;
+    }
+
+    /**
+     * @return SelectFactory
+     */
+    private function getSelectFactory()
+    {
+        $parts = [];
+        $editionMigrate = $this->config->getOption('edition_migrate');
+        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
+            $parts['disable_staging_preview'] = true;
+        }
+        return $this->objectManager->create('\\Magento\\Framework\\DB\\SelectFactory', ['parts' => $parts]);
     }
 }

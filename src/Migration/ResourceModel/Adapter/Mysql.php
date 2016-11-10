@@ -7,7 +7,6 @@ namespace Migration\ResourceModel\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Ddl\Trigger;
-use Migration\ResourceModel\Document;
 
 /**
  * Mysql adapter
@@ -37,17 +36,17 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     protected $triggers = [];
 
     /**
-     * @param \Migration\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder
      * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
      * @param string $resourceType
      */
     public function __construct(
-        \Migration\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder,
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
         $resourceType
     ) {
-        $this->resourceAdapter = $adapterFactory->create($resourceType);
-        $this->resourceAdapter->setForeignKeyChecks(0);
+        $this->resourceAdapter = $mysqlBuilder->build($resourceType);
+        $this->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
     }
 
@@ -57,7 +56,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function setForeignKeyChecks($value)
     {
-        $this->resourceAdapter->setForeignKeyChecks($value);
+        $value = (int) $value;
+        $this->resourceAdapter->query("SET FOREIGN_KEY_CHECKS={$value};");
     }
 
     /**
