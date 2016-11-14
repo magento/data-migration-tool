@@ -370,4 +370,22 @@ abstract class AbstractIntegrity implements StageInterface
         }
         return $isSuccess;
     }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    protected function addIncompatibleDocumentFieldsData(array $data)
+    {
+        $classData = $this->incompatibleDocumentFieldsData;
+        foreach ([MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST] as $type) {
+            if (isset($data[$type])) {
+                if (!isset($classData[$type]) || !is_array($classData[$type])) {
+                    $classData[$type] = [];
+                }
+                $classData[$type] = array_merge($classData[$type], $data[$type]);
+            }
+        }
+        $this->incompatibleDocumentFieldsData = $classData;
+    }
 }

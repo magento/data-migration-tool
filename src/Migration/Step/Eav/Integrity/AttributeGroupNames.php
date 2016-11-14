@@ -49,7 +49,7 @@ class AttributeGroupNames
     /**
      * Check product attribute sets contain all required attribute group names
      *
-     * @return bool
+     * @return array
      */
     public function checkAttributeGroupNames()
     {

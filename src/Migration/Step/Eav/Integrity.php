@@ -12,6 +12,7 @@ use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
 use Migration\Step\Eav\Integrity\AttributeGroupNames as AttributeGroupNamesIntegrity;
+use Migration\Step\Eav\Integrity\AttributeFrontendInput as AttributeFrontendInputIntegrity;
 
 /**
  * Class Integrity
@@ -29,6 +30,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     private $attributeGroupNamesIntegrity;
 
     /**
+     * @var AttributeFrontendInputIntegrity
+     */
+    private $attributeFrontendInputIntegrity;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
      * @param ResourceModel\Source $source
@@ -36,6 +42,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
+     * @param AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -46,10 +53,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity,
+        AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity,
         $mapConfigOption = 'eav_map_file'
     ) {
         $this->groups = $groupsFactory->create('eav_document_groups_file');
         $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
+        $this->attributeFrontendInputIntegrity = $attributeFrontendInputIntegrity;
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -66,7 +75,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
-        $this->incompatibleDocumentFieldsData = $this->attributeGroupNamesIntegrity->checkAttributeGroupNames();
+        $this->addIncompatibleDocumentFieldsData($this->attributeGroupNamesIntegrity->checkAttributeGroupNames());
+        $this->addIncompatibleDocumentFieldsData($this->attributeFrontendInputIntegrity->checkAttributeFrontendInput());
         $this->progress->finish();
         return $this->checkForErrors();
     }
