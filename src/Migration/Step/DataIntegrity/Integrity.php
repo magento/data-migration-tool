@@ -13,8 +13,8 @@ use Migration\Logger\Manager as LogManager;
 use Migration\ResourceModel\Adapter\Mysql;
 use Migration\ResourceModel\Source;
 use Migration\Step\DatabaseStage;
-use Migration\Step\DataIntegrity\Model\ForeignKeyFactory;
-use Migration\Step\DataIntegrity\Model\ForeignKey;
+use Migration\Step\DataIntegrity\Model\OrphanRecordsCheckerFactory;
+use Migration\Step\DataIntegrity\Model\OrphanRecordsChecker;
 
 /**
  * Class Integrity
@@ -37,29 +37,29 @@ class Integrity extends DatabaseStage implements StageInterface
     private $source;
 
     /**
-     * @var ForeignKeyFactory
+     * @var OrphanRecordsCheckerFactory
      */
-    private $foreignKeyFactory;
+    private $checkerFactory;
 
     /**
      * @param Config $config
      * @param Logger $logger
      * @param LogLevelProcessor $progress
      * @param Source $source
-     * @param ForeignKeyFactory $foreignKeyFactory
+     * @param OrphanRecordsCheckerFactory $checkerFactory
      */
     public function __construct(
         Config $config,
         Logger $logger,
         LogLevelProcessor $progress,
         Source $source,
-        ForeignKeyFactory $foreignKeyFactory
+        OrphanRecordsCheckerFactory $checkerFactory
     ) {
         parent::__construct($config);
         $this->logger = $logger;
         $this->progress = $progress;
         $this->source = $source;
-        $this->foreignKeyFactory = $foreignKeyFactory;
+        $this->checkerFactory = $checkerFactory;
     }
 
     /**
@@ -76,20 +76,12 @@ class Integrity extends DatabaseStage implements StageInterface
 
         $errorMessages = [];
         foreach ($documentList as $document) {
-            $foreignKeys = $adapter->getForeignKeys($document);
-            $foreignKeysCount = count($foreignKeys);
-
-            if ($foreignKeysCount) {
-                $this->progress->start($foreignKeysCount, LogManager::LOG_LEVEL_DEBUG);
-                foreach ($foreignKeys as $keyData) {
-                    /** @var ForeignKey $foreignKey */
-                    $foreignKey = $this->foreignKeyFactory->create($adapter, $keyData);
-                    if ($foreignKey->getOrphanedRowIds()) {
-                        $errorMessages[] = $this->buildLogMessage($foreignKey);
-                    }
-                    $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
+            foreach ($adapter->getForeignKeys($document) as $keyData) {
+                /** @var OrphanRecordsChecker $checker */
+                $checker = $this->checkerFactory->create($adapter, $keyData);
+                if ($checker->hasOrphanRecords()) {
+                    $errorMessages[] = $this->buildLogMessage($checker);
                 }
-                $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
             }
             $this->progress->advance(LogManager::LOG_LEVEL_INFO);
         }
@@ -101,15 +93,15 @@ class Integrity extends DatabaseStage implements StageInterface
         return empty($errorMessages);
     }
 
-    private function buildLogMessage(ForeignKey $foreignKey)
+    private function buildLogMessage(OrphanRecordsChecker $checker)
     {
         return sprintf(
-            'Foreign key (%s) constraint fails. Orphaned records: `%s`.`%s` IN (%s) has no referenced records in `%s`',
-            $foreignKey->getKeyName(),
-            $foreignKey->getChildTable(),
-            $foreignKey->getChildTableKey(),
-            implode(',', $foreignKey->getOrphanedRowIds()),
-            $foreignKey->getParentTable()
+            'Foreign key (%s) constraint fails. Orphan records id: %s from `%s`.`%s` has no referenced records in `%s`',
+            $checker->getKeyName(),
+            implode(',', $checker->getOrphanRecordsIds()),
+            $checker->getChildTable(),
+            $checker->getChildTableField(),
+            $checker->getParentTable()
         );
     }
 }

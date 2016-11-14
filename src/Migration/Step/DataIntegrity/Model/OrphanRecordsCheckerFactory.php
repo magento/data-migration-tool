@@ -9,9 +9,9 @@ use Magento\Framework\ObjectManagerInterface;
 use Migration\ResourceModel\Adapter\Mysql as Adapter;
 
 /**
- * Factory class for @see ForeignKey
+ * Factory class for @see OrphanRecordsChecker
  */
-class ForeignKeyFactory
+class OrphanRecordsCheckerFactory
 {
     /**
      * @var ObjectManagerInterface
@@ -31,7 +31,7 @@ class ForeignKeyFactory
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
-        $instanceName = '\\Migration\\Step\\DataIntegrity\\Model\\ForeignKey'
+        $instanceName = '\\Migration\\Step\\DataIntegrity\\Model\\OrphanRecordsChecker'
     ) {
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;
@@ -41,7 +41,7 @@ class ForeignKeyFactory
      * @param Adapter $adapter
      * @param array $keyData data array with description of table foreign key, like one returned by
      * @see \Magento\Framework\DB\Adapter\Pdo\Mysql::getForeignKeys
-     * @return ForeignKey
+     * @return OrphanRecordsChecker
      */
     public function create(Adapter $adapter, $keyData)
     {
@@ -52,8 +52,8 @@ class ForeignKeyFactory
                 'keyName' => $keyData['FK_NAME'],
                 'parentTable' => $keyData['REF_TABLE_NAME'],
                 'childTable' => $keyData['TABLE_NAME'],
-                'parentTableKey' => $keyData['REF_COLUMN_NAME'],
-                'childTableKey' => $keyData['COLUMN_NAME']
+                'parentTableField' => $keyData['REF_COLUMN_NAME'],
+                'childTableField' => $keyData['COLUMN_NAME']
             ]
         );
     }

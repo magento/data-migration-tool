@@ -8,9 +8,9 @@ namespace Migration\Step\DataIntegrity\Model;
 use Migration\ResourceModel\Adapter\Mysql as Adapter;
 
 /**
- * Class ForeignKey
+ * Class OrphanRecordsChecker
  */
-class ForeignKey
+class OrphanRecordsChecker
 {
     /**
      * @var Adapter
@@ -30,7 +30,7 @@ class ForeignKey
     /**
      * @var string
      */
-    protected $parentTableKey;
+    protected $parentTableField;
 
     /**
      * @var string
@@ -40,35 +40,35 @@ class ForeignKey
     /**
      * @var string
      */
-    protected $childTableKey;
+    protected $childTableField;
 
     /**
      * @var int[]
      */
-    protected $orphanedRowIds;
+    protected $orphanRecordsIds;
 
     /**
      * @param Adapter $adapter
      * @param string $keyName
      * @param string $parentTable
      * @param string $childTable
-     * @param string $parentTableKey
-     * @param string $childTableKey
+     * @param string $parentTableField
+     * @param string $childTableField
      */
     public function __construct(
         Adapter $adapter,
         $keyName,
         $parentTable,
         $childTable,
-        $parentTableKey,
-        $childTableKey
+        $parentTableField,
+        $childTableField
     ) {
         $this->adapter = $adapter;
         $this->keyName = $keyName;
         $this->parentTable = $parentTable;
-        $this->parentTableKey = $parentTableKey;
+        $this->parentTableField = $parentTableField;
         $this->childTable = $childTable;
-        $this->childTableKey = $childTableKey;
+        $this->childTableField = $childTableField;
     }
 
     /**
@@ -90,9 +90,9 @@ class ForeignKey
     /**
      * @return string
      */
-    public function getParentTableKey()
+    public function getParentTableField()
     {
-        return $this->parentTableKey;
+        return $this->parentTableField;
     }
 
     /**
@@ -106,31 +106,41 @@ class ForeignKey
     /**
      * @return string
      */
-    public function getChildTableKey()
+    public function getChildTableField()
     {
-        return $this->childTableKey;
+        return $this->childTableField;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasOrphanRecords()
+    {
+        return (bool)$this->getOrphanRecordsIds();
     }
 
     /**
      * @return int[]
      */
-    public function getOrphanedRowIds()
+    public function getOrphanRecordsIds()
     {
-        if ($this->orphanedRowIds === null) {
+        if ($this->orphanRecordsIds === null) {
             $query = $this->adapter->getSelect()->from(
                 ['child' => $this->childTable],
-                $this->childTableKey
+                $this->childTableField
             )->joinLeft(
                 ['parent' => $this->parentTable],
-                'child.' . $this->childTableKey . ' = parent.' . $this->parentTableKey,
+                'child.' . $this->childTableField . ' = parent.' . $this->parentTableField,
                 null
             )->where(
-                'child.' . $this->childTableKey . ' IS NOT NULL'
+                'child.' . $this->childTableField . ' IS NOT NULL'
             )->where(
-                'parent.' . $this->parentTableKey . ' IS NULL'
+                'parent.' . $this->parentTableField . ' IS NULL'
+            )->distinct(
+                true
             );
-            $this->orphanedRowIds = $query->getAdapter()->fetchCol($query);
+            $this->orphanRecordsIds = $query->getAdapter()->fetchCol($query);
         }
-        return $this->orphanedRowIds;
+        return $this->orphanRecordsIds;
     }
 }
