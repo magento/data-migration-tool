@@ -10,7 +10,7 @@ use Migration\App\Step\StageInterface;
 use Migration\App\ProgressBar\LogLevelProcessor;
 use Migration\Logger\Logger;
 use Migration\Logger\Manager as LogManager;
-use Migration\ResourceModel\Adapter\Mysql;
+use Migration\ResourceModel\AdapterInterface;
 use Migration\ResourceModel\Source;
 use Migration\Step\DatabaseStage;
 use Migration\Step\DataIntegrity\Model\OrphanRecordsCheckerFactory;
@@ -24,22 +24,22 @@ class Integrity extends DatabaseStage implements StageInterface
     /**
      * @var Logger
      */
-    private $logger;
+    protected $logger;
 
     /**
      * @var LogLevelProcessor
      */
-    private $progress;
+    protected $progress;
 
     /**
      * @var Source
      */
-    private $source;
+    protected $source;
 
     /**
      * @var OrphanRecordsCheckerFactory
      */
-    private $checkerFactory;
+    protected $checkerFactory;
 
     /**
      * @param Config $config
@@ -67,18 +67,14 @@ class Integrity extends DatabaseStage implements StageInterface
      */
     public function perform()
     {
-        $adapter = $this->source->getAdapter();
-        if (!$adapter instanceof Mysql) {
-            return true;
-        }
-        $documentList = $adapter->getDocumentList();
+        $documentList = $this->getDocumentList();
         $this->progress->start(count($documentList), LogManager::LOG_LEVEL_INFO);
 
         $errorMessages = [];
         foreach ($documentList as $document) {
-            foreach ($adapter->getForeignKeys($document) as $keyData) {
+            foreach ($this->getAdapter()->getForeignKeys($document) as $keyData) {
                 /** @var OrphanRecordsChecker $checker */
-                $checker = $this->checkerFactory->create($adapter, $keyData);
+                $checker = $this->checkerFactory->create($this->getAdapter(), $keyData);
                 if ($checker->hasOrphanRecords()) {
                     $errorMessages[] = $this->buildLogMessage($checker);
                 }
@@ -93,6 +89,28 @@ class Integrity extends DatabaseStage implements StageInterface
         return empty($errorMessages);
     }
 
+    /**
+     * @return AdapterInterface
+     */
+    protected function getAdapter()
+    {
+        return $this->source->getAdapter();
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDocumentList()
+    {
+        return $this->getAdapter()->getDocumentList();
+    }
+
+    /**
+     * Builds and returns well-formed error message
+     *
+     * @param OrphanRecordsChecker $checker
+     * @return string
+     */
     private function buildLogMessage(OrphanRecordsChecker $checker)
     {
         return sprintf(
