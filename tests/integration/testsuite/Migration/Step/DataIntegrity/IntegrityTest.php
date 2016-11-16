@@ -50,7 +50,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $objectManager = $helper->getObjectManager();
 
         $this->config = $objectManager->get('\Migration\Config')
-            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config-data-integrity.xml');
+            ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->logger = $objectManager->create('Migration\Logger\Logger');
         $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
         $this->source = $objectManager->create('Migration\ResourceModel\Source');
