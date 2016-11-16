@@ -10,7 +10,7 @@
         <attribute type="catalog_product">msrp_enabled</attribute>
         <attribute type="catalog_product">group_price</attribute>
     </group>
-    <group name="frontend_input_empty">
+    <group name="frontend_input_empty_allowed">
         <attribute type="catalog_product">samples_title</attribute>
         <attribute type="catalog_product">links_title</attribute>
         <attribute type="catalog_product">links_exist</attribute>

@@ -75,8 +75,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
-        $this->addIncompatibleDocumentFieldsData($this->attributeGroupNamesIntegrity->checkAttributeGroupNames());
-        $this->addIncompatibleDocumentFieldsData($this->attributeFrontendInputIntegrity->checkAttributeFrontendInput());
+
+        $this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] = array_merge(
+            $this->attributeGroupNamesIntegrity->checkAttributeGroupNames(),
+            $this->attributeFrontendInputIntegrity->checkAttributeFrontendInput()
+        );
+
         $this->progress->finish();
         return $this->checkForErrors();
     }

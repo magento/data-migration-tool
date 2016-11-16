@@ -58,7 +58,7 @@ class AttributeFrontendInput
                 )
             ];
         }
-        return count($incompatibleData) ? [MapInterface::TYPE_SOURCE => $incompatibleData] : [];
+        return $incompatibleData;
     }
 
     /**
@@ -70,7 +70,7 @@ class AttributeFrontendInput
     private function getFrontendInputEmptyAttributes($records)
     {
         $result = [];
-        $filterGroupCodes = $this->helper->getAttributesGroupCodes('frontend_input_empty');
+        $filterGroupCodes = $this->helper->getAttributesGroupCodes('frontend_input_empty_allowed');
         foreach ($records as $record) {
             if (
                 empty($record['frontend_input']) &&
