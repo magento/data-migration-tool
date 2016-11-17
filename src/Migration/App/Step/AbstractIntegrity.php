@@ -354,8 +354,8 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
@@ -365,8 +365,8 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         return $isSuccess;
     }
