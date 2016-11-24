@@ -104,7 +104,7 @@
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>etc/ce-to-ce/1.9.3.0/map.xml.dist</map_file>
+        <map_file>etc/ce-to-ce/1.9.3.1/map.xml.dist</map_file>
         <eav_map_file>etc/ce-to-ce/map-eav.xml.dist</eav_map_file>
         <eav_document_groups_file>etc/ce-to-ce/eav-document-groups.xml.dist</eav_document_groups_file>
         <eav_attribute_groups_file>etc/ce-to-ce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
@@ -136,7 +136,7 @@
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
         <edition_migrate>ce-to-ce</edition_migrate>
-        <edition_number>1.9.3.0</edition_number>
+        <edition_number>1.9.3.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key />

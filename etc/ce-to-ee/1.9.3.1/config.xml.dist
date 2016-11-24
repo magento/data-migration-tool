@@ -104,20 +104,20 @@
         <database host="localhost" name="magento2" user="root"/>
     </destination>
     <options>
-        <map_file>etc/ce-to-ce/1.9.3.0/map.xml.dist</map_file>
-        <eav_map_file>etc/ce-to-ce/map-eav.xml.dist</eav_map_file>
-        <eav_document_groups_file>etc/ce-to-ce/eav-document-groups.xml.dist</eav_document_groups_file>
-        <eav_attribute_groups_file>etc/ce-to-ce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
-        <log_map_file>etc/ce-to-ce/map-log.xml.dist</log_map_file>
-        <log_document_groups_file>etc/ce-to-ce/log-document-groups.xml.dist</log_document_groups_file>
-        <settings_map_file>etc/ce-to-ce/settings.xml.dist</settings_map_file>
-        <customer_map_file>etc/ce-to-ce/map-customer.xml.dist</customer_map_file>
-        <customer_document_groups_file>etc/ce-to-ce/customer-document-groups.xml.dist</customer_document_groups_file>
-        <customer_attribute_groups_file>etc/ce-to-ce/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
-        <delta_document_groups_file>etc/ce-to-ce/deltalog.xml.dist</delta_document_groups_file>
-        <order_grids_document_groups_file>etc/ce-to-ce/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
-        <map_document_groups>etc/ce-to-ce/map-document-groups.xml.dist</map_document_groups>
-        <class_map>etc/ce-to-ce/class-map.xml.dist</class_map>
+        <map_file>etc/ce-to-ee/1.9.3.1/map.xml.dist</map_file>
+        <eav_map_file>etc/ce-to-ee/map-eav.xml.dist</eav_map_file>
+        <eav_document_groups_file>etc/ce-to-ee/eav-document-groups.xml.dist</eav_document_groups_file>
+        <eav_attribute_groups_file>etc/ce-to-ee/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
+        <log_map_file>etc/ce-to-ee/map-log.xml.dist</log_map_file>
+        <log_document_groups_file>etc/ce-to-ee/log-document-groups.xml.dist</log_document_groups_file>
+        <settings_map_file>etc/ce-to-ee/settings.xml.dist</settings_map_file>
+        <customer_map_file>etc/ce-to-ee/map-customer.xml.dist</customer_map_file>
+        <customer_document_groups_file>etc/ce-to-ee/customer-document-groups.xml.dist</customer_document_groups_file>
+        <customer_attribute_groups_file>etc/ce-to-ee/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
+        <delta_document_groups_file>etc/ce-to-ee/deltalog.xml.dist</delta_document_groups_file>
+        <order_grids_document_groups_file>etc/ce-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
+        <map_document_groups>etc/ce-to-ee/map-document-groups.xml.dist</map_document_groups>
+        <class_map>etc/ce-to-ee/class-map.xml.dist</class_map>
         <tier_price_map_file>etc/ce-to-ce/map-tier-price.xml.dist</tier_price_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
@@ -135,8 +135,8 @@
         <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
-        <edition_migrate>ce-to-ce</edition_migrate>
-        <edition_number>1.9.3.0</edition_number>
+        <edition_migrate>ce-to-ee</edition_migrate>
+        <edition_number>1.9.3.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key />
