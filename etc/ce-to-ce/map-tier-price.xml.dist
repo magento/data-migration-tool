@@ -6,6 +6,12 @@
  */
 -->
 <map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
-    <source/>
+    <source>
+        <field_rules>
+            <ignore>
+                <field>catalog_product_entity_group_price.is_percent</field>
+            </ignore>
+        </field_rules>
+    </source>
     <destination/>
 </map>
