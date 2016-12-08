@@ -132,7 +132,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
             );
             $recordTransformer->init();
 
-            $attributeType = $this->helper->getAttributeType($sourceDocName);
+            $entityTypeCode = $this->helper->getEntityTypeCodeByDocumentName($sourceDocName);
 
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
@@ -146,7 +146,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
                     $this->source->setLastLoadedRecord($sourceDocName, $recordData);
-                    if ($this->helper->isSkipRecord($attributeType, $sourceDocName, $recordData)) {
+                    if ($this->helper->isSkipRecord($entityTypeCode, $sourceDocName, $recordData)) {
                         continue;
                     }
                     /** @var Record $record */
@@ -159,7 +159,12 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
 
                 $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
-                $this->helper->updateAttributeData($attributeType, $sourceDocName, $destinationRecords);
+                $this->helper->updateAttributeData(
+                    $entityTypeCode,
+                    $sourceDocName,
+                    $destinationName,
+                    $destinationRecords
+                );
 
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }

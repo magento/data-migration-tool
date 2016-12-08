@@ -45,17 +45,17 @@ class Helper
     protected $readerAttributes;
 
     /**
-     * @var []
+     * @var array
      */
     protected $eavAttributes;
 
     /**
-     * @var []
+     * @var array
      */
     protected $skipAttributes;
 
     /**
-     * @var []
+     * @var array
      */
     protected $sourceDocuments;
 
@@ -87,32 +87,38 @@ class Helper
     }
 
     /**
-     * @param string $document
+     * Retrieves entity type code by document name
+     *
+     * @param string $sourceDocName
      * @return string|null
      * @throws \Migration\Exception
      */
-    public function getAttributeType($document)
+    public function getEntityTypeCodeByDocumentName($sourceDocName)
     {
         if (empty($this->documentAttributeTypes)) {
-            $entities = array_keys($this->readerGroups->getGroup('eav_entities'));
-            foreach ($entities as $entity) {
-                $documents = $this->readerGroups->getGroup($entity);
-                foreach ($documents as $item => $key) {
-                    $this->documentAttributeTypes[$item] = $entity;
-                    $this->initEavEntity($entity, $item, $key);
+            $entityTypeCodes = array_keys($this->readerGroups->getGroup('eav_entities'));
+            foreach ($entityTypeCodes as $entityTypeCode) {
+                $documents = $this->readerGroups->getGroup($entityTypeCode);
+                $documents = array_keys($documents);
+                foreach ($documents as $documentName) {
+                    $this->documentAttributeTypes[$documentName] = $entityTypeCode;
                 }
             }
         }
-        return isset($this->documentAttributeTypes[$document]) ? $this->documentAttributeTypes[$document] : null;
+        return isset($this->documentAttributeTypes[$sourceDocName]) ?
+            $this->documentAttributeTypes[$sourceDocName] :
+            null;
     }
 
     /**
-     * @param string $attributeType
+     * Retrieves whether record should be skipped in moving from source to destination
+     *
+     * @param string $entityTypeCode
      * @param string $sourceDocName
      * @param [] $recordData
      * @return bool
      */
-    public function isSkipRecord($attributeType, $sourceDocName, $recordData)
+    public function isSkipRecord($entityTypeCode, $sourceDocName, $recordData)
     {
         if (!isset($this->sourceDocuments[$sourceDocName])
             || $this->sourceDocuments[$sourceDocName] != 'value_id'
@@ -120,17 +126,79 @@ class Helper
         ) {
             return false;
         }
-        return isset($this->skipAttributes[$attributeType][$recordData['attribute_id']]);
+
+        $skippedRecords = $this->getSkippedAttributes();
+        return isset($skippedRecords[$entityTypeCode][$recordData['attribute_id']]);
     }
 
     /**
-     * @param string $attributeType
+     * Retrieves array with attributes which should be skipped
+     *
+     * Sample of returning array:
+     * <code>
+     * [
+     *      'customer' => [
+     *          3 => 'created_in',
+     *          4 => 'prefix',
+     *          5 => 'firstname'
+     *      ],
+     *      'customer_address' => [
+     *          26 => 'city',
+     *          24 => 'company',
+     *          27 => 'country_id'
+     *      ]
+     * ]
+     * </code>
+     * @return array
+     * @throws \Migration\Exception
+     */
+    public function getSkippedAttributes()
+    {
+        if ($this->skipAttributes === null) {
+            $this->skipAttributes = [];
+            $entityTypeCodes = array_keys($this->readerGroups->getGroup('eav_entities'));
+            foreach ($entityTypeCodes as $entityTypeCode) {
+                $documents = $this->readerGroups->getGroup($entityTypeCode);
+                foreach ($documents as $documentName => $key) {
+                    if ($key == 'entity_id') {
+                        foreach (array_keys($this->readerAttributes->getGroup($documentName)) as $attributeCode) {
+                            $eavAttributes = $this->getAttributesData($entityTypeCode);
+                            if (empty($eavAttributes)) {
+                                throw new \Migration\Exception(
+                                    sprintf('Attribute type %s does not exist', $entityTypeCode)
+                                );
+                            } elseif (!isset($eavAttributes[$attributeCode])) {
+                                throw new \Migration\Exception(
+                                    sprintf(
+                                        'Attribute %s does not exist in the type %s',
+                                        $attributeCode,
+                                        $entityTypeCode
+                                    )
+                                );
+                            }
+                            $attributeId = $eavAttributes[$attributeCode]['attribute_id'];
+                            $this->skipAttributes[$entityTypeCode][$attributeId] = $attributeCode;
+                        }
+                    }
+                }
+            }
+        }
+        return $this->skipAttributes;
+    }
+
+    /**
+     * @param string $entityTypeCode
      * @param string $sourceDocName
+     * @param string $destinationDocName
      * @param Record\Collection $destinationRecords
      * @return void
      */
-    public function updateAttributeData($attributeType, $sourceDocName, Record\Collection $destinationRecords)
-    {
+    public function updateAttributeData(
+        $entityTypeCode,
+        $sourceDocName,
+        $destinationDocName,
+        Record\Collection $destinationRecords
+    ) {
         if (!isset($this->sourceDocuments[$sourceDocName]) || $this->sourceDocuments[$sourceDocName] != 'entity_id') {
             return;
         }
@@ -143,11 +211,13 @@ class Helper
         $attributeIdsByType = [];
         $attributeCodesById = [];
         $attributeCodes = array_keys($this->readerAttributes->getGroup($sourceDocName));
-        foreach ($attributeCodes as $attribute) {
-            if (isset($this->eavAttributes[$attributeType][$attribute])) {
-                $attributeId = $this->eavAttributes[$attributeType][$attribute]['attribute_id'];
-                $attributeIdsByType[$this->eavAttributes[$attributeType][$attribute]['backend_type']][] = $attributeId;
-                $attributeCodesById[$attributeId] = $attribute;
+        foreach ($attributeCodes as $attributeCode) {
+            $eavAttributes = $this->getAttributesData($entityTypeCode);
+            if (is_array($eavAttributes) && isset($eavAttributes[$attributeCode])) {
+                $attributeId = $eavAttributes[$attributeCode]['attribute_id'];
+                $attributeBackendType = $eavAttributes[$attributeCode]['backend_type'];
+                $attributeIdsByType[$attributeBackendType][] = $attributeId;
+                $attributeCodesById[$attributeId] = $attributeCode;
             }
         }
 
@@ -171,29 +241,62 @@ class Helper
             $attributeCodesById
         );
 
-        $this->setAttributeData($destinationRecords, $recordAttributesData, $attributeCodes);
+        $fieldsWithDefaults = $this->getFieldsWithDefaultValues($attributeCodes, $destinationDocName);
+        $this->setAttributeData($destinationRecords, $recordAttributesData, $fieldsWithDefaults);
     }
 
+    /**
+     * Retrieves destination document fields with valid default values
+     *
+     * @param array $attributeCodes
+     * @param string $destinationDocName
+     * @return array
+     * @throws \Migration\Exception
+     */
+    protected function getFieldsWithDefaultValues($attributeCodes, $destinationDocName)
+    {
+        /** @var Mysql $adapter */
+        $adapter = $this->destination->getAdapter();
+        $structure = $adapter->getDocumentStructure($destinationDocName);
+
+        $fields = [];
+        foreach ($attributeCodes as $attributeCode) {
+            if (!isset($structure[$attributeCode])) {
+                throw new \Migration\Exception(
+                    sprintf('Destination document %s does not have attribute %s', $destinationDocName, $attributeCode)
+                );
+            }
+            $fields[$attributeCode] =
+                $structure[$attributeCode]['DEFAULT'] === null && $structure[$attributeCode]['NULLABLE'] === false ?
+                    '' :
+                    null;
+        }
+        return $fields;
+    }
+
+    /**
+     * @param Record\Collection $destinationRecords
+     * @param array $recordAttributesData
+     * @param array $fieldsWithDefaults
+     * @return void
+     */
     public function setAttributeData(
         Record\Collection $destinationRecords,
         array $recordAttributesData,
-        array $attributeCodes
+        array $fieldsWithDefaults
     ) {
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
+            $recordEntityData = [];
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
                 $recordEntityData = $recordAttributesData[$record->getValue('entity_id')];
                 if ($this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
                     $recordEntityData = $this->upgradeCustomerHash($recordEntityData);
                 }
-                $data = $record->getData();
-                $data = array_merge(
-                    array_fill_keys($attributeCodes, null),
-                    $data,
-                    $recordEntityData
-                );
-                $record->setData($data);
             }
+            $data = $record->getData();
+            $data = array_merge($fieldsWithDefaults, $data, $recordEntityData);
+            $record->setData($data);
         }
     }
 
@@ -221,7 +324,8 @@ class Helper
         if ($this->sourceDocuments[$document] == 'entity_id') {
             return $this->source->getRecordsCount($document);
         }
-        $attributeType = $this->getAttributeType($document);
+        $attributeType = $this->getEntityTypeCodeByDocumentName($document);
+        $skipAttributes = $this->getSkippedAttributes();
 
         /** @var Mysql $adapter */
         $adapter = $this->source->getAdapter();
@@ -232,75 +336,48 @@ class Helper
                 ],
                 'COUNT(*)'
             )
-            ->where('et.attribute_id NOT IN (?)', array_keys($this->skipAttributes[$attributeType]));
+            ->where('et.attribute_id NOT IN (?)', array_keys($skipAttributes[$attributeType]));
         $count = $query->getAdapter()->fetchOne($query);
 
         return $count;
     }
 
     /**
-     * @param string $attributeType
-     * @param string $document
-     * @param string $key
-     * @return void
-     * @throws \Migration\Exception
+     * Retrieves data for all attributes relative to $entityTypeCode entity type
+     *
+     * @param string $entityTypeCode
+     * @return array
      */
-    protected function initEavEntity($attributeType, $document, $key)
+    protected function getAttributesData($entityTypeCode)
     {
-        if ($key != 'entity_id') {
-            return;
-        }
-        $this->initEavAttributes($attributeType);
-        foreach (array_keys($this->readerAttributes->getGroup($document)) as $attribute) {
-            if (!isset($this->eavAttributes[$attributeType][$attribute]['attribute_id'])) {
-                if (isset($this->eavAttributes[$attributeType])) {
-                    $message = sprintf('Attribute %s does not exist in the type %s', $attribute, $attributeType);
-                } else {
-                    $message = sprintf('Attribute type %s does not exist', $attributeType);
-                }
-                throw new \Migration\Exception($message);
+        if (!isset($this->eavAttributes[$entityTypeCode])) {
+            $this->eavAttributes[$entityTypeCode] = [];
+            /** @var Mysql $adapter */
+            $adapter = $this->source->getAdapter();
+            $query = $adapter->getSelect()
+                ->from(
+                    ['et' => $this->source->addDocumentPrefix('eav_entity_type')],
+                    []
+                )->join(
+                    ['ea' => $this->source->addDocumentPrefix('eav_attribute')],
+                    'et.entity_type_id = ea.entity_type_id',
+                    [
+                        'attribute_id',
+                        'backend_type',
+                        'attribute_code',
+                        'entity_type_id'
+                    ]
+                )->where(
+                    'et.entity_type_code = ?',
+                    $entityTypeCode
+                );
+            $attributes = $query->getAdapter()->fetchAll($query);
+
+            foreach ($attributes as $attribute) {
+                $this->eavAttributes[$entityTypeCode][$attribute['attribute_code']] = $attribute;
             }
-            $attributeId = $this->eavAttributes[$attributeType][$attribute]['attribute_id'];
-            $attributeCode = $this->eavAttributes[$attributeType][$attribute]['attribute_code'];
-            $this->skipAttributes[$attributeType][$attributeId] = $attributeCode;
         }
-    }
-
-    /**
-     * @param string $attributeType
-     * @return void
-     */
-    protected function initEavAttributes($attributeType)
-    {
-        if (isset($this->eavAttributes[$attributeType])) {
-            return;
-        }
-
-        /** @var Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        $query = $adapter->getSelect()
-            ->from(
-                ['et' => $this->source->addDocumentPrefix('eav_entity_type')],
-                []
-            )->join(
-                ['ea' => $this->source->addDocumentPrefix('eav_attribute')],
-                'et.entity_type_id = ea.entity_type_id',
-                [
-                    'attribute_id',
-                    'backend_type',
-                    'attribute_code',
-                    'entity_type_id'
-                ]
-            )->where(
-                'et.entity_type_code = ?',
-                $attributeType
-            );
-        $attributes = $query->getAdapter()->fetchAll($query);
-
-        foreach ($attributes as $attribute) {
-            $this->eavAttributes[$attributeType][$attribute['attribute_code']] = $attribute;
-            $this->eavAttributes[$attributeType][$attribute['attribute_id']] = $attribute;
-        }
+        return $this->eavAttributes[$entityTypeCode];
     }
 
     /**
