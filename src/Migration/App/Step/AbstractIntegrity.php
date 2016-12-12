@@ -364,8 +364,8 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
@@ -375,9 +375,27 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         return $isSuccess;
+    }
+
+    /**
+     * @param array $data
+     * @return void
+     */
+    protected function addIncompatibleDocumentFieldsData(array $data)
+    {
+        $classData = $this->incompatibleDocumentFieldsData;
+        foreach ([MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST] as $type) {
+            if (isset($data[$type])) {
+                if (!isset($classData[$type]) || !is_array($classData[$type])) {
+                    $classData[$type] = [];
+                }
+                $classData[$type] = array_merge($classData[$type], $data[$type]);
+            }
+        }
+        $this->incompatibleDocumentFieldsData = $classData;
     }
 }
