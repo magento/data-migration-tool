@@ -55,30 +55,6 @@ class Destination extends AbstractResource
     }
 
     /**
-     * {@inheritdoc}
-     */
-    protected function getResourceConfig()
-    {
-        $destination = $this->configReader->getDestination();
-        $destinationType = $destination['type'];
-        $config['database']['host'] = $destination[$destinationType]['host'];
-        $config['database']['dbname'] = $destination[$destinationType]['name'];
-        $config['database']['username'] = $destination[$destinationType]['user'];
-        $config['database']['password'] = !empty($destination[$destinationType]['password'])
-            ? $destination[$destinationType]['password']
-            : '';
-        $initStatements = $this->configReader->getOption('init_statements_destination');
-        if (!empty($initStatements)) {
-            $config['database']['initStatements'] = $initStatements;
-        }
-        $editionMigrate = $this->configReader->getOption('edition_migrate');
-        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
-            $config['init_select_parts'] = ['disable_staging_preview' => true];
-        }
-        return $config;
-    }
-
-    /**
      * @param string $documentName
      * @return void
      */
@@ -141,5 +117,13 @@ class Destination extends AbstractResource
         if (!empty($data)) {
             $this->getAdapter()->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResourceType()
+    {
+        return Config::RESOURCE_TYPE_DESTINATION;
     }
 }

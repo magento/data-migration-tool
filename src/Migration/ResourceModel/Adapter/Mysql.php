@@ -7,7 +7,6 @@ namespace Migration\ResourceModel\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Ddl\Trigger;
-use Migration\ResourceModel\Document;
 
 /**
  * Mysql adapter
@@ -37,28 +36,18 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     protected $triggers = [];
 
     /**
-     * @var array
-     */
-    protected $initSelectParts = [];
-
-    /**
-     * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder
      * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
-     * @param array $config
+     * @param string $resourceType
      */
     public function __construct(
-        \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder,
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
-        array $config
+        $resourceType
     ) {
-        $configData['config'] = $config['database'];
-        $this->resourceAdapter = $adapterFactory->create($configData);
-        $this->resourceAdapter->disallowDdlCache();
+        $this->resourceAdapter = $mysqlBuilder->build($resourceType);
         $this->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
-        $this->initSelectParts = (isset($config['init_select_parts']) && is_array($config['init_select_parts']))
-            ? $config['init_select_parts']
-            : [];
     }
 
     /**
@@ -279,11 +268,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function getSelect()
     {
-        $select = $this->resourceAdapter->select();
-        foreach ($this->initSelectParts as $partKey => $partValue) {
-            $select->setPart($partKey, $partValue);
-        }
-        return $select;
+        return $this->resourceAdapter->select();
     }
 
     /**

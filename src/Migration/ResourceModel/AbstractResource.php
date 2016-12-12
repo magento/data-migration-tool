@@ -274,17 +274,17 @@ abstract class AbstractResource
     public function getAdapter()
     {
         if (null == $this->adapter) {
-            $this->adapter = $this->adapterFactory->create(['config' => $this->getResourceConfig()]);
+            $this->adapter = $this->adapterFactory->create(['resourceType' => $this->getResourceType()]);
         }
         return $this->adapter;
     }
 
     /**
-     * Returns configuration data for resource initialization
+     * Returns resource type title
      *
-     * @return array
+     * @return string
      */
-    abstract protected function getResourceConfig();
+    abstract protected function getResourceType();
 
     /**
      * Returns configuration data for documents prefix
