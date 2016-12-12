@@ -72,6 +72,17 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Retrieve the foreign keys descriptions for a $documentName table
+     *
+     * @param string $documentName
+     * @return array
+     */
+    public function getForeignKeys($documentName)
+    {
+        return $this->resourceAdapter->getForeignKeys($documentName);
+    }
+
+    /**
      * @inheritdoc
      */
     public function getDocumentStructure($documentName)

@@ -18,6 +18,9 @@
         </step>
     </steps>
     <steps mode="data">
+        <step title="Data Integrity Step">
+            <integrity>Migration\Step\DataIntegrity\Integrity</integrity>
+        </step>
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
             <data>Migration\Step\Eav\Data</data>
