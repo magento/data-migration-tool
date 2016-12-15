@@ -9,9 +9,9 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Migration\Step\Eav\Helper;
 
 /**
- * Class AttributeGroupNamesTest
+ * Class AttributeFrontendInputTest
  */
-class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
+class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var AttributeFrontendInput|\PHPUnit_Framework_MockObject_MockObject
