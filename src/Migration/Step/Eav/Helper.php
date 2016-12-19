@@ -246,14 +246,7 @@ class Helper
      */
     public function clearIgnoredAttributes($sourceRecords)
     {
-        $entityTypesCodeToId = $this->getEntityTypesCodeToId();
-        $ignoredAttributes = $this->readerAttributes->getGroup('ignore');
-        foreach ($ignoredAttributes as $attributeCode => $attributeTypes) {
-            $ignoredAttributes[$attributeCode] = [];
-            foreach ($attributeTypes as $attributeType) {
-                $ignoredAttributes[$attributeCode][] = $entityTypesCodeToId[$attributeType];
-            }
-        }
+        $ignoredAttributes = $this->getAttributesGroupCodes('ignore');
         foreach ($sourceRecords as $attrNum => $sourceAttribute) {
             if (in_array($sourceAttribute['attribute_code'], array_keys($ignoredAttributes))
                 && in_array($sourceAttribute['entity_type_id'], $ignoredAttributes[$sourceAttribute['attribute_code']])
@@ -262,6 +255,27 @@ class Helper
             }
         }
         return $sourceRecords;
+    }
+
+    /**
+     * Retrieves attribute codes with types of $groupName group
+     *
+     * @param string $groupName
+     * @return array
+     */
+    public function getAttributesGroupCodes($groupName)
+    {
+        $entityTypesCodeToId = $this->getEntityTypesCodeToId();
+        $attributeCodes = $this->readerAttributes->getGroup($groupName);
+        foreach ($attributeCodes as $attributeCode => $attributeTypes) {
+            $attributeCodes[$attributeCode] = [];
+            foreach ($attributeTypes as $attributeType) {
+                if (array_key_exists($attributeType, $entityTypesCodeToId)) {
+                    $attributeCodes[$attributeCode][] = $entityTypesCodeToId[$attributeType];
+                }
+            }
+        }
+        return $attributeCodes;
     }
 
     /**

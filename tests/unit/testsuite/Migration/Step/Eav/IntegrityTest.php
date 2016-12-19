@@ -48,9 +48,14 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $map;
 
     /**
-     * @var \Migration\Model\Eav\AttributeGroupNameToCodeMap|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Step\Eav\Integrity\AttributeGroupNames|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $attributeGroupNameToCodeMap;
+    protected $attributeGroupNames;
+
+    /**
+     * @var \Migration\Step\Eav\Integrity\AttributeFrontendInput|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $attributeFrontendInput;
 
     /**
      * @return void
@@ -73,10 +78,20 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap', 'isDocumentIgnored'])
             ->getMock();
-        $this->attributeGroupNameToCodeMap = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeGroupNames')
+        $this->attributeGroupNames = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeGroupNames')
             ->setMethods(['checkAttributeGroupNames'])
             ->disableOriginalConstructor()
             ->getMock();
+        $this->attributeGroupNames->expects($this->once())
+            ->method('checkAttributeGroupNames')
+            ->willReturn([]);
+        $this->attributeFrontendInput = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeFrontendInput')
+            ->setMethods(['checkAttributeFrontendInput'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->attributeFrontendInput->expects($this->once())
+            ->method('checkAttributeFrontendInput')
+            ->willReturn([]);
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
@@ -102,7 +117,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             $this->destination,
             $mapFactory,
             $groupsFactory,
-            $this->attributeGroupNameToCodeMap
+            $this->attributeGroupNames,
+            $this->attributeFrontendInput
         );
     }
 

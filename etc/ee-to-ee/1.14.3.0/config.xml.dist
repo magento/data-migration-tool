@@ -18,6 +18,9 @@
         </step>
     </steps>
     <steps mode="data">
+        <step title="Data Integrity Step">
+            <integrity>Migration\Step\DataIntegrity\Integrity</integrity>
+        </step>
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
             <data>Migration\Step\Eav\Data</data>
@@ -143,6 +146,7 @@
         <visual_merchandiser_document_groups>etc/ee-to-ee/visual_merchandiser_document_groups.xml.dist</visual_merchandiser_document_groups>
         <visual_merchandiser_attribute_groups>etc/ee-to-ee/visual_merchandiser_attribute_groups.xml.dist</visual_merchandiser_attribute_groups>
         <map_document_groups>etc/ee-to-ee/map-document-groups.xml.dist</map_document_groups>
+        <tier_price_map_file>etc/ee-to-ee/1.14.3.0/map-tier-price.xml.dist</tier_price_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->

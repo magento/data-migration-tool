@@ -63,6 +63,11 @@ class Data implements StageInterface, RollbackInterface
     protected $mapEntityTypeIdsSourceDest = [];
 
     /**
+     * @var array;
+     */
+    protected $defaultAttributeSetIds = [];
+
+    /**
      * @var Helper
      */
     protected $helper;
@@ -353,9 +358,9 @@ class Data implements StageInterface, RollbackInterface
         $recordsToSave = $destinationDocument->getRecords();
         $entityTypesMigrated = $this->helper->getDestinationRecords($destinationDocument->getName());
         foreach ($entityTypesMigrated as $record) {
-            if (isset($this->mapAttributeSetIdsDestOldNew[$record['default_attribute_set_id']])) {
+            if (isset($this->defaultAttributeSetIds[$record['entity_type_id']])) {
                 $record['default_attribute_set_id'] =
-                    $this->mapAttributeSetIdsDestOldNew[$record['default_attribute_set_id']];
+                    $this->defaultAttributeSetIds[$record['entity_type_id']];
             }
             $destinationRecord = $this->factory->create(
                 [
@@ -753,6 +758,7 @@ class Data implements StageInterface, RollbackInterface
             $entityTypeId = $this->mapEntityTypeIdsDestOldNew[$record['entity_type_id']];
             $newAttributeSet = $this->newAttributeSets[$entityTypeId . '-' . $record['attribute_set_name']];
             $this->mapAttributeSetIdsDestOldNew[$attributeSetId] = $newAttributeSet['attribute_set_id'];
+            $this->defaultAttributeSetIds[$newAttributeSet['entity_type_id']] = $newAttributeSet['attribute_set_id'];
         }
     }
 

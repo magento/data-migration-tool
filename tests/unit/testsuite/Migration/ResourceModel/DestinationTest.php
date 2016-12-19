@@ -51,32 +51,8 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $config = [
-            'type' => 'database',
-            'version' => '2.0.0.0',
-            'database' => [
-                'host' => 'localhost',
-                'name' => 'dbname',
-                'user' => 'uname',
-                'password' => 'upass',
-            ]
-        ];
-        $adapterConfigs = ['config' => [
-            'database' => [
-                'host' => 'localhost',
-                'dbname' => 'dbname',
-                'username' => 'uname',
-                'password' => 'upass',
-                'initStatements' => 'SET NAMES utf8;',
-            ],
-            'init_select_parts' => [
-                'disable_staging_preview' => true
-            ]
-        ]];
-        $this->config = $this->getMock('\Migration\Config', ['getOption', 'getDestination'], [], '', false);
-        $this->config->expects($this->any())
-            ->method('getDestination')
-            ->will($this->returnValue($config));
+        $adapterConfigs = ['resourceType' => 'destination'];
+        $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
         $this->adapter = $this->getMock(
             '\Migration\ResourceModel\Adapter\Mysql',
             ['insertRecords', 'deleteAllRecords', 'backupDocument', 'rollbackDocument', 'deleteBackup'],

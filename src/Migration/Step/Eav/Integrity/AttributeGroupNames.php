@@ -7,7 +7,6 @@ namespace Migration\Step\Eav\Integrity;
 
 use Migration\Model\Eav\AttributeGroupNameToCodeMap;
 use Migration\Step\Eav\Helper;
-use Migration\Reader\MapInterface;
 
 /**
  * Class AttributeGroupNames
@@ -49,7 +48,7 @@ class AttributeGroupNames
     /**
      * Check product attribute sets contain all required attribute group names
      *
-     * @return bool
+     * @return array
      */
     public function checkAttributeGroupNames()
     {
@@ -93,7 +92,7 @@ class AttributeGroupNames
                 $errorDetails['document'] = $this->attributeGroupDocument;
                 $errorDetails['field'] = $this->attributeGroupFieldName;
                 $errorDetails['error'] = $error;
-                $incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE][] = $errorDetails;
+                $incompatibleDocumentFieldsData[] = $errorDetails;
             }
         }
         return $incompatibleDocumentFieldsData;

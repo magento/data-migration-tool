@@ -18,6 +18,9 @@
         </step>
     </steps>
     <steps mode="data">
+        <step title="Data Integrity Step">
+            <integrity>Migration\Step\DataIntegrity\Integrity</integrity>
+        </step>
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
             <data>Migration\Step\Eav\Data</data>
@@ -75,11 +78,14 @@
         <sales_order_map_file>tests/integration/testsuite/Migration/_files/map-sales.xml</sales_order_map_file>
         <delta_document_groups_file>tests/integration/testsuite/Migration/_files/deltalog.xml</delta_document_groups_file>
         <class_map>tests/integration/testsuite/Migration/_files/class-map.xml</class_map>
+        <tier_price_map_file>tests/integration/testsuite/Migration/_files/map-tier-price.xml</tier_price_map_file>
+        <tier_price_map_file_fail>tests/integration/testsuite/Migration/_files/map-tier-price-fail.xml</tier_price_map_file_fail>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
         <edition_migrate>ce-to-ce</edition_migrate>
+        <edition_number>1.9.2.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>
     </options>

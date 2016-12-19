@@ -142,7 +142,7 @@ abstract class AbstractIntegrity implements StageInterface
 
             foreach ($documents as $sourceDocumentName) {
                 $this->progress->advance();
-                $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, $type);
+                $destinationDocumentName = $this->getMappedDocumentName($sourceDocumentName, $type);
 
                 $sourceDocument = $source->getDocument($sourceDocumentName);
                 $destinationDocument = $destination->getDocument($destinationDocumentName);
@@ -157,6 +157,16 @@ abstract class AbstractIntegrity implements StageInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * @param string $documentName
+     * @param string $type
+     * @return mixed
+     */
+    protected function getMappedDocumentName($documentName, $type)
+    {
+        return $this->map->getDocumentMap($documentName, $type);
     }
 
     /**
@@ -354,8 +364,8 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
@@ -365,8 +375,8 @@ abstract class AbstractIntegrity implements StageInterface
                     $errorDetail['field'],
                     $errorDetail['error']
                 ));
+                $isSuccess = false;
             }
-            $isSuccess = false;
         }
         return $isSuccess;
     }

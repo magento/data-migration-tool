@@ -25,7 +25,12 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\ResourceModel\AdapterFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $adapterFactory;
+    protected $adapterFactorySource;
+
+    /**
+     * @var \Migration\ResourceModel\AdapterFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $adapterFactoryDestination;
 
     /**
      * @var \Migration\ResourceModel\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -57,43 +62,13 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $config = [
-            'type' => 'database',
-            'version' => '1.14.1.0',
-            'database' => [
-                'host' => 'localhost',
-                'name' => 'dbname',
-                'user' => 'uname',
-                'password' => 'upass',
-            ]
-        ];
-        $destinationConfig = $config;
-        $destinationConfig['version'] = '2.0.0.0';
-
-        $adapterConfigs = ['config' => [
-            'database' => [
-                'host' => 'localhost',
-                'dbname' => 'dbname',
-                'username' => 'uname',
-                'password' => 'upass',
-            ],
-            'init_select_parts' => [
-                'disable_staging_preview' => true
-            ]
-        ]];
         $this->config = $this->getMock(
             '\Migration\Config',
-            ['getOption', 'getDestination', 'getSource'],
+            ['getOption'],
             [],
             '',
             false
         );
-        $this->config->expects($this->any())
-            ->method('getDestination')
-            ->willReturn($destinationConfig);
-        $this->config->expects($this->any())
-            ->method('getSource')
-            ->willReturn($config);
         $this->adapter = $this->getMock(
             '\Migration\ResourceModel\Adapter\Mysql',
             ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
@@ -101,10 +76,27 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->adapterFactory = $this->getMock('\Migration\ResourceModel\AdapterFactory', ['create'], [], '', false);
-        $this->adapterFactory->expects($this->any())
+        $this->adapterFactorySource = $this->getMock(
+            '\Migration\ResourceModel\AdapterFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $this->adapterFactorySource->expects($this->any())
             ->method('create')
-            ->with($adapterConfigs)
+            ->with(['resourceType' => 'source'])
+            ->will($this->returnValue($this->adapter));
+        $this->adapterFactoryDestination = $this->getMock(
+            '\Migration\ResourceModel\AdapterFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $this->adapterFactoryDestination->expects($this->any())
+            ->method('create')
+            ->with(['resourceType' => 'destination'])
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock(
             '\Migration\ResourceModel\DocumentFactory',
@@ -129,7 +121,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->resourceDestination = new \Migration\ResourceModel\Destination(
-            $this->adapterFactory,
+            $this->adapterFactoryDestination,
             $this->config,
             $this->documentFactory,
             $this->structureFactory,
@@ -137,7 +129,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->resourceSource = new \Migration\ResourceModel\Source(
-            $this->adapterFactory,
+            $this->adapterFactorySource,
             $this->config,
             $this->documentFactory,
             $this->structureFactory,
