@@ -9,7 +9,7 @@
 
 * Fixed bugs:
     * An error occurred in the TierPrice step while checking structure of database records with the undefined `value_id` field
-    * [Issue #123](https://github.com/magento/data-migration-tool/issues/123): After migration, store administrators could not edit details of some products via Magento admin panel. The error message stated the missing *componentType* configuration parameter for the *design* component
+    * [Issue #123](https://github.com/magento/data-migration-tool/issues/123): After migration, store administrators could not edit details of some products via Admin panel. The error message stated the missing *componentType* configuration parameter for the *design* component
     * [Issue #170](https://github.com/magento/data-migration-tool/issues/170): Migrating orphaned database records caused the `Integrity constraint violation` error in the EAV migration step
     * [Issue #6510](https://github.com/magento/magento2/issues/6510): After migration, editing customer details via Admin panel caused an error message. This happened due to migrating database records with an empty *frontend_input* field (*eav_attribute* table)
 
