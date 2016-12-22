@@ -76,7 +76,7 @@ class Delta extends AbstractDelta
         $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
         $entityType = $this->helper->getEntityTypeData('entity_type_id', $data['entity_type_id']);
         $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType($data['entity_type_id']);
-        if ($incrementMaxNumber === false) {
+        if ($incrementMaxNumber === false || empty($entityType)) {
             return;
         }
         foreach ($this->helper->getStoreIds() as $storeId) {
