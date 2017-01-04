@@ -32,7 +32,7 @@ Before you start your migration, you must do all of the following:
 
 *	Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v1.0/install-gde/system-requirements.html">system requirements</a>.
 
-	Set up your system using a topology and design that at least matches your existing Magento 1.x system.
+*	Set up your system using a topology and design that at least matches your existing Magento 1.x system.
 
 *	Do not start Magento 2 cron jobs.
 
@@ -40,16 +40,16 @@ Before you start your migration, you must do all of the following:
 
 *	Check that the data migration tool has a network connection to the Magento 1.x and Magento 2 databases.
 
-	Open ports in your firewall so the migration tool can communicate with the databases and so the databases can communicate with each other.
+*	Open ports in your firewall so the migration tool can communicate with the databases and so the databases can communicate with each other.
 
 *	To provide redundancy in the event of unexpected issues, we advise you to replicate your Magento 1.x database.
 
-*	Migrate Magento 1.x extension and custom code to Magento 2.
+*	Migrate Magento 1.x extensions and custom code to Magento 2.
 
-	Reach out to your extension providers to see if they have been ported yet.
+*	Reach out to your extension providers to see if they have been ported yet.
 
 ## Install the Data Migration Tool
-This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
+This section discusses how to install the **Magento 2 Data Migration Tool**. You can install it from either repo.magento.com or from a GitHub repository.
 
 **Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.1.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
 
