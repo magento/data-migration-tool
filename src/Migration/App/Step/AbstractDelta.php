@@ -102,14 +102,15 @@ abstract class AbstractDelta implements StageInterface
             if (!$this->source->getDocument($documentName)) {
                 continue;
             }
-            $deltaLogName = $this->source->getDeltaLogName($documentName);
-            if (!isset($sourceDocuments[$deltaLogName])) {
-                throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
-            }
 
             $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
+            }
+
+            $deltaLogName = $this->source->getDeltaLogName($documentName);
+            if (!isset($sourceDocuments[$deltaLogName])) {
+                throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
 
             if ($this->source->getRecordsCount($deltaLogName) == 0) {
