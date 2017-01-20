@@ -1,3 +1,15 @@
+2.1.4
+=============
+* Added support for versions:
+
+    * Magento CE: 2.1.4
+    * Magento EE: 2.1.4
+
+* Fixed bugs:
+    * [Issue #81](https://github.com/magento/data-migration-tool/issues/81): URL Rewrite duplication caused by empty URL prefix from configuration
+    * [Issue #203](https://github.com/magento/data-migration-tool/issues/203): SalesIncrement Step while Delta mode produced an error in case `eav_entity_store` had references to `eav_entity_type` records made by extensions
+    * [Issue #7916](https://github.com/magento/magento2/issues/7916): Products linked to the tre root category leaded to an error while saving a category with the products in Magento 2 Admin Panel 
+
 2.1.3
 =============
 * The new DataIntegrity step checks for orphaned records in Magento 1 database
