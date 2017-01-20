@@ -2,13 +2,13 @@
 =============
 * Added support for versions:
 
-    * Magento CE: 2.1.4
-    * Magento EE: 2.1.4
+   * Magento CE: 2.1.4
+   * Magento EE: 2.1.4
 
 * Fixed bugs:
-    * [Issue #81](https://github.com/magento/data-migration-tool/issues/81): URL Rewrite duplication caused by empty URL prefix from configuration
-    * [Issue #203](https://github.com/magento/data-migration-tool/issues/203): SalesIncrement Step while Delta mode produced an error in case `eav_entity_store` had references to `eav_entity_type` records made by extensions
-    * [Issue #7916](https://github.com/magento/magento2/issues/7916): Products linked to the tre root category leaded to an error while saving a category with the products in Magento 2 Admin Panel 
+   * [Issue #81](https://github.com/magento/data-migration-tool/issues/81): URL rewrites were duplicated because of empty URL prefixes from Magento configuration
+   * [Issue #203](https://github.com/magento/data-migration-tool/issues/203): SalesIncrement Step (`Delta` migration mode) produced an error when `eav_entity_store` had references to `eav_entity_type` records, added by extensions
+   * [Issue #7916](https://github.com/magento/magento2/issues/7916): Saving a category in Magento 2 Admin Panel after migration caused an error when involving products linked to the root category 
 
 2.1.3
 =============
