@@ -6,12 +6,12 @@
 namespace Migration\ResourceModel\Adapter\Pdo;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
+use Magento\Framework\DB\Adapter\Pdo\Mysql as PdoMysql;
 use Magento\Framework\DB\SelectFactory;
 use Migration\Config;
 
 /**
- * Builder class for @see Mysql
+ * Builder class for @see PdoMysql
  */
 class MysqlBuilder
 {
@@ -53,7 +53,7 @@ class MysqlBuilder
      * Create class instance with specified parameters
      *
      * @param string $resourceType
-     * @return Mysql
+     * @return PdoMysql
      */
     public function build($resourceType)
     {
@@ -70,7 +70,7 @@ class MysqlBuilder
     }
 
     /**
-     * Returns well-formed configuration array of $resourceType resource for @see Mysql
+     * Returns well-formed configuration array of $resourceType resource for @see PdoMysql
      *
      * @param string $resourceType
      * @return array
@@ -94,7 +94,7 @@ class MysqlBuilder
      * @param string $resourceType
      * @return void
      */
-    private function runInitStatements(Mysql $instance, $resourceType)
+    private function runInitStatements(PdoMysql $instance, $resourceType)
     {
         $initStatements = $this->config->getOption('init_statements_' . $resourceType);
         if (!empty($initStatements)) {
