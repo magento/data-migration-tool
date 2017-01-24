@@ -83,7 +83,9 @@ class MysqlBuilder
         $config['dbname'] = $resource[$type]['name'];
         $config['username'] = $resource[$type]['user'];
         $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
-
+        if (!empty($resource[$type]['port'])) {
+            $config['port'] = $resource[$type]['port'];
+        }
         return $config;
     }
 
