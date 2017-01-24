@@ -65,6 +65,7 @@ class MysqlBuilder
             ]
         );
         $instance->disallowDdlCache();
+        $this->runInitStatements($instance, $resourceType);
         return $instance;
     }
 
@@ -83,11 +84,23 @@ class MysqlBuilder
         $config['username'] = $resource[$type]['user'];
         $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
 
+        return $config;
+    }
+
+    /**
+     * Run init SQL statements
+     *
+     * @param \Magento\Framework\DB\Adapter\Pdo\Mysql $instance
+     * @param string $resourceType
+     * @return void
+     */
+    private function runInitStatements(Mysql $instance, $resourceType)
+    {
         $initStatements = $this->config->getOption('init_statements_' . $resourceType);
         if (!empty($initStatements)) {
-            $config['initStatements'] = $initStatements;
+            $instance->query($initStatements);
         }
-        return $config;
+        return;
     }
 
     /**
