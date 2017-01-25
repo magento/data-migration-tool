@@ -72,12 +72,19 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
             'type' => $resourceType,
             $resourceType => [
                 'host' => 'localhost',
+                'port' => '9999',
                 'name' => 'db1',
                 'user' => 'root',
                 'password' => 'root'
             ],
         ];
-        $mysqlPdoConfig = ['host' => 'localhost', 'dbname' => 'db1', 'username' => 'root', 'password' => 'root'];
+        $mysqlPdoConfig = [
+            'host' => 'localhost',
+            'port' => '9999',
+            'dbname' => 'db1',
+            'username' => 'root',
+            'password' => 'root'
+        ];
         $this->config->expects($this->once())
             ->method('getResourceConfig')
             ->with($resourceType)
