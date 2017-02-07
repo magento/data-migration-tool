@@ -30,7 +30,7 @@ class ProductsInRootCatalog
     /**
      * Id of category tree root
      */
-    const TREE_ROOT_ID = 1;
+    private $treeRootId = 1;
 
     /**
      * @param ResourceModel\Destination $destination
@@ -59,7 +59,7 @@ class ProductsInRootCatalog
                 ['entity_id']
             )->where(
                 'ccp.category_id = ?',
-                self::TREE_ROOT_ID
+                $this->treeRootId
             );
         $this->productIds = $adapter->getSelect()->getAdapter()->fetchCol($select);
         return $this->productIds;
