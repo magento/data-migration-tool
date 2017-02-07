@@ -8,7 +8,7 @@ namespace Migration\Step\PostProcessing\Model;
 use Migration\ResourceModel;
 
 /**
- * Class ProductsInRootCatalog
+ * Class can return products assigned to tree root category
  */
 class ProductsInRootCatalog
 {
@@ -42,7 +42,7 @@ class ProductsInRootCatalog
     }
 
     /**
-     * Returns product ids assigned to root category
+     * Returns product ids assigned to tree root category
      *
      * @return array
      */
@@ -66,6 +66,8 @@ class ProductsInRootCatalog
     }
 
     /**
+     * Returns name of category product table
+     *
      * @return string
      */
     public function getCatalogCategoryProductDocument()

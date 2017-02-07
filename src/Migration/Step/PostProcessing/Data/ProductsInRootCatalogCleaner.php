@@ -9,7 +9,8 @@ use Migration\ResourceModel;
 use Migration\Step\PostProcessing\Model\ProductsInRootCatalog as ProductsInRootCatalogModel;
 
 /**
- * Class ProductsInRootCatalogCleaner
+ * Class cleans products assigned to tree root category
+ * Such assignments are not acceptable by design and should be cleaned
  */
 class ProductsInRootCatalogCleaner
 {
@@ -36,7 +37,7 @@ class ProductsInRootCatalogCleaner
     }
 
     /**
-     * Deletes products assigned to root category
+     * Deletes products assigned to tree root category
      *
      * @return void
      */
