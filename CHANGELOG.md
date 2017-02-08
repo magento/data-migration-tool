@@ -2,8 +2,8 @@
 =============
 * Added support for versions:
 
-   * Magento CE: 2.1.4
-   * Magento EE: 2.1.4
+   * Magento CE: 1.9.3.2, 2.1.4
+   * Magento EE: 1.14.3.2, 2.1.4
 
 * Fixed bugs:
    * [Issue #81](https://github.com/magento/data-migration-tool/issues/81): URL rewrites were duplicated because of empty URL prefixes from Magento configuration
