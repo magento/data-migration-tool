@@ -184,6 +184,11 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     ];
 
     /**
+     * @var string[]
+     */
+    private $resultMessages = [];
+
+    /**
      * @param \Migration\App\ProgressBar\LogLevelProcessor $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
@@ -276,6 +281,9 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
         $this->progress->finish();
+        foreach ($this->resultMessages as $message) {
+            $this->logger->addInfo($message);
+        }
         return true;
     }
 
@@ -380,13 +388,18 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
                     $requestPath = preg_replace(
                         '/^(.*)\.([^\.]+)$/i',
                         '$1-' . $hash . '.$2',
-                        $sourceRecord->getValue('request_path')
+                        $sourceRecord->getValue('request_path'),
+                        1,
+                        $isChanged
                     );
+                    if (!$isChanged) {
+                        $requestPath = $sourceRecord->getValue('request_path') . '-' . $hash;
+                    }
                     $this->resolvedDuplicates[$destinationRecord->getValue('entity_type')]
                         [$destinationRecord->getValue('entity_id')]
                         [$sourceRecord->getValue('store_id')] = $hash;
                     $destinationRecord->setValue('request_path', $requestPath);
-                    $message = 'Duplicate resolved. '
+                    $this->resultMessages[] = 'Duplicate resolved. '
                         . sprintf(
                             'Request path was: %s Target path was: %s Store ID: %s New request path: %s',
                             $sourceRecord->getValue('request_path'),
@@ -394,7 +407,6 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
                             $sourceRecord->getValue('store_id'),
                             $destinationRecord->getValue('request_path')
                         );
-                    $this->logger->addInfo($message);
                 }
             }
 

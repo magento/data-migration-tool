@@ -1,17 +1,29 @@
-2.1.3
+2.1.4
 =============
-* New DataIntegrity Step to check orphan records in database of Magento 1
-* Added support for mapping in the TierPrice Step
-* Added support for migration for the following versions:
+* Added support for versions:
 
-    * Magento CE version 1.9.3.1, 2.1.3
-    * Magento EE version 1.14.3.1, 2.1.3
+   * Magento CE: 1.9.3.2, 2.1.4
+   * Magento EE: 1.14.3.2, 2.1.4
 
 * Fixed bugs:
-    * Error in TierPrice Step when checking record structure and `value_id` field is unset
-    * [Issue #123](https://github.com/magento/data-migration-tool/issues/123): `Integrity constraint violation` error in the EAV step in case of orphan records in database 
-    * [Issue #170](https://github.com/magento/data-migration-tool/issues/170): Cannot open product edit page due to an error about required design component
-    * [Issue #6510](https://github.com/magento/magento2/issues/6510): Empty Attributes frontend_input params cause errors on migrated store
+   * [Issue #81](https://github.com/magento/data-migration-tool/issues/81): URL rewrites were duplicated because of empty URL prefixes from Magento configuration
+   * [Issue #203](https://github.com/magento/data-migration-tool/issues/203): SalesIncrement Step (`Delta` migration mode) produced an error when `eav_entity_store` had references to `eav_entity_type` records, added by extensions
+   * [Issue #7916](https://github.com/magento/magento2/issues/7916): Saving a category in Magento 2 Admin Panel after migration caused an error when involving products linked to the root category 
+
+2.1.3
+=============
+* The new DataIntegrity step checks for orphaned records in Magento 1 database
+* The TierPrice step now supports data mapping
+* Added support for versions:
+
+    * Magento CE: 1.9.3.1, 2.1.3
+    * Magento EE: 1.14.3.1, 2.1.3
+
+* Fixed bugs:
+    * An error occurred in the TierPrice step while checking structure of database records with the undefined `value_id` field
+    * [Issue #123](https://github.com/magento/data-migration-tool/issues/123): After migration, store administrators could not edit details of some products via Admin panel. The error message stated the missing *componentType* configuration parameter for the *design* component
+    * [Issue #170](https://github.com/magento/data-migration-tool/issues/170): Migrating orphaned database records caused the `Integrity constraint violation` error in the EAV migration step
+    * [Issue #6510](https://github.com/magento/magento2/issues/6510): After migration, editing customer details via Admin panel caused an error message. This happened due to migrating database records with an empty *frontend_input* field (*eav_attribute* table)
 
 2.1.2
 =============
