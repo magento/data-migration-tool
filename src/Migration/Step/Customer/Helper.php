@@ -160,25 +160,22 @@ class Helper
             foreach ($entityTypeCodes as $entityTypeCode) {
                 $documents = $this->readerGroups->getGroup($entityTypeCode);
                 foreach ($documents as $documentName => $key) {
-                    if ($key == 'entity_id') {
-                        foreach (array_keys($this->readerAttributes->getGroup($documentName)) as $attributeCode) {
-                            $eavAttributes = $this->getAttributesData($entityTypeCode);
-                            if (empty($eavAttributes)) {
-                                throw new \Migration\Exception(
-                                    sprintf('Attribute type %s does not exist', $entityTypeCode)
-                                );
-                            } elseif (!isset($eavAttributes[$attributeCode])) {
-                                throw new \Migration\Exception(
-                                    sprintf(
-                                        'Attribute %s does not exist in the type %s',
-                                        $attributeCode,
-                                        $entityTypeCode
-                                    )
-                                );
-                            }
-                            $attributeId = $eavAttributes[$attributeCode]['attribute_id'];
-                            $this->skipAttributes[$entityTypeCode][$attributeId] = $attributeCode;
+                    if ($key != 'entity_id') {
+                        continue;
+                    }
+                    foreach (array_keys($this->readerAttributes->getGroup($documentName)) as $attributeCode) {
+                        $eavAttributes = $this->getAttributesData($entityTypeCode);
+                        if (!isset($eavAttributes[$attributeCode])) {
+                            throw new \Migration\Exception(
+                                sprintf(
+                                    'Attribute %s does not exist in the type %s',
+                                    $attributeCode,
+                                    $entityTypeCode
+                                )
+                            );
                         }
+                        $attributeId = $eavAttributes[$attributeCode]['attribute_id'];
+                        $this->skipAttributes[$entityTypeCode][$attributeId] = $attributeCode;
                     }
                 }
             }
