@@ -1,3 +1,11 @@
+2.1.5
+=============
+* Updated copyright notice
+* Added support for versions:
+
+   * Magento CE: 2.1.5
+   * Magento EE: 2.1.5
+
 2.1.4
 =============
 * Added support for versions:
