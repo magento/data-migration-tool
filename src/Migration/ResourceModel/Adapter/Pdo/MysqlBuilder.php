@@ -102,7 +102,6 @@ class MysqlBuilder
         if (!empty($initStatements)) {
             $instance->query($initStatements);
         }
-        return;
     }
 
     /**

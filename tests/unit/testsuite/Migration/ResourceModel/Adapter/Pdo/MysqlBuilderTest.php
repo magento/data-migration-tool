@@ -14,11 +14,6 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
     protected $pdoMysql;
 
     /**
-     * @var \Migration\ResourceModel\Adapter\Mysql
-     */
-    protected $adapterMysql;
-
-    /**
      * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $objectManager;
