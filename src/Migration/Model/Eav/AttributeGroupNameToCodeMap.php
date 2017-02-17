@@ -17,6 +17,7 @@ class AttributeGroupNameToCodeMap
         'General' => 'product-details',
         'Prices' => 'advanced-pricing',
         'Design' => 'design',
+        'Images' => 'image-management'
     ];
 
     /**
