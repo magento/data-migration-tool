@@ -133,7 +133,8 @@ class Data implements StageInterface, RollbackInterface
         'sku_type' => 'product-details',
         'weight_type' => 'product-details',
         'giftcard_type' => 'product-details',
-        'quantity_and_stock_status' => 'product-details'
+        'quantity_and_stock_status' => 'product-details',
+        'swatch_image' => 'image-management'
     ];
 
     /**
