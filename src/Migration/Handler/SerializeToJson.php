@@ -25,7 +25,11 @@ class SerializeToJson extends AbstractHandler implements HandlerInterface
     {
         $this->validate($recordToHandle);
         $value = $recordToHandle->getValue($this->field);
-        $newValue = json_encode(unserialize($value));
+        if ((preg_match('/^[OC]:\d{1,}:"[a-zA-Z0-9_]{1,}"/', $value))) {
+            $newValue = json_encode(unserialize($value));
+        } else {
+            $newValue = json_encode($value);
+        }
         $recordToHandle->setValue($this->field, $newValue);
     }
 }
