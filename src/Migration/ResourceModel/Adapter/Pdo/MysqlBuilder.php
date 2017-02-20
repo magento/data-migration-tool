@@ -6,12 +6,12 @@
 namespace Migration\ResourceModel\Adapter\Pdo;
 
 use Magento\Framework\ObjectManagerInterface;
-use Magento\Framework\DB\Adapter\Pdo\Mysql;
+use Magento\Framework\DB\Adapter\Pdo\Mysql as PdoMysql;
 use Magento\Framework\DB\SelectFactory;
 use Migration\Config;
 
 /**
- * Builder class for @see Mysql
+ * Builder class for @see PdoMysql
  */
 class MysqlBuilder
 {
@@ -53,7 +53,7 @@ class MysqlBuilder
      * Create class instance with specified parameters
      *
      * @param string $resourceType
-     * @return Mysql
+     * @return PdoMysql
      */
     public function build($resourceType)
     {
@@ -65,11 +65,12 @@ class MysqlBuilder
             ]
         );
         $instance->disallowDdlCache();
+        $this->runInitStatements($instance, $resourceType);
         return $instance;
     }
 
     /**
-     * Returns well-formed configuration array of $resourceType resource for @see Mysql
+     * Returns well-formed configuration array of $resourceType resource for @see PdoMysql
      *
      * @param string $resourceType
      * @return array
@@ -82,12 +83,25 @@ class MysqlBuilder
         $config['dbname'] = $resource[$type]['name'];
         $config['username'] = $resource[$type]['user'];
         $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
-
-        $initStatements = $this->config->getOption('init_statements_' . $resourceType);
-        if (!empty($initStatements)) {
-            $config['initStatements'] = $initStatements;
+        if (!empty($resource[$type]['port'])) {
+            $config['port'] = $resource[$type]['port'];
         }
         return $config;
+    }
+
+    /**
+     * Run init SQL statements
+     *
+     * @param \Magento\Framework\DB\Adapter\Pdo\Mysql $instance
+     * @param string $resourceType
+     * @return void
+     */
+    private function runInitStatements(PdoMysql $instance, $resourceType)
+    {
+        $initStatements = $this->config->getOption('init_statements_' . $resourceType);
+        if (!empty($initStatements)) {
+            $instance->query($initStatements);
+        }
     }
 
     /**
