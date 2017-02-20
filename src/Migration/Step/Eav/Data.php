@@ -123,6 +123,20 @@ class Data implements StageInterface, RollbackInterface
     ];
 
     /**
+     * Attributes will be added to attribute group if not exist
+     *
+     * @var array
+     */
+    private $attributesGroupToAdd = [
+        'category_ids' => 'product-details',
+        'price_type' => 'product-details',
+        'sku_type' => 'product-details',
+        'weight_type' => 'product-details',
+        'giftcard_type' => 'product-details',
+        'quantity_and_stock_status' => 'product-details'
+    ];
+
+    /**
      * @param Source $source
      * @param Destination $destination
      * @param MapFactory $mapFactory
@@ -493,7 +507,9 @@ class Data implements StageInterface, RollbackInterface
     {
         $this->moveProductAttributeToGroup($recordsToSave, 'price', 'product-details');
         $this->moveProductAttributeToGroup($recordsToSave, 'shipment_type', 'bundle-items');
-        $this->addProductAttributeToGroup($recordsToSave, 'quantity_and_stock_status', 'product-details');
+        foreach ($this->attributesGroupToAdd as $attributeCode => $attributeGroupCode) {
+            $this->addProductAttributeToGroup($recordsToSave, $attributeCode, $attributeGroupCode);
+        }
         return $recordsToSave;
     }
 
@@ -548,37 +564,37 @@ class Data implements StageInterface, RollbackInterface
     {
         $productEntityType
             = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_code'])['catalog_product'];
+        $productEntityTypeId = $productEntityType['entity_type_id'];
         $attributes = $this->helper->getDestinationRecords('eav_attribute', ['attribute_id']);
         $attributeGroups = $this->helper->getDestinationRecords('eav_attribute_group', ['attribute_group_id']);
-        $attributeSetGroups = [];
-        foreach ($attributeGroups as $attributeGroup) {
-            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode) {
-                $attributeSetGroups[$attributeGroup['attribute_set_id']][$attributeGroupCode] =
-                    $attributeGroup['attribute_group_id'];
-            }
-        }
+        $attributeSets = $this->helper->getDestinationRecords('eav_attribute_set', ['attribute_set_id']);
+        $attributeSetGroupsFound = [];
         $attribute = null;
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
+        );
         foreach ($recordsToSave as $record) {
             $attributeId = $record->getValue('attribute_id');
             $entityTypeId = $record->getValue('entity_type_id');
-            if (!isset($attributes[$attributeId])
-                || $entityTypeId != $productEntityType['entity_type_id']
+            if (isset($attributes[$attributeId])
+                && $attributes[$attributeId]['attribute_code'] == $attributeCode
+                && $entityTypeId == $productEntityTypeId
             ) {
-                continue;
-            }
-            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
-                $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeCode] =
+                $attributeSetGroupsFound[$record->getValue('attribute_set_id')] =
                     $record->getValue('attribute_group_id');
                 $attribute = $record->getData();
             }
         }
-        $destinationDocument = $this->destination->getDocument(
-            $this->map->getDocumentMap('eav_entity_attribute', MapInterface::TYPE_SOURCE)
-        );
-        foreach ($attributeSetGroups as $attributeSetId => $attributeSetGroup) {
-            if (!isset($attributeSetGroup[$attributeCode])) {
-                $attribute['attribute_set_id'] = $attributeSetId;
-                $attribute['attribute_group_id'] = $attributeSetGroup[$attributeGroupCode];
+        if ($attribute === null) {
+            return $recordsToSave;
+        }
+        foreach ($attributeGroups as $attributeGroup) {
+            if ($attributeGroup['attribute_group_code'] == $attributeGroupCode
+                && $attributeSets[$attributeGroup['attribute_set_id']]['entity_type_id'] == $productEntityTypeId
+                && !isset($attributeSetGroupsFound[$attributeGroup['attribute_set_id']])
+            ) {
+                $attribute['attribute_set_id'] = $attributeGroup['attribute_set_id'];
+                $attribute['attribute_group_id'] = $attributeGroup['attribute_group_id'];
                 $attribute['entity_attribute_id'] = null;
                 $destinationRecord = $this->factory->create(
                     [
@@ -589,7 +605,6 @@ class Data implements StageInterface, RollbackInterface
                 $recordsToSave->addRecord($destinationRecord);
             }
         }
-
         return $recordsToSave;
     }
 
