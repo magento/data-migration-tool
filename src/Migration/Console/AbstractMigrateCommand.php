@@ -10,6 +10,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Command\Command;
+use Migration\Logger\Manager;
+use Migration\Config;
+use Migration\App\Progress;
+use Migration\Exception;
 
 class AbstractMigrateCommand extends Command
 {
@@ -21,17 +25,17 @@ class AbstractMigrateCommand extends Command
     /**#@-*/
 
     /**
-     * @var \Migration\Config
+     * @var Config
      */
     protected $config;
 
     /**
-     * @var \Migration\Logger\Manager
+     * @var Manager
      */
     protected $logManager;
 
     /**
-     * @var \Migration\App\Progress
+     * @var Progress
      */
     protected $progress;
 
@@ -41,20 +45,22 @@ class AbstractMigrateCommand extends Command
      * @var array
      */
     protected $verbosityLevels = [
-        2 => \Migration\Logger\Manager::LOG_LEVEL_INFO,
-        3 => \Migration\Logger\Manager::LOG_LEVEL_ERROR,
-        4 => \Migration\Logger\Manager::LOG_LEVEL_DEBUG
+        OutputInterface::VERBOSITY_QUIET => Manager::LOG_LEVEL_INFO,
+        OutputInterface::VERBOSITY_NORMAL => Manager::LOG_LEVEL_INFO,
+        OutputInterface::VERBOSITY_VERBOSE => Manager::LOG_LEVEL_ERROR,
+        OutputInterface::VERBOSITY_VERY_VERBOSE => Manager::LOG_LEVEL_ERROR,
+        OutputInterface::VERBOSITY_DEBUG => Manager::LOG_LEVEL_DEBUG
     ];
 
     /**
-     * @param \Migration\Config $config
-     * @param \Migration\Logger\Manager $logManager
-     * @param \Migration\App\Progress $progress
+     * @param Config $config
+     * @param Manager $logManager
+     * @param Progress $progress
      */
     public function __construct(
-        \Migration\Config $config,
-        \Migration\Logger\Manager $logManager,
-        \Migration\App\Progress $progress
+        Config $config,
+        Manager $logManager,
+        Progress $progress
     ) {
         $this->config = $config;
         $this->logManager = $logManager;
@@ -87,7 +93,9 @@ class AbstractMigrateCommand extends Command
     }
 
     /**
-     * {@inheritdoc}
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws Exception
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
