@@ -45,10 +45,10 @@ class AbstractMigrateCommand extends Command
      * @var array
      */
     protected $verbosityLevels = [
-        OutputInterface::VERBOSITY_QUIET => Manager::LOG_LEVEL_INFO,
+        OutputInterface::VERBOSITY_QUIET => Manager::LOG_LEVEL_ERROR,
         OutputInterface::VERBOSITY_NORMAL => Manager::LOG_LEVEL_INFO,
-        OutputInterface::VERBOSITY_VERBOSE => Manager::LOG_LEVEL_ERROR,
-        OutputInterface::VERBOSITY_VERY_VERBOSE => Manager::LOG_LEVEL_ERROR,
+        OutputInterface::VERBOSITY_VERBOSE => Manager::LOG_LEVEL_INFO,
+        OutputInterface::VERBOSITY_VERY_VERBOSE => Manager::LOG_LEVEL_DEBUG,
         OutputInterface::VERBOSITY_DEBUG => Manager::LOG_LEVEL_DEBUG
     ];
 
