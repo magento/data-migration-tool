@@ -1737,6 +1737,9 @@
     <destination>
         <document_rules>
             <ignore>
+                <document>catalog_product_index_price*</document>
+            </ignore>
+            <ignore>
                 <document>ui_bookmark</document>
             </ignore>
             <ignore>
