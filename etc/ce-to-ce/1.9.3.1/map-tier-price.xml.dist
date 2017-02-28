@@ -13,5 +13,11 @@
             </ignore>
         </field_rules>
     </source>
-    <destination/>
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>catalog_product_entity_tier_price.percentage_value</field>
+            </ignore>
+        </field_rules>
+    </destination>
 </map>
