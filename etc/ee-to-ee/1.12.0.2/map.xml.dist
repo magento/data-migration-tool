@@ -9,6 +9,12 @@
     <source>
         <document_rules>
             <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
+            </ignore>
+            <ignore>
                 <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
@@ -2578,6 +2584,12 @@
             </ignore>
             <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
             </ignore>
         </field_rules>
     </destination>
