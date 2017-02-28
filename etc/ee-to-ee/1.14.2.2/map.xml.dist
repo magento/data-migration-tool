@@ -9,12 +9,6 @@
     <source>
         <document_rules>
             <ignore>
-                <datatype>enterprise_invitation.group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>enterprise_logging_event.info</datatype>
-            </ignore>
-            <ignore>
                 <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
@@ -1774,6 +1768,12 @@
             </ignore>
             <ignore>
                 <datatype>enterprise_reminder_rule.to_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
             </ignore>
         </field_rules>
     </source>
