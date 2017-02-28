@@ -1787,6 +1787,18 @@
     <destination>
         <document_rules>
             <ignore>
+                <document>magento_acknowledged_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_operation</document>
+            </ignore>
+            <ignore>
+                <document>signifyd_case</document>
+            </ignore>
+            <ignore>
                 <document>ui_bookmark</document>
             </ignore>
             <ignore>

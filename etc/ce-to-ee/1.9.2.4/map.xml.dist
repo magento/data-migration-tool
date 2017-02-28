@@ -1308,6 +1308,18 @@
     <destination>
         <document_rules>
             <ignore>
+                <document>magento_acknowledged_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_operation</document>
+            </ignore>
+            <ignore>
+                <document>signifyd_case</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
