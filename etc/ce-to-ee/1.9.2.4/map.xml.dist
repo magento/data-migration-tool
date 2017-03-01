@@ -1303,6 +1303,12 @@
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2870,6 +2876,12 @@
             </ignore>
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
             </ignore>
         </field_rules>
     </destination>

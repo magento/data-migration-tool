@@ -1769,6 +1769,12 @@
             <ignore>
                 <datatype>enterprise_reminder_rule.to_date</datatype>
             </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2561,6 +2567,12 @@
             </ignore>
             <ignore>
                 <datatype>magento_reminder_rule.to_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_logging_event.info</datatype>
             </ignore>
         </field_rules>
     </destination>
