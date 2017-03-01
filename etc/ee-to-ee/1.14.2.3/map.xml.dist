@@ -1775,6 +1775,36 @@
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
             </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_catalogpermissions.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_reward_rate.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2561,6 +2591,54 @@
             </ignore>
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
+            </ignore>
+		    <ignore>
+                <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>enterprise_catalogpermissions.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_catalogpermissions.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_invitation.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_logging_event.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_reward_rate.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
             </ignore>
         </field_rules>
     </destination>
