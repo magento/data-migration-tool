@@ -88,7 +88,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
                     ['et' => $this->source->addDocumentPrefix('eav_entity_type')],
                     'et.entity_type_id = as.entity_type_id',
                     []
-                )->where('et.entity_type_code = ?', 'catalog_product');
+                );
             $this->productAttributeSets = array_flip($query->getAdapter()->fetchCol($query));
         }
         return $this->productAttributeSets;
