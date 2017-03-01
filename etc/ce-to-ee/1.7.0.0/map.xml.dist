@@ -1289,6 +1289,39 @@
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
             </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2872,6 +2905,45 @@
             </ignore>
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
             </ignore>
         </field_rules>
     </destination>

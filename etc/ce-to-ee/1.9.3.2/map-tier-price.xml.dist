@@ -11,6 +11,12 @@
             <ignore>
                 <field>catalog_product_entity_group_price.is_percent</field>
             </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
+            </ignore>
             <move>
                 <field>catalog_product_entity_tier_price.entity_id</field>
                 <to>catalog_product_entity_tier_price.row_id</to>
@@ -25,6 +31,9 @@
         <field_rules>
             <ignore>
                 <field>catalog_product_entity_tier_price.percentage_value</field>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
             </ignore>
         </field_rules>
     </destination>
