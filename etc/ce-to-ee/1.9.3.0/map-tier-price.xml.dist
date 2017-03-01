@@ -12,10 +12,10 @@
                 <field>catalog_product_entity_group_price.is_percent</field>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_tier_price.customer_group_id</field>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
             </ignore>
             <ignore>
-                <field>catalog_product_entity_group_price.customer_group_id</field>
+                <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
             </ignore>
             <move>
                 <field>catalog_product_entity_tier_price.entity_id</field>
@@ -30,7 +30,7 @@
     <destination>
         <field_rules>
             <ignore>
-                <field>catalog_product_entity_tier_price.customer_group_id</field>
+                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
             </ignore>
         </field_rules>
     </destination>
