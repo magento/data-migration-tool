@@ -62,35 +62,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
             return;
         }
         $this->validate($recordToHandle);
-        $productAttributeSets = $this->getProductAttributeSets();
-        if (!isset($productAttributeSets[$recordToHandle->getValue('attribute_set_id')])) {
-            $recordToHandle->setValue($this->field, null);
-            return;
-        }
         $groupCode = $this->groupNameToCodeMap->getGroupCodeMap($recordToHandle->getValue('attribute_group_name'));
         $recordToHandle->setValue($this->field, $groupCode);
-    }
-
-    /**
-     * Get attribute set IDs for entity type 'catalog_product'
-     * @return array
-     */
-    protected function getProductAttributeSets()
-    {
-        if (empty($this->productAttributeSets)) {
-            /** @var Mysql $adapter */
-            $adapter = $this->source->getAdapter();
-            $query = $adapter->getSelect()
-                ->from(
-                    ['as' => $this->source->addDocumentPrefix('eav_attribute_set')],
-                    ['attribute_set_id']
-                )->join(
-                    ['et' => $this->source->addDocumentPrefix('eav_entity_type')],
-                    'et.entity_type_id = as.entity_type_id',
-                    []
-                );
-            $this->productAttributeSets = array_flip($query->getAdapter()->fetchCol($query));
-        }
-        return $this->productAttributeSets;
     }
 }
