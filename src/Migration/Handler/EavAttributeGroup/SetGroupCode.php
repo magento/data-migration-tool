@@ -26,31 +26,19 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     protected $canStart;
 
     /**
-     * @var array
-     */
-    protected $productAttributeSets;
-
-    /**
-     * @var Source
-     */
-    protected $source;
-
-    /**
      * @var AttributeGroupNameToCodeMap
      */
     private $groupNameToCodeMap;
 
     /**
      * @param Config $config
-     * @param Source $source
      * @param AttributeGroupNameToCodeMap $groupNameToCodeMap
      * @throws Exception
      */
-    public function __construct(Config $config, Source $source, AttributeGroupNameToCodeMap $groupNameToCodeMap)
+    public function __construct(Config $config, AttributeGroupNameToCodeMap $groupNameToCodeMap)
     {
         $this->groupNameToCodeMap = $groupNameToCodeMap;
         $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
-        $this->source = $source;
     }
 
     /**
