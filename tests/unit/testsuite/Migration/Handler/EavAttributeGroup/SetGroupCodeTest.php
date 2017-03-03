@@ -47,10 +47,8 @@ class SetGroupCodeTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $groupCode);
         $config = $this->getMockBuilder('Migration\Config')
             ->disableOriginalConstructor()->setMethods(['getSource'])->getMock();
-        $source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()->getMock();
         $config->expects($this->once())->method('getSource')->willReturn(['type' => DatabaseStage::SOURCE_TYPE]);
-        $source->expects($this->any())->method('addDocumentPrefix')->willReturn($this->returnArgument(1));
-        $handler = new SetGroupCode($config, $source, $attributeGroupNameToCodeMap);
+        $handler = new SetGroupCode($config, $attributeGroupNameToCodeMap);
         $handler->setField($fieldName);
         $handler->handle($recordToHandle, $oppositeRecord);
     }
