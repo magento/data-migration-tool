@@ -45,7 +45,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $message = 'Success message';
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra, 'context' => $context];
         $this->consoleHandler->setLevel($handlerLevel);
         ob_start();
         $result = $this->consoleHandler->handle($record);
@@ -65,7 +66,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $message = 'Success message';
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra, 'context' => $context];
         $this->consoleHandler->setLevel($handlerLevel);
         ob_start();
         $this->consoleHandler->setBubble(false);
@@ -97,7 +99,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $message = 'Error message';
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = ['message' => $message, 'level' => $recordLevel, 'extra' => $extra, 'context' => $context];
         $this->consoleHandler->setLevel($handlerLevel);
         $result = $this->consoleHandler->handle($record);
         $this->assertFalse($result);
@@ -110,7 +113,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     {
         $message = 'Warnin message';
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $message, 'level' => 300, 'extra' => $extra];
+        $context = [];
+        $record = ['message' => $message, 'level' => 300, 'extra' => $extra, 'context' => $context];
         $this->consoleHandler->setLevel(100);
         ob_start();
         $this->consoleHandler->setBubble(false);
@@ -127,7 +131,8 @@ class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleRed()
     {
         $message = 'Colorized message';
-        $record = ['message' => $message, 'level' => 400, 'extra' => []];
+        $context = [];
+        $record = ['message' => $message, 'level' => 400, 'extra' => [], 'context' => $context];
         $this->consoleHandler->setLevel(100);
         ob_start();
         $result = $this->consoleHandler->handle($record);

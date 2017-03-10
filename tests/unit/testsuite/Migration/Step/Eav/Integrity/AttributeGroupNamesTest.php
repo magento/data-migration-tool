@@ -77,7 +77,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                     'eav_attribute_group' => [
                         7 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Prices'],
-                        11 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Design']
+                        11 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Design'],
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'catalog_product' => ['entity_type_id' => 4]
@@ -95,7 +96,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
-                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
+                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'catalog_product' => ['entity_type_id' => 4]
@@ -107,7 +109,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         4 => ['attribute_set_id' => 4, 'entity_type_id' => 4, 'attribute_set_name' => 'Default_3']
                     ]
                 ],
-                2
+                3
             ], [
                 [
                     'eav_attribute_group' => [
@@ -115,7 +117,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
-                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
+                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'customer' => ['entity_type_id' => 1],
@@ -129,7 +132,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         4 => ['attribute_set_id' => 4, 'entity_type_id' => 4, 'attribute_set_name' => 'Default_3']
                     ]
                 ],
-                1
+                2
             ],
         ];
     }

@@ -77,7 +77,13 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleSuccess()
     {
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $this->message, 'level' => $this->recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = [
+            'message' => $this->message,
+            'level' => $this->recordLevel,
+            'extra' => $extra,
+            'context' => $context
+        ];
         $this->fileHandler->setLevel($this->handlerLevel);
         $file = 'file/path/file.log';
         $this->file->expects($this->any())->method('filePutContents')->willReturn(1);
@@ -100,7 +106,13 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleSuccessWithoutBubble()
     {
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $this->message, 'level' => $this->recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = [
+            'message' => $this->message,
+            'level' => $this->recordLevel,
+            'extra' => $extra,
+            'context' => $context
+        ];
         $this->fileHandler->setLevel($this->handlerLevel);
         $this->fileHandler->setBubble(false);
         $file = 'file/path/file.log';
@@ -124,7 +136,13 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
     public function testHandleError()
     {
         $extra = ['mode' => 'application mode'];
-        $record = ['message' => $this->message, 'level' => $this->recordLevel, 'extra' => $extra];
+        $context = [];
+        $record = [
+            'message' => $this->message,
+            'level' => $this->recordLevel,
+            'extra' => $extra,
+            'context' => $context
+        ];
         $this->fileHandler->setLevel($this->handlerLevel);
         $result = $this->fileHandler->handle($record);
         $this->assertFalse($result);
