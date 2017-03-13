@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Map;
@@ -13,6 +13,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $progressBar;
+
+    /**
+     * @var \Migration\App\Progress|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $progress;
 
@@ -52,9 +57,16 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
-        $this->progress = $this->getMock(
+        $this->progressBar = $this->getMock(
             '\Migration\App\ProgressBar\LogLevelProcessor',
             ['start', 'finish', 'advance'],
+            [],
+            '',
+            false
+        );
+        $this->progress = $this->getMock(
+            '\Migration\App\Progress',
+            ['getProcessedEntities'],
             [],
             '',
             false
@@ -91,8 +103,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $mapFactory,
-            $this->progress,
-            $this->helper
+            $this->progressBar,
+            $this->helper,
+            $this->progress
         );
     }
 

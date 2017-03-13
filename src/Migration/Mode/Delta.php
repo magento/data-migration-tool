@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Mode;
@@ -45,6 +45,11 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     protected $groupsReader;
 
     /**
+     * @var \Migration\Reader\GroupsFactory
+     */
+    private $groupsFactory;
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory
@@ -62,7 +67,7 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     ) {
         $this->source = $source;
         $this->autoRestart = $autoRestart;
-        $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
+        $this->groupsFactory = $groupsFactory;
         parent::__construct($progress, $logger, $stepListFactory);
     }
 
@@ -88,7 +93,7 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
                 }
             }
 
-            $deltaLogs = $this->groupsReader->getGroups();
+            $deltaLogs = $this->getGroupsReader()->getGroups();
             foreach ($deltaLogs as $deltaDocuments) {
                 foreach (array_keys($deltaDocuments) as $documentName) {
                     /** @var Mysql $adapter */
@@ -134,5 +139,16 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
         if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
             $this->logger->warning('Volume Check failed');
         }
+    }
+
+    /**
+     * @return Groups
+     */
+    private function getGroupsReader()
+    {
+        if (null == $this->groupsReader) {
+            $this->groupsReader = $this->groupsFactory->create('delta_document_groups_file');
+        }
+        return $this->groupsReader;
     }
 }

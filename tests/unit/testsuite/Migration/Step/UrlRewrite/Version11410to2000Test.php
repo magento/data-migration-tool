@@ -1,9 +1,9 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step;
+namespace Migration\Step\UrlRewrite;
 
 /**
  * Class UrlRewriteTest
@@ -51,6 +51,11 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
+     * @var \Migration\Step\UrlRewrite\Helper|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $helper;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -78,6 +83,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             false
         );
         $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
+        $this->helper = $this->getMock('\Migration\Step\UrlRewrite\Helper', [], ['processFields'], '', false);
     }
 
     /**
@@ -85,6 +91,9 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
      */
     public function testIntegrity()
     {
+        $this->helper->expects($this->any())->method('processFields')->willReturn([
+            'array' => 'with_processed_fields'
+        ]);
         $this->version = new \Migration\Step\UrlRewrite\Version11410to2000(
             $this->progress,
             $this->logger,
@@ -93,6 +102,7 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             $this->destination,
             $this->recordCollectionFactory,
             $this->recordFactory,
+            $this->helper,
             'integrity'
         );
     }

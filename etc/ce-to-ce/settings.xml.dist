@@ -1,155 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
 <settings xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../settings.xsd">
     <key>
         <ignore>
-            <path>advanced/modules_disable_output/Mage_Connect</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Contacts</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Core</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Cron</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_CurrencySymbol</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Customer</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Dataflow</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Directory</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Downloadable</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Eav</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_GiftMessage</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_GoogleAnalytics</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_GoogleCheckout</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_ImportExport</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Index</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Install</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Log</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Media</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Newsletter</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Oauth</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Ogone</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Page</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Paygate</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Payment</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Paypal</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_PaypalUk</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Persistent</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Poll</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_ProductAlert</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Rating</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Reports</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Review</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Rss</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Rule</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Sales</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_SalesRule</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Sendfriend</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Shipping</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Sitemap</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Tag</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Tax</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Usa</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Weee</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Widget</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_Wishlist</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Mage_XmlConnect</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/OnTap_Merchandiser</path>
-        </ignore>
-        <ignore>
-            <path>advanced/modules_disable_output/Phoenix_Moneybookers</path>
+            <path>advanced/modules_disable_output/*</path>
         </ignore>
         <ignore>
             <path>api/config/compliance_wsi</path>
@@ -1013,6 +872,9 @@
             <path>web/secure/base_url</path>
         </ignore>
         <ignore>
+            <path>web/secure/base_link_url</path>
+        </ignore>
+        <ignore>
             <path>web/unsecure/base_js_url</path>
         </ignore>
         <ignore>
@@ -1023,6 +885,9 @@
         </ignore>
         <ignore>
             <path>web/unsecure/base_url</path>
+        </ignore>
+        <ignore>
+            <path>web/unsecure/base_link_url</path>
         </ignore>
         <ignore>
             <path>catalog/search/solr_server_password</path>
@@ -1039,10 +904,15 @@
         <ignore>
             <path>system/page_cache/debug</path>
         </ignore>
-        <rename>
+        <ignore>
+            <path>design/theme/template</path>
+        </ignore>
+        <ignore>
+            <path>design/theme/template_ua_regexp</path>
+        </ignore>
+        <ignore>
             <path>admin/security/session_cookie_lifetime</path>
-            <to>admin/security/session_lifetime</to>
-        </rename>
+        </ignore>
         <rename>
             <path>api/config/charset</path>
             <to>webapi/soap/charset</to>
@@ -1178,14 +1048,6 @@
         <rename>
             <path>design/header/logo_src_small</path>
             <to>design/header/logo_src</to>
-        </rename>
-        <rename>
-            <path>design/theme/template</path>
-            <to>design/theme/theme_id</to>
-        </rename>
-        <rename>
-            <path>design/theme/template_ua_regexp</path>
-            <to>design/theme/ua_regexp</to>
         </rename>
         <rename>
             <path>general/store_information/merchant_country</path>

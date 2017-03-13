@@ -1,67 +1,88 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
+
 namespace Migration\Step\TierPrice;
+
+use Migration\Config;
+use Migration\Reader\MapInterface;
 
 /**
  * Class Helper
  */
 class Helper
 {
-
-    const DESTINATION_DOCUMENT_NAME = 'catalog_product_entity_tier_price';
+    /**
+     * @var string
+     */
+    protected $editionNumber;
 
     /**
-     * @return string
+     * @var array
      */
-    public function getDestinationName()
-    {
-        return self::DESTINATION_DOCUMENT_NAME;
+    protected $notExistsGroupPriceTable = [
+        '1.11.0.0',
+        '1.11.0.1',
+        '1.11.0.2',
+        '1.11.1.0',
+        '1.11.2.0',
+        '1.6.0.0',
+        '1.6.1.0',
+        '1.6.2.0'
+    ];
+
+    /**
+     * @param Config $config
+     */
+    public function __construct(
+        Config $config
+    ) {
+        $this->editionNumber = $config->getOption('edition_number');
     }
 
     /**
      * @return array
      */
-    public function getSourceDocumentFields()
+    public function getSourceDocuments()
     {
-        return [
-            self::DESTINATION_DOCUMENT_NAME => [
-                'value_id',
-                'entity_id',
-                'all_groups',
-                'customer_group_id',
-                'qty',
-                'value',
-                'website_id',
-            ],
-            'catalog_product_entity_group_price' => [
-                'value_id',
-                'entity_id',
-                'all_groups',
-                'customer_group_id',
-                'value',
-                'website_id',
-            ],
-        ];
+        $map = $this->getDocumentsMap();
+        return array_keys($map[MapInterface::TYPE_SOURCE]);
     }
 
     /**
      * @return array
      */
-    public function getDestinationDocumentFields()
+    public function getDestinationDocuments()
     {
+        $map = $this->getDocumentsMap();
+        return array_keys($map[MapInterface::TYPE_DEST]);
+    }
+
+    /**
+     * @param string $documentName
+     * @param string $type
+     * @return mixed
+     */
+    public function getMappedDocumentName($documentName, $type)
+    {
+        $map = $this->getDocumentsMap();
+        return $map[$type][$documentName];
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDocumentsMap()
+    {
+        $sourceDocuments = ['catalog_product_entity_tier_price' => 'catalog_product_entity_tier_price'];
+        if (!empty($this->editionNumber) && !in_array($this->editionNumber, $this->notExistsGroupPriceTable)) {
+            $sourceDocuments['catalog_product_entity_group_price'] = 'catalog_product_entity_tier_price';
+        }
         return [
-            self::DESTINATION_DOCUMENT_NAME => [
-                'value_id',
-                'entity_id',
-                'all_groups',
-                'customer_group_id',
-                'qty',
-                'value',
-                'website_id',
-            ],
+            MapInterface::TYPE_SOURCE => $sourceDocuments,
+            MapInterface::TYPE_DEST => ['catalog_product_entity_tier_price' => 'catalog_product_entity_tier_price'],
         ];
     }
 }

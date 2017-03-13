@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\UrlRewrite;
@@ -13,6 +13,7 @@ use Migration\ResourceModel\Document;
 
 /**
  * Class Version11300to2000
+ * @SuppressWarnings(PHPMD.TooManyFields)
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  * @SuppressWarnings(PHPMD.CyclomaticComplexity)
  * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
@@ -104,6 +105,11 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected $suffixData;
 
     /**
+     * @var \Migration\Step\UrlRewrite\Helper
+     */
+    protected $helper;
+
+    /**
      * @var array
      */
     protected $structure = [
@@ -173,6 +179,11 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     ];
 
     /**
+     * @var string[]
+     */
+    private $resultMessages = [];
+
+    /**
      * @param \Migration\App\ProgressBar\LogLevelProcessor $progress
      * @param \Migration\Logger\Logger $logger
      * @param \Migration\Config $config
@@ -180,6 +191,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param \Migration\ResourceModel\Destination $destination
      * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\ResourceModel\RecordFactory $recordFactory
+     * @param \Migration\Step\UrlRewrite\Helper $helper
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -191,6 +203,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         \Migration\ResourceModel\Destination $destination,
         \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory,
         \Migration\ResourceModel\RecordFactory $recordFactory,
+        \Migration\Step\UrlRewrite\Helper $helper,
         $stage
     ) {
         $this->progress = $progress;
@@ -201,6 +214,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->recordFactory = $recordFactory;
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
         $this->stage = $stage;
+        $this->helper = $helper;
         parent::__construct($config);
     }
 
@@ -262,6 +276,9 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
         $this->progress->finish();
+        foreach ($this->resultMessages as $message) {
+            $this->logger->addInfo($message);
+        }
         return true;
     }
 
@@ -366,13 +383,18 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                     $requestPath = preg_replace(
                         '/^(.*)\.([^\.]+)$/i',
                         '$1-' . $hash . '.$2',
-                        $sourceRecord->getValue('request_path')
+                        $sourceRecord->getValue('request_path'),
+                        1,
+                        $isChanged
                     );
+                    if (!$isChanged) {
+                        $requestPath = $sourceRecord->getValue('request_path') . '-' . $hash;
+                    }
                     $this->resolvedDuplicates[$destinationRecord->getValue('entity_type')]
                         [$destinationRecord->getValue('entity_id')]
                         [$sourceRecord->getValue('store_id')] = $hash;
                     $destinationRecord->setValue('request_path', $requestPath);
-                    $message = 'Duplicate resolved. '
+                    $this->resultMessages[] = 'Duplicate resolved. '
                         . sprintf(
                             'Request path was: %s Target path was: %s Store ID: %s New request path: %s',
                             $sourceRecord->getValue('request_path'),
@@ -380,7 +402,6 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                             $sourceRecord->getValue('store_id'),
                             $destinationRecord->getValue('request_path')
                         );
-                    $this->logger->addInfo($message);
                 }
             }
 
@@ -417,6 +438,12 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                         $storeRow = $row;
                         $storeRow['store_id'] = $storeId;
                         $storeRow['value'] = $storeRow['value'] . '-' . $urlKey;
+                        $storeRow = $this->helper->processFields(
+                            MapInterface::TYPE_DEST,
+                            $destinationName,
+                            $storeRow,
+                            true
+                        );
                         $records->addRecord($this->recordFactory->create(['data' => $storeRow]));
                         if (!isset($this->resolvedDuplicates[$destinationName])) {
                             $this->resolvedDuplicates[$destinationName] = 0;
@@ -424,6 +451,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                         $this->resolvedDuplicates[$destinationName]++;
                     }
                 }
+                $row = $this->helper->processFields(MapInterface::TYPE_DEST, $destinationName, $row, true);
                 $records->addRecord($this->recordFactory->create(['data' => $row]));
             }
             $this->destination->saveRecords($destinationName, $records, true);
@@ -450,6 +478,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                     $errors = true;
                     continue;
                 }
+                $documentFields = $this->helper->processFields($resourceName, $documentName, $documentFields);
                 $structure = array_keys($document->getStructure()->getFields());
                 if (!(empty(array_diff($structure, $documentFields))
                     && empty(array_diff($documentFields, $structure)))

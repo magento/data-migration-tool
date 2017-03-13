@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -18,6 +18,9 @@
         </step>
     </steps>
     <steps mode="data">
+        <step title="Data Integrity Step">
+            <integrity>Migration\Step\DataIntegrity\Integrity</integrity>
+        </step>
         <step title="EAV Step">
             <integrity>Migration\Step\Eav\Integrity</integrity>
             <data>Migration\Step\Eav\Data</data>
@@ -68,6 +71,9 @@
             <data>Migration\Step\SalesIncrement\Data</data>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
+        <step title="PostProcessing Step">
+            <data>Migration\Step\PostProcessing\Data</data>
+        </step>
     </steps>
     <steps mode="delta">
         <step title="Customer Attributes Step">
@@ -112,6 +118,7 @@
         <order_grids_document_groups_file>etc/ce-to-ee/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <map_document_groups>etc/ce-to-ee/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/ce-to-ee/class-map.xml.dist</class_map>
+        <tier_price_map_file>etc/ce-to-ee/map-tier-price.xml.dist</tier_price_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->
@@ -128,6 +135,10 @@
         <log_file>migration.log</log_file>
         <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
         <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
+        <edition_migrate>ce-to-ee</edition_migrate>
+        <edition_number>1.9.2.0</edition_number>
+        <init_statements_source>SET NAMES utf8;</init_statements_source>
+        <init_statements_destination>SET NAMES utf8;</init_statements_destination>
         <crypt_key />
     </options>
 </config>

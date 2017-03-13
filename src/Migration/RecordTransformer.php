@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration;
@@ -96,10 +96,11 @@ class RecordTransformer
         $handlerManager = $this->handlerManagerFactory->create();
         $fields = $document->getStructure()->getFields();
         foreach (array_keys($fields) as $field) {
-            $handlerManager->initHandler(
-                $field,
-                $this->mapReader->getHandlerConfig($document->getName(), $field, $type)
-            );
+            $handlerConfigs = $this->mapReader->getHandlerConfigs($document->getName(), $field, $type);
+            foreach ($handlerConfigs as $handlerConfig) {
+                $handlerKey = md5($field . $handlerConfig['class']);
+                $handlerManager->initHandler($field, $handlerConfig, $handlerKey);
+            }
         }
         return $handlerManager;
     }

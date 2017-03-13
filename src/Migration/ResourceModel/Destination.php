@@ -1,10 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Migration\ResourceModel;
+
+use \Migration\Config;
 
 /**
  * ResourceModel destination class
@@ -12,6 +14,11 @@ namespace Migration\ResourceModel;
 class Destination extends AbstractResource
 {
     const CONFIG_DOCUMENT_PREFIX = 'dest_prefix';
+
+    /**
+     * @var string
+     */
+    protected $documentPrefix;
 
     /**
      * Save data into destination resource
@@ -36,31 +43,15 @@ class Destination extends AbstractResource
                 $data[] = $row;
             }
             if ($i == $pageSize) {
-                $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
+                $this->getAdapter()->insertRecords($documentName, $data, $updateOnDuplicate);
                 $data = [];
                 $i = 0;
             }
         }
         if ($i > 0) {
-            $this->adapter->insertRecords($documentName, $data, $updateOnDuplicate);
+            $this->getAdapter()->insertRecords($documentName, $data, $updateOnDuplicate);
         }
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    protected function getResourceConfig()
-    {
-        $destination = $this->configReader->getDestination();
-        $destinationType = $destination['type'];
-        $config['host'] = $destination[$destinationType]['host'];
-        $config['dbname'] = $destination[$destinationType]['name'];
-        $config['username'] = $destination[$destinationType]['user'];
-        $config['password'] = !empty($destination[$destinationType]['password'])
-            ? $destination[$destinationType]['password']
-            : '';
-        return $config;
     }
 
     /**
@@ -69,7 +60,7 @@ class Destination extends AbstractResource
      */
     public function clearDocument($documentName)
     {
-        $this->adapter->deleteAllRecords($this->addDocumentPrefix($documentName));
+        $this->getAdapter()->deleteAllRecords($this->addDocumentPrefix($documentName));
     }
 
     /**
@@ -77,7 +68,10 @@ class Destination extends AbstractResource
      */
     protected function getDocumentPrefix()
     {
-        return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        if (null === $this->documentPrefix) {
+            $this->documentPrefix = $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        }
+        return $this->documentPrefix;
     }
 
     /**
@@ -121,7 +115,15 @@ class Destination extends AbstractResource
             $data[] = $row->getData();
         }
         if (!empty($data)) {
-            $this->adapter->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
+            $this->getAdapter()->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
         }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResourceType()
+    {
+        return Config::RESOURCE_TYPE_DESTINATION;
     }
 }

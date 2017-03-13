@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App\Step;
@@ -12,6 +12,7 @@ use Migration\Reader\MapInterface;
 use Migration\ResourceModel;
 
 /**
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  * Class AbstractIntegrity
  */
 abstract class AbstractIntegrity implements StageInterface
@@ -71,6 +72,13 @@ abstract class AbstractIntegrity implements StageInterface
      * @var array
      */
     protected $mismatchDocumentFieldDataTypes;
+
+    /**
+     * Incompatible data in field of document
+     *
+     * @var array
+     */
+    protected $incompatibleDocumentFieldsData;
 
     /**
      * Map reader
@@ -134,7 +142,7 @@ abstract class AbstractIntegrity implements StageInterface
 
             foreach ($documents as $sourceDocumentName) {
                 $this->progress->advance();
-                $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, $type);
+                $destinationDocumentName = $this->getMappedDocumentName($sourceDocumentName, $type);
 
                 $sourceDocument = $source->getDocument($sourceDocumentName);
                 $destinationDocument = $destination->getDocument($destinationDocumentName);
@@ -149,6 +157,16 @@ abstract class AbstractIntegrity implements StageInterface
             }
         }
         return $this;
+    }
+
+    /**
+     * @param string $documentName
+     * @param string $type
+     * @return mixed
+     */
+    protected function getMappedDocumentName($documentName, $type)
+    {
+        return $this->map->getDocumentMap($documentName, $type);
     }
 
     /**
@@ -201,13 +219,20 @@ abstract class AbstractIntegrity implements StageInterface
         $checkDocuments = $this->checkDocuments();
         $checkDocumentFields = $this->checkDocumentFields();
         $checkMismatchDocumentFieldDataTypes = $this->checkMismatchDocumentFieldDataTypes();
-        return $checkDocuments && $checkDocumentFields && $checkMismatchDocumentFieldDataTypes;
+        $checkDocumentFieldsData = $this->checkDocumentFieldsData();
+        return
+            $checkDocuments
+            && $checkDocumentFields
+            && $checkMismatchDocumentFieldDataTypes
+            && $checkDocumentFieldsData;
     }
 
     /**
+     * Check documents
+     *
      * @return bool
      */
-    public function checkDocuments()
+    protected function checkDocuments()
     {
         $check = function ($errors, $errorMessagePattern, $type) {
             $isSuccess = true;
@@ -248,9 +273,11 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check fields of document
+     *
      * @return bool
      */
-    public function checkDocumentFields()
+    protected function checkDocumentFields()
     {
         $check = function ($errors, $errorMessagePattern, $type) {
             $isSuccess = true;
@@ -294,9 +321,11 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Check mismatch in data types of document field
+     *
      * @return bool
      */
-    public function checkMismatchDocumentFieldDataTypes()
+    protected function checkMismatchDocumentFieldDataTypes()
     {
         if (isset($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE])) {
             foreach ($this->mismatchDocumentFieldDataTypes[MapInterface::TYPE_SOURCE] as $document => $fields) {
@@ -317,5 +346,38 @@ abstract class AbstractIntegrity implements StageInterface
             }
         }
         return true;
+    }
+
+    /**
+     * Check data in document fields
+     *
+     * @return bool
+     */
+    protected function checkDocumentFieldsData()
+    {
+        $isSuccess = true;
+        if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE])) {
+            foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] as $errorDetail) {
+                $this->logger->error(sprintf(
+                    'Incompatibility in data. Source document: %s. Field: %s. Error: %s',
+                    $errorDetail['document'],
+                    $errorDetail['field'],
+                    $errorDetail['error']
+                ));
+                $isSuccess = false;
+            }
+        }
+        if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
+            foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
+                $this->logger->error(sprintf(
+                    'Incompatibility in data. Destination document: %s. Field: %s. Error: %s',
+                    $errorDetail['document'],
+                    $errorDetail['field'],
+                    $errorDetail['error']
+                ));
+                $isSuccess = false;
+            }
+        }
+        return $isSuccess;
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Reader;
@@ -91,7 +91,13 @@ class Groups
             /** @var \DOMElement $item */
             foreach ($node->childNodes as $item) {
                 if ($item->nodeType == XML_ELEMENT_NODE) {
-                    $result[$item->nodeValue] = $item->getAttribute('key');
+                    if ($item->hasAttribute('key')) {
+                        $result[$item->nodeValue] = $item->getAttribute('key');
+                    } else if ($item->hasAttribute('type')) {
+                        $result[$item->nodeValue][] = $item->getAttribute('type');
+                    } else {
+                        $result[$item->nodeValue] = '';
+                    }
                 }
             }
         }

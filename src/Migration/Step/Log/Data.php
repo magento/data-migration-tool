@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Log;
@@ -104,7 +104,7 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->progress->start($this->getBulksCount(), LogManager::LOG_LEVEL_INFO);
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($sourceDocuments as $sourceDocName) {
             $sourceDocument = $this->source->getDocument($sourceDocName);
@@ -126,7 +126,6 @@ class Data implements StageInterface
                 $pageNumber++;
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
-                    $this->progress->advance(LogManager::LOG_LEVEL_INFO);
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
                     /** @var Record $destRecord */
                     $destRecord = $this->recordFactory->create([
@@ -137,6 +136,7 @@ class Data implements StageInterface
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
             }
+            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
         $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
@@ -203,11 +203,11 @@ class Data implements StageInterface
      *
      * @return int
      */
-    protected function getIterationsCount()
+    protected function getBulksCount()
     {
         $iterations = 0;
         foreach (array_keys($this->readerGroups->getGroup('source_documents')) as $document) {
-            $iterations += $this->source->getRecordsCount($document);
+            $iterations += ceil($this->source->getRecordsCount($document) / $this->source->getPageSize($document));
         }
 
         return count($this->readerGroups->getGroup('destination_documents_to_clear'))

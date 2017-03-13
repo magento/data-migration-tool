@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Console;
@@ -19,13 +19,13 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
-     * @param \Migration\Mode\Settings\Proxy $settingsMode
+     * @param \Migration\Mode\Settings $settingsMode
      */
     public function __construct(
         \Migration\Config $config,
         \Migration\Logger\Manager $logManager,
         \Migration\App\Progress $progress,
-        \Migration\Mode\Settings\Proxy $settingsMode
+        \Migration\Mode\Settings $settingsMode
     ) {
         $this->settingsMode = $settingsMode;
         parent::__construct($config, $logManager, $progress);

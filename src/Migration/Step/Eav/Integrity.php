@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -11,6 +11,8 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
+use Migration\Step\Eav\Integrity\AttributeGroupNames as AttributeGroupNamesIntegrity;
+use Migration\Step\Eav\Integrity\AttributeFrontendInput as AttributeFrontendInputIntegrity;
 
 /**
  * Class Integrity
@@ -20,7 +22,17 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $groups;
+    private $groups;
+
+    /**
+     * @var AttributeGroupNamesIntegrity
+     */
+    private $attributeGroupNamesIntegrity;
+
+    /**
+     * @var AttributeFrontendInputIntegrity
+     */
+    private $attributeFrontendInputIntegrity;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
@@ -29,6 +41,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
+     * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
+     * @param AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity
      * @param string $mapConfigOption
      */
     public function __construct(
@@ -38,9 +52,13 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
+        AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity,
+        AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity,
         $mapConfigOption = 'eav_map_file'
     ) {
         $this->groups = $groupsFactory->create('eav_document_groups_file');
+        $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
+        $this->attributeFrontendInputIntegrity = $attributeFrontendInputIntegrity;
         parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -57,6 +75,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $destinationDocumentName = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
+
+        $this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] = array_merge(
+            $this->attributeGroupNamesIntegrity->checkAttributeGroupNames(),
+            $this->attributeFrontendInputIntegrity->checkAttributeFrontendInput()
+        );
 
         $this->progress->finish();
         return $this->checkForErrors();

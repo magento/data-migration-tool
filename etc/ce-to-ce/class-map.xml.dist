@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -96,7 +96,7 @@
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_media</from>
-        <to>Magento\Catalog\Model\Product\Attribute\Backend\Media</to>
+        <to />
     </rename>
     <rename>
         <from>catalog/product_attribute_backend_msrp</from>
@@ -304,7 +304,7 @@
     </rename>
     <rename>
         <from>eav/entity_increment_numeric</from>
-        <to>Magento\Eav\Model\Entity\Increment\Numeric</to>
+        <to>Magento\Eav\Model\Entity\Increment\NumericValue</to>
     </rename>
     <rename>
         <from>giftmessage/adminhtml_product_helper_form_config</from>

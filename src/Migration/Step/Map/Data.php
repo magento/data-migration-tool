@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Map;
@@ -249,7 +249,7 @@ class Data implements StageInterface
             );
         } catch (\Exception $e) {
             $this->copyDirectly = false;
-            $this->logger->error(
+            $this->logger->warning(
                 'Document ' . $sourceDocument->getName() . ' can not be copied directly because of error: '
                 . $e->getMessage()
             );
@@ -268,7 +268,7 @@ class Data implements StageInterface
     {
         $result = false;
         foreach (array_keys($document->getStructure()->getFields()) as $fieldName) {
-            $handlerConfig = $this->map->getHandlerConfig($document->getName(), $fieldName, $type);
+            $handlerConfig = $this->map->getHandlerConfigs($document->getName(), $fieldName, $type);
             if (!empty($handlerConfig)) {
                 $result = true;
                 break;

@@ -1,10 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
 namespace Migration\ResourceModel;
+
+use \Migration\Config;
 
 /**
  * ResourceModel source class
@@ -24,27 +26,19 @@ class Source extends AbstractResource
     protected $lastLoadedIdentityId = [];
 
     /**
-     * {@inheritdoc}
+     * @var string
      */
-    protected function getResourceConfig()
-    {
-        $source = $this->configReader->getSource();
-        $sourceType = $source['type'];
-        $config['host'] = $source[$sourceType]['host'];
-        $config['dbname'] = $source[$sourceType]['name'];
-        $config['username'] = $source[$sourceType]['user'];
-        $config['password'] = !empty($source[$sourceType]['password'])
-            ? $source[$sourceType]['password']
-            : '';
-        return $config;
-    }
+    protected $documentPrefix;
 
     /**
      * {@inheritdoc}
      */
     protected function getDocumentPrefix()
     {
-        return $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        if (null === $this->documentPrefix) {
+            $this->documentPrefix = $this->configReader->getOption(self::CONFIG_DOCUMENT_PREFIX);
+        }
+        return $this->documentPrefix;
     }
 
     /**
@@ -56,7 +50,7 @@ class Source extends AbstractResource
      */
     public function loadPage($documentName, $pageNumber)
     {
-        return $this->adapter->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
+        return $this->getAdapter()->loadPage($documentName, $pageNumber, $this->getPageSize($documentName));
     }
 
     /**
@@ -81,7 +75,7 @@ class Source extends AbstractResource
             }
         }
 
-        $records = $this->adapter->loadPage(
+        $records = $this->getAdapter()->loadPage(
             $this->addDocumentPrefix($documentName),
             $pageNumber,
             $pageSize,
@@ -135,7 +129,7 @@ class Source extends AbstractResource
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->adapter->createDelta(
+        $this->getAdapter()->createDelta(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey
@@ -153,7 +147,7 @@ class Source extends AbstractResource
      */
     public function getChangedRecords($documentName, $idKey, $pageNumber = 0, $getProcessed = false)
     {
-        return $this->adapter->loadChangedRecords(
+        return $this->getAdapter()->loadChangedRecords(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
@@ -173,7 +167,7 @@ class Source extends AbstractResource
      */
     public function getDeletedRecords($documentName, $idKey, $getProcessed = false)
     {
-        return $this->adapter->loadDeletedRecords(
+        return $this->getAdapter()->loadDeletedRecords(
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey,
             0,
@@ -196,5 +190,13 @@ class Source extends AbstractResource
         }
 
         return $documentName;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getResourceType()
+    {
+        return Config::RESOURCE_TYPE_SOURCE;
     }
 }

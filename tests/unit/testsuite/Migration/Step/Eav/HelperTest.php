@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -47,6 +47,26 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
+     * @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $readerAttributes;
+
+    /**
+     * @var \Migration\ResourceModel\Adapter\Mysql|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $adapter;
+
+    /**
+     * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $pdoMysql;
+
+    /**
+     * @var \Magento\Framework\DB\Select|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $select;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -60,7 +80,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
         $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
-            ->setMethods(['getRecordsCount', 'getRecords'])
+            ->setMethods(['getRecordsCount', 'getRecords', 'getAdapter', 'addDocumentPrefix'])
             ->getMock();
         $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords', 'deleteDocumentBackup'])
@@ -72,6 +92,10 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
+        $this->readerAttributes = $this->getMockBuilder('\Migration\Reader\Groups')
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
         $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
             ->disableOriginalConstructor()
@@ -79,9 +103,27 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $groupsFactory->expects($this->any())
             ->method('create')
-            ->with('eav_document_groups_file')
-            ->willReturn($this->readerGroups);
-
+            ->willReturnMap(
+                [
+                    ['eav_document_groups_file', $this->readerGroups],
+                    ['eav_attribute_groups_file', $this->readerAttributes]
+                ]
+            );
+        $this->adapter = $this->getMock(
+            'Migration\ResourceModel\Adapter\Mysql',
+            ['getSelect'],
+            [],
+            '',
+            false
+        );
+        $this->pdoMysql = $this->getMock(
+            'Magento\Framework\DB\Adapter\Pdo\Mysql',
+            ['fetchPairs'],
+            [],
+            '',
+            false
+        );
+        $this->select = $this->getMock('Magento\Framework\DB\Select', ['from', 'getAdapter'], [], '', false);
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 
@@ -213,5 +255,66 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('some_dest_document'));
         $this->destination->expects($this->once())->method('deleteDocumentBackup')->with('some_dest_document');
         $this->helper->deleteBackups();
+    }
+
+    /**
+     * @return void
+     */
+    public function testClearIgnoredAttributes()
+    {
+        $allSourceRecords = [
+            0 => [
+                'attribute_code' => 'ignored_attribute',
+                'entity_type_id' => 111,
+            ],
+            1 => [
+                'attribute_code' => 'attribute_1',
+                'entity_type_id' => 1,
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2',
+                'entity_type_id' => 2,
+            ]
+        ];
+        $clearedSourceRecords = [
+            1 => [
+                'attribute_code' => 'attribute_1',
+                'entity_type_id' => 1,
+            ],
+            2 => [
+                'attribute_code' => 'attribute_2',
+                'entity_type_id' => 2,
+            ]
+        ];
+        $entityTypesCodeToId = [
+            'ignored_attribute_type' => 111,
+            'attribute_type_1' => 1,
+            'attribute_type_2' => 2,
+        ];
+        $eavEntityTypeTable = 'eav_entity_type';
+        $this->readerAttributes->expects($this->once())->method('getGroup')->with('ignore')
+            ->willReturn(['ignored_attribute' => ['ignored_attribute_type']]);
+        $this->source->expects($this->once())->method('getAdapter')->willReturn($this->adapter);
+        $this->source
+            ->expects($this->once())
+            ->method('addDocumentPrefix')
+            ->with($eavEntityTypeTable)
+            ->willReturn($eavEntityTypeTable);
+        $this->adapter->expects($this->once())->method('getSelect')->willReturn($this->select);
+        $this->select
+            ->expects($this->once())
+            ->method('from')
+            ->with($eavEntityTypeTable, ['entity_type_code', 'entity_type_id'])
+            ->will($this->returnSelf());
+        $this->select
+            ->expects($this->once())
+            ->method('getAdapter')
+            ->will($this->returnValue($this->pdoMysql));
+        $this->pdoMysql
+            ->expects($this->once())
+            ->method('fetchPairs')
+            ->with($this->select)
+            ->will($this->returnValue($entityTypesCodeToId));
+        $this->assertEquals($clearedSourceRecords, $this->helper->clearIgnoredAttributes($allSourceRecords));
     }
 }

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -23,18 +23,6 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $config = [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
-        ];
-        $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
-        ]];
         $this->pdoMysql = $this->getMock(
             '\Magento\Framework\DB\Adapter\Pdo\Mysql',
             [
@@ -60,14 +48,14 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->pdoMysql->expects($this->any())->method('query');
-        $mysqlFactory = $this->getMock('\Magento\Framework\DB\Adapter\Pdo\MysqlFactory', ['create'], [], '', false);
-        $mysqlFactory->expects($this->any())
-            ->method('create')
-            ->with($adapterConfigs)
+        $mysqlBuilder = $this->getMock('\Migration\ResourceModel\Adapter\Pdo\MysqlBuilder', ['build'], [], '', false);
+        $mysqlBuilder->expects($this->any())
+            ->method('build')
+            ->with('source')
             ->willReturn($this->pdoMysql);
 
         $triggerFactory = $this->getMock('\Magento\Framework\DB\Ddl\TriggerFactory', ['create'], [], '', false);
-        $this->adapterMysql = new Mysql($mysqlFactory, $triggerFactory, $config);
+        $this->adapterMysql = new Mysql($mysqlBuilder, $triggerFactory, 'source');
     }
 
     /**

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\EavAttributeGroup;
@@ -11,6 +11,7 @@ use Migration\ResourceModel\Source;
 use Migration\Config;
 use Migration\Exception;
 use Migration\Step\DatabaseStage;
+use Migration\Model\Eav\AttributeGroupNameToCodeMap;
 
 /**
  * Class SetGroupCode
@@ -35,12 +36,19 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     protected $source;
 
     /**
+     * @var AttributeGroupNameToCodeMap
+     */
+    private $groupNameToCodeMap;
+
+    /**
      * @param Config $config
      * @param Source $source
+     * @param AttributeGroupNameToCodeMap $groupNameToCodeMap
      * @throws Exception
      */
-    public function __construct(Config $config, Source $source)
+    public function __construct(Config $config, Source $source, AttributeGroupNameToCodeMap $groupNameToCodeMap)
     {
+        $this->groupNameToCodeMap = $groupNameToCodeMap;
         $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
         $this->source = $source;
     }
@@ -59,10 +67,8 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
             $recordToHandle->setValue($this->field, null);
             return;
         }
-
-        $newValue = preg_replace('/[^a-z0-9]+/', '-', strtolower($recordToHandle->getValue('attribute_group_name')));
-        $newValue = ($newValue == 'migration-general') ? 'product-details' : $newValue;
-        $recordToHandle->setValue($this->field, $newValue);
+        $groupCode = $this->groupNameToCodeMap->getGroupCodeMap($recordToHandle->getValue('attribute_group_name'));
+        $recordToHandle->setValue($this->field, $groupCode);
     }
 
     /**

@@ -1,13 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\ResourceModel\Adapter;
 
 use Magento\Framework\DB\Ddl\Table;
 use Magento\Framework\DB\Ddl\Trigger;
-use Migration\ResourceModel\Document;
 
 /**
  * Mysql adapter
@@ -15,6 +14,7 @@ use Migration\ResourceModel\Document;
 class Mysql implements \Migration\ResourceModel\AdapterInterface
 {
     const BACKUP_DOCUMENT_PREFIX = 'migration_backup_';
+
     /**
      * @var \Magento\Framework\DB\Adapter\AdapterInterface
      */
@@ -36,17 +36,16 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     protected $triggers = [];
 
     /**
-     * @param \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory
+     * @param \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder
      * @param \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory
-     * @param array $config
+     * @param string $resourceType
      */
     public function __construct(
-        \Magento\Framework\DB\Adapter\Pdo\MysqlFactory $adapterFactory,
+        \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder $mysqlBuilder,
         \Magento\Framework\DB\Ddl\TriggerFactory $triggerFactory,
-        array $config
+        $resourceType
     ) {
-        $configData['config'] = $config;
-        $this->resourceAdapter = $adapterFactory->create($configData);
+        $this->resourceAdapter = $mysqlBuilder->build($resourceType);
         $this->setForeignKeyChecks(0);
         $this->triggerFactory = $triggerFactory;
     }
@@ -59,6 +58,17 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     {
         $value = (int) $value;
         $this->resourceAdapter->query("SET FOREIGN_KEY_CHECKS={$value};");
+    }
+
+    /**
+     * Retrieve the foreign keys descriptions for a $documentName table
+     *
+     * @param string $documentName
+     * @return array
+     */
+    public function getForeignKeys($documentName)
+    {
+        return $this->resourceAdapter->getForeignKeys($documentName);
     }
 
     /**
@@ -85,7 +95,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $distinctFields = ($distinctFields && is_array($distinctFields))
             ? 'DISTINCT ' . implode(',', $distinctFields)
             : '*';
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($documentName, 'COUNT(' . $distinctFields . ')');
         $result = $this->resourceAdapter->fetchOne($select);
         return $result;
@@ -96,7 +106,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
     {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($documentName, '*');
         if ($identityField && $identityId !== null) {
             $select->where("`$identityField` >= ?", ($identityId == 0 ? $identityId : $identityId + 1));
@@ -212,7 +222,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $pageSize,
         $getProcessed = false
     ) {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($deltaLogName, [])
             ->join($documentName, "$documentName.$idKey = $deltaLogName.$idKey", '*')
             ->where("`operation` in ('INSERT', 'UPDATE')")
@@ -229,7 +239,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      */
     public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false)
     {
-        $select = $this->resourceAdapter->select();
+        $select = $this->getSelect();
         $select->from($deltaLogName, [$idKey])
             ->where("`operation` = 'DELETE'")
             ->limit($pageSize, $pageNumber * $pageSize);
@@ -312,7 +322,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $tableCopy = $this->getTableDdlCopy($documentName, $backupTableName);
         if (!$this->resourceAdapter->isTableExists($backupTableName)) {
             $this->createTableByDdl($tableCopy);
-            $select = $this->resourceAdapter->select()->from($documentName);
+            $select = $this->getSelect()->from($documentName);
             $query = $this->resourceAdapter->insertFromSelect($select, $tableCopy->getName());
             $this->resourceAdapter->query($query);
         }
@@ -326,7 +336,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $backupTableName = self::BACKUP_DOCUMENT_PREFIX . $documentName;
         if ($this->resourceAdapter->isTableExists($backupTableName)) {
             $this->resourceAdapter->truncateTable($documentName);
-            $select = $this->resourceAdapter->select()->from($backupTableName);
+            $select = $this->getSelect()->from($backupTableName);
             $query = $this->resourceAdapter->insertFromSelect($select, $documentName);
             $this->resourceAdapter->query($query);
             $this->resourceAdapter->dropTable($backupTableName);

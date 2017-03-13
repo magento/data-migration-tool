@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Console;
@@ -19,13 +19,13 @@ class MigrateDataCommand extends AbstractMigrateCommand
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
-     * @param \Migration\Mode\Data\Proxy $dataMode
+     * @param \Migration\Mode\Data $dataMode
      */
     public function __construct(
         \Migration\Config $config,
         \Migration\Logger\Manager $logManager,
         \Migration\App\Progress $progress,
-        \Migration\Mode\Data\Proxy $dataMode
+        \Migration\Mode\Data $dataMode
     ) {
         $this->dataMode = $dataMode;
         parent::__construct($config, $logManager, $progress);

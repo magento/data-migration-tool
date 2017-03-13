@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\TierPrice;
@@ -61,13 +61,19 @@ class Volume extends AbstractVolume
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getSourceDocumentFields()));
+        $sourceDocuments = $this->helper->getSourceDocuments();
+        $destinationDocuments = $this->helper->getDestinationDocuments();
+        $this->progress->start(count($sourceDocuments) + count($destinationDocuments));
 
-        $sourceTotal        = 0;
-        $destinationTotal   = $this->destination->getRecordsCount($this->helper->getDestinationName());
+        $sourceTotal = 0;
+        $destinationTotal = 0;
 
-        foreach (array_keys($this->helper->getSourceDocumentFields()) as $sourceName) {
-            $sourceTotal += $this->source->getRecordsCount($sourceName);
+        foreach ($sourceDocuments as $documentName) {
+            $sourceTotal += $this->source->getRecordsCount($documentName);
+            $this->progress->advance();
+        }
+        foreach ($destinationDocuments as $documentName) {
+            $destinationTotal += $this->destination->getRecordsCount($documentName);
             $this->progress->advance();
         }
 

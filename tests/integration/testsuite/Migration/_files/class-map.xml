@@ -1,11 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
 <classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/class-map.xsd">
+    <rename>
+        <from>customer/customer</from>
+        <to>Magento\Customer\Model\ResourceModel\Customer</to>
+    </rename>
+    <rename>
+        <from>catalog/product</from>
+        <to>Magento\Catalog\Model\ResourceModel\Product</to>
+    </rename>
+    <rename>
+        <from>customer/attribute</from>
+        <to>Magento\Customer\Model\Attribute</to>
+    </rename>
+    <rename>
+        <from>eav/entity_increment_numeric</from>
+        <to>Magento\Eav\Model\Entity\Increment\NumericValue</to>
+    </rename>
+    <rename>
+        <from>customer/attribute_collection</from>
+        <to>Magento\Customer\Model\ResourceModel\Attribute\Collection</to>
+    </rename>
+    <rename>
+        <from>catalog/resource_eav_attribute</from>
+        <to>Magento\Catalog\Model\ResourceModel\Eav\Attribute</to>
+    </rename>
+    <rename>
+        <from>catalog/product_attribute_collection</from>
+        <to>Magento\Catalog\Model\ResourceModel\Product\Attribute\Collection</to>
+    </rename>
     <rename>
         <from>catalog/product_attribute_backend_sku</from>
         <to>Magento\Catalog\Model\Product\Attribute\Backend\Sku</to>

@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -50,11 +50,11 @@ CREATE TABLE `catalog_category_entity_varchar` (
   `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `entity_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Entity ID',
+  `row_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Row ID',
   `value` varchar(255) DEFAULT NULL COMMENT 'Value',
   PRIMARY KEY (`value_id`),
-  UNIQUE KEY `UNQ_CAT_CTGR_ENTT_VCHR_ENTT_TYPE_ID_ENTT_ID_ATTR_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
-  KEY `IDX_CATALOG_CATEGORY_ENTITY_VARCHAR_ENTITY_ID` (`entity_id`),
+  UNIQUE KEY `UNQ_CAT_CTGR_ENTT_VCHR_ENTT_TYPE_ID_ENTT_ID_ATTR_ID_STORE_ID` (`row_id`,`attribute_id`,`store_id`),
+  KEY `IDX_CATALOG_CATEGORY_ENTITY_VARCHAR_ROW_ID` (`row_id`),
   KEY `IDX_CATALOG_CATEGORY_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
   KEY `IDX_CATALOG_CATEGORY_ENTITY_VARCHAR_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COMMENT='Catalog Category Varchar Attribute Backend Table';
@@ -84,10 +84,10 @@ CREATE TABLE `catalog_product_entity_varchar` (
   `value_id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'Value ID',
   `attribute_id` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Attribute ID',
   `store_id` smallint(5) unsigned NOT NULL DEFAULT '0' COMMENT 'Store ID',
-  `entity_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Entity ID',
+  `row_id` int(10) unsigned NOT NULL DEFAULT '0' COMMENT 'Row ID',
   `value` varchar(255) DEFAULT NULL COMMENT 'Value',
   PRIMARY KEY (`value_id`),
-  UNIQUE KEY `UNQ_CAT_PRD_ENTT_VCHR_ENTT_ID_ATTR_ID_STORE_ID` (`entity_id`,`attribute_id`,`store_id`),
+  UNIQUE KEY `UNQ_CAT_PRD_ENTT_VCHR_ENTT_ID_ATTR_ID_STORE_ID` (`row_id`,`attribute_id`,`store_id`),
   KEY `IDX_CATALOG_PRODUCT_ENTITY_VARCHAR_ATTRIBUTE_ID` (`attribute_id`),
   KEY `IDX_CATALOG_PRODUCT_ENTITY_VARCHAR_STORE_ID` (`store_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Catalog Product Varchar Attribute Backend Table';

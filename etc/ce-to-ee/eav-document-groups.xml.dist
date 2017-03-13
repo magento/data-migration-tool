@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -15,9 +15,53 @@
         <document>customer_eav_attribute</document>
         <document>eav_entity_type</document>
     </group>
-    <group name="mapped_documents">
+    <group name="documents_attribute_extended">
         <document key="attribute_id">catalog_eav_attribute</document>
         <document key="attribute_id">customer_eav_attribute</document>
-        <document key="entity_type_id">eav_entity_type</document>
+    </group>
+    <group name="documents_leftover_values">
+        <document>catalog_category_entity_datetime</document>
+        <document>catalog_category_entity_decimal</document>
+        <document>catalog_category_entity_int</document>
+        <document>catalog_category_entity_text</document>
+        <document>catalog_category_entity_varchar</document>
+        <document>catalog_eav_attribute</document>
+        <document>catalog_product_entity_datetime</document>
+        <document>catalog_product_entity_decimal</document>
+        <document>catalog_product_entity_gallery</document>
+        <document>catalog_product_entity_int</document>
+        <document>catalog_product_entity_media_gallery</document>
+        <document>catalog_product_entity_text</document>
+        <document>catalog_product_entity_varchar</document>
+        <document>customer_address_entity_datetime</document>
+        <document>customer_address_entity_decimal</document>
+        <document>customer_address_entity_int</document>
+        <document>customer_address_entity_text</document>
+        <document>customer_address_entity_varchar</document>
+        <document>customer_eav_attribute</document>
+        <document>customer_eav_attribute_website</document>
+        <document>customer_entity_datetime</document>
+        <document>customer_entity_decimal</document>
+        <document>customer_entity_int</document>
+        <document>customer_entity_text</document>
+        <document>customer_entity_varchar</document>
+        <document>customer_form_attribute</document>
+        <document>eav_attribute_label</document>
+        <document>eav_attribute_option</document>
+        <document>eav_entity_attribute</document>
+        <document>eav_form_element</document>
+        <document>salesrule_product_attribute</document>
+        <document>weee_tax</document>
+    </group>
+    <group name="documents_leftover_values_ee">
+        <document>magento_giftcard_amount</document>
+        <document>magento_rma_item_eav_attribute</document>
+        <document>magento_rma_item_eav_attribute_website</document>
+        <document>magento_rma_item_entity_datetime</document>
+        <document>magento_rma_item_entity_decimal</document>
+        <document>magento_rma_item_entity_int</document>
+        <document>magento_rma_item_entity_text</document>
+        <document>magento_rma_item_entity_varchar</document>
+        <document>magento_rma_item_form_attribute</document>
     </group>
 </groups>

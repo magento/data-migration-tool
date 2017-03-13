@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -36,6 +36,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $readerGroups;
 
     /**
+     * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $destination;
+
+    /**
      * @var \Migration\Step\Eav\Volume
      */
     protected $volume;
@@ -54,7 +59,8 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                     'getDestinationRecords',
                     'getSourceRecordsCount',
                     'getDestinationRecordsCount',
-                    'deleteBackups'
+                    'deleteBackups',
+                    'clearIgnoredAttributes'
                 ]
             )->getMock();
         $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
@@ -77,13 +83,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with('eav_document_groups_file')
             ->willReturn($this->readerGroups);
+        $this->destination = $this->getMockBuilder('\Migration\ResourceModel\Destination')
+            ->disableOriginalConstructor()
+            ->setMethods(['getDocument'])
+            ->getMock();
 
         $this->volume = new Volume(
             $this->helper,
             $this->initialData,
             $this->logger,
             $this->progress,
-            $groupsFactory
+            $groupsFactory,
+            $this->destination
         );
     }
 
@@ -101,7 +112,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null
+                'data_model' => null,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
             ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
@@ -111,7 +125,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => null,
                 'source_model' => null,
                 'frontend_input_renderer' => null,
-                'data_model' => null
+                'data_model' => null,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
             ]
         ];
         $this->progress->expects($this->once())->method('start');
@@ -137,7 +154,12 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
         $this->helper->expects($this->once())->method('deleteBackups');
+        $this->helper->expects($this->any())->method('clearIgnoredAttributes')->with($eavAttributes)
+            ->willReturn($eavAttributes);
         $this->logger->expects($this->never())->method('addRecord');
+
+        $documentsMap = $this->getDocumentsMap();
+        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
 
         $this->assertTrue($this->volume->perform());
     }
@@ -156,7 +178,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => 1,
                 'source_model' => 1,
                 'frontend_input_renderer' => 1,
-                'data_model' => 1],
+                'data_model' => 1,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
+            ],
             'eav_attribute_2' => [
                 'attribute_id' => '2',
                 'attribute_code' => 'attribute_code_2',
@@ -165,7 +191,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                 'frontend_model' => 1,
                 'source_model' => 1,
                 'frontend_input_renderer' => 1,
-                'data_model' => 1]
+                'data_model' => 1,
+                'entity_model' => null,
+                'increment_model' => null,
+                'entity_attribute_collection' => null,
+            ],
         ];
         $this->progress->expects($this->once())->method('start');
         $this->progress->expects($this->once())->method('finish');
@@ -192,6 +222,47 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->never())->method('deleteBackups');
         $this->logger->expects($this->atLeastOnce())->method('addRecord');
 
+        $documentsMap = $this->getDocumentsMap();
+        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
+
         $this->assertFalse($this->volume->perform());
+    }
+
+    /**
+     * @return array
+     */
+    protected function getDocumentsMap()
+    {
+        $structureFields = [
+            'eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'catalog_eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'customer_eav_attribute' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+            'eav_entity_type' =>
+                [
+                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+                ],
+        ];
+        $documentsMap = [];
+        foreach ($structureFields as $documentName => $structure) {
+            $structure = new \Migration\ResourceModel\Structure($structureFields[$documentName]);
+            $destDocument = $this->getMock('\Migration\ResourceModel\Document', ['getStructure'], [], '', false);
+            $destDocument->expects($this->once())->method('getStructure')->willReturn($structure);
+            $documentsMap[] = [$documentName, $destDocument];
+        }
+
+        return $documentsMap;
     }
 }

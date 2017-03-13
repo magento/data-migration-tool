@@ -1,11 +1,12 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\ConfigurablePrices;
 
 use Migration\ResourceModel\Destination;
+use Migration\Config;
 
 /**
  * Class Helper
@@ -23,12 +24,20 @@ class Helper
     protected $destinationRecordsCount = 0;
 
     /**
+     * @var string
+     */
+    protected $editionMigrate = '';
+
+    /**
      * @param Destination $destination
+     * @param Config $config
      */
     public function __construct(
-        Destination $destination
+        Destination $destination,
+        Config $config
     ) {
         $this->destination = $destination;
+        $this->editionMigrate = $config->getOption('edition_migrate');
     }
 
     /**
@@ -49,10 +58,13 @@ class Helper
      */
     public function getDestinationFields()
     {
+        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+            ? 'entity_id'
+            : 'row_id';
         return [
             'store_id' => 'catalog_product_entity_decimal',
             'value' => 'catalog_product_entity_decimal',
-            'entity_id' => 'catalog_product_entity_decimal',
+            $entityIdName => 'catalog_product_entity_decimal',
             'attribute_id' => 'catalog_product_entity_decimal'
         ];
     }

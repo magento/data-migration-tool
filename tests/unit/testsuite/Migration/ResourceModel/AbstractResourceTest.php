@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\ResourceModel;
@@ -25,7 +25,12 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\ResourceModel\AdapterFactory|\PHPUnit_Framework_MockObject_MockObject
      */
-    protected $adapterFactory;
+    protected $adapterFactorySource;
+
+    /**
+     * @var \Migration\ResourceModel\AdapterFactory|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $adapterFactoryDestination;
 
     /**
      * @var \Migration\ResourceModel\DocumentFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -57,38 +62,13 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $config = [
-            'type' => 'database',
-            'version' => '1.14.1.0',
-            'database' => [
-                'host' => 'localhost',
-                'name' => 'dbname',
-                'user' => 'uname',
-                'password' => 'upass',
-            ]
-        ];
-        $destinationConfig = $config;
-        $destinationConfig['version'] = '2.0.0.0';
-
-        $adapterConfigs = ['config' => [
-            'host' => 'localhost',
-            'dbname' => 'dbname',
-            'username' => 'uname',
-            'password' => 'upass',
-        ]];
         $this->config = $this->getMock(
             '\Migration\Config',
-            ['getOption', 'getDestination', 'getSource'],
+            ['getOption'],
             [],
             '',
             false
         );
-        $this->config->expects($this->once())
-            ->method('getDestination')
-            ->will($this->returnValue($destinationConfig));
-        $this->config->expects($this->once())
-            ->method('getSource')
-            ->will($this->returnValue($config));
         $this->adapter = $this->getMock(
             '\Migration\ResourceModel\Adapter\Mysql',
             ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
@@ -96,10 +76,27 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             '',
             false
         );
-        $this->adapterFactory = $this->getMock('\Migration\ResourceModel\AdapterFactory', ['create'], [], '', false);
-        $this->adapterFactory->expects($this->any())
+        $this->adapterFactorySource = $this->getMock(
+            '\Migration\ResourceModel\AdapterFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $this->adapterFactorySource->expects($this->any())
             ->method('create')
-            ->with($adapterConfigs)
+            ->with(['resourceType' => 'source'])
+            ->will($this->returnValue($this->adapter));
+        $this->adapterFactoryDestination = $this->getMock(
+            '\Migration\ResourceModel\AdapterFactory',
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $this->adapterFactoryDestination->expects($this->any())
+            ->method('create')
+            ->with(['resourceType' => 'destination'])
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock(
             '\Migration\ResourceModel\DocumentFactory',
@@ -124,7 +121,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->resourceDestination = new \Migration\ResourceModel\Destination(
-            $this->adapterFactory,
+            $this->adapterFactoryDestination,
             $this->config,
             $this->documentFactory,
             $this->structureFactory,
@@ -132,7 +129,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->resourceSource = new \Migration\ResourceModel\Source(
-            $this->adapterFactory,
+            $this->adapterFactorySource,
             $this->config,
             $this->documentFactory,
             $this->structureFactory,
@@ -152,10 +149,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $structureData = ['id' => 'int'];
         $structure = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
         $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with($optionName)
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            [$optionName, $prefix]
+        ]);
         $this->documentFactory->expects($this->any())
             ->method('create')
             ->with($this->equalTo(['structure' => $structure, 'documentName' => $resourceName]))
@@ -192,11 +189,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetWrongDocument()
     {
-        $prefix = 'prefix_';
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('dest_prefix')
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['dest_prefix', 'prefix_']
+        ]);
         $this->adapter->expects($this->any())
             ->method('getDocumentList')
             ->willReturn(['document']);
@@ -210,12 +206,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     public function testGetRecordsCount()
     {
         $prefix = 'prefix_';
-        $this->config->expects($this->any())
-            ->method('getOption')
-            ->with('dest_prefix')
-            ->will($this->returnValue($prefix));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['dest_prefix', $prefix]
+        ]);
         $resourceName = 'core_config_data';
-
         $this->adapter->expects($this->any())
             ->method('getRecordsCount')
             ->with($prefix . $resourceName)
@@ -231,8 +226,11 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $pageNumber = 2;
-        $this->config->expects($this->at(0))->method('getOption')->with('bulk_size')->will($this->returnValue(100));
-        $this->config->expects($this->at(1))->method('getOption')->with('dest_prefix')->will($this->returnValue(100));
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([
+            ['edition_migrate', 'ce-to-ee'],
+            ['bulk_size', 100],
+            ['dest_prefix', 100],
+        ]);
         $this->adapter->expects($this->once())->method('loadPage');
         $this->resourceDestination->getRecords($resourceName, $pageNumber);
     }
@@ -242,6 +240,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAdapter()
     {
+        $this->config->expects($this->any())->method('getOption')->willReturnMap([['edition_migrate', 'ce-to-ee']]);
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }

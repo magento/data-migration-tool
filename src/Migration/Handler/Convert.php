@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -19,15 +19,21 @@ class Convert extends AbstractHandler implements HandlerInterface
     protected $map = [];
 
     /**
+     * @var string|null
+     */
+    protected $defaultValue;
+
+    /**
      * @param string $map
+     * @param string|null $defaultValue
      * @throws Exception
      */
-    public function __construct($map)
+    public function __construct($map, $defaultValue = null)
     {
         $map = rtrim($map, ']');
         $map = ltrim($map, '[');
         $map = explode(';', $map);
-        $resultMap =[];
+        $resultMap = [];
         foreach ($map as $mapRecord) {
             $explodedRecord = explode(':', trim($mapRecord));
             if (count($explodedRecord) != 2) {
@@ -37,6 +43,9 @@ class Convert extends AbstractHandler implements HandlerInterface
             $resultMap[$key] = $value;
         }
         $this->map = $resultMap;
+        if ($defaultValue) {
+            $this->defaultValue = $defaultValue;
+        }
     }
 
     /**
@@ -48,6 +57,8 @@ class Convert extends AbstractHandler implements HandlerInterface
         $value = $recordToHandle->getValue($this->field);
         if (isset($this->map[$value])) {
             $value = $this->map[$value];
+        } elseif (null != $this->defaultValue) {
+            $value = $this->defaultValue;
         }
         $recordToHandle->setValue($this->field, $value);
     }

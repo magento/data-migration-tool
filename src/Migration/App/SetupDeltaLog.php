@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App;
@@ -27,6 +27,11 @@ class SetupDeltaLog implements StageInterface
     protected $progress;
 
     /**
+     * @var \Migration\Reader\GroupsFactory
+     */
+    private $groupsFactory;
+
+    /**
      * @param Source $source
      * @param \Migration\Reader\GroupsFactory $groupsFactory
      * @param ProgressBar\LogLevelProcessor $progress
@@ -37,7 +42,7 @@ class SetupDeltaLog implements StageInterface
         ProgressBar\LogLevelProcessor $progress
     ) {
         $this->source = $source;
-        $this->groupsReader = $groupsFactory->create('delta_document_groups_file');
+        $this->groupsFactory = $groupsFactory;
         $this->progress = $progress;
     }
 
@@ -46,7 +51,7 @@ class SetupDeltaLog implements StageInterface
      */
     public function perform()
     {
-        $deltaLogs = $this->groupsReader->getGroups();
+        $deltaLogs = $this->getGroupsReader()->getGroups();
         $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
         foreach ($deltaLogs as $deltaDocuments) {
             foreach ($deltaDocuments as $documentName => $idKey) {
@@ -58,5 +63,16 @@ class SetupDeltaLog implements StageInterface
         }
         $this->progress->finish();
         return true;
+    }
+
+    /**
+     * @return Groups
+     */
+    private function getGroupsReader()
+    {
+        if (null == $this->groupsReader) {
+            $this->groupsReader = $this->groupsFactory->create('delta_document_groups_file');
+        }
+        return $this->groupsReader;
     }
 }

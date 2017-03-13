@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -30,6 +30,11 @@ class InitialData
      * @var array;
      */
     protected $attributeGroups;
+
+    /**
+     * @var array;
+     */
+    protected $entityTypes;
 
     /**
      * @var Source
@@ -67,6 +72,7 @@ class InitialData
 
     /**
      * Load EAV data before migration
+     *
      * @return void
      */
     public function init()
@@ -74,10 +80,25 @@ class InitialData
         $this->initAttributeSets();
         $this->initAttributeGroups();
         $this->initAttributes();
+        $this->initEntityTypes();
+    }
+
+    /**
+     * Load all entity types
+     *
+     * @return void
+     */
+    protected function initEntityTypes()
+    {
+        if ($this->entityTypes === null) {
+            $this->entityTypes['source'] = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
+            $this->entityTypes['dest'] = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
+        }
     }
 
     /**
      * Load all attributes from source and destination
+     *
      * @return void
      */
     protected function initAttributes()
@@ -113,6 +134,7 @@ class InitialData
 
     /**
      * Load attribute group data before migration
+     *
      * @return void
      */
     protected function initAttributeGroups()
@@ -121,6 +143,16 @@ class InitialData
             'eav_attribute_group',
             ['attribute_set_id', 'attribute_group_name']
         );
+    }
+
+    /**
+     * @codeCoverageIgnore
+     * @param string $type
+     * @return array
+     */
+    public function getEntityTypes($type)
+    {
+        return $this->entityTypes[$type];
     }
 
     /**

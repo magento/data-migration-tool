@@ -1,13 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
 <groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
     <group name="ignore">
-        <attribute>msrp_enabled</attribute>
-        <attribute>group_price</attribute>
+        <attribute type="catalog_product">msrp_enabled</attribute>
+        <attribute type="catalog_product">group_price</attribute>
+    </group>
+    <group name="frontend_input_empty_allowed">
+        <attribute type="catalog_product">samples_title</attribute>
+        <attribute type="catalog_product">links_title</attribute>
+        <attribute type="catalog_product">links_exist</attribute>
+        <attribute type="catalog_product">links_purchased_separately</attribute>
+        <attribute type="catalog_product">old_id</attribute>
+        <attribute type="catalog_product">price_type</attribute>
+        <attribute type="catalog_product">sku_type</attribute>
+        <attribute type="catalog_product">weight_type</attribute>
+        <attribute type="catalog_product">shipment_type</attribute>
+        <attribute type="catalog_product">url_path</attribute>
+        <attribute type="catalog_category">url_path</attribute>
+        <attribute type="catalog_category">path</attribute>
+        <attribute type="catalog_category">path_in_store</attribute>
+        <attribute type="catalog_category">position</attribute>
+        <attribute type="catalog_category">level</attribute>
+        <attribute type="catalog_category">all_children</attribute>
+        <attribute type="catalog_category">children</attribute>
+        <attribute type="catalog_category">children_count</attribute>
+        <attribute type="order">currency_rate</attribute>
+        <attribute type="order">tax_percent</attribute>
+        <attribute type="order">currency_base_id</attribute>
+        <attribute type="order">real_order_id</attribute>
+        <attribute type="order">currency_code</attribute>
+        <attribute type="order_item">qty</attribute>
+        <attribute type="order_item">tier_price</attribute>
+        <attribute type="order_item">model</attribute>
+        <attribute type="order_address">address_id</attribute>
+        <attribute type="order_address">tax_id</attribute>
+        <attribute type="order_payment">cc_raw_request</attribute>
+        <attribute type="order_payment">cc_raw_response</attribute>
+        <attribute type="order_status">status</attribute>
+        <attribute type="order_status">comments</attribute>
     </group>
 </groups>

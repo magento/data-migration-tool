@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -8,7 +8,7 @@ namespace Migration\Step\UrlRewrite;
 
 /**
  * UrlRewrite step test class
- * @dbFixture url_rewrite
+ * @dbFixture url_rewrite_11410
  */
 class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration;
@@ -50,7 +50,16 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
             false
         );
         $this->destDocument = $this->getMock('Migration\ResourceModel\Document', ['getStructure'], [], '', false);
-        $this->mapReader = $this->getMock('Migration\Reader\MapInterface');
+        $this->mapReader = $this->getMockForAbstractClass(
+            'Migration\Reader\MapInterface',
+            [],
+            '',
+            false
+        );
+        $this->mapReader->expects($this->any())->method('getHandlerConfigs')->willReturn([
+            ['class' => 'FirstHandlerFullyQualifiedName', 'params' => []],
+            ['class' => 'SecondHandlerFullyQualifiedName', 'params' => []]
+        ]);
         $this->handlerManagerFactory = $this->getMock(
             'Migration\Handler\ManagerFactory',
             ['create'],

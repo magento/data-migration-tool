@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -76,7 +76,7 @@ class Delta extends AbstractDelta
         $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
         $entityType = $this->helper->getEntityTypeData('entity_type_id', $data['entity_type_id']);
         $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType($data['entity_type_id']);
-        if ($incrementMaxNumber === false) {
+        if ($incrementMaxNumber === false || empty($entityType)) {
             return;
         }
         foreach ($this->helper->getStoreIds() as $storeId) {

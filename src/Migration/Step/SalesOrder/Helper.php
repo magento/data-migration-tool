@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\SalesOrder;
@@ -71,7 +71,6 @@ class Helper
     {
         return ['sales_flat_order' => 'sales_order'];
     }
-
 
     /**
      * @return string

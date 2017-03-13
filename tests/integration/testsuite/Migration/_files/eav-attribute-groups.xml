@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
 <groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
     <group name="ignore">
-        <attribute>msrp_enabled</attribute>
-        <attribute>group_price</attribute>
+        <attribute type="catalog_product">msrp_enabled</attribute>
+        <attribute type="catalog_product">group_price</attribute>
     </group>
 </groups>

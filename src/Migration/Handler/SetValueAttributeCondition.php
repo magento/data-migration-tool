@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2015 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -58,6 +58,9 @@ class SetValueAttributeCondition extends AbstractHandler implements HandlerInter
     {
         $this->validate($recordToHandle);
         if ($this->checkAttributeIdCode($recordToHandle->getValue('attribute_id'), $this->attributeCode)) {
+            if ('null' === $this->value) {
+                $this->value = null;
+            }
             $recordToHandle->setValue($this->field, $this->value);
         }
     }

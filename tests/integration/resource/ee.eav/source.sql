@@ -1,5 +1,5 @@
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -127,6 +127,8 @@ ENGINE=InnoDB
 ;
 INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`) VALUES (4, 4, 'General', 1, 1);
 INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`) VALUES (1, 1, 'General', 1, 1);
+INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`) VALUES (5,	4, 'Prices', 2,	0);
+INSERT INTO `eav_attribute_group` (`attribute_group_id`, `attribute_set_id`, `attribute_group_name`, `sort_order`, `default_id`) VALUES (6,	4, 'Design', 3,	0);
 
 CREATE TABLE `eav_entity_attribute` (
   `entity_attribute_id` INT(10) UNSIGNED NOT NULL COMMENT 'Entity Attribute Id',

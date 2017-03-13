@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -99,6 +99,9 @@
             <xs:element name="progress_bar_format" type="xs:string" maxOccurs="1"/>
             <xs:element name="upgrade_customer_password_hash" type="xs:string" maxOccurs="1"/>
             <xs:element name="crypt_key" type="xs:string" maxOccurs="1"/>
+            <xs:element name="edition_migrate" type="xs:string" maxOccurs="1"/>
+            <xs:element name="init_statements_source" type="xs:string" maxOccurs="1"/>
+            <xs:element name="init_statements_destination" type="xs:string" maxOccurs="1"/>
             <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
         </xs:choice>
     </xs:complexType>

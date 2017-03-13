@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Reader;
@@ -282,27 +282,32 @@ class Map implements MapInterface
     /**
      * @inheritdoc
      */
-    public function getHandlerConfig($document, $field, $type)
+    public function getHandlerConfigs($document, $field, $type)
     {
         $this->validateType($type);
-        $config = [];
+        $configs = [];
 
         $nodes = $this->xml->query(
             sprintf('//%s/field_rules/transform[field/text()="%s.%s"]/handler', $type, $document, $field)
         );
+        
         /** @var \DOMElement $node */
         foreach ($nodes as $node) {
-            $config['class'] = $node->getAttribute('class');
-            $config['params'] = [];
+            $config = [
+                'class'  => $node->getAttribute('class'),
+                'params' => [],
+            ];
             /** @var \DOMElement $param */
             foreach ($node->childNodes as $param) {
                 if ($param->nodeType == XML_ELEMENT_NODE) {
                     $config['params'][$param->getAttribute('name')] = $param->getAttribute('value');
                 }
             }
+
+            $configs[]= $config;
         }
 
-        return $config;
+        return $configs;
     }
 
     /**

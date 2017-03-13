@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -48,6 +48,16 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     protected $map;
 
     /**
+     * @var \Migration\Step\Eav\Integrity\AttributeGroupNames|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $attributeGroupNames;
+
+    /**
+     * @var \Migration\Step\Eav\Integrity\AttributeFrontendInput|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $attributeFrontendInput;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -68,6 +78,20 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getDocumentList', 'getFieldMap', 'isDocumentIgnored'])
             ->getMock();
+        $this->attributeGroupNames = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeGroupNames')
+            ->setMethods(['checkAttributeGroupNames'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->attributeGroupNames->expects($this->once())
+            ->method('checkAttributeGroupNames')
+            ->willReturn([]);
+        $this->attributeFrontendInput = $this->getMockBuilder('Migration\Step\Eav\Integrity\AttributeFrontendInput')
+            ->setMethods(['checkAttributeFrontendInput'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->attributeFrontendInput->expects($this->once())
+            ->method('checkAttributeFrontendInput')
+            ->willReturn([]);
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
         $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
@@ -92,7 +116,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $mapFactory,
-            $groupsFactory
+            $groupsFactory,
+            $this->attributeGroupNames,
+            $this->attributeFrontendInput
         );
     }
 

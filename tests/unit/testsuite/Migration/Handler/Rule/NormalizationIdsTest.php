@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Rule;
@@ -40,6 +40,11 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
     protected $normalizationField = 'website_id';
 
     /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $config;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -47,8 +52,14 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
         $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
             ->setMethods(['clearDocument', 'saveRecords'])
             ->getMock();
+        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+            ->setMethods(['getOption'])
+            ->getMock();
+        $this->config->expects($this->once())->method('getOption')
+            ->willReturn(\Migration\Config::EDITION_MIGRATE_CE_TO_CE);
         $this->handler = new NormalizationIds(
             $this->destination,
+            $this->config,
             $this->normalizationDocument,
             $this->normalizationField
         );

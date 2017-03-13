@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Customer;
@@ -182,17 +182,15 @@ class Helper
         /** @var Record $record */
         foreach ($destinationRecords as $record) {
             if (isset($recordAttributesData[$record->getValue('entity_id')])) {
+                $recordEntityData = $recordAttributesData[$record->getValue('entity_id')];
                 if ($this->configReader->getOption(self::UPGRADE_CUSTOMER_PASSWORD_HASH)) {
-                    $recordAttributesData = $this->upgradeCustomerHash(
-                        $recordAttributesData,
-                        $record->getValue('entity_id')
-                    );
+                    $recordEntityData = $this->upgradeCustomerHash($recordEntityData);
                 }
                 $data = $record->getData();
                 $data = array_merge(
                     array_fill_keys($attributeCodes, null),
                     $data,
-                    $recordAttributesData[$record->getValue('entity_id')]
+                    $recordEntityData
                 );
                 $record->setData($data);
             }
@@ -347,21 +345,20 @@ class Helper
      * Upgrade customer hash according M2 algorithm versions
      *
      * @param array $recordAttributesData
-     * @param string $entityId
      * @return array
      */
-    private function upgradeCustomerHash($recordAttributesData, $entityId)
+    private function upgradeCustomerHash($recordAttributesData)
     {
-        if (isset($recordAttributesData[$entityId]['password_hash'])) {
-            $hash = $this->explodePasswordHash($recordAttributesData[$entityId]['password_hash']);
+        if (isset($recordAttributesData['password_hash'])) {
+            $hash = $this->explodePasswordHash($recordAttributesData['password_hash']);
 
             if (strlen($hash[self::PASSWORD_HASH]) == 32) {
-                $recordAttributesData[$entityId]['password_hash'] = implode(
+                $recordAttributesData['password_hash'] = implode(
                     ':',
                     [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '0']
                 );
             } elseif (strlen($hash[self::PASSWORD_HASH]) == 64) {
-                $recordAttributesData[$entityId]['password_hash'] = implode(
+                $recordAttributesData['password_hash'] = implode(
                     ':',
                     [$hash[self::PASSWORD_HASH], $hash[self::PASSWORD_SALT], '1']
                 );

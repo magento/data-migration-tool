@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -48,6 +48,16 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
     protected $recordFactory;
 
     /**
+     * @var int
+     */
+    private $recordsAmount = 123;
+
+    /**
+     * @var int
+     */
+    private $pageSize = 20;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -69,12 +79,14 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
 
         $select = $this->getMockBuilder('Magento\Framework\DB\Select')
-            ->setMethods(['from', 'joinLeft'])
+            ->setMethods(['from', 'joinLeft', 'where', 'group'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $select->expects($this->any())->method('from')->willReturnSelf();
         $select->expects($this->any())->method('joinLeft')->willReturnSelf();
+        $select->expects($this->any())->method('where')->willReturnSelf();
+        $select->expects($this->any())->method('group')->willReturnSelf();
 
         $sourceAdapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
             ->setMethods(['getSelect', 'loadDataFromSelect'])
@@ -188,13 +200,13 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
      */
     public function testData()
     {
-        $countCmsPageRewrites = 1;
-        $recordsAmount = 123;
-        $progressRecordsAmount = $recordsAmount + $countCmsPageRewrites;
-
+        $progressRecordsAmount = ceil($this->recordsAmount / $this->pageSize);
         $this->source->expects($this->once())
             ->method('getRecordsCount')
-            ->willReturn($recordsAmount);
+            ->willReturn($this->recordsAmount);
+        $this->source->expects($this->once())
+            ->method('getPageSize')
+            ->willReturn($this->pageSize);
         $this->progress->expects($this->at(0))
             ->method('start')
             ->with($this->equalTo($progressRecordsAmount));
@@ -229,7 +241,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
                 [\Migration\Step\UrlRewrite\Version191to2000::DESTINATION_PRODUCT_CATEGORY]
             );
 
-        $this->source->expects($this->at(2))
+        $this->source->expects($this->at(3))
             ->method('getRecords')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE), $this->equalTo(0))
             ->willReturn(['RecordData1']);

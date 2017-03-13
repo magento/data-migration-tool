@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2016 Magento. All rights reserved.
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\TierPrice;
@@ -9,6 +9,7 @@ use Migration\ResourceModel;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\MapInterface;
+use Migration\Reader\MapFactory;
 
 /**
  * Class Integrity
@@ -46,19 +47,20 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
+     * @param MapFactory $mapFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
         Helper $helper,
         Logger $logger,
         ProgressBar\LogLevelProcessor $progress,
         ResourceModel\Source $source,
-        ResourceModel\Destination $destination
+        ResourceModel\Destination $destination,
+        MapFactory $mapFactory,
+        $mapConfigOption = 'tier_price_map_file'
     ) {
+        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
         $this->helper = $helper;
-        $this->logger = $logger;
-        $this->progress = $progress;
-        $this->source = $source;
-        $this->destination = $destination;
     }
 
     /**
@@ -67,8 +69,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->checkFields($this->helper->getSourceDocumentFields(), MapInterface::TYPE_SOURCE);
-        $this->checkFields($this->helper->getDestinationDocumentFields(), MapInterface::TYPE_DEST);
+        $this->check($this->helper->getSourceDocuments(), MapInterface::TYPE_SOURCE);
+        $this->check($this->helper->getDestinationDocuments(), MapInterface::TYPE_DEST);
         $this->progress->finish();
         return $this->checkForErrors();
     }
@@ -80,39 +82,14 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     protected function getIterationsCount()
     {
-        return count($this->helper->getSourceDocumentFields()) + count($this->helper->getDestinationDocumentFields());
+        return count($this->helper->getSourceDocuments()) + count($this->helper->getDestinationDocuments());
     }
 
     /**
-     * @param array $tableFields
-     * @param string $sourceType
-     * @return void
+     * {@inheritdoc}
      */
-    protected function checkFields($tableFields, $sourceType)
+    protected function getMappedDocumentName($documentName, $type)
     {
-        foreach ($tableFields as $documentName => $fieldsData) {
-            $source     = $this->getResourceModel($sourceType);
-            $document   = $source->getDocument($documentName);
-            $structure  = array_keys($document->getStructure()->getFields());
-
-            $fieldsDiff = array_diff($fieldsData, $structure);
-            if (!empty($fieldsDiff)) {
-                $this->missingDocumentFields[$sourceType][$documentName] = $fieldsDiff;
-            }
-            $this->progress->advance();
-        }
-    }
-
-    /**
-     * @param string $sourceType
-     * @return ResourceModel\Destination|ResourceModel\Source
-     */
-    protected function getResourceModel($sourceType)
-    {
-        $map = [
-            MapInterface::TYPE_SOURCE   => $this->source,
-            MapInterface::TYPE_DEST     => $this->destination,
-        ];
-        return $map[$sourceType];
+        return $this->helper->getMappedDocumentName($documentName, $type);
     }
 }
