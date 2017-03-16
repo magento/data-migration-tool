@@ -22,7 +22,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $version = 1;
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -32,7 +32,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->any())->method('setValue')->with($fieldName, $id);
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record2 */
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['setValue'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -40,7 +40,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $record2->expects($this->any())->method('setValue')->willReturn($createdVersionField, $version);
 
         /** @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
-        $destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
+        $destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->setMethods(['clearDocument', 'saveRecords'])
             ->disableOriginalConstructor()
             ->getMock();

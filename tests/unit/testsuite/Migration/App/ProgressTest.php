@@ -26,7 +26,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->file = $this->getMockBuilder('\Migration\App\Progress\File')
+        $this->file = $this->getMockBuilder(\Migration\App\Progress\File::class)
             ->setMethods(['getData', 'saveData', 'clearLockFile'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -38,7 +38,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function isCompletedDataProvider()
     {
-        $step = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
         return [
             'complete' => [
                 'data' => [get_class($step) => ['integrity' => ['result' => true]]],
@@ -75,7 +75,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddProcessedEntitySuccess()
     {
-        $step = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
         $stage = 'run';
         $result = $this->progress->addProcessedEntity($step, $stage, 'document_name1');
         $this->assertTrue($result);
@@ -86,7 +86,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddProcessedEntityAlreadyExist()
     {
-        $step = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
         $stage = 'run';
         $documentName = 'document_name1';
         $data = [get_class($step) => [$stage => ['process' => [$documentName]]]];
@@ -100,7 +100,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function testResetProcessedEntities()
     {
-        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Migrate::class, [], [], '', false);
         $stage = 'run';
         $this->progress->resetProcessedEntities($step, $stage);
     }
@@ -110,7 +110,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetProcessedEntities()
     {
-        $step = $this->getMock('\Migration\Step\Map\Migrate', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Migrate::class, [], [], '', false);
         $stage = 'run';
         $document = ['some_document'];
         $progress = [get_class($step) => [$stage => ['process' => $document]]];
@@ -125,7 +125,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     public function testSaveResult()
     {
         $this->file->expects($this->once())->method('saveData')->will($this->returnValue(1));
-        $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map::class, [], [], '', false);
         $this->progress->saveResult($step, 'integrity', 'true');
     }
 
@@ -143,7 +143,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function testResetObject()
     {
-        $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map::class, [], [], '', false);
         $data = [get_class($step) => ['dummy_array']];
         $this->file->expects($this->once())->method('getData')->will($this->returnValue($data));
         $this->file->expects($this->once())->method('saveData')->with([]);
@@ -157,7 +157,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
     {
         $this->file->expects($this->any())->method('isExists')->will($this->returnValue(false));
         $this->file->expects($this->once())->method('saveData');
-        $step = $this->getMock('\Migration\Step\Map', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map::class, [], [], '', false);
         $this->progress->saveResult($step, 'integrity', 'true');
 
     }
@@ -185,7 +185,7 @@ class ProgressTest extends \PHPUnit_Framework_TestCase
      */
     public function saveProcessedEntitiesDataProvider()
     {
-        $step = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $step = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
         $data = ['test_step' => ['dummy_array']];
         return [
             'class' => [

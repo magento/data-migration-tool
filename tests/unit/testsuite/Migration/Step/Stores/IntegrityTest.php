@@ -44,18 +44,18 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
+        $this->progress = $this->getMockBuilder(\Migration\App\ProgressBar\LogLevelProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->helper = $this->getMockBuilder('Migration\Step\Stores\Helper')
+        $this->helper = $this->getMockBuilder(\Migration\Step\Stores\Helper::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -66,7 +66,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $document = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $this->progress->expects($this->once())->method('start')->with('3');
         $this->progress->expects($this->any())->method('advance');

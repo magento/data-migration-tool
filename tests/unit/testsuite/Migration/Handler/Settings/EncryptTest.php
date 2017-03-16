@@ -13,7 +13,7 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
     /**
      * @var string
      */
-    protected $backendModelName = '\Magento\Framework\Encryption\Crypt';
+    protected $backendModelName = \Magento\Framework\Encryption\Crypt::class;
 
     /**
      * @var \Magento\Framework\Encryption\Encryptor|\PHPUnit_Framework_MockObject_MockObject
@@ -35,12 +35,12 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->encryptor = $this->getMock('\Magento\Framework\Encryption\Encryptor', ['encrypt'], [], '', false);
+        $this->encryptor = $this->getMock(\Magento\Framework\Encryption\Encryptor::class, ['encrypt'], [], '', false);
 
-        $this->configReader = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
+        $this->configReader = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
 
         $this->cryptFactory = $this->getMock(
-            '\Magento\Framework\Encryption\CryptFactory',
+            \Magento\Framework\Encryption\CryptFactory::class,
             ['create'],
             [],
             '',
@@ -64,7 +64,7 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMock(
-            'Migration\ResourceModel\Record',
+            \Migration\ResourceModel\Record::class,
             ['getValue', 'setValue', 'getFields'],
             [],
             '',
@@ -73,11 +73,11 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($dbValue);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $newValue);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 
-        $crypt = $this->getMock('\Magento\Framework\Encryption\Crypt', ['decrypt'], [
+        $crypt = $this->getMock(\Magento\Framework\Encryption\Crypt::class, ['decrypt'], [
             $key, $cypher, $mode, $initVector,
         ], '', true);
 

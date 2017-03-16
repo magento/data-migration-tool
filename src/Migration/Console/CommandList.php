@@ -35,9 +35,9 @@ class CommandList implements \Magento\Framework\Console\CommandListInterface
     protected function getCommandsClasses()
     {
         return [
-            'Migration\Console\MigrateSettingsCommand',
-            'Migration\Console\MigrateDataCommand',
-            'Migration\Console\MigrateDeltaCommand'
+            Migration\Console\MigrateSettingsCommand::class,
+            Migration\Console\MigrateDataCommand::class,
+            Migration\Console\MigrateDeltaCommand::class
         ];
     }
 

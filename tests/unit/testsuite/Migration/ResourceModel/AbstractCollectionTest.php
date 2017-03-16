@@ -22,11 +22,11 @@ class AbstractCollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $document1 = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $document1 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
         $document1->expects($this->any())->method('getName')->will($this->returnValue('Doc1'));
-        $document2 = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $document2 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
         $document2->expects($this->any())->method('getName')->will($this->returnValue('Doc2'));
-        $document3 = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $document3 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
         $document3->expects($this->any())->method('getName')->will($this->returnValue('Doc3'));
         $this->data = [$document1, $document2, $document3];
         $this->documentCollection = new \Migration\ResourceModel\Document\Collection($this->data);

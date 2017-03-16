@@ -19,7 +19,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         $progress = $this->getMock(
-            'Migration\App\Progress',
+            \Migration\App\Progress::class,
             ['getProcessedEntities', 'addProcessedEntity'],
             [],
             '',
@@ -30,16 +30,16 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
 
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $config = $objectManager->get('\Migration\Config');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $config = $objectManager->get(\Migration\Config::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
 
         $data = $objectManager->create(
-            '\Migration\Step\Map\Data',
+            \Migration\Step\Map\Data::class,
             [
                 'logger' => $logger,
                 'config' => $config,
@@ -47,7 +47,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $volume = $objectManager->create(
-            '\Migration\Step\Map\Volume',
+            \Migration\Step\Map\Volume::class,
             [
                 'logger' => $logger,
                 'config' => $config,

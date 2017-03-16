@@ -37,27 +37,27 @@ class CustomerSegmentConditionSqlTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         /** @var Map|\PHPUnit_Framework_MockObject_MockObject $map */
-        $this->mapMain = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->mapMain = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
 
         /** @var Map|\PHPUnit_Framework_MockObject_MockObject $map */
-        $this->mapSalesOrder = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->mapSalesOrder = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->at(0))->method('create')->with('map_file')->willReturn($this->mapMain);
         $mapFactory->expects($this->at(1))->method('create')->with('sales_order_map_file')
             ->willReturn($this->mapSalesOrder);
 
         /** @var Source|\PHPUnit_Framework_MockObject_MockObject $source */
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentList', 'addDocumentPrefix'])
             ->getMock();
         /** @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
-        $destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
+        $destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)->disableOriginalConstructor()
             ->setMethods(['addDocumentPrefix'])
             ->getMock();
         $destination->expects($this->any())->method('addDocumentPrefix')->will($this->returnCallback(function ($value) {
@@ -73,12 +73,12 @@ class CustomerSegmentConditionSqlTest extends \PHPUnit_Framework_TestCase
     public function testHandle()
     {
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record $oppositeRecord|\PHPUnit_Framework_MockObject_MockObject */
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 

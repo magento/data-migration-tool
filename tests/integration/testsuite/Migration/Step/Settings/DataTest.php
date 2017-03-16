@@ -19,21 +19,21 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $recordFactory = $objectManager->create('\Migration\ResourceModel\RecordFactory');
-        $progress = $objectManager->create('\Migration\App\ProgressBar\LogLevelProcessor');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $mapReader = $objectManager->create('\Migration\Reader\Settings');
-        $handlerManagerFactory = $objectManager->get('\Migration\Handler\ManagerFactory');
-        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
-        $source = $objectManager->get('\Migration\ResourceModel\Source');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $recordFactory = $objectManager->create(\Migration\ResourceModel\RecordFactory::class);
+        $progress = $objectManager->create(\Migration\App\ProgressBar\LogLevelProcessor::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $mapReader = $objectManager->create(\Migration\Reader\Settings::class);
+        $handlerManagerFactory = $objectManager->get(\Migration\Handler\ManagerFactory::class);
+        $destination = $objectManager->get(\Migration\ResourceModel\Destination::class);
+        $source = $objectManager->get(\Migration\ResourceModel\Source::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
         $data = $objectManager->create(
-            '\Migration\Step\Settings\Data',
+            \Migration\Step\Settings\Data::class,
             [
                 'destination' => $destination,
                 'source' => $source,

@@ -77,40 +77,40 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->progressBar = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish', 'advance'],
             [],
             '',
             false
         );
         $this->source = $this->getMock(
-            'Migration\ResourceModel\Source',
+            \Migration\ResourceModel\Source::class,
             ['getDocument', 'getDocumentList', 'getRecords', 'getRecordsCount', 'getPageSize', 'setLastLoadedRecord'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['getDocument', 'getDocumentList', 'saveRecords', 'clearDocument'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
         $this->recordTransformerFactory = $this->getMock(
-            'Migration\RecordTransformerFactory',
+            \Migration\RecordTransformerFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'getHandlerConfigs'])
             ->getMock();
 
         /** @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject $config */
-        $this->config = $this->getMockBuilder('Migration\Config')->setMethods(['getOption'])
+        $this->config = $this->getMockBuilder(\Migration\Config::class)->setMethods(['getOption'])
             ->disableOriginalConstructor()->getMock();
         $this->config->expects($this->any())->method('getOption')->willReturnMap(
             [
@@ -120,22 +120,22 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         $this->progress = $this->getMock(
-            'Migration\App\Progress',
+            \Migration\App\Progress::class,
             ['getProcessedEntities', 'addProcessedEntity'],
             [],
             '',
             false
         );
 
-        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+        $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
             ->setMethods(['debug'])
             ->getMock();
 
-        $this->helper = $this->getMockBuilder('\Migration\Step\Map\Helper')->disableOriginalConstructor()
+        $this->helper = $this->getMockBuilder(\Migration\Step\Map\Helper::class)->disableOriginalConstructor()
             ->setMethods(['getFieldsUpdateOnDuplicate'])
             ->getMock();
 
@@ -178,7 +178,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->any())->method('getHandlerConfigs')->willReturn(['class' => 'Handler\Class']);
 
         $sourceDocument = $this->getMock(
-            '\Migration\ResourceModel\Document',
+            \Migration\ResourceModel\Document::class,
             ['getRecords', 'getStructure'],
             [],
             '',
@@ -187,13 +187,14 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getDocument')->will(
             $this->returnValue($sourceDocument)
         );
-        $destinationDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getStructure', 'getRecords'])
             ->getMock();
         $this->destination->expects($this->once())->method('getDocument')->will(
             $this->returnValue($destinationDocument)
         );
-        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')->disableOriginalConstructor()
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)->disableOriginalConstructor()
             ->setMethods(['getFields'])
             ->getMock();
         $structure->expects($this->any())->method('getFields')->willReturn(['field' => []]);
@@ -202,7 +203,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $destinationDocument->expects($this->any())->method('getStructure')->willReturn($structure);
 
         $recordTransformer = $this->getMock(
-            'Migration\RecordTransformer',
+            \Migration\RecordTransformer::class,
             ['init', 'transform'],
             [],
             '',
@@ -221,13 +222,13 @@ class DataTest extends \PHPUnit_Framework_TestCase
         );
 
         $this->source->expects($this->any())->method('getPageSize')->willReturn(100);
-        $destinationRecords =  $this->getMock('\Migration\ResourceModel\Record\Collection', [], [], '', false);
+        $destinationRecords =  $this->getMock(\Migration\ResourceModel\Record\Collection::class, [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')->will(
             $this->returnValue($destinationRecords)
         );
 
-        $srcRecord = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
-        $dstRecord = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $srcRecord = $this->getMock(\Migration\ResourceModel\Record::class, [], [], '', false);
+        $dstRecord = $this->getMock(\Migration\ResourceModel\Record::class, [], [], '', false);
         $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($srcRecord));
         $this->recordFactory->expects($this->at(1))->method('create')->will($this->returnValue($dstRecord));
         $recordTransformer->expects($this->once())->method('transform')->with($srcRecord, $dstRecord);
@@ -255,7 +256,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->any())->method('getHandlerConfig')->willReturn([]);
 
         $sourceDocument = $this->getMock(
-            '\Migration\ResourceModel\Document',
+            \Migration\ResourceModel\Document::class,
             ['getRecords', 'getStructure'],
             [],
             '',
@@ -269,13 +270,15 @@ class DataTest extends \PHPUnit_Framework_TestCase
             [$sourceDocName, $bulk[0]],
             [$sourceDocName, []]
         );
-        $destinationDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getStructure', 'getRecords'])
             ->getMock();
         $this->destination->expects($this->once())->method('getDocument')->will(
             $this->returnValue($destinationDocument)
         );
-        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')->disableOriginalConstructor()
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getFields'])
             ->getMock();
         $structure->expects($this->any())->method('getFields')->willReturn(['field' => []]);
@@ -283,12 +286,12 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $sourceDocument->expects($this->any())->method('getStructure')->willReturn($structure);
         $destinationDocument->expects($this->any())->method('getStructure')->willReturn($structure);
 
-        $destinationRecords =  $this->getMock('\Migration\ResourceModel\Record\Collection', [], [], '', false);
+        $destinationRecords =  $this->getMock(\Migration\ResourceModel\Record\Collection::class, [], [], '', false);
         $destinationDocument->expects($this->once())->method('getRecords')->will(
             $this->returnValue($destinationRecords)
         );
 
-        $dstRecord = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $dstRecord = $this->getMock(\Migration\ResourceModel\Record::class, [], [], '', false);
         $this->recordFactory->expects($this->at(0))->method('create')->will($this->returnValue($dstRecord));
 
         $this->destination->expects($this->once())->method('saveRecords')->with($dstDocName, $destinationRecords);

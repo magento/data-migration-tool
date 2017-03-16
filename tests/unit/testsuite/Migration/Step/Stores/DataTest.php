@@ -49,22 +49,22 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
+        $this->progress = $this->getMockBuilder(\Migration\App\ProgressBar\LogLevelProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMock();
-        $this->helper = $this->getMockBuilder('Migration\Step\Stores\Helper')
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->recordFactory = $this->getMockBuilder('Migration\ResourceModel\RecordFactory')
+        $this->helper = $this->getMockBuilder(\Migration\Step\Stores\Helper::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $this->recordFactory = $this->getMockBuilder(\Migration\ResourceModel\RecordFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -86,20 +86,20 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $fields = ['field_name' => []];
         $differentFields = ['field_different' => []];
 
-        $structure = $this->getMockBuilder('Migration\ResourceModel\Structure')->disableOriginalConstructor()
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)->disableOriginalConstructor()
             ->setMethods(['getFields'])->getMock();
         $structure->expects($this->at(0))->method('getFields')->willReturn($differentFields);
         $structure->expects($this->any())->method('getFields')->willReturn($fields);
-        $document = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)->disableOriginalConstructor()
             ->setMethods(['getName', 'getRecords', 'getStructure'])
             ->getMock();
         $document->expects($this->any())->method('getStructure')->willReturn($structure);
-        $recordsCollection = $this->getMockBuilder('Migration\ResourceModel\Record\Collection')
+        $recordsCollection = $this->getMockBuilder(\Migration\ResourceModel\Record\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['addRecord'])
             ->getMock();
         $document->expects($this->any())->method('getRecords')->willReturn($recordsCollection);
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()
             ->setMethods(['getFields', 'setValue'])
             ->getMock();
         $record->expects($this->once())->method('getFields')->willReturn(array_keys($fields));

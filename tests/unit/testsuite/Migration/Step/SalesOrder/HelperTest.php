@@ -28,7 +28,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMockBuilder('\Migration\ResourceModel\Source')
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)
             ->setMethods(['getAdapter', 'addDocumentPrefix'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -47,13 +47,13 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $mySqlAdapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['getSelect', 'loadDataFromSelect'],
             [],
             '',
             false
         );
-        $dbSelect = $this->getMock('\Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
+        $dbSelect = $this->getMock(\Magento\Framework\DB\Select::class, ['from', 'where'], [], '', false);
         $mySqlAdapter->expects($this->any())->method('getSelect')->willReturn($dbSelect);
         $this->source->expects($this->any())->method('getAdapter')->willReturn($mySqlAdapter);
         $this->source->expects($this->any())->method('addDocumentPrefix')->willReturnArgument(0);

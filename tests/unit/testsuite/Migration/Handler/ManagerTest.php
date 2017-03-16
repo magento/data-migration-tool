@@ -23,7 +23,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->objectManager = $this->getMock(
-            'Magento\Framework\ObjectManager\ObjectManager',
+            \Magento\Framework\ObjectManager\ObjectManager::class,
             ['create'],
             [],
             '',
@@ -40,8 +40,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetHandlerCorrect()
     {
         $field = 'someField';
-        $handlerConfig = ['class' => 'Migration\Handler\SetValue', 'params' => ['value' => '12']];
-        $handler = $this->getMock('Migration\Handler\SetValue', ['setField'], [], '', false);
+        $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
+        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
         $this->objectManager->expects($this->any())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
@@ -57,8 +57,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $field = 'someField';
         $handlerKey = 'someKey';
-        $handlerConfig = ['class' => 'Migration\Handler\SetValue', 'params' => ['value' => '12']];
-        $handler = $this->getMock('Migration\Handler\SetValue', ['setField'], [], '', false);
+        $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
+        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
         $this->objectManager->expects($this->any())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig, $handlerKey);
@@ -74,8 +74,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testGetHandlerEmpty()
     {
         $field = 'someField';
-        $handlerConfig = ['class' => 'Migration\Handler\SetValue', 'params' => ['value' => '12']];
-        $handler = $this->getMock('Migration\Handler\SetValue', ['setField'], [], '', false);
+        $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
+        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
@@ -109,10 +109,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitInvalidHandler()
     {
-        $handlerConfig = ['class' => 'Migration\Migration', 'params' => ['value' => '12']];
-        $invalidHandler = $this->getMock('Migration\Migration', [], [], '', false);
+        $handlerConfig = ['class' => "Migration\\Migration", 'params' => ['value' => '12']];
+        $invalidHandler = $this->getMock(\Migration\Migration::class, [], [], '', false);
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($invalidHandler));
-        $this->setExpectedException('\Exception', "'Migration\Migration' is not correct handler.");
+        $this->setExpectedException('\Exception', "'Migration\\Migration' is not correct handler.");
         $this->manager->initHandler('somefield', $handlerConfig);
     }
 }

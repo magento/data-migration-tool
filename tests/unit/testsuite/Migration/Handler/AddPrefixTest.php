@@ -19,7 +19,7 @@ class AddPrefixTest extends \PHPUnit_Framework_TestCase
         $prefix = 'prefix';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -27,7 +27,7 @@ class AddPrefixTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->will($this->returnValue('val'));
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $prefix . 'val');
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 

@@ -55,34 +55,34 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error', 'warning'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error', 'warning'], [], '', false);
         $this->source = $this->getMock(
-            '\Migration\ResourceModel\Source',
+            \Migration\ResourceModel\Source::class,
             ['getDocumentList', 'getDocument'],
             [],
             '',
             false
         );
         $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish', 'advance'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            '\Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['getDocumentList', 'getDocument'],
             [],
             '',
             false
         );
-        $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap', 'init', 'isDocumentIgnored', 'isFieldDataTypeIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         $this->integrity = new Integrity(
@@ -169,7 +169,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerformWithSourceFieldErrors()
     {
-        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
@@ -178,7 +178,9 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $structure->expects($this->at(2))->method('getFields')->will($this->returnValue(['field2' => []]));
         $structure->expects($this->at(3))->method('getFields')->will($this->returnValue(['field1' => []]));
 
-        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $document->expects($this->any())->method('getStructure')->willReturn($structure);
         $document->expects($this->any())->method('getName')->willReturn('document');
 
@@ -240,20 +242,20 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     {
         $dataTypeSource = $dataTypeMismatch ? 'varchar' : 'int';
         $fieldsSource = ['field1' => ['DATA_TYPE' => $dataTypeSource]];
-        $structureSource = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $structureSource = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structureSource->expects($this->any())->method('getFields')->will($this->returnValue($fieldsSource));
-        $this->documentSource = $this->getMockBuilder('\Migration\ResourceModel\Document')
+        $this->documentSource = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
             ->disableOriginalConstructor()->getMock();
         $this->documentSource->expects($this->any())->method('getStructure')
             ->will($this->returnValue($structureSource));
 
         $dataTypeDestination = 'int';
         $fieldsDestination = ['field1' => ['DATA_TYPE' => $dataTypeDestination]];
-        $structureDestination = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $structureDestination = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structureDestination->expects($this->any())->method('getFields')->will($this->returnValue($fieldsDestination));
-        $this->documentDestination = $this->getMockBuilder('\Migration\ResourceModel\Document')
+        $this->documentDestination = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
             ->disableOriginalConstructor()->getMock();
         $this->documentDestination->expects($this->any())->method('getStructure')
             ->will($this->returnValue($structureDestination));

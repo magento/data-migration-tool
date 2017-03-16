@@ -61,29 +61,29 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish', 'advance'],
             [],
             '',
             false
         );
-        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
-        $this->config = $this->getMock('\Migration\Config', [], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
+        $this->config = $this->getMock(\Migration\Config::class, [], [], '', false);
         $this->config->expects($this->any())->method('getSource')->willReturn([
             'type' => 'database',
             'version' => '1.14.1.0'
         ]);
-        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
+        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
+        $this->destination = $this->getMock(\Migration\ResourceModel\Destination::class, [], [], '', false);
         $this->recordCollectionFactory = $this->getMock(
-            '\Migration\ResourceModel\Record\CollectionFactory',
+            \Migration\ResourceModel\Record\CollectionFactory::class,
             ['create'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
-        $this->helper = $this->getMock('\Migration\Step\UrlRewrite\Helper', [], ['processFields'], '', false);
+        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
+        $this->helper = $this->getMock(\Migration\Step\UrlRewrite\Helper::class, [], ['processFields'], '', false);
     }
 
     /**

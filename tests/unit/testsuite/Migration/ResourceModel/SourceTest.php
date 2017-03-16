@@ -57,22 +57,34 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $adapterConfigs = ['resourceType' => 'source'];
-        $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
+        $this->config = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
         $this->adapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['select', 'fetchAll', 'query', 'loadPage', 'createDelta', 'loadChangedRecords', 'loadDeletedRecords'],
             [],
             '',
             false
         );
-        $this->adapterFactory = $this->getMock('\Migration\ResourceModel\AdapterFactory', ['create'], [], '', false);
+        $this->adapterFactory = $this->getMock(
+            \Migration\ResourceModel\AdapterFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
         $this->adapterFactory->expects($this->once())
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock('\Migration\ResourceModel\DocumentFactory', [], [], '', false);
-        $this->structureFactory = $this->getMock('\Migration\ResourceModel\StructureFactory', [], [], '', false);
-        $this->documentCollection = $this->getMock('\Migration\ResourceModel\Document\Collection', [], [], '', false);
+        $this->documentFactory = $this->getMock(\Migration\ResourceModel\DocumentFactory::class, [], [], '', false);
+        $this->structureFactory = $this->getMock(\Migration\ResourceModel\StructureFactory::class, [], [], '', false);
+        $this->documentCollection = $this->getMock(
+            \Migration\ResourceModel\Document\Collection::class,
+            [],
+            [],
+            '',
+            false
+        );
         $this->resourceSource = new \Migration\ResourceModel\Source(
             $this->adapterFactory,
             $this->config,

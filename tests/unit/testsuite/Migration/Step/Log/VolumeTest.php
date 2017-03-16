@@ -54,37 +54,37 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['addRecord'], [], '', false);
         $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish', 'advance'],
             [],
             '',
             false
         );
         $this->source = $this->getMock(
-            'Migration\ResourceModel\Source',
+            \Migration\ResourceModel\Source::class,
             ['getDocumentList', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['getRecordsCount'],
             [],
             '',
             false
         );
 
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('log_map_file')->willReturn($this->map);
 
-        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups = $this->getMock(\Migration\Reader\Groups::class, ['getGroup'], [], '', false);
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['source_documents', ['document1' => '']],
@@ -93,7 +93,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory = $this->getMock(\Migration\Reader\GroupsFactory::class, ['create'], [], '', false);
         $groupsFactory->expects($this->any())
             ->method('create')
             ->with('log_document_groups_file')

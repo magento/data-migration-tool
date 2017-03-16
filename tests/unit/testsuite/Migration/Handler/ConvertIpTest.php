@@ -20,7 +20,7 @@ class ConvertIpTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
         $record = $this->getMock(
-            'Migration\ResourceModel\Record',
+            \Migration\ResourceModel\Record::class,
             ['setValue', 'getValue', 'getFields'],
             [],
             '',
@@ -30,7 +30,9 @@ class ConvertIpTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($ipDbValue);
         $record->expects($this->any())->method('setValue')->with($fieldName, ip2long(inet_ntop($ipDbValue)));
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new ConvertIp();
         $handler->setField($fieldName);

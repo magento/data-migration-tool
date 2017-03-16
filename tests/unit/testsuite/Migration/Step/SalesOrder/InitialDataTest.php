@@ -39,9 +39,15 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
-        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', ['getRecordsCount'], [], '', false);
-        $this->helper = $this->getMock('\Migration\Step\SalesOrder\Helper', ['getDestEavDocument'], [], '', false);
+        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
+        $this->destination = $this->getMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getRecordsCount'],
+            [],
+            '',
+            false
+        );
+        $this->helper = $this->getMock(\Migration\Step\SalesOrder\Helper::class, ['getDestEavDocument'], [], '', false);
         $this->initialData = new InitialData($this->source, $this->destination, $this->helper);
     }
 

@@ -40,21 +40,22 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->map = $this->getMockBuilder('\Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
-        $this->source = $this->getMockBuilder('\Migration\ResourceModel\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->destination = $this->getMockBuilder('\Migration\ResourceModel\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
+            ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
+        $this->helper = $this->getMockBuilder(\Migration\Step\Eav\Helper::class)->disableOriginalConstructor()
             ->setMethods(['getSourceRecords', 'getDestinationRecords'])
             ->getMock();
         $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);

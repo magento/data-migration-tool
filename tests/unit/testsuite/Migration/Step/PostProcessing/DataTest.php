@@ -33,21 +33,21 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->eavLeftoverDataCleaner = $this->getMock(
-            'Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner',
+            \Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner::class,
             ['clean', 'getIterationsCount'],
             [],
             '',
             false
         );
         $this->productsInRootCatalogCleaner = $this->getMock(
-            'Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner',
+            \Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner::class,
             ['clean'],
             [],
             '',
             false
         );
         $this->progress = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish'],
             [],
             '',

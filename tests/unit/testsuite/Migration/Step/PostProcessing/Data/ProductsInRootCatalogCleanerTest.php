@@ -28,14 +28,14 @@ class ProductsInRootCatalogCleanerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['deleteRecords'],
             [],
             '',
             false
         );
         $this->productsInRootCatalogModel = $this->getMock(
-            'Migration\Step\PostProcessing\Model\ProductsInRootCatalog',
+            \Migration\Step\PostProcessing\Model\ProductsInRootCatalog::class,
             ['getProductIds', 'getCatalogCategoryProductDocument'],
             [],
             '',

@@ -71,7 +71,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['getDocumentStructure'])
             ->getMock();
 
-        $this->select = $this->getMockBuilder('Magento\Framework\DB\Select')
+        $this->select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->setMethods(['from', 'join', 'where', 'union', 'getAdapter'])
             ->disableOriginalConstructor()
             ->getMock();

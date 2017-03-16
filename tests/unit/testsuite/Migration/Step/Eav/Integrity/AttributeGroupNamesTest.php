@@ -30,15 +30,15 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')
+        $this->helper = $this->getMockBuilder(\Migration\Step\Eav\Helper::class)
             ->disableOriginalConstructor()
             ->setMethods(['getSourceRecords'])
             ->getMock();
 
         $objectHelper = new ObjectManager($this);
-        $groupNameToCodeMap = $objectHelper->getObject('\Migration\Model\Eav\AttributeGroupNameToCodeMap');
+        $groupNameToCodeMap = $objectHelper->getObject(\Migration\Model\Eav\AttributeGroupNameToCodeMap::class);
 
-        $this->model = $objectHelper->getObject('\Migration\Step\Eav\Integrity\AttributeGroupNames', [
+        $this->model = $objectHelper->getObject(\Migration\Step\Eav\Integrity\AttributeGroupNames::class, [
             'helper' => $this->helper,
             'groupNameToCodeMap' => $groupNameToCodeMap
         ]);

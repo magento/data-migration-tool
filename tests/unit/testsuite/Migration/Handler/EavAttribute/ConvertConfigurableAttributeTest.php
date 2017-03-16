@@ -32,7 +32,7 @@ class ConvertConfigurableAttributeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->classMap = $this->getMockBuilder('Migration\Reader\ClassMap')->setMethods(['convertClassName'])
+        $this->classMap = $this->getMockBuilder(\Migration\Reader\ClassMap::class)->setMethods(['convertClassName'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -45,11 +45,11 @@ class ConvertConfigurableAttributeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleConfigurable()
     {
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
@@ -69,11 +69,11 @@ class ConvertConfigurableAttributeTest extends \PHPUnit_Framework_TestCase
      */
     public function testHandleNotConfigurable()
     {
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
         $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('simple'));

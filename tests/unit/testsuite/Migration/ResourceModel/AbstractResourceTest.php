@@ -63,21 +63,21 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->config = $this->getMock(
-            '\Migration\Config',
+            \Migration\Config::class,
             ['getOption'],
             [],
             '',
             false
         );
         $this->adapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
             [],
             '',
             false
         );
         $this->adapterFactorySource = $this->getMock(
-            '\Migration\ResourceModel\AdapterFactory',
+            \Migration\ResourceModel\AdapterFactory::class,
             ['create'],
             [],
             '',
@@ -88,7 +88,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->with(['resourceType' => 'source'])
             ->will($this->returnValue($this->adapter));
         $this->adapterFactoryDestination = $this->getMock(
-            '\Migration\ResourceModel\AdapterFactory',
+            \Migration\ResourceModel\AdapterFactory::class,
             ['create'],
             [],
             '',
@@ -99,21 +99,21 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
             ->with(['resourceType' => 'destination'])
             ->will($this->returnValue($this->adapter));
         $this->documentFactory = $this->getMock(
-            '\Migration\ResourceModel\DocumentFactory',
+            \Migration\ResourceModel\DocumentFactory::class,
             ['create'],
             [],
             '',
             false
         );
         $this->structureFactory = $this->getMock(
-            '\Migration\ResourceModel\StructureFactory',
+            \Migration\ResourceModel\StructureFactory::class,
             ['create'],
             [],
             '',
             false
         );
         $this->documentCollection = $this->getMock(
-            '\Migration\ResourceModel\Document\Collection',
+            \Migration\ResourceModel\Document\Collection::class,
             ['addDocument'],
             [],
             '',
@@ -147,8 +147,8 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $structureData = ['id' => 'int'];
-        $structure = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
-        $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $structure = $this->getMock(\Migration\ResourceModel\Structure::class, [], [], '', false);
+        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
             [$optionName, $prefix]

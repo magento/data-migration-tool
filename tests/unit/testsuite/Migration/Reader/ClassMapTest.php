@@ -20,13 +20,13 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods(['getOption'])
             ->getMock();
         $config->expects($this->once())->method('getOption')->with('class_map')
             ->willReturn('tests/unit/testsuite/Migration/_files/class-map.xml');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -42,8 +42,8 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
     public function testConvertClassName()
     {
         $this->assertEquals(
-            'Magento\\Catalog\\Block\\Product\\Widget\\NewWidget',
-            $this->classMap->convertClassName('catalog/product_widget_new')
+            \Magento\Catalog\Block\Product\Widget\Link::class,
+            $this->classMap->convertClassName('catalog/product_widget_link')
         );
     }
 
@@ -53,8 +53,8 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
     public function testConvertClassNameNotInMap()
     {
         $this->assertEquals(
-            'catalog/product_widget_new_1',
-            $this->classMap->convertClassName('catalog/product_widget_new_1')
+            'catalog/product_widget_link_1',
+            $this->classMap->convertClassName('catalog/product_widget_link_1')
         );
     }
 
@@ -64,8 +64,8 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
     public function testGetMap()
     {
         $this->assertEquals(
-            $this->classMap->getMap('catalog/product_widget_new')['catalog/product_widget_new'],
-            'Magento\\Catalog\\Block\\Product\\Widget\\NewWidget'
+            $this->classMap->getMap('catalog/product_widget_new')['catalog/product_widget_link'],
+            \Magento\Catalog\Block\Product\Widget\Link::class
         );
     }
 }

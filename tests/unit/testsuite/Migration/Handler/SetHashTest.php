@@ -19,11 +19,17 @@ class SetHashTest extends \PHPUnit_Framework_TestCase
         $fieldName      = 'fieldname';
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
+        $recordToHandle = $this->getMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getFields'],
+            [],
+            '',
+            false
+        );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $hash($baseFieldValue));
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();

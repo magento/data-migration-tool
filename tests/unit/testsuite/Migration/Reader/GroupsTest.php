@@ -25,7 +25,7 @@ class GroupsTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $this->validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();

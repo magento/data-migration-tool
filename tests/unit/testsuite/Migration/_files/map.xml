@@ -42,7 +42,7 @@
             </move>
             <transform>
                 <field>source-document.field-with-handler</field>
-                <handler class="\Migration\Handler\SetValue">
+                <handler class="Migration\Handler\SetValue">
                     <param name="default_value" value="10"/>
                 </handler>
             </transform>

@@ -43,28 +43,28 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->logger = $this->getMock(
-            'Migration\Logger\Logger',
+            \Migration\Logger\Logger::class,
             ['pushHandler', 'pushProcessor', 'error'],
             [],
             '',
             false
         );
         $this->consoleHandler = $this->getMock(
-            'Migration\Logger\ConsoleHandler',
+            \Migration\Logger\ConsoleHandler::class,
             ['setLevel', 'setFormatter'],
             [],
             '',
             false
         );
         $this->fileHandler = $this->getMock(
-            'Migration\Logger\FileHandler',
+            \Migration\Logger\FileHandler::class,
             ['setLevel', 'setFormatter'],
             [],
             '',
             false
         );
-        $this->messageFormatter = $this->getMock('Migration\Logger\MessageFormatter', [], [], '', false);
-        $this->messageProcessor = $this->getMock('Migration\Logger\MessageProcessor', [], [], '', false);
+        $this->messageFormatter = $this->getMock(\Migration\Logger\MessageFormatter::class, [], [], '', false);
+        $this->messageProcessor = $this->getMock(\Migration\Logger\MessageProcessor::class, [], [], '', false);
         $this->manager = new Manager(
             $this->logger,
             $this->consoleHandler,
@@ -126,7 +126,7 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessInvalidLevel($logLevel)
     {
-        $this->setExpectedException('Migration\Exception', "Invalid log level '$logLevel' provided.");
+        $this->setExpectedException(\Migration\Exception::class, "Invalid log level '$logLevel' provided.");
         $this->manager->process($logLevel);
     }
 }

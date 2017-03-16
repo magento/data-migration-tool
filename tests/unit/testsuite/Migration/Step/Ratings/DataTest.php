@@ -38,7 +38,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix'],
             [],
             '',
@@ -48,16 +48,16 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('addDocumentPrefix')
             ->will($this->returnValueMap([['rating_store', 'rating_store'], ['rating', 'rating']]));
-        $this->select = $this->getMock('Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
+        $this->select = $this->getMock(\Magento\Framework\DB\Select::class, ['from', 'where'], [], '', false);
         $this->adapter = $this->getMock(
-            'Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['getSelect', 'loadDataFromSelect', 'updateDocument'],
             [],
             '',
             false
         );
         $this->progress = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'advance', 'finish'],
             [],
             '',

@@ -67,18 +67,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ]
         ];
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $config = $objectManager->get('\Migration\Config');
-        $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
-        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
+        $objectManager->get(\Migration\Config::class)->init(dirname(__DIR__) . '/../_files/config.xml');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $config = $objectManager->get(\Migration\Config::class);
+        $initialData = $objectManager->get(\Migration\Step\SalesOrder\InitialData::class);
+        $destination = $objectManager->get(\Migration\ResourceModel\Destination::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         $data = $objectManager->create(
-            '\Migration\Step\SalesOrder\Data',
+            \Migration\Step\SalesOrder\Data::class,
             [
                 'logger' => $logger,
                 'config' => $config,
@@ -86,7 +86,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ]
         );
         $volume = $objectManager->create(
-            '\Migration\Step\SalesOrder\Volume',
+            \Migration\Step\SalesOrder\Volume::class,
             [
                 'logger' => $logger,
                 'config' => $config,

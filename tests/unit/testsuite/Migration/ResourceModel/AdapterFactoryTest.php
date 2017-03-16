@@ -31,9 +31,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
+        $this->config = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
         $this->objectManager = $this->getMock(
-            '\Magento\Framework\ObjectManager\ObjectManager',
+            \Magento\Framework\ObjectManager\ObjectManager::class,
             ['create'],
             [],
             '',
@@ -47,7 +47,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $adapterClassName = '\Migration\ResourceModel\Adapter\Mysql';
+        $adapterClassName = \Migration\ResourceModel\Adapter\Mysql::class;
         $data = ['config' => ['key' => 'value']];
         $adapter = $this->getMock($adapterClassName, [], [], '', false);
         $this->config->expects($this->once())
@@ -56,7 +56,7 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(null));
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with('\Migration\ResourceModel\Adapter\Mysql', $data)
+            ->with(\Migration\ResourceModel\Adapter\Mysql::class, $data)
             ->will($this->returnValue($adapter));
         $this->assertInstanceOf($adapterClassName, $this->adapterFactory->create($data));
     }

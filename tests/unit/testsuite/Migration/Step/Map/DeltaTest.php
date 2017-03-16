@@ -59,20 +59,20 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
-        $this->logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
-        $this->map = $this->getMock('\Migration\Reader\Map', [], [], '', false);
+        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, [], [], '', false);
+        $this->map = $this->getMock(\Migration\Reader\Map::class, [], [], '', false);
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
-        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', ['getAdapter'], [], '', false);
-        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', [], [], '', false);
-        $this->recordTransformerFactory = $this->getMock('\Migration\RecordTransformerFactory', [], [], '', false);
-        $this->data = $this->getMock('\Migration\Step\Map\Data', [], [], '', false);
+        $this->destination = $this->getMock(\Migration\ResourceModel\Destination::class, ['getAdapter'], [], '', false);
+        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, [], [], '', false);
+        $this->recordTransformerFactory = $this->getMock(\Migration\RecordTransformerFactory::class, [], [], '', false);
+        $this->data = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
 
-        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups = $this->getMock(\Migration\Reader\Groups::class, ['getGroup'], [], '', false);
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['delta_map', ['orders' => 'order_id']]
@@ -80,7 +80,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory = $this->getMock(\Migration\Reader\GroupsFactory::class, ['create'], [], '', false);
         $groupsFactory->expects($this->any())
             ->method('create')
             ->with('delta_document_groups_file')
@@ -118,7 +118,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->with($sourceDeltaName)
             ->willReturn(1);
         $adapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['setForeignKeyChecks'],
             [],
             '',
@@ -134,7 +134,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->method('getAdapter')
             ->willReturn($adapter);
         /** @var \Migration\ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject $source */
-        $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
         $this->source->expects($this->any())
             ->method('getDocument')
             ->willReturn($document);

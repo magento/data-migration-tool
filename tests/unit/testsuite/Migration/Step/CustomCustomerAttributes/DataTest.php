@@ -64,26 +64,27 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
+        $this->config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods(['getSource'])
             ->getMock();
         $this->config->expects($this->any())->method('getSource')->will(
             $this->returnValue(['type' => DatabaseStage::SOURCE_TYPE])
         );
 
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()
             ->setMethods(['getDocument', 'getRecordsCount', 'getAdapter', 'addDocumentPrefix', 'getRecords'])
             ->getMock();
         $this->source->expects($this->any())->method('addDocumentPrefix')->willReturnCallback(function ($name) {
             return 'source_suffix_' . $name;
         });
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getDocument', 'getRecordsCount', 'getAdapter', 'addDocumentPrefix', 'saveRecords'])
             ->getMock();
         $this->destination->expects($this->any())->method('addDocumentPrefix')->willReturnCallback(function ($name) {
             return 'destination_suffix_' . $name;
         });
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
+        $this->progress = $this->getMockBuilder(\Migration\App\ProgressBar\LogLevelProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
@@ -91,27 +92,27 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->any())->method('finish');
         $this->progress->expects($this->any())->method('advance');
 
-        $this->recordFactory = $this->getMockBuilder('Migration\ResourceModel\RecordFactory')
+        $this->recordFactory = $this->getMockBuilder(\Migration\ResourceModel\RecordFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+        $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap', 'init', 'getDocumentList', 'getDestDocumentsToClear'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMockBuilder('Migration\Reader\MapFactory')->disableOriginalConstructor()
+        $mapFactory = $this->getMockBuilder(\Migration\Reader\MapFactory::class)->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $mapFactory->expects($this->any())->method('create')->with('customer_attr_map_file')->willReturn($this->map);
 
-        $this->groups = $this->getMockBuilder('Migration\Reader\Groups')->disableOriginalConstructor()
+        $this->groups = $this->getMockBuilder(\Migration\Reader\Groups::class)->disableOriginalConstructor()
             ->getMock();
 
         $this->groups->expects($this->any())->method('getGroup')->with('source_documents')->willReturn([
@@ -119,14 +120,14 @@ class DataTest extends \PHPUnit_Framework_TestCase
         ]);
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMockBuilder('Migration\Reader\GroupsFactory')->disableOriginalConstructor()
+        $groupsFactory = $this->getMockBuilder(\Migration\Reader\GroupsFactory::class)->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
 
         $groupsFactory->expects($this->any())->method('create')->with('customer_attr_document_groups_file')
             ->willReturn($this->groups);
 
-        $this->logger = $this->getMockBuilder('Migration\Logger\Logger')->disableOriginalConstructor()
+        $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
             ->setMethods(['debug'])
             ->getMock();
         $this->step = new Data(
@@ -151,21 +152,23 @@ class DataTest extends \PHPUnit_Framework_TestCase
                 ['source_document_1', MapInterface::TYPE_SOURCE, 'destination_document_1'],
             ]
         ) ;
-        $sourceTable = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+        $sourceTable = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)->disableOriginalConstructor()
             ->setMethods(['getColumns'])->getMock();
         $sourceTable->expects($this->any())->method('getColumns')->will($this->returnValue([['asdf']]));
 
-        $sourceAdapter = $this->getMockBuilder('\Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
+        $sourceAdapter = $this->getMockBuilder(\Migration\ResourceModel\Adapter\Mysql::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getTableDdlCopy'])
             ->getMock();
         $sourceAdapter->expects($this->any())->method('getTableDdlCopy')
             ->with('source_suffix_source_document_1', 'destination_suffix_destination_document_1')
             ->will($this->returnValue($sourceTable));
 
-        $destinationTable = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+        $destinationTable = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)->disableOriginalConstructor()
             ->setMethods(['setColumn'])->getMock();
         $destinationTable->expects($this->any())->method('setColumn')->with(['asdf']);
-        $destAdapter = $this->getMockBuilder('\Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
+        $destAdapter = $this->getMockBuilder(\Migration\ResourceModel\Adapter\Mysql::class)
+            ->disableOriginalConstructor()
             ->setMethods(['createTableByDdl', 'getTableDdlCopy'])
             ->getMock();
         $destAdapter->expects($this->any())->method('getTableDdlCopy')
@@ -176,18 +179,18 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->once())->method('getAdapter')->will($this->returnValue($sourceAdapter));
         $this->destination->expects($this->once())->method('getAdapter')->will($this->returnValue($destAdapter));
 
-        $recordsCollection = $this->getMockBuilder('Migration\ResourceModel\Record\Collection')
+        $recordsCollection = $this->getMockBuilder(\Migration\ResourceModel\Record\Collection::class)
             ->disableOriginalConstructor()
             ->setMethods(['addRecord'])
             ->getMock();
 
-        $destDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $destDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)->disableOriginalConstructor()
             ->setMethods(['getRecords', 'getName'])
             ->getMock();
         $destDocument->expects($this->any())->method('getName')->will($this->returnValue('some_name'));
         $destDocument->expects($this->any())->method('getRecords')->will($this->returnValue($recordsCollection));
 
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()
             ->setMethods(['setData'])
             ->getMock();
         $record->expects($this->once())->method('setData')->with(['field_1' => 1, 'field_2' => 2]);

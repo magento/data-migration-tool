@@ -27,10 +27,10 @@ class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $this->recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()->getMock();
-        $this->oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $this->oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
     }

@@ -22,14 +22,14 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMock(
-            'Migration\ResourceModel\Record',
+            \Migration\ResourceModel\Record::class,
             ['getValue', 'setValue', 'getFields', 'getStructure'],
             [],
             '',
             false
         );
 
-        $structure = $this->getMock('\Migration\Structure', ['getFields'], [], '', false);
+        $structure = $this->getMock(\Migration\Structure::class, ['getFields'], [], '', false);
 
         $structure->expects($this->any())->method('getFields')->willReturn([
             $fieldName => ['DATA_TYPE' => $dataType]
@@ -40,7 +40,7 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
         $recordToHandle->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 

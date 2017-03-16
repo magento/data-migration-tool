@@ -62,24 +62,24 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['error'], [], '', false);
         $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'finish', 'advance'],
             [],
             '',
             false
         );
-        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
-        $this->config = $this->getMock('\Migration\Config', [], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
+        $this->config = $this->getMock(\Migration\Config::class, [], [], '', false);
         $this->config->expects($this->any())->method('getSource')->willReturn([
             'type' => 'database',
             'version' => '1.9'
         ]);
-        $this->source = $this->getMock('\Migration\ResourceModel\Source', [], [], '', false);
+        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
 
-        $select = $this->getMockBuilder('Magento\Framework\DB\Select')
-            ->setMethods(['from', 'joinLeft', 'where', 'group'])
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
+            ->setMethods(['from', 'joinLeft', 'where', 'group', 'distinct'])
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -87,8 +87,10 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $select->expects($this->any())->method('joinLeft')->willReturnSelf();
         $select->expects($this->any())->method('where')->willReturnSelf();
         $select->expects($this->any())->method('group')->willReturnSelf();
+        $select->expects($this->any())->method('distinct')->willReturnSelf();
 
-        $sourceAdapter = $this->getMockBuilder('Migration\ResourceModel\Adapter\Mysql')->disableOriginalConstructor()
+        $sourceAdapter = $this->getMockBuilder(\Migration\ResourceModel\Adapter\Mysql::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getSelect', 'loadDataFromSelect'])
             ->getMock();
 
@@ -96,15 +98,15 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
         $this->source->expects($this->any())->method('getAdapter')->willReturn($sourceAdapter);
 
-        $this->destination = $this->getMock('\Migration\ResourceModel\Destination', [], [], '', false);
+        $this->destination = $this->getMock(\Migration\ResourceModel\Destination::class, [], [], '', false);
         $this->recordCollection = $this->getMock(
-            '\Migration\ResourceModel\Record\Collection',
+            \Migration\ResourceModel\Record\Collection::class,
             ['addRecord'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
+        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
     }
 
     /**
@@ -133,7 +135,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
         $this->progress->expects($this->at(0))
             ->method('start')
             ->with($this->equalTo(1));
-        $sourceStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $sourceStructure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()
             ->getMock();
         $sourceStructure->expects($this->once())
@@ -154,7 +156,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('getStructure')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceStructure);
-        $destinationStructure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $destinationStructure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()
             ->getMock();
         $destinationStructure->expects($this->once())
@@ -211,21 +213,21 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->method('start')
             ->with($this->equalTo($progressRecordsAmount));
 
-        $sourceDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
+        $sourceDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->source->expects($this->once())
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE))
             ->willReturn($sourceDocument);
-        $destinationDocument = $this->getMockBuilder('\Migration\ResourceModel\Document')
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->destination->expects($this->at(0))
             ->method('getDocument')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::DESTINATION))
             ->willReturn($destinationDocument);
-        $destinationProductCategory = $this->getMockBuilder('\Migration\ResourceModel\Document')
+        $destinationProductCategory = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
             ->setMethods(['setValue', 'getRecords'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -246,7 +248,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE), $this->equalTo(0))
             ->willReturn(['RecordData1']);
 
-        $sourceRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
+        $sourceRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -255,7 +257,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $sourceDocument, 'data' => 'RecordData1']))
             ->willReturn($sourceRecord);
 
-        $destinationRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
+        $destinationRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 
@@ -264,7 +266,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->with($this->equalTo(['document' => $destinationDocument]))
             ->willReturn($destinationRecord);
 
-        $destinationCategoryRecord = $this->getMockBuilder('\Migration\ResourceModel\Record')
+        $destinationCategoryRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 

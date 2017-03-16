@@ -50,19 +50,19 @@ class FileHandlerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->file = $this->getMockBuilder('Magento\Framework\Filesystem\Driver\File')
+        $this->file = $this->getMockBuilder(\Magento\Framework\Filesystem\Driver\File::class)
             ->disableOriginalConstructor()
             ->setMethods(['filePutContents', 'getRealPath', 'createDirectory'])
             ->getMock();
-        $this->config = $this->getMockBuilder('Migration\Config')
+        $this->config = $this->getMockBuilder(\Migration\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['getOption'])
             ->getMock();
-        $directoryRead = $this->getMockBuilder('\Magento\Framework\Filesystem\Directory\ReadInterface')
+        $directoryRead = $this->getMockBuilder(\Magento\Framework\Filesystem\Directory\ReadInterface::class)
             ->disableOriginalConstructor()
             ->getMock();
         $directoryRead->expects($this->any())->method('getAbsolutePath')->willReturn('/path/to/var');
-        $this->filesystem = $this->getMockBuilder('\Magento\Framework\Filesystem')
+        $this->filesystem = $this->getMockBuilder(\Magento\Framework\Filesystem::class)
             ->disableOriginalConstructor()
             ->setMethods(['getDirectoryRead'])
             ->getMock();

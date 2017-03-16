@@ -22,7 +22,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     {
         $config = $this->getConfigFile('tests/unit/testsuite/Migration/_files/settings.xml');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -39,7 +39,7 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     protected function getConfigFile($configPath)
     {
         /** @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject $config */
-        $config = $this->getMockBuilder('Migration\Config')->disableOriginalConstructor()
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods(['getOption'])->getMock();
         $config->expects($this->once())->method('getOption')->with('settings_map_file')->will(
             $this->returnValue($configPath)
@@ -165,9 +165,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     public function testNoConfigFile()
     {
         $config = $this->getConfigFile('invalid_file_name');
-        $this->setExpectedException('Migration\Exception', 'Invalid map filename:');
+        $this->setExpectedException(\Migration\Exception::class, 'Invalid map filename:');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -183,9 +183,9 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     public function testInvalidConfigFile()
     {
         $config = $this->getConfigFile('tests/unit/testsuite/Migration/_files/settings-invalid.xml');
-        $this->setExpectedException('Migration\Exception', 'XML file is invalid.');
+        $this->setExpectedException(\Migration\Exception::class, 'XML file is invalid.');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();

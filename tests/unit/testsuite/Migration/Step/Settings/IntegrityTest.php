@@ -56,31 +56,37 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords'],
             [],
             '',
             false
         );
         $this->source = $this->getMock(
-            'Migration\ResourceModel\Source',
+            \Migration\ResourceModel\Source::class,
             ['getRecordsCount', 'getRecords', 'getDocumentList'],
             [],
             '',
             false
         );
         $this->readerSettings = $this->getMock(
-            'Migration\Reader\Settings',
+            \Migration\Reader\Settings::class,
             ['isNodeIgnored', 'getNodeMap', 'getValueHandler'],
             [],
             '',
             false
         );
-        $this->recordFactory = $this->getMock('Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
-        $this->handlerManagerFactory = $this->getMock('Migration\Handler\ManagerFactory', ['create'], [], '', false);
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
+        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
+        $this->handlerManagerFactory = $this->getMock(
+            \Migration\Handler\ManagerFactory::class,
+            ['create'],
+            [],
+            '',
+            false
+        );
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['error'], [], '', false);
         $this->progress = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['start', 'advance', 'finish'],
             [],
             '',

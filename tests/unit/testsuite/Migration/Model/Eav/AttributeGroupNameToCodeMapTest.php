@@ -23,7 +23,7 @@ class AttributeGroupNameToCodeMapTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectHelper = new ObjectManager($this);
-        $this->model = $objectHelper->getObject('\Migration\Model\Eav\AttributeGroupNameToCodeMap');
+        $this->model = $objectHelper->getObject(\Migration\Model\Eav\AttributeGroupNameToCodeMap::class);
     }
 
     /**

@@ -60,16 +60,16 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
-        $this->source = $objectManager->create('Migration\ResourceModel\Source');
-        $this->destination = $objectManager->create('Migration\ResourceModel\Destination');
-        $this->recordFactory = $objectManager->create('Migration\ResourceModel\RecordFactory');
-        $this->helper = $objectManager->create('Migration\Step\TierPrice\Helper');
-        $this->logger = $objectManager->create('Migration\Logger\Logger');
-        $this->recordTransformerFactory = $objectManager->create('Migration\RecordTransformerFactory');
-        $this->mapFactory = $objectManager->create('Migration\Reader\MapFactory');
+        $this->progress = $objectManager->create(\Migration\App\ProgressBar\LogLevelProcessor::class);
+        $this->source = $objectManager->create(\Migration\ResourceModel\Source::class);
+        $this->destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
+        $this->recordFactory = $objectManager->create(\Migration\ResourceModel\RecordFactory::class);
+        $this->helper = $objectManager->create(\Migration\Step\TierPrice\Helper::class);
+        $this->logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $this->recordTransformerFactory = $objectManager->create(\Migration\RecordTransformerFactory::class);
+        $this->mapFactory = $objectManager->create(\Migration\Reader\MapFactory::class);
     }
 
     /**

@@ -23,7 +23,7 @@ class GetEventStatusTest extends \PHPUnit_Framework_TestCase
     public function testHandle($dateStart, $dateEnd, $status)
     {
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['setValue', 'getValue', 'getFields'])
             ->getMock();
         $record->expects($this->any())->method('getFields')->willReturn(['status']);
@@ -35,7 +35,9 @@ class GetEventStatusTest extends \PHPUnit_Framework_TestCase
         );
         $record->expects($this->once())->method('setValue')->with('status', $status);
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new GetEventStatus();
         $handler->setField('status');

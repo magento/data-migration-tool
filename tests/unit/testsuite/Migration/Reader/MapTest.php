@@ -20,7 +20,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -134,7 +134,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     {
         $handlerConfig = [
             [
-                'class' => '\Migration\Handler\SetValue',
+                'class' => \Migration\Handler\SetValue::class,
                 'params' => [
                     'default_value' => 10
                 ]

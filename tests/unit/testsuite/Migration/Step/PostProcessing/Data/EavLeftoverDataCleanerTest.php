@@ -38,28 +38,28 @@ class EavLeftoverDataCleanerTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
+            \Migration\ResourceModel\Destination::class,
             ['deleteRecords', 'getRecordsCount'],
             [],
             '',
             false
         );
         $this->progressBar = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
             ['advance'],
             [],
             '',
             false
         );
         $this->progress = $this->getMock(
-            'Migration\App\Progress',
+            \Migration\App\Progress::class,
             ['saveProcessedEntities'],
             [],
             '',
             false
         );
         $this->eavLeftoverDataModel = $this->getMock(
-            'Migration\Step\PostProcessing\Model\EavLeftoverData',
+            \Migration\Step\PostProcessing\Model\EavLeftoverData::class,
             ['getDocumentsToCheck', 'getLeftoverAttributeIds'],
             [],
             '',

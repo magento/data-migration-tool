@@ -28,14 +28,14 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $this->structure = $this->getMock(
-            '\Migration\ResourceModel\Structure',
+            \Migration\ResourceModel\Structure::class,
             [],
             [],
             '',
             false
         );
         $this->recordCollectionFactory = $this->getMock(
-            '\Migration\ResourceModel\Record\CollectionFactory',
+            \Migration\ResourceModel\Record\CollectionFactory::class,
             ['create'],
             [],
             '',
@@ -54,7 +54,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
     public function testGetRecords()
     {
         $recordCollection = $this->getMock(
-            '\Migration\ResourceModel\Record\RecordCollection',
+            \Migration\ResourceModel\Record\RecordCollection::class,
             [],
             [],
             '',

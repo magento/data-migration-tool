@@ -19,13 +19,13 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         /** @var \Migration\ResourceModel\Source $source */
-        $source = $objectManager->create('\Migration\ResourceModel\Source');
+        $source = $objectManager->create(\Migration\ResourceModel\Source::class);
         /** @var \Migration\App\SetupDeltaLog $setupDeltaLog */
         $setupDeltaLog = $objectManager->create(
-            '\Migration\App\SetupDeltaLog'
+            \Migration\App\SetupDeltaLog::class
         );
 
         ob_start();

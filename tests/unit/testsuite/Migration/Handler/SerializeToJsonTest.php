@@ -17,7 +17,7 @@ class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
         $record = $this->getMock(
-            'Migration\ResourceModel\Record',
+            \Migration\ResourceModel\Record::class,
             ['setValue', 'getValue', 'getFields'],
             [],
             '',
@@ -27,7 +27,9 @@ class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn(serialize($array));
         $record->expects($this->any())->method('setValue')->with($fieldName, json_encode($array));
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new SerializeToJson();
         $handler->setField($fieldName);

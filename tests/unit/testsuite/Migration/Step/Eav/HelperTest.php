@@ -71,33 +71,34 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')->disableOriginalConstructor()
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords', 'getAdapter', 'addDocumentPrefix'])
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
+            ->disableOriginalConstructor()
             ->setMethods(['getRecordsCount', 'getRecords', 'deleteDocumentBackup'])
             ->getMock();
-        $this->factory = $this->getMockBuilder('Migration\RecordTransformerFactory')->disableOriginalConstructor()
+        $this->factory = $this->getMockBuilder(\Migration\RecordTransformerFactory::class)->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
+        $this->readerGroups = $this->getMockBuilder(\Migration\Reader\Groups::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->readerAttributes = $this->getMockBuilder('\Migration\Reader\Groups')
+        $this->readerAttributes = $this->getMockBuilder(\Migration\Reader\Groups::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
+        $groupsFactory = $this->getMockBuilder(\Migration\Reader\GroupsFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -110,20 +111,20 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                 ]
             );
         $this->adapter = $this->getMock(
-            'Migration\ResourceModel\Adapter\Mysql',
+            \Migration\ResourceModel\Adapter\Mysql::class,
             ['getSelect'],
             [],
             '',
             false
         );
         $this->pdoMysql = $this->getMock(
-            'Magento\Framework\DB\Adapter\Pdo\Mysql',
+            \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
             ['fetchPairs'],
             [],
             '',
             false
         );
-        $this->select = $this->getMock('Magento\Framework\DB\Select', ['from', 'getAdapter'], [], '', false);
+        $this->select = $this->getMock(\Magento\Framework\DB\Select::class, ['from', 'getAdapter'], [], '', false);
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 
@@ -218,11 +219,12 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRecordTransformer()
     {
-        $sourceDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $sourceDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)->disableOriginalConstructor()
             ->getMock();
-        $destinationDocument = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
             ->getMock();
-        $recordTransformer = $this->getMockBuilder('Migration\RecordTransformer')->disableOriginalConstructor()
+        $recordTransformer = $this->getMockBuilder(\Migration\RecordTransformer::class)->disableOriginalConstructor()
             ->setMethods(['init'])
             ->getMock();
 

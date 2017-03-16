@@ -49,22 +49,22 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->progress = $this->getMockBuilder('Migration\App\ProgressBar\LogLevelProcessor')
+        $this->progress = $this->getMockBuilder(\Migration\App\ProgressBar\LogLevelProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->source = $this->getMockBuilder('Migration\ResourceModel\Source')
+        $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
-            ->disableOriginalConstructor()
-            ->setMethods([])
-            ->getMock();
-        $this->helper = $this->getMockBuilder('Migration\Step\Stores\Helper')
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
+        $this->helper = $this->getMockBuilder(\Migration\Step\Stores\Helper::class)
+            ->disableOriginalConstructor()
+            ->setMethods([])
+            ->getMock();
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['addRecord'], [], '', false);
     }
 
     /**
@@ -74,10 +74,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     {
         $fields = ['field_name' => []];
 
-        $structure = $this->getMockBuilder('Migration\ResourceModel\Structure')->disableOriginalConstructor()
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)->disableOriginalConstructor()
             ->setMethods(['getFields'])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
-        $document = $this->getMockBuilder('Migration\ResourceModel\Document')->disableOriginalConstructor()
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)->disableOriginalConstructor()
             ->setMethods(['getStructure'])
             ->getMock();
 

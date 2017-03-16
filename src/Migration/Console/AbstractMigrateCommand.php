@@ -96,6 +96,7 @@ class AbstractMigrateCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws Exception
+     * @return void
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {

@@ -52,14 +52,14 @@ class EavLeftoverDataTest extends \PHPUnit_Framework_TestCase
         ];
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $destination = $objectManager->create('\Migration\ResourceModel\Destination');
-        $groupsFactory = $objectManager->create('\Migration\Reader\GroupsFactory');
-        $config = $objectManager->get('\Migration\Config');
+        $destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
+        $groupsFactory = $objectManager->create(\Migration\Reader\GroupsFactory::class);
+        $config = $objectManager->get(\Migration\Config::class);
         /** @var \Migration\Step\PostProcessing\Model\EavLeftoverData $eavLeftoverDataModel */
         $eavLeftoverDataModel = $objectManager->create(
-            '\Migration\Step\PostProcessing\Model\EavLeftoverData',
+            \Migration\Step\PostProcessing\Model\EavLeftoverData::class,
             [
                 'destination' => $destination,
                 'groupsFactory' => $groupsFactory,

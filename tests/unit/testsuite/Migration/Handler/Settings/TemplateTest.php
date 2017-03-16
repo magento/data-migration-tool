@@ -17,7 +17,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $fieldName = 'value';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMock(
-            'Migration\ResourceModel\Record',
+            \Migration\ResourceModel\Record::class,
             ['getValue', 'setValue', 'getFields'],
             [],
             '',
@@ -26,7 +26,7 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($templateOldFashion);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $templateNewStyle);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
         $oppositeRecord->expects($this->once())->method('getValue')->with($fieldName)->willReturn($templateNewStyle);

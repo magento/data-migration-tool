@@ -27,15 +27,15 @@ class SerializedDataTest extends \PHPUnit_Framework_TestCase
         ]);
 
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $oppositeRecord */
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $classMap = $this->getMockBuilder('\Migration\Reader\ClassMap')->disableOriginalConstructor()
+        $classMap = $this->getMockBuilder(\Migration\Reader\ClassMap::class)->disableOriginalConstructor()
             ->setMethods(['convertClassName'])
             ->getMock();
         $classMap->expects($this->exactly(2))->method('convertClassName')->will($this->returnValueMap([

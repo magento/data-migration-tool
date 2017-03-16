@@ -38,18 +38,18 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder('\Magento\Framework\ObjectManager\ObjectManager')
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManager\ObjectManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->config = $this->getMockBuilder('Migration\Config')
+        $this->config = $this->getMockBuilder(\Migration\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['getResourceConfig', 'getOption'])
             ->getMock();
-        $this->selectFactory = $this->getMockBuilder('Magento\Framework\DB\SelectFactory')
+        $this->selectFactory = $this->getMockBuilder(\Magento\Framework\DB\SelectFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pdoMysql = $this->getMockBuilder('\Magento\Framework\DB\Adapter\Pdo\Mysql')
+        $this->pdoMysql = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['disallowDdlCache', 'query'])
             ->getMock();
@@ -90,12 +90,12 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
         ]);
         $this->objectManager->expects($this->at(0))
             ->method('create')
-            ->with('\Magento\Framework\DB\SelectFactory', ['parts' => []])
+            ->with("\\Magento\\Framework\\DB\\SelectFactory", ['parts' => []])
             ->willReturn($this->selectFactory);
         $this->objectManager->expects($this->at(1))
             ->method('create')
             ->with(
-                '\Magento\Framework\DB\Adapter\Pdo\Mysql',
+                "\\Magento\\Framework\\DB\\Adapter\\Pdo\\Mysql",
                 ['config' => $mysqlPdoConfig, 'selectFactory' => $this->selectFactory]
             )
             ->willReturn($this->pdoMysql);
