@@ -17,14 +17,16 @@ class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['setValue', 'getValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         $record->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($serialized);
         $record->expects($this->any())->method('setValue')->with($fieldName, $expectedJson);
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $handler = new SalesOrderItem();
         $handler->setField($fieldName);
         $handler->handle($record, $record2);

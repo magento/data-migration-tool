@@ -171,6 +171,14 @@
                 <field>catalog_eav_attribute.apply_to</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
             </transform>
+            <transform>
+                <field>magento_rma_item_eav_attribute.validate_rules</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>customer_eav_attribute.validate_rules</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
@@ -226,14 +234,6 @@
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="basic"/>
                 </handler>
-            </transform>
-            <transform>
-                <field>magento_rma_item_eav_attribute.validate_rules</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
-            </transform>
-            <transform>
-                <field>customer_eav_attribute.validate_rules</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
             </transform>
         </field_rules>
     </destination>

@@ -14,7 +14,7 @@ class ConvertWithConditionsTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->model = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $this->model = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['setValue', 'getValue', 'getFields', 'getData'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -48,7 +48,7 @@ class ConvertWithConditionsTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
-     * @expectedException Migration\Exception
+     * @expectedException \Migration\Exception
      */
     public function testException()
     {

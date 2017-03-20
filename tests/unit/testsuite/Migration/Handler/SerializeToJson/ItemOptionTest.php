@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SerializeToJson;
 
-class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
+class ItemOptionTest extends \PHPUnit_Framework_TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject
@@ -14,7 +14,7 @@ class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
 
     public function setUp()
     {
-        $this->model = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $this->model = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['setValue', 'getValue', 'getFields', 'getData'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -34,14 +34,14 @@ class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
         $this->model->expects($this->any())->method('getData')->willReturn(['code' => $code]);
         $this->model->expects($this->any())->method('getValue')->with($fieldName)->willReturn($serialized);
         $this->model->expects($this->any())->method('setValue')->with($fieldName, $expectedJson);
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()->getMock();
         $handler = new ItemOption();
         $handler->setField($fieldName);
         $handler->handle($this->model, $record2);
     }
 
     /**
-     * @expectedException Migration\Exception
+     * @expectedException \Migration\Exception
      */
     public function testException()
     {

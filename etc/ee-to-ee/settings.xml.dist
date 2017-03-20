@@ -1781,23 +1781,11 @@
             <handler class="\Migration\Handler\VisualMerchandiser\InsertMode"/>
         </transform>
         <transform>
-            <path>payment/braintree/countrycreditcard</path>
-            <handler class="\Migration\Handler\SerializeToJson"/>
-        </transform>
-        <transform>
             <path>cataloginventory/item_options/min_sale_qty</path>
             <handler class="\Migration\Handler\SerializeToJson"/>
         </transform>
         <transform>
             <path>currency/options/customsymbol</path>
-            <handler class="\Migration\Handler\SerializeToJson"/>
-        </transform>
-        <transform>
-            <path>design/theme/ua_regexp</path>
-            <handler class="\Migration\Handler\SerializeToJson"/>
-        </transform>
-        <transform>
-            <path>admin/magento_logging/actions</path>
             <handler class="\Migration\Handler\SerializeToJson"/>
         </transform>
     </value>

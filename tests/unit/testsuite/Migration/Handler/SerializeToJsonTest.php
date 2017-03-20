@@ -43,8 +43,8 @@ class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
                 json_encode($array)
             ],
             [
-                '',
-                ''
+                null,
+                null
             ]
         ];
     }
