@@ -251,7 +251,6 @@ class Helper
     {
         $fixture = 'default';
         $annotations = array_replace($annotations['class'], $annotations['method']);
-        var_dump($annotations);
         if (!empty($annotations['dbFixture'])) {
             $fixtureName = $this->getFixturePrefix() . reset($annotations['dbFixture']);
             $fixture = (is_dir($this->dbFixturePath . $fixtureName))
