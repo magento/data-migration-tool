@@ -357,7 +357,7 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
             ->willReturnSelf();
         $destinationRecord->expects($this->at(7))
             ->method('setValue')
-            ->with('metadata', 'a:1:{s:11:"category_id";s:17:"category_id_value";}')->willReturnSelf();
+            ->with('metadata', '{"category_id":"category_id_value"}')->willReturnSelf();
         $destinationRecord->expects($this->at(8))
             ->method('setValue')
             ->with('entity_id', 'product_id_value')

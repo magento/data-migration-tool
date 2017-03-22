@@ -1463,6 +1463,165 @@
                 <field>catalogsearch_query.synonym_for</field>
                 <handler class="\Migration\Handler\Synonym"/>
             </transform>
+            <transform>
+                <field>sales_flat_quote_payment.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_reward_history.additional_data</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_order_item.product_options</field>
+                <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem"/>
+            </transform>
+            <transform>
+                <field>sales_flat_order_payment.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_shipment.packages</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_payment_transaction.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ConvertWithConditions">
+                    <param name="conditionalField" value="code" />
+                    <param name="conditionalFieldValuesPattern" value="/(parameters)|(info_buyRequest)|(attributes)|(bundle_option_ids)|(bundle_selection_ids)|(bundle_selection_attributes)/" />
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+            </transform>
+            <transform>
+                <field>enterprise_giftregistry_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ConvertWithConditions">
+                    <param name="conditionalField" value="code" />
+                    <param name="conditionalFieldValuesPattern" value="/(parameters)|(info_buyRequest)|(attributes)|(bundle_option_ids)|(bundle_selection_ids)|(bundle_selection_attributes)/" />
+                </handler>
+            </transform>
+            <transform>
+                <field>enterprise_giftregistry_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+            </transform>
+            <transform>
+                <field>wishlist_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ConvertWithConditions">
+                    <param name="conditionalField" value="code" />
+                    <param name="conditionalFieldValuesPattern" value="/(parameters)|(info_buyRequest)|(attributes)|(bundle_option_ids)|(bundle_selection_ids)|(bundle_selection_attributes)/" />
+                </handler>
+            </transform>
+            <transform>
+                <field>wishlist_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+            </transform>
+            <transform>
+                <field>sales_order.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_address.applied_taxes</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_address.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>widget_instance.widget_parameters</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_reminder_rule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_targetrule.actions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_targetrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_targetrule.action_select_bind</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>salesrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>salesrule.actions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>catalogrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>catalogrule.actions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_customersegment_segment.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>admin_user.extra</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_logging_event.info</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_logging_event_changes.original_data</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_logging_event_changes.result_data</field>
+                <handler class="\Migration\Handler\SerializeToJson">
+                    <param name="ignoreBrokenData" value="true"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>enterprise_rma_item_entity.product_options</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_rma_shipping_label.packages</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_giftregistry_person.custom_values</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_giftregistry_entity.custom_values</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_giftregistry_entity.shipping_address</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_scheduled_operations.file_info</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>enterprise_scheduled_operations.entity_attributes</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
