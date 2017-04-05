@@ -222,7 +222,7 @@ abstract class AbstractResource
      */
     protected function getBytes($memoryLimit)
     {
-        $memoryLimit = trim($memoryLimit);
+        $memoryLimit = (int)trim($memoryLimit);
         $last = strtolower($memoryLimit[strlen($memoryLimit)-1]);
         switch($last) {
             case 'g':
