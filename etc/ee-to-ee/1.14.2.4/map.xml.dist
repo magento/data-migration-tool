@@ -1378,7 +1378,9 @@
             </transform>
             <transform>
                 <field>enterprise_customersegment_segment.condition_sql</field>
-                <handler class="Migration\Handler\Rule\CustomerSegmentConditionSql"/>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="" />
+                </handler>
             </transform>
             <transform>
                 <field>sales_flat_order_item.weee_tax_applied</field>
