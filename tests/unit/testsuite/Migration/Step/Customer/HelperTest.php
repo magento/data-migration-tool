@@ -10,6 +10,10 @@ use Migration\ResourceModel\Record;
 use Migration\ResourceModel\Record\Collection;
 use Migration\Step\Customer\Helper;
 
+/**
+ * Class HelperTest
+ * @SuppressWarnings(PHPMD)
+ */
 class HelperTest extends \PHPUnit_Framework_TestCase
 {
     /**
@@ -176,8 +180,12 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->method('getOption')
             ->willReturnMap([$upgradePasswordHash]);
 
-        $testMethodArguments[] = $destinationRecords;
-        $this->helper->updateAttributeData(...$testMethodArguments);
+        $this->helper->updateAttributeData(
+            $testMethodArguments['entityTypeCode'],
+            $testMethodArguments['sourceDocName'],
+            $testMethodArguments['destinationDocName'],
+            $destinationRecords
+        );
 
         foreach ($destinationRecords as $key => $record) {
             $this->assertEquals($record->getData(), $recordsResult[$key]);
@@ -261,7 +269,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
     {
         return [
             [
-                'testMethodArguments' => ['customer', 'customer_entity', 'customer_entity'],
+                'testMethodArguments' => [
+                    'entityTypeCode' => 'customer',
+                    'sourceDocName' => 'customer_entity',
+                    'destinationDocName' => 'customer_entity'
+                ],
                 'recordsData' => [
                     ['entity_id' => '1', 'entity_type_id' => '1', 'email' => 'customer1@example.com'],
                     ['entity_id' => '2', 'entity_type_id' => '1', 'email' => 'customer2@example.com'],
@@ -312,7 +324,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
             ], [
-                'testMethodArguments' => ['customer', 'customer_entity', 'customer_entity'],
+                'testMethodArguments' => [
+                    'entityTypeCode' => 'customer',
+                    'sourceDocName' => 'customer_entity',
+                    'destinationDocName' => 'customer_entity'
+                ],
                 'recordsData' => [
                     ['entity_id' => '1', 'entity_type_id' => '1', 'email' => 'customer1@example.com'],
                     ['entity_id' => '2', 'entity_type_id' => '1', 'email' => 'customer2@example.com']
@@ -345,7 +361,11 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                     ]
                 ],
             ], [
-                'testMethodArguments' => ['customer_address', 'customer_address_entity', 'customer_address_entity'],
+                'testMethodArguments' => [
+                    'entityTypeCode' => 'customer_address',
+                    'sourceDocName' => 'customer_address_entity',
+                    'destinationDocName' => 'customer_address_entity'
+                ],
                 'recordsData' => [
                     ['entity_id' => '1', 'city' => 'Austin'],
                     ['entity_id' => '2', 'city' => 'Kiev']
