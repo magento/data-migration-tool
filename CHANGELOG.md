@@ -1,3 +1,17 @@
+2.1.6
+=============
+* Added possibility to specify custom port for connection to MySQL server
+* Added support for versions:
+
+   * Magento CE: 2.1.6
+   * Magento EE: 2.1.6
+
+* Fixed bugs:
+   * Unable to save Customer's custom Attribute value if the attribute was created after migration
+   * An error occurred in the TierPrice step if there were Group Price and Tier Price with qty 1
+   * Issues [#207](https://github.com/magento/data-migration-tool/issues/207), [#264](https://github.com/magento/data-migration-tool/issues/264): Customer Segments with product attributes in conditions caused Store Front to be inoperative
+   * [Issue #212](https://github.com/magento/data-migration-tool/issues/212): In case system attributes category_ids, giftcard_type, price_type, shipment_type, sku_type, weight_type, swatch_image are not part of product attribute set it will be checked and linked to it
+
 2.1.5
 =============
 * Updated copyright notice
