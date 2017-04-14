@@ -140,7 +140,7 @@ class Data implements StageInterface
                     $recordTransformer->transform($sourceRecord, $destRecord);
                     $destinationRecords->addRecord($destRecord);
                 }
-                $this->destination->saveRecords($destinationName, $destinationRecords);
+                $this->destination->saveRecords($destinationName, $destinationRecords, true);
             }
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }

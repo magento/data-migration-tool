@@ -152,12 +152,6 @@
                 </handler>
             </transform>
             <transform>
-                <field>eav_attribute_group.default_id</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0"/>
-                </handler>
-            </transform>
-            <transform>
                 <field>catalog_eav_attribute.apply_to</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
             </transform>

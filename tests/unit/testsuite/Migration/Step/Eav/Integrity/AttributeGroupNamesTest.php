@@ -77,7 +77,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                     'eav_attribute_group' => [
                         7 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Prices'],
-                        11 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Design']
+                        11 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Design'],
+                        13 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'catalog_product' => ['entity_type_id' => 4]
@@ -95,6 +96,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
+                        13 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Images'],
                         12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
                     ],
                     'eav_entity_type' => [
@@ -115,6 +117,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
+                        13 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Images'],
                         12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
                     ],
                     'eav_entity_type' => [

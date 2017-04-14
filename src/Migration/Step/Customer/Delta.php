@@ -77,7 +77,7 @@ class Delta extends AbstractDelta
         }
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
 
-        $attributeType = $this->helper->getAttributeType($documentName);
+        $entityTypeCode = $this->helper->getEntityTypeCodeByDocumentName($documentName);
 
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
@@ -91,7 +91,7 @@ class Delta extends AbstractDelta
                 echo('.');
                 $ids[] = $data[$idKey];
 
-                if ($this->helper->isSkipRecord($attributeType, $documentName, $data)) {
+                if ($this->helper->isSkipRecord($entityTypeCode, $documentName, $data)) {
                     continue;
                 }
 
@@ -103,7 +103,7 @@ class Delta extends AbstractDelta
                     $destinationRecords
                 );
             }
-            $this->helper->updateAttributeData($attributeType, $documentName, $destinationRecords);
+            $this->helper->updateAttributeData($entityTypeCode, $documentName, $destinationName, $destinationRecords);
 
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);

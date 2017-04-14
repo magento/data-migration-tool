@@ -25,6 +25,7 @@ AUTO_INCREMENT=0
 ;
 
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+INSERT INTO `catalog_product_entity_tier_price` (`entity_id`, `all_groups`, `customer_group_id`, `qty`, `value`, `website_id`) VALUES ('1', '0', '1', '1.0000', '15.0000', '0');
 INSERT INTO `catalog_product_entity_tier_price` (`entity_id`, `all_groups`, `customer_group_id`, `qty`, `value`, `website_id`) VALUES ('6', '0', '2', '3.0000', '85.0000', '0');
 /*!40101 SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'') */;
 
@@ -48,5 +49,6 @@ AUTO_INCREMENT=0
 ;
 
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+INSERT INTO `catalog_product_entity_group_price` (`entity_id`, `all_groups`, `customer_group_id`, `value`, `website_id`) VALUES ('1', '0', '1', '10.0000', '0');
 INSERT INTO `catalog_product_entity_group_price` (`entity_id`, `all_groups`, `customer_group_id`, `value`, `website_id`) VALUES ('6', '0', '3', '95.0000', '0');
 /*!40101 SET SQL_MODE=IFNULL(@OLD_INSERT_SQL_MODE,'') */;

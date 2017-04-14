@@ -150,20 +150,12 @@
                     <param name="prefix" value="Migration_"/>
                 </handler>
             </transform>
-
             <transform>
                 <field>eav_attribute_group.attribute_group_name</field>
                 <handler class="\Migration\Handler\AddPrefix">
                     <param name="prefix" value="Migration_"/>
                 </handler>
             </transform>
-            <transform>
-                <field>eav_attribute_group.default_id</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0"/>
-                </handler>
-            </transform>
-
             <transform>
                 <field>enterprise_rma_item_eav_attribute.input_filter</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
