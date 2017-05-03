@@ -549,7 +549,9 @@ class Data implements StageInterface, RollbackInterface
             ) {
                 continue;
             }
-            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
+            if ($attributes[$attributeId]['attribute_code'] == $attributeCode
+            && isset($attributeSetGroups[$record->getValue('attribute_set_id')][$attributeGroupCode])
+            ) {
                 $record->setValue(
                     'attribute_group_id',
                     $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeGroupCode]
