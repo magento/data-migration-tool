@@ -29,6 +29,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
         $initialData = $objectManager->get('Migration\Step\Eav\InitialData');
+        $ignoredAttributes = $objectManager->get('Migration\Step\Eav\Model\IgnoredAttributes');
         $this->data = $objectManager->create(
             'Migration\Step\Eav\Data',
             [
@@ -39,6 +40,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             'Migration\Step\Eav\Volume',
             [
                 'initialData' => $initialData,
+                'ignoredAttributes' => $ignoredAttributes
             ]
         );
     }
