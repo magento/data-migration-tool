@@ -9,6 +9,7 @@ use Migration\App\Step\AbstractVolume;
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 use Migration\Logger\Logger;
+use Migration\Step\Stores\Model\DocumentsList;
 
 /**
  * Class Volume
@@ -18,57 +19,69 @@ class Volume extends AbstractVolume
     /**
      * @var ResourceModel\Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var ResourceModel\Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var ProgressBar\LogLevelProcessor
      */
-    protected $progress;
+    private $progress;
 
     /**
-     * @var Helper
+     * @var DocumentsList
      */
-    protected $helper;
+    private $documentsList;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
-     * @param Helper $helper
+     * @param DocumentsList $documentsList
      * @param Logger $logger
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
-        Helper $helper,
+        DocumentsList $documentsList,
         Logger $logger
     ) {
         $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
-        $this->helper = $helper;
+        $this->documentsList = $documentsList;
         parent::__construct($logger);
     }
 
     /**
-     * {@inheritdoc}
+     * @return bool
      */
     public function perform()
     {
-        $this->progress->start(count($this->helper->getDocumentList()));
-        foreach ($this->helper->getDocumentList() as $sourceName => $destinationName) {
+        $this->progress->start($this->getIterationsCount());
+        foreach ($this->documentsList->getDocumentsMap() as $sourceDocumentName => $destinationDocumentName) {
             $this->progress->advance();
-            if ($this->source->getRecordsCount($sourceName) != $this->destination->getRecordsCount($destinationName)) {
-                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
+            $sourceRecordsCount = $this->source->getRecordsCount($sourceDocumentName);
+            $destinationRecordsCount = $this->destination->getRecordsCount($destinationDocumentName);
+            if ($sourceRecordsCount != $destinationRecordsCount) {
+                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationDocumentName;
             }
         }
         $this->progress->finish();
         return $this->checkForErrors(Logger::ERROR);
+    }
+
+    /**
+     * Get iterations count for step
+     *
+     * @return int
+     */
+    private function getIterationsCount()
+    {
+        return count($this->documentsList->getDocumentsMap());
     }
 }

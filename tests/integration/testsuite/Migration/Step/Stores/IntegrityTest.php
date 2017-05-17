@@ -14,31 +14,41 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     /**
      * @var \Migration\ResourceModel\Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var array
      */
-    protected $destinationDocuments = [
+    private $destinationDocuments = [
         'store' => 2,
         'store_group' => 2,
         'store_website' => 2
     ];
 
     /**
-     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor
      */
-    protected $progress;
+    private $progress;
 
     /**
-     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source
      */
-    protected $source;
+    private $source;
 
     /**
-     * @var \Migration\Step\Stores\Helper|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Step\Stores\Model\DocumentsList
      */
-    protected $helper;
+    private $documentsList;
+
+    /**
+     * @var \Migration\Logger\Logger
+     */
+    private $logger;
+
+    /**
+     * @var \Migration\Reader\MapFactory
+     */
+    private $mapFactory;
 
     /**
      * @return void
@@ -50,9 +60,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->progress = $objectManager->create(\Migration\App\ProgressBar\LogLevelProcessor::class);
+        $this->logger = $objectManager->create(\Migration\Logger\Logger::class);
         $this->source = $objectManager->create(\Migration\ResourceModel\Source::class);
         $this->destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
-        $this->helper = $objectManager->create(\Migration\Step\Stores\Helper::class);
+        $this->documentsList = $objectManager->create(\Migration\Step\Stores\Model\DocumentsList::class);
+        $this->mapFactory = $objectManager->create(\Migration\Reader\MapFactory::class);
     }
 
     /**
@@ -61,10 +73,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         $integrity = new Integrity(
+            $this->documentsList,
+            $this->logger,
             $this->progress,
             $this->source,
             $this->destination,
-            $this->helper
+            $this->mapFactory
         );
         $this->assertTrue($integrity->perform());
     }
