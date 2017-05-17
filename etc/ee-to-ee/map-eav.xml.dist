@@ -150,7 +150,6 @@
                     <param name="prefix" value="Migration_"/>
                 </handler>
             </transform>
-
             <transform>
                 <field>eav_attribute_group.attribute_group_name</field>
                 <handler class="\Migration\Handler\AddPrefix">

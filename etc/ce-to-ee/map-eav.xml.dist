@@ -155,12 +155,6 @@
                     <param name="prefix" value="Migration_"/>
                 </handler>
             </transform>
-            <transform>
-                <field>eav_attribute_group.default_id</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="0"/>
-                </handler>
-            </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>
