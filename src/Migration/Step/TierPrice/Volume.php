@@ -65,13 +65,8 @@ class Volume extends AbstractVolume
         $destinationDocuments = $this->helper->getDestinationDocuments();
         $this->progress->start(count($sourceDocuments) + count($destinationDocuments));
 
-        $sourceTotal = 0;
         $destinationTotal = 0;
-
-        foreach ($sourceDocuments as $documentName) {
-            $sourceTotal += $this->source->getRecordsCount($documentName);
-            $this->progress->advance();
-        }
+        $sourceTotal = $this->getSourceTotal($sourceDocuments);
         foreach ($destinationDocuments as $documentName) {
             $destinationTotal += $this->destination->getRecordsCount($documentName);
             $this->progress->advance();
@@ -83,5 +78,35 @@ class Volume extends AbstractVolume
 
         $this->progress->finish();
         return $this->checkForErrors(Logger::ERROR);
+    }
+
+    /**
+     * Return number of records with unique key taken into account
+     * Duplicated records will be omitted
+     *
+     * @param array $sourceDocuments
+     * @return int
+     */
+    private function getSourceTotal(array $sourceDocuments)
+    {
+        $sourceRecordsUnique = [];
+        foreach ($sourceDocuments as $documentName) {
+            $this->progress->advance();
+            $sourceRecords = $this->source->getRecords(
+                $documentName,
+                0,
+                $this->source->getRecordsCount($documentName)
+            );
+            foreach ($sourceRecords as $record) {
+                $record['qty'] = isset($record['qty']) ? $record['qty'] : '1.0000';
+                $key = $record['entity_id'] . '-' .
+                    $record['all_groups'] . '-' .
+                    $record['customer_group_id'] . '-' .
+                    $record['qty'] . '-' .
+                    $record['website_id'];
+                $sourceRecordsUnique[$key] = $record;
+            }
+        }
+        return count($sourceRecordsUnique);
     }
 }

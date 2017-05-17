@@ -88,6 +88,6 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->mapFactory
         );
         $this->assertTrue($data->perform());
-        $this->assertEquals(2, count($this->destination->getRecords(self::TIRE_PRICE_TABLE_DESTINATION, 0)));
+        $this->assertEquals(3, count($this->destination->getRecords(self::TIRE_PRICE_TABLE_DESTINATION, 0)));
     }
 }
