@@ -663,9 +663,6 @@
                 <document>catalog_product_super_attribute_pricing</document>
             </ignore>
             <ignore>
-                <document>core_website</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_entity_group_price</document>
             </ignore>
             <ignore>
@@ -686,6 +683,15 @@
             <ignore>
                 <document>customer_flowpassword</document>
             </ignore>
+            <ignore>
+                <document>core_store</document>
+            </ignore>
+            <ignore>
+                <document>core_store_group</document>
+            </ignore>
+            <ignore>
+                <document>core_website</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -701,14 +707,6 @@
             <rename>
                 <document>core_email_template</document>
                 <to>email_template</to>
-            </rename>
-            <rename>
-                <document>core_store</document>
-                <to>store</to>
-            </rename>
-            <rename>
-                <document>core_store_group</document>
-                <to>store_group</to>
             </rename>
             <rename>
                 <document>core_translate</document>
@@ -1629,18 +1627,6 @@
                 <field>admin_rule.assert_id</field>
             </ignore>
             <ignore>
-                <field>core_website.is_staging</field>
-            </ignore>
-            <ignore>
-                <field>core_website.master_login</field>
-            </ignore>
-            <ignore>
-                <field>core_website.master_password</field>
-            </ignore>
-            <ignore>
-                <field>core_website.visibility</field>
-            </ignore>
-            <ignore>
                 <field>sales_order_tax.hidden</field>
             </ignore>
             <ignore>
@@ -2288,6 +2274,12 @@
             </ignore>
             <ignore>
                 <document>customer_address_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>store</document>
+            </ignore>
+            <ignore>
+                <document>store_group</document>
             </ignore>
             <ignore>
                 <document>store_website</document>
