@@ -52,6 +52,9 @@
                 <field>sales_flat_order.base_hidden_tax_refunded</field>
                 <to>sales_order.base_discount_tax_compensation_refunded</to>
             </move>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -79,6 +82,9 @@
             </ignore>
             <ignore>
                 <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
             </ignore>
         </field_rules>
     </destination>

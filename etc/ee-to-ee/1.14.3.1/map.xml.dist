@@ -147,22 +147,10 @@
                 <document>catalog_category_flat_cl</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index</document>
+                <document>catalog_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_cl</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_enbl_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_enbl_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_tmp</document>
+                <document>catalog_category_product_index_*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
@@ -187,21 +175,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_bundle_stock_index</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_group_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price*</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_tier_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_website</document>
             </ignore>
             <ignore>
                 <document>catalogindex_aggregation</document>
@@ -415,24 +388,6 @@
             </ignore>
             <ignore>
                 <document>customer_eav_attribute</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_tmp</document>
             </ignore>
             <ignore>
                 <document>eav_attribute</document>
@@ -1964,6 +1919,9 @@
             <ignore>
                 <datatype>sales_flat_order.customer_group_id</datatype>
             </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1979,9 +1937,6 @@
             </ignore>
             <ignore>
                 <document>signifyd_case</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>ui_bookmark</document>
@@ -2050,25 +2005,13 @@
                 <document>customer_eav_attribute_website</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav</document>
+                <document>catalog_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_decimal</document>
+                <document>catalog_category_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_decimal_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_tmp</document>
+                <document>cataloginventory_stock_status_replica</document>
             </ignore>
             <ignore>
                 <document>eav_attribute</document>
@@ -2816,6 +2759,15 @@
             </ignore>
             <ignore>
                 <datatype>sales_order.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_invitation.group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>magento_logging_event.info</datatype>
+            </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
             </ignore>
         </field_rules>
     </destination>
