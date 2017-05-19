@@ -1476,10 +1476,6 @@
                 <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
             </transform>
             <transform>
-                <field>sales_order.gift_cards</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
-            </transform>
-            <transform>
                 <field>sales_flat_quote.gift_cards</field>
                 <handler class="\Migration\Handler\SerializeToJson"/>
             </transform>

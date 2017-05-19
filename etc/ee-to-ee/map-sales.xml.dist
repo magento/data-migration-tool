@@ -55,6 +55,10 @@
             <ignore>
                 <datatype>sales_flat_order.customer_group_id</datatype>
             </ignore>
+            <transform>
+                <field>sales_flat_order.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
         </field_rules>
     </source>
     <destination>
