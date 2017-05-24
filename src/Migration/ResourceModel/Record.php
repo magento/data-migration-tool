@@ -105,6 +105,25 @@ class Record
     }
 
     /**
+     * Get column default value
+     *
+     * @param string $columnName
+     * @return mixed
+     * @throws Exception
+     */
+    public function getValueDefault($columnName)
+    {
+        if ($this->structure && !$this->structure->hasField($columnName)) {
+            throw new Exception("Record structure does not contain field $columnName");
+        }
+        $fields = $this->structure->getFields();
+        if ($fields[$columnName]['DEFAULT'] === null && $fields[$columnName]['NULLABLE'] === false) {
+            return '';
+        }
+        return $fields[$columnName]['DEFAULT'];
+    }
+
+    /**
      * Set column value
      *
      * @param string $columnName
@@ -145,6 +164,24 @@ class Record
     public function getData()
     {
         return $this->data;
+    }
+
+    /**
+     * Get record default data
+     *
+     * @return array
+     */
+    public function getDataDefault()
+    {
+        $fields = [];
+        foreach ($this->structure->getFields() as $code => $structure) {
+            if ($structure['DEFAULT'] === null && $structure['NULLABLE'] === false) {
+                $fields[$code] = '';
+            } else {
+                $fields[$code] = $structure['DEFAULT'];
+            }
+        }
+        return $fields;
     }
 
     /**
