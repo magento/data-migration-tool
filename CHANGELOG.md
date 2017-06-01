@@ -1,3 +1,14 @@
+2.1.7
+=============
+* Added support for versions:
+
+   * Magento CE: 1.9.3.3, 2.1.6
+   * Magento EE: 1.14.3.3, 2.1.6
+
+* Fixed bugs:
+   * [Issue #283](https://github.com/magento/data-migration-tool/issues/283): Ignored attributes did not clean properly in the extended attribute tables `catalog_eav_attribute`, `customer_eav_attribute`
+   * [Issue #176](https://github.com/magento/data-migration-tool/issues/176): Ignored fields in map-eav.xml file caused errors during migration if a table's fields can not be NULL
+
 2.1.6
 =============
 * Added possibility to specify custom port for MySQL server connection
