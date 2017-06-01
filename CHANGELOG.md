@@ -6,8 +6,8 @@
    * Magento EE: 1.14.3.3, 2.1.6
 
 * Fixed bugs:
-   * [Issue #283](https://github.com/magento/data-migration-tool/issues/283): Ignored attributes did not clean properly in the extended attribute tables `catalog_eav_attribute`, `customer_eav_attribute`
-   * [Issue #176](https://github.com/magento/data-migration-tool/issues/176): Ignored fields in map-eav.xml file caused errors during migration if a table's fields can not be NULL
+   * [Issue #283](https://github.com/magento/data-migration-tool/issues/283): Ignored attributes were not cleaned properly in the following extended attribute tables: `catalog_eav_attribute`, `customer_eav_attribute`
+   * [Issue #176](https://github.com/magento/data-migration-tool/issues/176): Ignored fields in the `map-eav.xml` file caused errors during migration if the table fields could not be NULL (set as NOT NULL)
 
 2.1.6
 =============
