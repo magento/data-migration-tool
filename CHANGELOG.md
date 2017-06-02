@@ -2,8 +2,8 @@
 =============
 * Added support for versions:
 
-   * Magento CE: 1.9.3.3, 2.1.6
-   * Magento EE: 1.14.3.3, 2.1.6
+   * Magento CE: 1.9.3.3, 2.1.7
+   * Magento EE: 1.14.3.3, 2.1.7
 
 * Fixed bugs:
    * [Issue #283](https://github.com/magento/data-migration-tool/issues/283): Ignored attributes were not cleaned properly in the following extended attribute tables: `catalog_eav_attribute`, `customer_eav_attribute`
