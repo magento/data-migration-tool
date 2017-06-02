@@ -68,15 +68,6 @@ class InitialData
         $this->source = $source;
         $this->destination = $destination;
         $this->helper = $helper;
-    }
-
-    /**
-     * Load EAV data before migration
-     *
-     * @return void
-     */
-    public function init()
-    {
         $this->initAttributeSets();
         $this->initAttributeGroups();
         $this->initAttributes();

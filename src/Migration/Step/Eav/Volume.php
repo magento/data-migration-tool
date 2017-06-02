@@ -10,6 +10,7 @@ use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\Reader\GroupsFactory;
 use Migration\ResourceModel\Destination;
+use Migration\Step\Eav\Model\IgnoredAttributes;
 
 /**
  * Class Volume
@@ -47,6 +48,11 @@ class Volume extends AbstractVolume
     protected $tableKeys;
 
     /**
+     * @var IgnoredAttributes
+     */
+    protected $ignoredAttributes;
+
+    /**
      * Eav Attributes that can be validated
      * @var array
      */
@@ -74,6 +80,7 @@ class Volume extends AbstractVolume
     /**
      * @param Helper $helper
      * @param InitialData $initialData
+     * @param IgnoredAttributes $ignoredAttributes
      * @param Logger $logger
      * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
@@ -82,12 +89,14 @@ class Volume extends AbstractVolume
     public function __construct(
         Helper $helper,
         InitialData $initialData,
+        IgnoredAttributes $ignoredAttributes,
         Logger $logger,
         ProgressBar\LogLevelProcessor $progress,
         GroupsFactory $groupsFactory,
         Destination $destination
     ) {
         $this->initialData = $initialData;
+        $this->ignoredAttributes = $ignoredAttributes;
         $this->helper = $helper;
         $this->progress = $progress;
         $this->groups = $groupsFactory->create('eav_document_groups_file');
@@ -178,7 +187,8 @@ class Volume extends AbstractVolume
      */
     protected function checkAttributesMismatch($attribute)
     {
-        $sourceAttributes = $this->helper->clearIgnoredAttributes($this->initialData->getAttributes('source'));
+        $sourceAttributes = $this->ignoredAttributes
+            ->clearIgnoredAttributes($this->initialData->getAttributes('source'));
 
         if (isset($sourceAttributes[$attribute['attribute_id']])
             && ($sourceAttributes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code'])

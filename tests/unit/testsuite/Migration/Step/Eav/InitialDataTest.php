@@ -57,25 +57,8 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
         $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
             ->setMethods(['getSourceRecords', 'getDestinationRecords'])
             ->getMock();
-        $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);
-    }
 
-    /**
-     * @covers \Migration\Step\Eav\InitialData::Init
-     * @covers \Migration\Step\Eav\InitialData::initAttributes
-     * @covers \Migration\Step\Eav\InitialData::initAttributeSets
-     * @covers \Migration\Step\Eav\InitialData::initAttributeGroups
-     * @covers \Migration\Step\Eav\InitialData::getAttributes
-     * @covers \Migration\Step\Eav\InitialData::getAttributeSets
-     * @covers \Migration\Step\Eav\InitialData::getAttributeGroups
-     * @return void
-     */
-    public function testInit()
-    {
-        $dataAttributes = [
-            'source' => ['id_1' => 'value_1','id_2' => 'value_2'],
-            'dest' => ['id_1' => 'value_1','id_2' => 'value_2']
-        ];
+        $dataAttributes = $this->getDataAttributes();
         $eavEntityTypes = [
             'source' => [
                 ['entity_type_id' => '1', 'entity_type_code' => 'customer'],
@@ -101,10 +84,6 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             ['eav_attribute', ['attribute_id'], $dataAttributes['source']],
             ['eav_entity_type', [], $eavEntityTypes['source']]
         ]);
-        $this->helper->expects($this->any())->method('clearIgnored')->willReturnMap([
-            [$dataAttributes['source'], $dataAttributes['source']],
-            [$eavEntityTypes['source'], $eavEntityTypes['source']]
-        ]);
         $this->helper->expects($this->any())->method('getDestinationRecords')->willReturnMap(
             [
                 ['eav_attribute', ['entity_type_id', 'attribute_code'], $dataAttributes['dest']],
@@ -113,11 +92,47 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
                 ['eav_entity_type', [], $eavEntityTypes['dest']]
             ]
         );
-        $this->initialData->init();
+
+        $this->initialData = new InitialData($mapFactory, $this->source, $this->destination, $this->helper);
+    }
+
+    /**
+     * @return void
+     */
+    public function testAttributes()
+    {
+        $dataAttributes = $this->getDataAttributes();
         foreach ($dataAttributes as $resourceType => $resourceData) {
             $this->assertEquals($resourceData, $this->initialData->getAttributes($resourceType));
         }
+    }
+
+    /**
+     * @return void
+     */
+    public function testAttributeSets()
+    {
+        $attributeSets = ['attr_set_1', 'attr_set_2'];
         $this->assertEquals($attributeSets, $this->initialData->getAttributeSets('dest'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testAttributeGroups()
+    {
+        $attributeGroups = ['attr_group_1', 'attr_group_2'];
         $this->assertEquals($attributeGroups, $this->initialData->getAttributeGroups('dest'));
+    }
+
+    /**
+     * @return array
+     */
+    private function getDataAttributes()
+    {
+        return [
+            'source' => ['id_1' => 'value_1','id_2' => 'value_2'],
+            'dest' => ['id_1' => 'value_1','id_2' => 'value_2']
+        ];
     }
 }
