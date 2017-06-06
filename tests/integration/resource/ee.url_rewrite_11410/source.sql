@@ -150,10 +150,10 @@ CREATE TABLE `core_config_data` (
 LOCK TABLES `core_config_data` WRITE;
 /*!40000 ALTER TABLE `core_config_data` DISABLE KEYS */;
 INSERT INTO `core_config_data` VALUES
-(1,'default',0,'catalog/seo/product_url_suffix','html'),
-(2,'default',0,'catalog/seo/category_url_suffix','html'),
-(3,'websites',1,'catalog/seo/product_url_suffix','html1'),
-(4,'stores',3,'catalog/seo/product_url_suffix','html2');
+(1,'default',0,'catalog/seo/product_url_suffix','.html'),
+(2,'default',0,'catalog/seo/category_url_suffix','.html'),
+(3,'websites',1,'catalog/seo/product_url_suffix','.html1'),
+(4,'stores',3,'catalog/seo/product_url_suffix','.html2');
 /*!40000 ALTER TABLE `core_config_data` ENABLE KEYS */;
 UNLOCK TABLES;
 
