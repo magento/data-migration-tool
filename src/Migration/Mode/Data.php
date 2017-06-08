@@ -82,10 +82,9 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     protected function runIntegrity(StepList $steps)
     {
-        $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
-                $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
+                $result = $this->runStage($step['integrity'], $stepName, 'integrity check');
                 
                 if (!$result) {
                     throw new Exception('Integrity Check failed');
