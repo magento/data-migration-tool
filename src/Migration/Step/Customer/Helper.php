@@ -252,6 +252,7 @@ class Helper
      */
     protected function getFieldsWithDefaultValues($attributeCodes, $destinationDocName)
     {
+        $destinationDocName = $this->destination->addDocumentPrefix($destinationDocName);
         /** @var Mysql $adapter */
         $adapter = $this->destination->getAdapter();
         $structure = $adapter->getDocumentStructure($destinationDocName);
