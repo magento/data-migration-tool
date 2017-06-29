@@ -13,31 +13,50 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
 {
 
     /**
+     * @var SetupDeltaLog|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $setupDeltaLog;
+
+    /**
+     * @var \Magento\Framework\ObjectManagerInterface
+     */
+    private $objectManager;
+
+    /**
+     * @var \Migration\ResourceModel\Source
+     */
+    private $source;
+
+    /**
+     * @return void
+     */
+    public function setUp()
+    {
+        $helper = \Migration\TestFramework\Helper::getInstance();
+        $this->objectManager = $helper->getObjectManager();
+        $this->objectManager->get('\Migration\Config')
+            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
+        $this->setupDeltaLog = $this->objectManager->create(
+            '\Migration\App\SetupDeltaLog'
+        );
+        $this->source = $this->objectManager->create('\Migration\ResourceModel\Source');
+    }
+
+    /**
      * @return void
      */
     public function testSetupTriggers()
     {
-        $helper = \Migration\TestFramework\Helper::getInstance();
-        $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
-            ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
-        /** @var \Migration\ResourceModel\Source $source */
-        $source = $objectManager->create('\Migration\ResourceModel\Source');
-        /** @var \Migration\App\SetupDeltaLog $setupDeltaLog */
-        $setupDeltaLog = $objectManager->create(
-            '\Migration\App\SetupDeltaLog'
-        );
-
         ob_start();
-        $this->assertTrue($setupDeltaLog->perform());
+        $this->assertTrue($this->setupDeltaLog->perform());
         ob_end_clean();
 
         $dataTable = 'table_with_data';
-        $this->checkDeltaLogTable($dataTable, $source);
-        $this->checkDeltaLogTable('source_table_1', $source);
-        $this->checkDeltaLogTable('source_table_2', $source);
+        $this->checkDeltaLogTable($dataTable, $this->source);
+        $this->checkDeltaLogTable('source_table_1', $this->source);
+        $this->checkDeltaLogTable('source_table_2', $this->source);
 
-        $sourceAdapter = $source->getAdapter();
+        $sourceAdapter = $this->source->getAdapter();
         $sourceAdapter->insertRecords(
             $dataTable,
             [
@@ -74,7 +93,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             ['key' => '9', 'operation' => 'INSERT', 'processed' => 0],
             ['key' => '10', 'operation' => 'INSERT', 'processed' => 0]
         ];
-        $this->assertEquals($expectedData, $source->getRecords($source->getDeltaLogName($dataTable), 0));
+        $this->assertEquals($expectedData, $this->source->getRecords($this->source->getDeltaLogName($dataTable), 0));
     }
 
     /**
@@ -87,5 +106,22 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $deltaLogTableName = $resource->getDeltaLogName($dataTable);
         $deltaLogTable = $resource->getDocument($deltaLogTableName);
         $this->assertEquals($deltaLogTableName, $deltaLogTable->getName());
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetupTriggersFail()
+    {
+        $message = [
+            \Monolog\Logger::WARNING => ['Some of the delta log tables were not created. Expected:3. Actual:2']
+        ];
+        /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
+        $adapter = $this->source->getAdapter()->getSelect()->getAdapter();
+        $adapter->dropTable('source_table_1');
+        ob_start();
+        $this->assertTrue($this->setupDeltaLog->perform());
+        ob_end_clean();
+        $this->assertEquals($message, \Migration\Logger\Logger::getMessages());
     }
 }

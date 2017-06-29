@@ -360,10 +360,11 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      * @param string $documentName
      * @param string $deltaLogName
      * @param string $idKey
-     * @return void
+     * @return boolean
      */
     public function createDelta($documentName, $deltaLogName, $idKey)
     {
+        $deltaCreated = true;
         if (!$this->resourceAdapter->isTableExists($deltaLogName)) {
             $triggerTable = $this->resourceAdapter->newTable($deltaLogName)
                 ->addColumn(
@@ -381,6 +382,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
                     ['nullable' => false, 'default' => 0]
                 );
             $this->resourceAdapter->createTable($triggerTable);
+            $deltaCreated = $this->resourceAdapter->isTableExists($deltaLogName);
         } else {
             $this->deleteAllRecords($deltaLogName);
         }
@@ -412,6 +414,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
             }
             unset($trigger);
         }
+        return $deltaCreated;
     }
 
     /**

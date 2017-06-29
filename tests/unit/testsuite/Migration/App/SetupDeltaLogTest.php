@@ -60,7 +60,10 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
         $progress->expects($this->once())
             ->method('finish');
 
-        $deltaLog = new SetupDeltaLog($source, $groupsFactory, $progress);
+        /** @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
+        $logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
+
+        $deltaLog = new SetupDeltaLog($source, $groupsFactory, $progress, $logger);
         $this->assertTrue($deltaLog->perform());
     }
 }
