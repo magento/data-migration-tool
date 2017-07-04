@@ -17,6 +17,7 @@ use Migration\ResourceModel\Record;
 use Migration\ResourceModel\Document;
 use Migration\ResourceModel\RecordFactory;
 use Migration\ResourceModel\Source;
+use Migration\Step\Eav\Model\IgnoredAttributes;
 
 /**
  * Class Data
@@ -100,6 +101,11 @@ class Data implements StageInterface, RollbackInterface
     protected $initialData;
 
     /**
+     * @var IgnoredAttributes
+     */
+    protected $ignoredAttributes;
+
+    /**
      * @var ProgressBar\LogLevelProcessor
      */
     protected $progress;
@@ -147,6 +153,7 @@ class Data implements StageInterface, RollbackInterface
      * @param Helper $helper
      * @param RecordFactory $factory
      * @param InitialData $initialData
+     * @param IgnoredAttributes $ignoredAttributes
      * @param ProgressBar\LogLevelProcessor $progress
      */
     public function __construct(
@@ -157,6 +164,7 @@ class Data implements StageInterface, RollbackInterface
         Helper $helper,
         RecordFactory $factory,
         InitialData $initialData,
+        IgnoredAttributes $ignoredAttributes,
         ProgressBar\LogLevelProcessor $progress
     ) {
         $this->source = $source;
@@ -166,6 +174,7 @@ class Data implements StageInterface, RollbackInterface
         $this->helper = $helper;
         $this->factory = $factory;
         $this->initialData = $initialData;
+        $this->ignoredAttributes = $ignoredAttributes;
         $this->progress = $progress;
     }
 
@@ -176,7 +185,6 @@ class Data implements StageInterface, RollbackInterface
     public function perform()
     {
         $this->progress->start($this->getIterationsCount());
-        $this->initialData->init();
         $this->migrateEntityTypes();
         $this->migrateAttributeSetsAndGroups();
         $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address']);
@@ -215,7 +223,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecords[$mappingValue];
                 unset($destinationRecords[$mappingValue]);
             } else {
-                $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
             $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
@@ -408,7 +416,7 @@ class Data implements StageInterface, RollbackInterface
             $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE)
         );
         $this->destination->backupDocument($destinationDocument->getName());
-        $sourceRecords = $this->helper->clearIgnoredAttributes($this->initialData->getAttributes('source'));
+        $sourceRecords = $this->ignoredAttributes->clearIgnoredAttributes($this->initialData->getAttributes('source'));
         $destinationRecords = $this->initialData->getAttributes('dest');
 
         $recordsToSave = $destinationDocument->getRecords();
@@ -428,7 +436,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecords[$mappedKey];
                 unset($destinationRecords[$mappedKey]);
             } else {
-                $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
 
@@ -777,7 +785,9 @@ class Data implements StageInterface, RollbackInterface
             $this->destination->backupDocument($destinationDocument->getName());
             $destinationRecords = $this->helper->getDestinationRecords($documentName, [$mappingField]);
             $recordsToSave = $destinationDocument->getRecords();
-            foreach ($this->helper->getSourceRecords($documentName) as $recordData) {
+            $sourceRecords = $this->ignoredAttributes
+                ->clearIgnoredAttributes($this->helper->getSourceRecords($documentName));
+            foreach ($sourceRecords as $recordData) {
                 /** @var Record $sourceRecord */
                 $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
                 /** @var Record $destinationRecord */
@@ -789,7 +799,7 @@ class Data implements StageInterface, RollbackInterface
                     $destinationRecordData = $destinationRecords[$mappedId];
                     unset($destinationRecords[$mappedId]);
                 } else {
-                    $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                    $destinationRecordData = $destinationRecord->getDataDefault();
                 }
                 $destinationRecord->setData($destinationRecordData);
                 $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)

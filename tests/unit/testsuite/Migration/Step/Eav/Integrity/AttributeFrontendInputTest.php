@@ -7,6 +7,7 @@ namespace Migration\Step\Eav\Integrity;
 
 use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 use Migration\Step\Eav\Helper;
+use Migration\Step\Eav\Model\IgnoredAttributes;
 
 /**
  * Class AttributeFrontendInputTest
@@ -24,6 +25,11 @@ class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
     protected $helper;
 
     /**
+     * @var IgnoredAttributes|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $ignoredAttributes;
+
+    /**
      * @return void
      */
     protected function setUp()
@@ -32,10 +38,15 @@ class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getSourceRecords', 'getAttributesGroupCodes'])
             ->getMock();
+        $this->ignoredAttributes = $this->getMockBuilder(IgnoredAttributes::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['clearIgnoredAttributes'])
+            ->getMock();
 
         $objectHelper = new ObjectManager($this);
         $this->model = $objectHelper->getObject(AttributeFrontendInput::class, [
-            'helper' => $this->helper
+            'helper' => $this->helper,
+            'ignoredAttributes' => $this->ignoredAttributes
         ]);
     }
 
@@ -47,49 +58,55 @@ class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
      */
     public function testCheckAttributeGroupNames($groupCodes, $errorsCount)
     {
+        $sourceRecords = [
+            [
+                'attribute_id' => '60',
+                'entity_type_id' => '4',
+                'attribute_code' => 'name',
+                'frontend_input' => 'text'
+            ], [
+                'attribute_id' => '61',
+                'entity_type_id' => '4',
+                'attribute_code' => 'description',
+                'frontend_input' => 'textarea'
+            ], [
+                'attribute_id' => '63',
+                'entity_type_id' => '4',
+                'attribute_code' => 'sku',
+                'frontend_input' => 'text'
+            ], [
+                'attribute_id' => '169',
+                'entity_type_id' => '4',
+                'attribute_code' => 'group_price',
+                'frontend_input' => null
+            ],
+            [
+                'attribute_id' => '70',
+                'entity_type_id' => '4',
+                'attribute_code' => 'manufacturer',
+                'frontend_input' => 'select'
+            ], [
+                'attribute_id' => '84',
+                'entity_type_id' => '4',
+                'attribute_code' => 'status',
+                'frontend_input' => 'select'
+            ],
+            [
+                'attribute_id' => '143',
+                'entity_type_id' => '4',
+                'attribute_code' => 'msrp_enabled',
+                'frontend_input' => ''
+            ],
+        ];
         $this->helper
             ->expects($this->any())
             ->method('getSourceRecords')
-            ->willReturn([
-                [
-                    'attribute_id' => '60',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'name',
-                    'frontend_input' => 'text'
-                ], [
-                    'attribute_id' => '61',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'description',
-                    'frontend_input' => 'textarea'
-                ], [
-                    'attribute_id' => '63',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'sku',
-                    'frontend_input' => 'text'
-                ], [
-                    'attribute_id' => '169',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'group_price',
-                    'frontend_input' => null
-                ],
-                [
-                    'attribute_id' => '70',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'manufacturer',
-                    'frontend_input' => 'select'
-                ], [
-                    'attribute_id' => '84',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'status',
-                    'frontend_input' => 'select'
-                ],
-                [
-                    'attribute_id' => '143',
-                    'entity_type_id' => '4',
-                    'attribute_code' => 'msrp_enabled',
-                    'frontend_input' => ''
-                ],
-            ]);
+            ->willReturn($sourceRecords);
+        $this->ignoredAttributes
+            ->expects($this->any())
+            ->method('clearIgnoredAttributes')
+            ->with($sourceRecords)
+            ->willReturn($sourceRecords);
 
         $this->helper->expects($this->any())->method('getAttributesGroupCodes')->willReturnMap($groupCodes);
         $this->assertCount($errorsCount, $this->model->checkAttributeFrontendInput());
@@ -103,25 +120,21 @@ class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
         return [
             [
                 [
-                    ['ignore', ['msrp_enabled' => ['4']]],
                     ['frontend_input_empty_allowed', ['group_price' => ['4']]]
                 ],
-                0
+                1
             ], [
                 [
-                    ['ignore', ['group_price' => ['4']]],
                     ['frontend_input_empty_allowed', ['msrp_enabled' => ['4']]]
                 ],
-                0
+                1
             ],[
                 [
-                    ['ignore', []],
                     ['frontend_input_empty_allowed', []]
                 ],
                 2
             ],[
                 [
-                    ['ignore', ['msrp_enabled' => ['10']]],
                     ['frontend_input_empty_allowed', ['group_price' => ['10']]]
                 ],
                 2

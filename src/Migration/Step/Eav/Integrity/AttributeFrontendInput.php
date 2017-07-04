@@ -6,7 +6,7 @@
 namespace Migration\Step\Eav\Integrity;
 
 use Migration\Step\Eav\Helper;
-use Migration\Reader\MapInterface;
+use Migration\Step\Eav\Model\IgnoredAttributes;
 
 /**
  * Class AttributeFrontendInput
@@ -29,11 +29,18 @@ class AttributeFrontendInput
     private $attributeFieldName = 'frontend_input';
 
     /**
-     * @param Helper $helper
+     * @var IgnoredAttributes
      */
-    public function __construct(Helper $helper)
+    private $ignoredAttributes;
+
+    /**
+     * @param Helper $helper
+     * @param IgnoredAttributes $ignoredAttributes
+     */
+    public function __construct(Helper $helper, IgnoredAttributes $ignoredAttributes)
     {
         $this->helper = $helper;
+        $this->ignoredAttributes = $ignoredAttributes;
     }
 
     /**
@@ -44,7 +51,7 @@ class AttributeFrontendInput
     public function checkAttributeFrontendInput()
     {
         $sourceAttributes = $this->helper->getSourceRecords($this->attributeDocument);
-        $sourceAttributes = $this->helper->clearIgnoredAttributes($sourceAttributes);
+        $sourceAttributes = $this->ignoredAttributes->clearIgnoredAttributes($sourceAttributes);
         $emptyAttributes = $this->getFrontendInputEmptyAttributes($sourceAttributes);
 
         $incompatibleData = [];

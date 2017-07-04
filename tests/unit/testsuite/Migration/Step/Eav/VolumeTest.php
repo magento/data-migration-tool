@@ -21,6 +21,11 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected $initialData;
 
     /**
+     * @var \Migration\Step\Eav\Model\IgnoredAttributes|\PHPUnit_Framework_MockObject_MockObject
+     */
+    private $ignoredAttributes;
+
+    /**
      * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $logger;
@@ -59,8 +64,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                     'getDestinationRecords',
                     'getSourceRecordsCount',
                     'getDestinationRecordsCount',
-                    'deleteBackups',
-                    'clearIgnoredAttributes'
+                    'deleteBackups'
                 ]
             )->getMock();
         $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
@@ -87,10 +91,15 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->setMethods(['getDocument'])
             ->getMock();
+        $this->ignoredAttributes = $this->getMockBuilder(\Migration\Step\Eav\Model\IgnoredAttributes::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['clearIgnoredAttributes'])
+            ->getMock();
 
         $this->volume = new Volume(
             $this->helper,
             $this->initialData,
+            $this->ignoredAttributes,
             $this->logger,
             $this->progress,
             $groupsFactory,
@@ -154,7 +163,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->initialData->expects($this->once())->method('getAttributeGroups')->willReturn(1);
         $this->helper->expects($this->any())->method('getDestinationRecordsCount')->willReturn(2);
         $this->helper->expects($this->once())->method('deleteBackups');
-        $this->helper->expects($this->any())->method('clearIgnoredAttributes')->with($eavAttributes)
+        $this->ignoredAttributes->expects($this->any())->method('clearIgnoredAttributes')->with($eavAttributes)
             ->willReturn($eavAttributes);
         $this->logger->expects($this->never())->method('addRecord');
 
