@@ -40,4 +40,8 @@
         <document key="value_id">customer_address_entity_text</document>
         <document key="value_id">customer_address_entity_varchar</document>
     </group>
+    <group name="source_entity_documents">
+        <document>customer_entity</document>
+        <document>customer_address_entity</document>
+    </group>
 </groups>

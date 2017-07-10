@@ -12,23 +12,34 @@ use Migration\Reader\MapFactory;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel;
 use Migration\Reader\MapInterface;
+use Migration\Step\Customer\Model;
 
 class Delta extends AbstractDelta
 {
     /**
      * @var string
      */
-    protected $mapConfigOption = 'customer_map_file';
+    private $mapConfigOption = 'customer_map_file';
 
     /**
      * @var string
      */
-    protected $groupName = 'delta_customer';
+    private $groupName = 'delta_customer';
 
     /**
-     * @var Helper
+     * @var \Migration\Reader\Groups
      */
-    protected $helper;
+    private $readerGroups;
+
+    /**
+     * @var Model\AttributesDataToSkip
+     */
+    private $attributesDataToSkip;
+
+    /**
+     * @var Model\AttributesDataToCustomerEntityRecords
+     */
+    private $attributesDataToCustomerEntityRecords;
 
     /**
      * @param Source $source
@@ -38,7 +49,8 @@ class Delta extends AbstractDelta
      * @param ResourceModel\Destination $destination
      * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param Helper $helper
+     * @param Model\AttributesDataToSkip $attributesDataToSkip
+     * @param Model\AttributesDataToCustomerEntityRecords $attributesDataToCustomerEntityRecords
      */
     public function __construct(
         Source $source,
@@ -48,9 +60,12 @@ class Delta extends AbstractDelta
         ResourceModel\Destination $destination,
         ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        Helper $helper
+        Model\AttributesDataToSkip $attributesDataToSkip,
+        Model\AttributesDataToCustomerEntityRecords $attributesDataToCustomerEntityRecords
     ) {
-        $this->helper = $helper;
+        $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
+        $this->attributesDataToSkip = $attributesDataToSkip;
+        $this->attributesDataToCustomerEntityRecords = $attributesDataToCustomerEntityRecords;
         parent::__construct(
             $source,
             $mapFactory,
@@ -75,26 +90,21 @@ class Delta extends AbstractDelta
             $this->eolOnce = true;
             echo PHP_EOL;
         }
+        $skippedAttributes = array_keys($this->attributesDataToSkip->getSkippedAttributes());
+        $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
-
-        $entityTypeCode = $this->helper->getEntityTypeCodeByDocumentName($documentName);
-
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
         do {
             $destinationRecords = $destDocument->getRecords();
-
             $ids = [];
-
             foreach ($items as $data) {
                 echo('.');
                 $ids[] = $data[$idKey];
-
-                if ($this->helper->isSkipRecord($entityTypeCode, $documentName, $data)) {
+                if (isset($data['attribute_id']) && in_array($data['attribute_id'], $skippedAttributes)) {
                     continue;
                 }
-
                 $this->transformData(
                     $data,
                     $sourceDocument,
@@ -103,8 +113,10 @@ class Delta extends AbstractDelta
                     $destinationRecords
                 );
             }
-            $this->helper->updateAttributeData($entityTypeCode, $documentName, $destinationName, $destinationRecords);
-
+            if (in_array($documentName, $sourceEntityDocuments)) {
+                $this->attributesDataToCustomerEntityRecords
+                    ->updateCustomerEntities($documentName, $destinationRecords);
+            }
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
