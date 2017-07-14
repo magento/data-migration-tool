@@ -53,7 +53,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'addRecord'], [], '', false);
         $this->source = $this->getMock(
             \Migration\ResourceModel\Source::class,
             ['getDocumentList', 'getDocument'],
@@ -97,9 +97,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->with('log_document_groups_file')
             ->willReturn($this->readerGroups);
 
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()->getMock();
+
         $this->log = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory,
@@ -137,7 +140,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->source->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->destination->expects($this->any())->method('getDocument')->will($this->returnValue($document));
         $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
-        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('addRecord');
 
         $this->assertTrue($this->log->perform());
     }
@@ -174,8 +177,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
         $this->logger
             ->expects($this->once())
-            ->method('error')
-            ->with('Destination documents are missing: document_to_clear');
+            ->method('addRecord')
+            ->with(400, 'Destination documents are missing: document_to_clear');
 
         $this->assertFalse($this->log->perform());
     }

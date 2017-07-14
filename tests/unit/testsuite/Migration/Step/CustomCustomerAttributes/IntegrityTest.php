@@ -96,9 +96,13 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->with('customer_attr_document_groups_file')
             ->willReturn($this->readerGroups);
 
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
+            ->getMock();
+
         $this->log = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory,

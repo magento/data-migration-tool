@@ -13,6 +13,7 @@ use Migration\App\ProgressBar;
 use Migration\ResourceModel;
 use Migration\Step\Eav\Integrity\AttributeGroupNames as AttributeGroupNamesIntegrity;
 use Migration\Step\Eav\Integrity\AttributeFrontendInput as AttributeFrontendInputIntegrity;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -37,6 +38,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
@@ -48,6 +50,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
@@ -59,7 +62,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         $this->groups = $groupsFactory->create('eav_document_groups_file');
         $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
         $this->attributeFrontendInputIntegrity = $attributeFrontendInputIntegrity;
-        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**

@@ -49,7 +49,7 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $stepListFactory->expects($this->any())->method('create')->with(['mode' => 'data'])
             ->willReturn($this->stepList);
         $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
-            ->setMethods(['info', 'warning'])
+            ->setMethods(['info', 'warning', 'notice'])
             ->getMock();
         $this->progress = $this->getMockBuilder(\Migration\App\Progress::class)->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted', 'reset'])

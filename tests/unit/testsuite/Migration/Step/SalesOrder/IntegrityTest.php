@@ -57,7 +57,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'addRecord'], [], '', false);
         $this->source = $this->getMock(
             \Migration\ResourceModel\Source::class,
             ['getDocumentList', 'getDocument'],
@@ -97,9 +97,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods([])->getMock();
+
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()->getMock();
         $this->salesOrder = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory,

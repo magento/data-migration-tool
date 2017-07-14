@@ -22,6 +22,7 @@ class AbstractMigrateCommand extends Command
      */
     const INPUT_KEY_CONFIG = 'config';
     const INPUT_KEY_RESET = 'reset';
+    const INPUT_KEY_AUTO = 'auto';
     /**#@-*/
 
     /**
@@ -88,6 +89,12 @@ class AbstractMigrateCommand extends Command
                 InputOption::VALUE_NONE,
                 'Reset the current position of migration to start from the beginning'
             ),
+            new InputOption(
+                self::INPUT_KEY_AUTO,
+                'a',
+                InputOption::VALUE_NONE,
+                'Automatically resolve issues on the way of migration'
+            ),
         ]);
         parent::configure();
     }
@@ -103,12 +110,16 @@ class AbstractMigrateCommand extends Command
 
         $config = $input->getArgument(self::INPUT_KEY_CONFIG);
         $this->config->init($config);
-        //@todo: interactively ask for config file
 
         $reset = $input->getOption(self::INPUT_KEY_RESET);
         if ($reset) {
             $output->writeln('Reset the current position of migration to start from the beginning');
             $this->progress->reset();
+        }
+
+        $autoResolve = $input->getOption(self::INPUT_KEY_AUTO);
+        if ($autoResolve) {
+            $this->config->setOption(Config::OPTION_AUTO_RESOLVE, 1);
         }
 
         if ($output->getVerbosity() > 1) {

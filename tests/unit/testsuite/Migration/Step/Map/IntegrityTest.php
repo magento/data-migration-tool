@@ -55,7 +55,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error', 'warning'], [], '', false);
+        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'addRecord', 'warning'], [], '', false);
         $this->source = $this->getMock(
             \Migration\ResourceModel\Source::class,
             ['getDocumentList', 'getDocument'],
@@ -85,9 +85,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()->getMock();
+
         $this->integrity = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory
@@ -110,7 +113,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
 
         $this->map->expects($this->any())->method('getFieldMap')->will($this->returnValue('field1'));
 
-        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('addRecord');
 
         $this->integrity->perform();
     }
@@ -125,7 +128,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnValue(false));
         $this->map->expects($this->any())->method('isDocumentIgnored')->willReturn(true);
-        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('addRecord');
         $this->integrity->perform();
     }
 
@@ -141,8 +144,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
         $this->map->expects($this->any())->method('isDocumentIgnored')->willReturn(false);
-        $this->logger->expects($this->exactly(1))->method('error')
-            ->with('Source documents are not mapped: document1');
+        $this->logger->expects($this->exactly(1))->method('addRecord')
+            ->with(400, 'Source documents are not mapped: document1');
 
         $this->integrity->perform();
     }
@@ -158,8 +161,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination->expects($this->atLeastOnce())->method('getDocumentList')
             ->will($this->returnValue(['document1', 'document2']));
         $this->map->expects($this->any())->method('getDocumentMap')->will($this->returnArgument(0));
-        $this->logger->expects($this->once())->method('error')
-            ->with('Destination documents are not mapped: document1');
+        $this->logger->expects($this->once())->method('addRecord')
+            ->with(400, 'Destination documents are not mapped: document1');
 
         $this->integrity->perform();
     }
@@ -200,11 +203,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->at(5))->method('getFieldMap')->with('document', 'field2')
             ->will($this->returnValue('field2'));
 
-        $this->logger->expects($this->at(0))->method('error')->with(
-            'Source fields are not mapped. Document: document. Fields: field1'
+        $this->logger->expects($this->at(0))->method('addRecord')->with(
+            400, 'Source fields are not mapped. Document: document. Fields: field1'
         );
-        $this->logger->expects($this->at(1))->method('error')->with(
-            'Destination fields are not mapped. Document: document. Fields: field2'
+        $this->logger->expects($this->at(1))->method('addRecord')->with(
+            400, 'Destination fields are not mapped. Document: document. Fields: field2'
         );
 
         $this->integrity->perform();

@@ -80,7 +80,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
         $this->destination = $this->getMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount'],
+            ['getRecordsCount', 'getDocument'],
             [],
             '',
             false
@@ -117,9 +117,17 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $dstDocName = 'config_data';
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->destination
+            ->expects($this->once())
+            ->method('getDocument')
+            ->with($dstDocName)
+            ->willReturn($destinationDocument);
         $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
             ->willReturn(false);
         $this->assertTrue($this->volume->perform());
@@ -136,6 +144,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('getRecordsCount');
+        $this->destination->expects($this->never())->method('getDocument');
         $this->helper->expects($this->never())->method('getFieldsUpdateOnDuplicate');
         $this->assertTrue($this->volume->perform());
     }
@@ -147,10 +156,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     {
         $sourceDocName = 'core_config_data';
         $dstDocName = 'config_data';
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->destination
+            ->expects($this->once())
+            ->method('getDocument')
+            ->with($dstDocName)
+            ->willReturn($destinationDocument);
         $this->logger->expects($this->once())->method('addRecord')->with(
             Logger::WARNING,
             'Mismatch of entities in the document: ' . $dstDocName

@@ -43,6 +43,9 @@ class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Mono
             case 'WARNING':
                 $format = "[%datetime%][WARNING]: %message%";
                 break;
+            case 'NOTICE':
+                $format = "[NOTICE]: %message%";
+                break;
             default:
                 $format = "%message%";
         }

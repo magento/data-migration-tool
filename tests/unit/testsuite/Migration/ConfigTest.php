@@ -149,4 +149,13 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('custom_option_value', $this->config->getOption('custom_option'));
         $this->assertEquals('map-sales.xml', $this->config->getOption('sales_order_map_file'));
     }
+
+    /**
+     * @return void
+     */
+    public function testSetOption()
+    {
+        $this->config->setOption('option1', 'value1');
+        $this->assertEquals('value1', $this->config->getOption('option1'));
+    }
 }

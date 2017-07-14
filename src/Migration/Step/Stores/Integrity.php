@@ -11,6 +11,7 @@ use Migration\App\ProgressBar;
 use Migration\Reader\MapInterface;
 use Migration\Reader\MapFactory;
 use Migration\Step\Stores\Model\DocumentsList;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -25,6 +26,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @param DocumentsList $documentsList
      * @param Logger $logger
+     * @param Config $config
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
@@ -34,13 +36,14 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function __construct(
         DocumentsList $documentsList,
         Logger $logger,
+        Config $config,
         ProgressBar\LogLevelProcessor $progress,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         $mapConfigOption = 'stores_map_file'
     ) {
-        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
         $this->documentsList = $documentsList;
     }
 

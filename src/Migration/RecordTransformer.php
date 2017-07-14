@@ -134,7 +134,9 @@ class RecordTransformer
         foreach ($diff as $field) {
             if (!$this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
                 $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
-                $data[$fieldMap] = $from->getValue($field);
+                if ($fieldMap != $field) {
+                    $data[$fieldMap] = $from->getValue($field);
+                }
             }
             unset($data[$field]);
         }

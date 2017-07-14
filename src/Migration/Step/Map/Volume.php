@@ -91,7 +91,7 @@ class Volume extends AbstractVolume
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progressBar->advance();
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
-            if (!$destinationName) {
+            if (!$destinationName || !$this->destination->getDocument($destinationName)) {
                 continue;
             }
             $distinctFields = $this->helper->getFieldsUpdateOnDuplicate($destinationName);

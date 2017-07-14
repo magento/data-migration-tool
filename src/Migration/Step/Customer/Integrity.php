@@ -12,6 +12,7 @@ use Migration\Reader\MapInterface;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
 use Migration\Step\Customer\Model;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -32,9 +33,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @var Model\AttributesDataToSkip
      */
     private $attributesDataToSkip;
+
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
@@ -45,6 +48,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
@@ -55,7 +59,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         $this->attributesDataToSkip = $attributesDataToSkip;
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->readerAttributes = $groupsFactory->create('customer_attribute_groups_file');
-        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**

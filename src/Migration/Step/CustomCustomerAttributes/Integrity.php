@@ -13,6 +13,7 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\ResourceModel;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -27,6 +28,7 @@ class Integrity extends AbstractIntegrity
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
@@ -36,13 +38,14 @@ class Integrity extends AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
         $mapConfigOption = 'customer_attr_map_file'
     ) {
-        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
         $this->groups = $groupsFactory->create('customer_attr_document_groups_file');
     }
 

@@ -137,6 +137,9 @@ class Data implements StageInterface
                 continue;
             }
             $destDocument = $this->destination->getDocument($destinationName);
+            if (!$destDocument) {
+                continue;
+            }
             $this->destination->clearDocument($destinationName);
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);

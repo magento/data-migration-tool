@@ -112,9 +112,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with('eav_document_groups_file')
             ->willReturn($this->readerGroups);
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
+            ->getMock();
         $this->integrity = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory,
@@ -156,7 +159,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['destination_document']));
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->will($this->returnValue($document));
 
-        $this->logger->expects($this->never())->method('error');
+        $this->logger->expects($this->never())->method('addRecord');
         $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
             ->willReturn(['source_document' => 0]);
 
@@ -194,8 +197,8 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue(['common_document']));
         $this->destination->expects($this->atLeastOnce())->method('getDocument')->willReturn($document);
 
-        $this->logger->expects($this->once())->method('error')
-            ->with('Source documents are not mapped: source_document');
+        $this->logger->expects($this->once())->method('addRecord')
+            ->with(400, 'Source documents are not mapped: source_document');
         $this->readerGroups->expects($this->any())->method('getGroup')->with('documents')
             ->willReturn(['source_document' => 0, 'common_document' => 1]);
 

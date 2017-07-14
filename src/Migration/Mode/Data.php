@@ -11,6 +11,7 @@ use Migration\App\Progress;
 use Migration\App\Step\RollbackInterface;
 use Migration\Logger\Logger;
 use Migration\Exception;
+use Migration\Config;
 
 /**
  * Class Migration
@@ -44,7 +45,7 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
         Logger $logger,
         \Migration\App\Mode\StepListFactory $stepListFactory,
         SetupDeltaLog $setupDeltaLog,
-        \Migration\Config $configReader
+        Config $configReader
     ) {
         parent::__construct($progress, $logger, $stepListFactory);
         $this->setupDeltaLog = $setupDeltaLog;
@@ -82,13 +83,18 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     protected function runIntegrity(StepList $steps)
     {
+        $autoResolve = $this->configReader->getOption(Config::OPTION_AUTO_RESOLVE);
         $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
                 $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
             }
         }
-        if (!$result) {
+        if (!$result && !$autoResolve) {
+            $this->logger->notice(
+                'You can use --auto or -a option to ignore not mapped differences'
+                    . ' between source and destination to continue migration'
+            );
             throw new Exception('Integrity Check failed');
         }
     }

@@ -8,6 +8,7 @@ namespace Migration\Step\OrderGrids;
 use Migration\ResourceModel;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -42,6 +43,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param Helper $helper
@@ -49,12 +51,14 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         Helper $helper
     ) {
         $this->progress = $progress;
         $this->logger = $logger;
+        $this->config = $config;
         $this->source = $source;
         $this->destination = $destination;
         $this->helper = $helper;
