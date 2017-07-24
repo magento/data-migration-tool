@@ -78,13 +78,18 @@ class MysqlBuilder
     private function getConfig($resourceType)
     {
         $resource = $this->config->getResourceConfig($resourceType);
-        $type = $resource['type'];
-        $config['host'] = $resource[$type]['host'];
-        $config['dbname'] = $resource[$type]['name'];
-        $config['username'] = $resource[$type]['user'];
-        $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
-        if (!empty($resource[$type]['port'])) {
-            $config['port'] = $resource[$type]['port'];
+        $resource = $resource[$resource['type']];
+        $config['host'] = $resource['host'];
+        $config['dbname'] = $resource['name'];
+        $config['username'] = $resource['user'];
+        $config['password'] = !empty($resource['password']) ? $resource['password'] : '';
+        if (!empty($resource['port'])) {
+            $config['port'] = $resource['port'];
+        }
+        if (isset($resource['ssl_key']) && isset($resource['ssl_cert']) && isset($resource['ssl_ca'])) {
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_KEY] = $resource['ssl_key'];
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CERT] = $resource['ssl_cert'];
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = $resource['ssl_ca'];
         }
         return $config;
     }
