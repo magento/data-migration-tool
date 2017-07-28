@@ -52,7 +52,19 @@ class File
     public function getData()
     {
         if (empty($this->data)) {
-            $data = @unserialize($this->filesystemDriver->fileGetContents($this->getLockFile()));
+            $fileContents = $this->filesystemDriver->fileGetContents($this->getLockFile());
+            $isJson = (strpos($fileContents, '{') === 0);
+            
+            if ($isJson) {
+                $data = json_decode($fileContents, true);
+            } else {
+                $data = @unserialize($fileContents);
+                
+                if (is_array($data)) {
+                    $this->saveData($data);
+                }
+            }
+            
             if (is_array($data)) {
                 $this->data = $data;
             }
