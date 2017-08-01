@@ -5,8 +5,11 @@
  */
 namespace Migration\Step\UrlRewrite;
 
+use Migration\Step\UrlRewrite\Model\Version11410to2000;
+
 /**
  * Class UrlRewriteTest
+ * @SuppressWarnings(PHPMD)
  */
 class Version11410to2000Test extends \PHPUnit_Framework_TestCase
 {
@@ -56,6 +59,26 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
     protected $helper;
 
     /**
+     * @var ProductRewritesWithoutCategories|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $productRewritesWithoutCategories;
+
+    /**
+     * @var ProductRewritesIncludedIntoCategories|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $productRewritesIncludedIntoCategories;
+
+    /**
+     * @var Suffix|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $suffix;
+
+    /**
+     * @var TemporaryTable|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $temporaryTable;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -84,6 +107,22 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
         );
         $this->recordFactory = $this->getMock('\Migration\ResourceModel\RecordFactory', ['create'], [], '', false);
         $this->helper = $this->getMock('\Migration\Step\UrlRewrite\Helper', [], ['processFields'], '', false);
+        $this->productRewritesWithoutCategories = $this->getMock(
+            '\Migration\Step\UrlRewrite\Model\Version11410to2000\ProductRewritesWithoutCategories',
+            [],
+            [],
+            '',
+            false
+        );
+        $this->productRewritesIncludedIntoCategories = $this->getMock(
+            '\Migration\Step\UrlRewrite\Model\Version11410to2000\ProductRewritesIncludedIntoCategories',
+            [],
+            [],
+            '',
+            false
+        );
+        $this->suffix = $this->getMock('\Migration\Step\UrlRewrite\Model\Suffix', [], [], '', false);
+        $this->temporaryTable = $this->getMock('\Migration\Step\UrlRewrite\Model\TemporaryTable', [], [], '', false);
     }
 
     /**
@@ -103,6 +142,10 @@ class Version11410to2000Test extends \PHPUnit_Framework_TestCase
             $this->recordCollectionFactory,
             $this->recordFactory,
             $this->helper,
+            $this->productRewritesWithoutCategories,
+            $this->productRewritesIncludedIntoCategories,
+            $this->suffix,
+            $this->temporaryTable,
             'integrity'
         );
     }
