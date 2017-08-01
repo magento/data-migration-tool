@@ -223,7 +223,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecords[$mappingValue];
                 unset($destinationRecords[$mappingValue]);
             } else {
-                $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
             $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
@@ -436,7 +436,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecords[$mappedKey];
                 unset($destinationRecords[$mappedKey]);
             } else {
-                $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
 
@@ -799,7 +799,7 @@ class Data implements StageInterface, RollbackInterface
                     $destinationRecordData = $destinationRecords[$mappedId];
                     unset($destinationRecords[$mappedId]);
                 } else {
-                    $destinationRecordData = array_fill_keys($destinationRecord->getFields(), null);
+                    $destinationRecordData = $destinationRecord->getDataDefault();
                 }
                 $destinationRecord->setData($destinationRecordData);
                 $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
