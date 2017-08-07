@@ -2010,6 +2010,21 @@
                 <document>cataloginventory_stock_status_replica</document>
             </ignore>
             <ignore>
+                <document>catalogrule_group_website_replica</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_product_price_replica</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_product_replica</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_product_replica</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_replica</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute</document>
             </ignore>
             <ignore>
