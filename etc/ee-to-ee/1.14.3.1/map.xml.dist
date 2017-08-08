@@ -156,9 +156,6 @@
                 <document>catalog_product_enabled_index</document>
             </ignore>
             <ignore>
-                <document>catalog_product_frontend_action</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
@@ -2008,6 +2005,9 @@
             </ignore>
             <ignore>
                 <document>catalog_category_product_index_*</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_frontend_action</document>
             </ignore>
             <ignore>
                 <document>cataloginventory_stock_status_replica</document>
