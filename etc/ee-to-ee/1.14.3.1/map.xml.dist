@@ -156,6 +156,9 @@
                 <document>catalog_product_enabled_index</document>
             </ignore>
             <ignore>
+                <document>catalog_product_frontend_action</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
