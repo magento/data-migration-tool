@@ -1,3 +1,18 @@
+2.1.8
+=============
+* Added support for versions:
+
+   * Magento CE: 1.9.3.4, 2.1.8
+   * Magento EE: 1.14.3.4, 2.1.8
+
+* Fixed bugs:
+
+   * Volume checks were missing when migrating data to EE
+   * Delta did not work on archived sales order grid
+   * Urlrewrites added unwanted extra dot to url suffix
+   * [Issue #306](https://github.com/magento/data-migration-tool/issues/306): Tables prefix was not added to the table `customer_entity` which triggered error
+   * [Issue #279](https://github.com/magento/data-migration-tool/issues/279): No warnings appeared when delta tables could not be created 
+
 2.1.7
 =============
 * Added support for versions:
