@@ -10,22 +10,18 @@ use Migration\App\Step\StageInterface;
 use Migration\Reader\MapInterface;
 use Migration\Step\DatabaseStage;
 use Migration\ResourceModel\Document;
+use Migration\Step\UrlRewrite\Model;
 
 /**
  * Class Version11300to2000
- * @SuppressWarnings(PHPMD.TooManyFields)
- * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
- * @SuppressWarnings(PHPMD.CyclomaticComplexity)
- * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
+ * @SuppressWarnings(PHPMD)
  */
 class Version11300to2000 extends DatabaseStage implements StageInterface, RollbackInterface
 {
     /**
-     * Temporary table name
-     *
-     * @var string
+     * @var Model\TemporaryTable
      */
-    protected $tableName;
+    private $temporaryTable;
 
     /**
      * @var string
@@ -110,6 +106,21 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected $helper;
 
     /**
+     * @var Model\Version11300to2000\ProductRewritesIncludedIntoCategories
+     */
+    private $productRewritesIncludedIntoCategories;
+
+    /**
+     * @var Model\Version11300to2000\ProductRewritesWithoutCategories
+     */
+    private $productRewritesWithoutCategories;
+
+    /**
+     * @var Model\Suffix
+     */
+    private $suffix;
+
+    /**
      * @var array
      */
     protected $structure = [
@@ -192,6 +203,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
      * @param \Migration\ResourceModel\RecordFactory $recordFactory
      * @param \Migration\Step\UrlRewrite\Helper $helper
+     * @param Model\Version11300to2000\ProductRewritesWithoutCategories $productRewritesWithoutCategories
+     * @param Model\Version11300to2000\ProductRewritesIncludedIntoCategories $productRewritesIncludedIntoCategories
+     * @param Model\Suffix $suffix
+     * @param Model\TemporaryTable $temporaryTable
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -204,6 +219,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory,
         \Migration\ResourceModel\RecordFactory $recordFactory,
         \Migration\Step\UrlRewrite\Helper $helper,
+        Model\Version11300to2000\ProductRewritesWithoutCategories $productRewritesWithoutCategories,
+        Model\Version11300to2000\ProductRewritesIncludedIntoCategories $productRewritesIncludedIntoCategories,
+        Model\Suffix $suffix,
+        Model\TemporaryTable $temporaryTable,
         $stage
     ) {
         $this->progress = $progress;
@@ -212,9 +231,12 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->destination = $destination;
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
-        $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
+        $this->temporaryTable = $temporaryTable;
         $this->stage = $stage;
         $this->helper = $helper;
+        $this->productRewritesWithoutCategories = $productRewritesWithoutCategories;
+        $this->productRewritesIncludedIntoCategories = $productRewritesIncludedIntoCategories;
+        $this->suffix = $suffix;
         parent::__construct($config);
     }
 
@@ -242,7 +264,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->progress->start($this->getIterationsCount());
         $this->destination->clearDocument('url_rewrite');
 
-        $sourceDocument = $this->source->getDocument($this->tableName);
+        $sourceDocument = $this->source->getDocument($this->temporaryTable->getName());
         $destinationDocument = $this->destination->getDocument('url_rewrite');
         $destProductCategory = $this->destination->getDocument('catalog_url_rewrite_product_category');
 
@@ -311,7 +333,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $select = $adapter->getSelect();
-        $select->from(['r' => $this->source->addDocumentPrefix($this->tableName)]);
+        $select->from(['r' => $this->source->addDocumentPrefix($this->temporaryTable->getName())]);
         return $select;
     }
 
@@ -328,7 +350,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             $destinationRecord = $this->recordFactory->create();
             $destinationRecord->setStructure($destination->getStructure());
 
-            $destinationRecord->setValue('url_rewrite_id', null);
+            $destinationRecord->setValue('url_rewrite_id', $sourceRecord->getValue('id'));
             $destinationRecord->setValue('store_id', $sourceRecord->getValue('store_id'));
             $destinationRecord->setValue('description', $sourceRecord->getValue('description'));
             $destinationRecord->setValue('redirect_type', 0);
@@ -539,7 +561,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->progress->start(1);
         $this->getRewritesSelect();
         $this->progress->advance();
-        $result = $this->source->getRecordsCount($this->tableName)
+        $result = $this->source->getRecordsCount($this->temporaryTable->getName())
             == $this->destination->getRecordsCount('url_rewrite');
         if (!$result) {
             $this->logger->error('Mismatch of entities in the document: url_rewrite');
@@ -555,7 +577,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function getIterationsCount()
     {
-        return $this->source->getRecordsCount($this->tableName)
+        return $this->source->getRecordsCount($this->temporaryTable->getName())
         + $this->source->getRecordsCount('catalog_category_entity_url_key')
         + $this->source->getRecordsCount('catalog_product_entity_url_key');
     }
@@ -574,7 +596,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
 
         /** @var \Magento\Framework\DB\Select $select */
         $select = $adapter->getSelect();
-        $select->from(['t' => $this->source->addDocumentPrefix($this->tableName)], ['t.*'])
+        $select->from(['t' => $this->source->addDocumentPrefix($this->temporaryTable->getName())], ['t.*'])
             ->join(
                 ['t2' => new \Zend_Db_Expr(sprintf('(%s)', $subSelect->assemble()))],
                 't2.request_path = t.request_path AND t2.store_id = t.store_id',
@@ -584,70 +606,6 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $resultData = $adapter->loadDataFromSelect($select);
 
         return $resultData;
-    }
-
-    /**
-     * Get product suffix query
-     *
-     * @codeCoverageIgnore
-     * @param string $suffixFor Can be 'product' or 'category'
-     * @param string $mainTable
-     * @return string
-     */
-    protected function getSuffix($suffixFor, $mainTable = 's')
-    {
-        if (empty($this->suffixData[$suffixFor])) {
-            /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
-            $adapter = $this->source->getAdapter();
-            $select = $adapter->getSelect();
-
-            $select->from(
-                ['s' => $this->source->addDocumentPrefix('core_store')],
-                ['store_id' => 's.store_id']
-            );
-
-            $select->joinLeft(
-                ['c1' => $this->source->addDocumentPrefix('core_config_data')],
-                "c1.scope='stores' AND c1.path = 'catalog/seo/{$suffixFor}_url_suffix' AND c1.scope_id=s.store_id",
-                ['store_path' => 'c1.path', 'store_value' => 'c1.value']
-            );
-            $select->joinLeft(
-                ['c2' => $this->source->addDocumentPrefix('core_config_data')],
-                "c2.scope='websites' AND c2.path = 'catalog/seo/{$suffixFor}_url_suffix' AND c2.scope_id=s.website_id",
-                ['website_path' => 'c2.path', 'website_value' => 'c2.value']
-            );
-            $select->joinLeft(
-                ['c3' => $this->source->addDocumentPrefix('core_config_data')],
-                "c3.scope='default' AND c3.path = 'catalog/seo/{$suffixFor}_url_suffix'",
-                ['admin_path' => 'c3.path', 'admin_value' => 'c3.value']
-            );
-
-            $result = $select->getAdapter()->fetchAll($select);
-            foreach ($result as $row) {
-                $suffix = 'html';
-                if ($row['admin_path'] !== null) {
-                    $suffix = $row['admin_value'];
-                }
-                if ($row['website_path'] !== null) {
-                    $suffix = $row['website_value'];
-                }
-                if ($row['store_path'] !== null) {
-                    $suffix = $row['store_value'];
-                }
-                $this->suffixData[$suffixFor][] = [
-                    'store_id' => $row['store_id'],
-                    'suffix' => $suffix ? '.' . $suffix : ''
-                ];
-            }
-        }
-
-        $suffix = "CASE {$mainTable}.store_id";
-        foreach ($this->suffixData[$suffixFor] as $row) {
-            $suffix .= sprintf(" WHEN '%s' THEN '%s'", $row['store_id'], $row['suffix']);
-        }
-        $suffix .= " ELSE '.html' END";
-
-        return $suffix;
     }
 
     /**
@@ -661,85 +619,12 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     {
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
-        $this->createTemporaryTable($adapter);
+        $this->temporaryTable->create();
         $this->collectRedirects($adapter);
         $this->collectProductRewrites($adapter);
         $this->collectCategoryRewrites($adapter);
         $this->collectCmsPageRewrites($adapter);
         self::$dataInitialized = true;
-    }
-
-    /**
-     * Crete temporary table
-     *
-     * @param \Migration\ResourceModel\Adapter\Mysql $adapter
-     * @return void
-     */
-    protected function createTemporaryTable(\Migration\ResourceModel\Adapter\Mysql $adapter)
-    {
-        $select = $adapter->getSelect();
-        $select->getAdapter()->dropTable($this->source->addDocumentPrefix($this->tableName));
-        /** @var \Magento\Framework\DB\Ddl\Table $table */
-        $table = $select->getAdapter()->newTable($this->source->addDocumentPrefix($this->tableName))
-            ->addColumn(
-                'id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
-                null,
-                ['identity' => true, 'unsigned' => true, 'nullable' => false, 'primary' => true]
-            )
-            ->addColumn(
-                'request_path',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                255
-            )
-            ->addColumn(
-                'target_path',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                255
-            )
-            ->addColumn(
-                'is_system',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['nullable' => false, 'default' => '0']
-            )
-            ->addColumn(
-                'store_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
-            )
-            ->addColumn(
-                'entity_type',
-                \Magento\Framework\DB\Ddl\Table::TYPE_TEXT,
-                32
-            )
-            ->addColumn(
-                'redirect_type',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['unsigned' => true, 'nullable' => false, 'default' => '0']
-            )
-            ->addColumn(
-                'product_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
-            )
-            ->addColumn(
-                'category_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
-            )
-            ->addColumn(
-                'cms_page_id',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
-            )
-            ->addColumn(
-                'priority',
-                \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
-            )
-            ->addIndex(
-                'url_rewrite',
-                ['request_path', 'target_path', 'store_id'],
-                ['type' => \Magento\Framework\DB\Adapter\AdapterInterface::INDEX_TYPE_UNIQUE]
-            )        ;
-        $select->getAdapter()->createTable($table);
     }
 
     /**
@@ -750,12 +635,13 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function collectCategoryRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
+        $requestPath = sprintf("CONCAT(`r`.`request_path`, %s)", $this->suffix->getSuffix('category', 'eccr'));
         $select = $adapter->getSelect();
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => sprintf("CONCAT(`r`.`request_path`, %s)", $this->getSuffix('category', 'eccr')),
+                'request_path' => $requestPath,
                 'target_path' => 'r.target_path',
                 'is_system' => 'r.is_system',
                 'store_id' => 's.store_id',
@@ -784,14 +670,16 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         );
 
         $query = $select
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
         $select->getAdapter()->query($query);
+
+        $requestPath = sprintf("CONCAT(`r`.`request_path`, %s)", $this->suffix->getSuffix('category', 'eccr'));
         $select = $adapter->getSelect();
         $select->from(
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => sprintf("CONCAT(`r`.`request_path`, %s)", $this->getSuffix('category', 'eccr')),
+                'request_path' => $requestPath,
                 'target_path' => 'r.target_path',
                 'is_system' => 'r.is_system',
                 'store_id' => 'eccr.store_id',
@@ -815,7 +703,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         );
 
         $query = $select
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
         $select->getAdapter()->query($query);
     }
 
@@ -848,7 +736,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             'cps.page_id = cp.page_id',
             []
         )->group(['request_path', 'cps.store_id']);
-        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
         $select->getAdapter()->query($query);
     }
 
@@ -860,232 +748,13 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function collectProductRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
-        /** @var \Magento\Framework\Db\Select $select */
-        $select = $adapter->getSelect();
-        $subSelect = $adapter->getSelect();
-        $subSelect->from(
-            ['cr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            ['request_path' => 'cr.request_path']
-        );
-        $subSelect->join(
-            ['ccr' => $this->source->addDocumentPrefix('enterprise_catalog_category_rewrite')],
-            'ccr.url_rewrite_id = cr.url_rewrite_id',
-            []
-        );
-        $subSelect->where('`cr`.`value_id` = `cu`.`value_id`');
-        //$subSelect->where('`cr`.`entity_type` = 2');
-        $subSelect->where('`ccr`.`store_id` = ecpr.`store_id`');
-        $subConcatCategories = $select->getAdapter()->getConcatSql([
-            "($subSelect)",
-            "'/'",
-            '`r`.`request_path`',
-            $this->getSuffix('product')
-        ]);
-        $storeSubSelect = $adapter->getSelect();
-        $storeSubSelect->from(
-            ['sr' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            ['store_id' => 'ecpr.store_id']
-        );
-        $storeSubSelect->join(
-            ['srcu' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            'srcu.value_id = sr.value_id',
-            []
-        );
-        $storeSubSelect->join(
-            ['ecpr' => $this->source->addDocumentPrefix('enterprise_catalog_product_rewrite')],
-            'ecpr.url_rewrite_id = sr.url_rewrite_id',
-            []
-        );
-        $storeSubSelect
-            ->where('srcu.entity_id = p.entity_id')
-            ->where('ecpr.store_id > 0');
-
-        $targetPath = 'IF(ISNULL(c.category_id), r.target_path, CONCAT(r.target_path, "/category/", c.category_id))';
-        $select = $adapter->getSelect();
-        $select->from(
-            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => $subConcatCategories,
-                'target_path' => $targetPath,
-                'is_system' => 'r.is_system',
-                'store_id' => 's.store_id',
-                'entity_type' => "trim('product')",
-                'redirect_type' => "trim('0')",
-                'product_id' => "p.entity_id",
-                'category_id' => "c.category_id",
-                'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')"
-            ]
-        );
-        $select->join(
-            ['ecpr' => $this->source->addDocumentPrefix('enterprise_catalog_product_rewrite')],
-            'ecpr.url_rewrite_id = r.url_rewrite_id',
-            []
-        );
-        $select->join(
-            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            'r.value_id = p.value_id',
-            []
-        );
-        $select->join(
-            ['c' => $this->source->addDocumentPrefix('catalog_category_product')],
-            'p.entity_id = c.product_id',
-            []
-        );
-        $select->join(
-            ['cu' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-            'cu.entity_id = c.category_id',
-            []
-        );
-        $select->join(
-            ['cpw' => $this->source->addDocumentPrefix('catalog_product_website')],
-            'c.product_id = cpw.product_id',
-            []
-        );
-        $select->join(
-            ['s' => $this->source->addDocumentPrefix('core_store')],
-            sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
-            []
-        );
-        $select->where('`ecpr`.`store_id` = 0');
-
-        $query = $adapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
-            ->where('result.request_path IS NOT NULL')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
-
-        $select = $adapter->getSelect();
-        $subConcat = $select->getAdapter()->getConcatSql([
-           '`r`.`request_path`',
-           $this->getSuffix('product')
-        ]);
-
-        $select = $adapter->getSelect();
-        $select->from(
-            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            [
-               'id' => 'IFNULL(NULL, NULL)',
-               'request_path' => $subConcat,
-               'target_path' => 'r.target_path',
-               'is_system' => 'r.is_system',
-               'store_id' => 's.store_id',
-               'entity_type' => "trim('product')",
-               'redirect_type' => "trim('0')",
-               'product_id' => "p.entity_id",
-               'category_id' => "trim('0')",
-               'cms_page_id' => "trim('0')",
-               'priority' => "trim('4')"
-           ]
-        );
-        $select->join(
-            ['ecpr' => $this->source->addDocumentPrefix('enterprise_catalog_product_rewrite')],
-            'ecpr.url_rewrite_id = r.url_rewrite_id',
-            []
-        );
-        $select->join(
-            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            'r.value_id = p.value_id',
-            []
-        );
-        $select->join(
-            ['cpw' => $this->source->addDocumentPrefix('catalog_product_website')],
-            'p.entity_id = cpw.product_id',
-            []
-        );
-        $select->join(
-            ['s' => $this->source->addDocumentPrefix('core_store')],
-            sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
-            []
-        );
-        $query = $select
-            ->where('`ecpr`.`store_id` = 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
-
-        $select = $adapter->getSelect();
-        $subConcatCategories = $select->getAdapter()->getConcatSql([
-            "($subSelect)",
-            "'/'",
-            '`s`.`request_path`',
-            $this->getSuffix('product', 'ecpr')
-        ]);
-        $select->from(
-            ['s' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => $subConcatCategories,
-                'target_path' => 's.target_path',
-                'is_system' => 's.is_system',
-                'store_id' => 'ecpr.store_id',
-                'entity_type' => "trim('product')",
-                'redirect_type' => "trim('0')",
-                'product_id' => "p.entity_id",
-                'category_id' => "c.category_id",
-                'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')"
-            ]
-        );
-        $select->join(
-            ['ecpr' => $this->source->addDocumentPrefix('enterprise_catalog_product_rewrite')],
-            'ecpr.url_rewrite_id = s.url_rewrite_id',
-            []
-        );
-        $select->join(
-            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            's.value_id = p.value_id and `p`.`store_id` = ecpr.store_id',
-            []
-        );
-        $select->join(
-            ['c' => $this->source->addDocumentPrefix('catalog_category_product')],
-            'p.entity_id = c.product_id',
-            []
-        );
-        $select->join(
-            ['cu' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-            'cu.entity_id = c.category_id and cu.store_id = ecpr.store_id',
-            []
-        );
-        $query = $select
-            ->where('`ecpr`.`store_id` > 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
-
-        $select = $adapter->getSelect();
-        $subConcat = $select->getAdapter()->getConcatSql([
-            '`s`.`request_path`',
-            $this->getSuffix('product', 'ecpr')
-        ]);
-        $select->from(
-            ['s' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-            [
-                'id' => 'IFNULL(NULL, NULL)',
-                'request_path' => $subConcat,
-                'target_path' => 's.target_path',
-                'is_system' => 's.is_system',
-                'store_id' => 'ecpr.store_id',
-                'entity_type' => "trim('product')",
-                'redirect_type' => "trim('0')",
-                'product_id' => "p.entity_id",
-                'category_id' => "trim('0')",
-                'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')"
-            ]
-        );
-        $select->join(
-            ['ecpr' => $this->source->addDocumentPrefix('enterprise_catalog_product_rewrite')],
-            'ecpr.url_rewrite_id = s.url_rewrite_id',
-            []
-        );
-        $select->join(
-            ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            's.value_id = p.value_id',
-            []
-        );
-        $query = $select
-            ->where('`ecpr`.`store_id` > 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
-        $select->getAdapter()->query($query);
+        $queryExecute = function ($query) use ($adapter) {
+            $adapter->getSelect()->getAdapter()->query($query);
+        };
+        $queryExecute($this->productRewritesWithoutCategories->getQueryProductsSavedForDefaultScope());
+        $queryExecute($this->productRewritesWithoutCategories->getQueryProductsSavedForParticularStoreView());
+        $queryExecute($this->productRewritesIncludedIntoCategories->getQueryProductsSavedForDefaultScope());
+        $queryExecute($this->productRewritesIncludedIntoCategories->getQueryProductsSavedForParticularStoreView());
     }
 
     /**
@@ -1130,7 +799,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         );
 
         $query = $select
-            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
         $select->getAdapter()->query($query);
     }
 

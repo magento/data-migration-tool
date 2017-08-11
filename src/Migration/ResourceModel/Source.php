@@ -125,15 +125,16 @@ class Source extends AbstractResource
      *
      * @param string $documentName
      * @param string $idKey
-     * @return void
+     * @return boolean
      */
     public function createDelta($documentName, $idKey)
     {
-        $this->getAdapter()->createDelta(
+        $result = $this->getAdapter()->createDelta(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKey
         );
+        return $result;
     }
 
     /**

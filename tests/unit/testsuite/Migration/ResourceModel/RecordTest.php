@@ -151,6 +151,21 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     }
 
     /**
+     * @return void
+     */
+    public function testGetDataDefault()
+    {
+        $structureData = [
+            'id' => ['NULLABLE' => true, 'DEFAULT' => 10],
+            'sku' => ['NULLABLE' => true, 'DEFAULT' => 'item1'],
+            'name' => ['NULLABLE' => true, 'DEFAULT' => null]
+        ];
+        $fieldsDefault = ['id' => 10, 'sku' => 'item1', 'name' => ''];
+        $this->structure->expects($this->any())->method('getFields')->willReturn($structureData);
+        $this->assertEquals($fieldsDefault, $this->record->getDataDefault());
+    }
+
+    /**
      * @return array
      */
     public function getFieldsDataProvider()

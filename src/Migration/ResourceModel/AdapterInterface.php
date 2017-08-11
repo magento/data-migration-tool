@@ -147,7 +147,7 @@ interface AdapterInterface
      * @param string $documentName
      * @param string $deltaLogName
      * @param string $idKey
-     * @return void
+     * @return boolean
      */
     public function createDelta($documentName, $deltaLogName, $idKey);
 
