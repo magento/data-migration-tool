@@ -2492,6 +2492,22 @@
                 <field>magento_catalogevent_event.status</field>
                 <handler class="\Migration\Handler\GetEventStatus"/>
             </transform>
+            <transform>
+                <field>catalog_product_bundle_option_value.parent_product_id</field>
+                <handler class="\Migration\Handler\BundleParentProduct">
+                    <param name="parentField" value="option_id"/>
+                    <param name="documentWithProductId" value="catalog_product_bundle_option"/>
+                    <param name="fieldWithProductId" value="parent_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_bundle_selection_price.parent_product_id</field>
+                <handler class="\Migration\Handler\BundleParentProduct">
+                    <param name="parentField" value="selection_id"/>
+                    <param name="documentWithProductId" value="catalog_product_bundle_selection"/>
+                    <param name="fieldWithProductId" value="parent_product_id"/>
+                </handler>
+            </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
@@ -2698,6 +2714,12 @@
             </ignore>
             <ignore>
                 <field>magento_catalogevent_event.status</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_bundle_selection_price.parent_product_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_bundle_option_value.parent_product_id</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
