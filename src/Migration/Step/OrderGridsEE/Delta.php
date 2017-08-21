@@ -49,7 +49,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
             if ($this->source->getRecordsCount($this->source->getDeltaLogName($sourceDocName)) == 0) {
                 continue;
             }
-            $items = $this->source->getDeletedRecords($sourceDocName, $idKey, 0, true);
+            $items = $this->source->getChangedRecords($sourceDocName, $idKey, 0, true);
             if (empty($items)) {
                 continue;
             }
