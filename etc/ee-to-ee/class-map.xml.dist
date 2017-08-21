@@ -23,6 +23,10 @@
         <to>Magento\Catalog\Block\Adminhtml\Category\Helper\Sortby\DefaultSortby</to>
     </rename>
     <rename>
+        <from>adminhtml/catalog_product_helper_form_config</from>
+        <to>Magento\GiftWrapping\Block\Adminhtml\Product\Helper\Form\Config</to>
+    </rename>
+    <rename>
         <from>adminhtml/catalog_product_helper_form_msrp_enabled</from>
         <to />
     </rename>
