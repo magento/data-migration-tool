@@ -19,12 +19,12 @@ class Delta extends AbstractDelta
     /**
      * @var string
      */
-    private $mapConfigOption = 'customer_map_file';
+    protected $mapConfigOption = 'customer_map_file';
 
     /**
      * @var string
      */
-    private $groupName = 'delta_customer';
+    protected $groupName = 'delta_customer';
 
     /**
      * @var \Migration\Reader\Groups
