@@ -9,7 +9,7 @@ namespace Migration\Step\Stores;
  * Class IntegrityTest
  * @dbFixture stores
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination
@@ -51,6 +51,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     private $mapFactory;
 
     /**
+     * @var \Migration\Config
+     */
+    private $config;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -65,6 +70,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
         $this->documentsList = $objectManager->create(\Migration\Step\Stores\Model\DocumentsList::class);
         $this->mapFactory = $objectManager->create(\Migration\Reader\MapFactory::class);
+        $this->config = $objectManager->create(\Migration\Config::class);
     }
 
     /**
@@ -75,6 +81,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $integrity = new Integrity(
             $this->documentsList,
             $this->logger,
+            $this->config,
             $this->progress,
             $this->source,
             $this->destination,

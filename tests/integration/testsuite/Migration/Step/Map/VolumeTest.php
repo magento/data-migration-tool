@@ -9,7 +9,7 @@ namespace Migration\Step\Map;
 /**
  * Volume step test class
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -18,12 +18,9 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $progress = $this->getMock(
+        $progress = $this->createPartialMock(
             \Migration\App\Progress::class,
-            ['getProcessedEntities', 'addProcessedEntity'],
-            [],
-            '',
-            false
+            ['getProcessedEntities', 'addProcessedEntity']
         );
         $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $progress->expects($this->any())->method('addProcessedEntity');

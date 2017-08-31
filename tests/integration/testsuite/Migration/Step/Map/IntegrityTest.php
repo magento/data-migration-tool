@@ -10,7 +10,7 @@ namespace Migration\Step\Map;
  * Integrity step test class
  * @dbFixture default
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
 
     /**

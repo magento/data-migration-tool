@@ -9,7 +9,7 @@ namespace Migration\Step\TierPrice;
  * Class IntegrityTest
  * @dbFixture tier_price
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     const TIRE_PRICE_TABLE_DESTINATION = 'catalog_product_entity_tier_price';
     
@@ -44,6 +44,11 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     private $mapFactory;
 
     /**
+     * @var \Migration\Config
+     */
+    private $config;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -58,6 +63,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->helper = $objectManager->create(\Migration\Step\TierPrice\Helper::class);
         $this->logger = $objectManager->create(\Migration\Logger\Logger::class);
         $this->mapFactory = $objectManager->create(\Migration\Reader\MapFactory::class);
+        $this->config = $objectManager->create(\Migration\Config::class);
     }
 
     /**
@@ -68,6 +74,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $data = new Integrity(
             $this->helper,
             $this->logger,
+            $this->config,
             $this->progress,
             $this->source,
             $this->destination,
@@ -84,6 +91,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $data = new Integrity(
             $this->helper,
             $this->logger,
+            $this->config,
             $this->progress,
             $this->source,
             $this->destination,

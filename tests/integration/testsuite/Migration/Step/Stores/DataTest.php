@@ -9,7 +9,7 @@ namespace Migration\Step\Stores;
  * Class DataTest
  * @dbFixture stores
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination

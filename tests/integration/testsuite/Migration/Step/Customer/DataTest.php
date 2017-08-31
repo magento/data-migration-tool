@@ -9,7 +9,7 @@ namespace Migration\Step\Customer;
  * Class DataTest
  * @dbFixture customer
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination

@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * ResourceModel source and destination test class
  */
-class SourceDestinationTest extends \PHPUnit_Framework_TestCase
+class SourceDestinationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Source $source
