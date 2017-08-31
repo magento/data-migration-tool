@@ -11,7 +11,7 @@ use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
 use Migration\App\ProgressBar;
 
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var InitialData|\PHPUnit_Framework_MockObject_MockObject
@@ -58,46 +58,37 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['addRecord'], [], '', false);
-        $this->progress = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['addRecord']
+        );
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+            ['start', 'finish', 'advance']
         );
-        $this->initialData = $this->getMock(
+        $this->initialData = $this->createPartialMock(
             \Migration\Step\SalesOrder\InitialData::class,
-            ['getDestEavAttributesCount'],
-            [],
-            '',
-            false
+            ['getDestEavAttributesCount']
         );
-        $this->helper = $this->getMock(
+        $this->helper = $this->createPartialMock(
             \Migration\Step\SalesOrder\Helper::class,
-            ['getDocumentList', 'getDestEavDocument', 'getEavAttributes', 'getSourceAttributes'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDestEavDocument', 'getEavAttributes', 'getSourceAttributes']
         );
-        $this->source = $this->getMock(
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getDocumentList', 'getRecordsCount'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getRecordsCount']
         );
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount'],
-            [],
-            '',
-            false
+            ['getRecordsCount']
         );
-        $this->map = $this->getMock(\Migration\Reader\Map::class, ['getDocumentMap'], [], '', false);
+        $this->map = $this->createPartialMock(
+            \Migration\Reader\Map::class,
+            ['getDocumentMap']
+        );
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
 
         $this->salesOrder = new Volume(

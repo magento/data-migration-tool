@@ -57,7 +57,7 @@ class Helper
      */
     protected function getColumnsData($gridName)
     {
-        switch ($gridName){
+        switch ($gridName) {
             case 'sales_order_grid':
                 return $this->getSalesOrderColumnsGrid();
             case 'sales_invoice_grid':

@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * ResourceModel destination test class
  */
-class DestinationTest extends \PHPUnit_Framework_TestCase
+class DestinationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -52,34 +52,25 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $adapterConfigs = ['resourceType' => 'destination'];
-        $this->config = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
-        $this->adapter = $this->getMock(
-            \Migration\ResourceModel\Adapter\Mysql::class,
-            ['insertRecords', 'deleteAllRecords', 'backupDocument', 'rollbackDocument', 'deleteBackup'],
-            [],
-            '',
-            false
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
         );
-        $this->adapterFactory = $this->getMock(
+        $this->adapter = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Mysql::class,
+            ['insertRecords', 'deleteAllRecords', 'backupDocument', 'rollbackDocument', 'deleteBackup']
+        );
+        $this->adapterFactory = $this->createPartialMock(
             \Migration\ResourceModel\AdapterFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
         $this->adapterFactory->expects($this->once())
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock(\Migration\ResourceModel\DocumentFactory::class, [], [], '', false);
-        $this->structureFactory = $this->getMock(\Migration\ResourceModel\StructureFactory::class, [], [], '', false);
-        $this->documentCollection = $this->getMock(
-            \Migration\ResourceModel\Document\Collection::class,
-            [],
-            [],
-            '',
-            false
-        );
+        $this->documentFactory = $this->createMock(\Migration\ResourceModel\DocumentFactory::class);
+        $this->structureFactory = $this->createMock(\Migration\ResourceModel\StructureFactory::class);
+        $this->documentCollection = $this->createMock(\Migration\ResourceModel\Document\Collection::class);
 
         $this->resourceDestination = new \Migration\ResourceModel\Destination(
             $this->adapterFactory,
@@ -114,14 +105,17 @@ class DestinationTest extends \PHPUnit_Framework_TestCase
             ->with($prefix . $resourceName, [['data' => 'value4']])
             ->will($this->returnSelf());
 
-        $records = $this->getMock(\Migration\ResourceModel\Record\Collection::class, [], [], '', false);
+        $records = $this->createMock(\Migration\ResourceModel\Record\Collection::class);
         $records->expects($this->any())
             ->method('current')
             ->willReturnCallback(function () {
                 static $count = 0;
                 $count++;
                 $data = ['data' => "value$count"];
-                $record = $this->getMock(\Migration\ResourceModel\Record::class, ['getData'], [], '', false);
+                $record = $this->createPartialMock(
+                    \Migration\ResourceModel\Record::class,
+                    ['getData']
+                );
                 $record->expects($this->once())->method('getData')->will($this->returnValue($data));
                 return $record;
             });

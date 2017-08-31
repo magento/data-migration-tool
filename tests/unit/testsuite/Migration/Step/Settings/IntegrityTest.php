@@ -8,7 +8,7 @@ namespace Migration\Step\Settings;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -55,42 +55,33 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords'],
-            [],
-            '',
-            false
+            ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords']
         );
-        $this->source = $this->getMock(
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getRecordsCount', 'getRecords', 'getDocumentList'],
-            [],
-            '',
-            false
+            ['getRecordsCount', 'getRecords', 'getDocumentList']
         );
-        $this->readerSettings = $this->getMock(
+        $this->readerSettings = $this->createPartialMock(
             \Migration\Reader\Settings::class,
-            ['isNodeIgnored', 'getNodeMap', 'getValueHandler'],
-            [],
-            '',
-            false
+            ['isNodeIgnored', 'getNodeMap', 'getValueHandler']
         );
-        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
-        $this->handlerManagerFactory = $this->getMock(
+        $this->recordFactory = $this->createPartialMock(
+            \Migration\ResourceModel\RecordFactory::class,
+            ['create']
+        );
+        $this->handlerManagerFactory = $this->createPartialMock(
             \Migration\Handler\ManagerFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['error'], [], '', false);
-        $this->progress = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['error']
+        );
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'advance', 'finish'],
-            [],
-            '',
-            false
+            ['start', 'advance', 'finish']
         );
     }
 

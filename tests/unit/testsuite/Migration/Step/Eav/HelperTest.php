@@ -14,7 +14,7 @@ use Migration\ResourceModel\Source;
 /**
  * Class HelperTest
  */
-class HelperTest extends \PHPUnit_Framework_TestCase
+class HelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Helper
@@ -76,7 +76,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
         $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()
@@ -110,21 +110,18 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                     ['eav_attribute_groups_file', $this->readerAttributes]
                 ]
             );
-        $this->adapter = $this->getMock(
+        $this->adapter = $this->createPartialMock(
             \Migration\ResourceModel\Adapter\Mysql::class,
-            ['getSelect'],
-            [],
-            '',
-            false
+            ['getSelect']
         );
-        $this->pdoMysql = $this->getMock(
+        $this->pdoMysql = $this->createPartialMock(
             \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
-            ['fetchPairs'],
-            [],
-            '',
-            false
+            ['fetchPairs']
         );
-        $this->select = $this->getMock(\Magento\Framework\DB\Select::class, ['from', 'getAdapter'], [], '', false);
+        $this->select = $this->createPartialMock(
+            \Magento\Framework\DB\Select::class,
+            ['from', 'getAdapter']
+        );
         $this->helper = new Helper($mapFactory, $this->source, $this->destination, $this->factory, $groupsFactory);
     }
 

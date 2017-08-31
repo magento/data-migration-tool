@@ -9,7 +9,7 @@ namespace Migration\App;
 /**
  * Class ShellTest
  */
-class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
+class SetupDeltaLogTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -18,9 +18,9 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         /** @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject $source */
-        $source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
+        $source = $this->createMock(\Migration\ResourceModel\Source::class);
         /** @var \Migration\ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject $source */
-        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $source->expects($this->any())
             ->method('getDocument')
             ->willReturn($document);
@@ -34,7 +34,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             );
 
         /** @var \Migration\Reader\Groups|\PHPUnit_Framework_MockObject_MockObject $readerGroups */
-        $readerGroups = $this->getMock(\Migration\Reader\Groups::class, [], [], '', false);
+        $readerGroups = $this->createMock(\Migration\Reader\Groups::class);
         $readerGroups->expects($this->any())
             ->method('getGroups')
             ->with()
@@ -46,12 +46,12 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock(\Migration\Reader\GroupsFactory::class, [], [], '', false);
+        $groupsFactory = $this->createMock(\Migration\Reader\GroupsFactory::class);
         $groupsFactory->expects($this->any())->method('create')->with('delta_document_groups_file')
             ->willReturn($readerGroups);
 
         /** @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject $progress */
-        $progress = $this->getMock(\Migration\App\ProgressBar\LogLevelProcessor::class, [], [], '', false);
+        $progress = $this->createMock(\Migration\App\ProgressBar\LogLevelProcessor::class);
         $progress->expects($this->once())
             ->method('start')
             ->with(4);
@@ -61,7 +61,7 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
             ->method('finish');
 
         /** @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject $logger */
-        $logger = $this->getMock('\Migration\Logger\Logger', [], [], '', false);
+        $logger = $this->createMock(\Migration\Logger\Logger::class);
 
         $deltaLog = new SetupDeltaLog($source, $groupsFactory, $progress, $logger);
         $this->assertTrue($deltaLog->perform());

@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 /**
  * Class VolumeTest
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Helper|\PHPUnit_Framework_MockObject_MockObject
@@ -243,35 +243,33 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected function getDocumentsMap()
     {
         $structureFields = [
-            'eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'catalog_eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'customer_eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'eav_entity_type' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
+            'eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'catalog_eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'customer_eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'eav_entity_type' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
         ];
         $documentsMap = [];
         foreach ($structureFields as $documentName => $structure) {
             $structure = new \Migration\ResourceModel\Structure($structureFields[$documentName]);
-            $destDocument = $this->getMock(\Migration\ResourceModel\Document::class, ['getStructure'], [], '', false);
+            $destDocument = $this->createPartialMock(
+                \Migration\ResourceModel\Document::class,
+                ['getStructure']
+            );
             $destDocument->expects($this->once())->method('getStructure')->willReturn($structure);
             $documentsMap[] = [$documentName, $destDocument];
         }
-
         return $documentsMap;
     }
 }

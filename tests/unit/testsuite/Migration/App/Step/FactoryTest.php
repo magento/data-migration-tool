@@ -8,7 +8,7 @@ namespace Migration\App\Step;
 /**
  * Class StepFactoryTest
  */
-class FactoryTest extends \PHPUnit_Framework_TestCase
+class FactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var StageFactory
@@ -37,7 +37,7 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $step = $this->getMock(\Migration\App\Step\StageInterface::class);
+        $step = $this->createMock(\Migration\App\Step\StageInterface::class);
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($step));
         $this->assertSame($step, $this->factory->create(\Migration\Steps\Integrity::class));
     }
@@ -48,7 +48,8 @@ class FactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateStepWithException()
     {
-        $this->setExpectedException('\Exception', 'Class: Migration\Step\Integrity must implement StageInterface.');
+        $this->expectException('\Exception');
+        $this->expectExceptionMessage('Class: Migration\Step\Integrity must implement StageInterface.');
         $this->factory->create(\Migration\Step\Integrity::class);
     }
 }

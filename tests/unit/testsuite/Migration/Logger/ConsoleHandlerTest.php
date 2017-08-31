@@ -5,7 +5,7 @@
  */
 namespace Migration\Logger;
 
-class ConsoleHandlerTest extends \PHPUnit_Framework_TestCase
+class ConsoleHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConsoleHandler

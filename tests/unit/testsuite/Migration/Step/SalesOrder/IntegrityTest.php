@@ -10,7 +10,7 @@ use Migration\Reader\Map;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -57,34 +57,25 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'addRecord'], [], '', false);
-        $this->source = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['debug', 'addRecord', 'error']
+        );
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument']
         );
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+            ['start', 'finish', 'advance']
         );
-        $this->helper = $this->getMock(
+        $this->helper = $this->createPartialMock(
             \Migration\Step\SalesOrder\Helper::class,
-            ['getDocumentList', 'getEavAttributes', 'getDestEavDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getEavAttributes', 'getDestEavDocument']
         );
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getDocumentList', 'getDocument', 'getRecords'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument', 'getRecords']
         );
         $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)
             ->disableOriginalConstructor()
@@ -92,7 +83,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
 
         $this->config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()

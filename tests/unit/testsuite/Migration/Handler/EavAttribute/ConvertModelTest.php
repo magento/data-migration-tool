@@ -10,7 +10,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class ConvertModelTest
  */
-class ConvertModelTest extends \PHPUnit_Framework_TestCase
+class ConvertModelTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConvertModel

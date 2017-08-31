@@ -6,7 +6,7 @@
 
 namespace Migration\Mode;
 
-class SettingsTest extends \PHPUnit_Framework_TestCase
+class SettingsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Settings
@@ -63,7 +63,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunStepsIntegrityFail()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'Integrity Check failed');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Integrity Check failed');
         $step = $this->getMockBuilder(\Migration\App\Step\StageInterface::class)->getMock();
         $step->expects($this->once())->method('perform')->will($this->returnValue(false));
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
@@ -101,7 +102,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunStepsDataMigrationFail()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'Data Migration failed');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Data Migration failed');
         $stepIntegrity = $this->getMockBuilder(\Migration\App\Step\StageInterface::class)->getMock();
         $stepIntegrity->expects($this->once())->method('perform')->will($this->returnValue(true));
 

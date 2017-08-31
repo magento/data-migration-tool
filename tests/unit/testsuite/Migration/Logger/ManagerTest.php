@@ -5,7 +5,7 @@
  */
 namespace Migration\Logger;
 
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Manager
@@ -42,29 +42,20 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->logger = $this->getMock(
+        $this->logger = $this->createPartialMock(
             \Migration\Logger\Logger::class,
-            ['pushHandler', 'pushProcessor', 'error'],
-            [],
-            '',
-            false
+            ['pushHandler', 'pushProcessor', 'error']
         );
-        $this->consoleHandler = $this->getMock(
+        $this->consoleHandler = $this->createPartialMock(
             \Migration\Logger\ConsoleHandler::class,
-            ['setLevel', 'setFormatter'],
-            [],
-            '',
-            false
+            ['setLevel', 'setFormatter']
         );
-        $this->fileHandler = $this->getMock(
+        $this->fileHandler = $this->createPartialMock(
             \Migration\Logger\FileHandler::class,
-            ['setLevel', 'setFormatter'],
-            [],
-            '',
-            false
+            ['setLevel', 'setFormatter']
         );
-        $this->messageFormatter = $this->getMock(\Migration\Logger\MessageFormatter::class, [], [], '', false);
-        $this->messageProcessor = $this->getMock(\Migration\Logger\MessageProcessor::class, [], [], '', false);
+        $this->messageFormatter = $this->createMock(\Migration\Logger\MessageFormatter::class);
+        $this->messageProcessor = $this->createMock(\Migration\Logger\MessageProcessor::class);
         $this->manager = new Manager(
             $this->logger,
             $this->consoleHandler,
@@ -126,7 +117,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testProcessInvalidLevel($logLevel)
     {
-        $this->setExpectedException(\Migration\Exception::class, "Invalid log level '$logLevel' provided.");
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage("Invalid log level '$logLevel' provided.");
         $this->manager->process($logLevel);
     }
 }

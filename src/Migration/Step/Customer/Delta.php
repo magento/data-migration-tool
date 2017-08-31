@@ -14,6 +14,10 @@ use Migration\ResourceModel;
 use Migration\Reader\MapInterface;
 use Migration\Step\Customer\Model;
 
+/**
+ * Class Delta
+ * @SuppressWarnings(CouplingBetweenObjects)
+ */
 class Delta extends AbstractDelta
 {
     /**

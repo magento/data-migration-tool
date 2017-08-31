@@ -31,7 +31,7 @@ class OrphanRecordsCheckerFactory
      */
     public function __construct(
         ObjectManagerInterface $objectManager,
-        $instanceName = '\\Migration\\Step\\DataIntegrity\\Model\\OrphanRecordsChecker'
+        $instanceName = \Migration\Step\DataIntegrity\Model\OrphanRecordsChecker::class
     ) {
         $this->objectManager = $objectManager;
         $this->instanceName = $instanceName;

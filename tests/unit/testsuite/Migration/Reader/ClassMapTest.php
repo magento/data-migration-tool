@@ -8,7 +8,7 @@ namespace Migration\Reader;
 /**
  * Class ClassMap test
  */
-class ClassMapTest extends \PHPUnit_Framework_TestCase
+class ClassMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ClassMap

@@ -103,7 +103,6 @@ class Data implements StageInterface
         $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
 
         foreach ($sourceDocuments as $sourceDocName) {
-
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);

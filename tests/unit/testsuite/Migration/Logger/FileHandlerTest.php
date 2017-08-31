@@ -8,7 +8,7 @@ namespace Migration\Logger;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
-class FileHandlerTest extends \PHPUnit_Framework_TestCase
+class FileHandlerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var FileHandler

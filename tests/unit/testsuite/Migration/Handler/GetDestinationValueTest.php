@@ -10,7 +10,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class GetDestinationValueTest
  */
-class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
+class GetDestinationValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -19,12 +19,9 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, null);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
@@ -50,12 +47,9 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
         $value = 'value';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $value);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
@@ -79,12 +73,9 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['setValue', 'getFields']
         );
         $recordToHandle->expects($this->never())->method('setValue');
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));

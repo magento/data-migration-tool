@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\Settings;
 
-class UrlSuffixTest extends \PHPUnit_Framework_TestCase
+class UrlSuffixTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -16,12 +16,9 @@ class UrlSuffixTest extends \PHPUnit_Framework_TestCase
         $urlSuffixHandled = '.html';
         $fieldName = 'value';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['getValue', 'setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($urlSuffix);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $urlSuffixHandled);

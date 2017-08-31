@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SerializeToJson;
 
-class ItemOptionTest extends \PHPUnit_Framework_TestCase
+class ItemOptionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject
@@ -34,10 +34,12 @@ class ItemOptionTest extends \PHPUnit_Framework_TestCase
         $this->model->expects($this->any())->method('getData')->willReturn(['code' => $code]);
         $this->model->expects($this->any())->method('getValue')->with($fieldName)->willReturn($serialized);
         $this->model->expects($this->any())->method('setValue')->with($fieldName, $expectedJson);
-        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(
+            \Migration\ResourceModel\Record::class
+        )->disableOriginalConstructor()->getMock();
         $handler = new ItemOption();
         $handler->setField($fieldName);
-        $handler->handle($this->model, $record2);
+        $this->assertNull($handler->handle($this->model, $record2));
     }
 
     /**

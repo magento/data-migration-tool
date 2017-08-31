@@ -8,7 +8,7 @@ namespace Migration\Reader;
 /**
  * Class GroupTest
  */
-class GroupsTest extends \PHPUnit_Framework_TestCase
+class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Groups

@@ -6,7 +6,7 @@
 
 namespace Migration\Handler;
 
-class ConvertTest extends \PHPUnit_Framework_TestCase
+class ConvertTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array
@@ -38,12 +38,9 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
+        $record = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['setValue', 'getValue', 'getFields'],
-            [],
-            '',
-            false
+            ['setValue', 'getValue', 'getFields']
         );
         $record->expects($this->once())->method('getValue')->will($this->returnValue($initialValue));
         $record->expects($this->once())->method('setValue')->with($fieldName, $processedValue);
@@ -63,9 +60,9 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMap()
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $handler = new Convert('[dummy]');
-        $record = $this->getMock(\Migration\ResourceModel\Record::class, [], [], '', false);
+        $record = $this->createMock(\Migration\ResourceModel\Record::class);
         $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();

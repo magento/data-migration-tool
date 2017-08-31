@@ -10,7 +10,7 @@ namespace Migration\Step\UrlRewrite;
  * Class Version19Test
  * Test for \Migration\Step\UrlRewrite\Version19
  */
-class Version191to2000Test extends \PHPUnit_Framework_TestCase
+class Version191to2000Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -62,21 +62,24 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['error'], [], '', false);
-        $this->progress = $this->getMock(
-            \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['error']
         );
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
-        $this->config = $this->getMock(\Migration\Config::class, [], [], '', false);
+        $this->progress = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'finish', 'advance']
+        );
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['debug', 'error']
+        );
+        $this->config = $this->createMock(\Migration\Config::class);
         $this->config->expects($this->any())->method('getSource')->willReturn([
             'type' => 'database',
             'version' => '1.9'
         ]);
-        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
+        $this->source = $this->createMock(\Migration\ResourceModel\Source::class);
 
         $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)
             ->setMethods(['from', 'joinLeft', 'where', 'group', 'distinct'])
@@ -98,15 +101,15 @@ class Version191to2000Test extends \PHPUnit_Framework_TestCase
 
         $this->source->expects($this->any())->method('getAdapter')->willReturn($sourceAdapter);
 
-        $this->destination = $this->getMock(\Migration\ResourceModel\Destination::class, [], [], '', false);
-        $this->recordCollection = $this->getMock(
+        $this->destination = $this->createMock(\Migration\ResourceModel\Destination::class);
+        $this->recordCollection = $this->createPartialMock(
             \Migration\ResourceModel\Record\Collection::class,
-            ['addRecord'],
-            [],
-            '',
-            false
+            ['addRecord']
         );
-        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
+        $this->recordFactory = $this->createPartialMock(
+            \Migration\ResourceModel\RecordFactory::class,
+            ['create']
+        );
     }
 
     /**

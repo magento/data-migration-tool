@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-class ManagerTest extends \PHPUnit_Framework_TestCase
+class ManagerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\ObjectManagerInterface|\PHPUnit_Framework_MockObject_MockObject
@@ -22,12 +22,9 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->objectManager = $this->getMock(
+        $this->objectManager = $this->createPartialMock(
             \Magento\Framework\ObjectManager\ObjectManager::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
         $this->manager = new Manager($this->objectManager);
     }
@@ -41,7 +38,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $field = 'someField';
         $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
-        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
+        $handler = $this->createPartialMock(
+            \Migration\Handler\SetValue::class,
+            ['setField']
+        );
         $this->objectManager->expects($this->any())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
@@ -58,7 +58,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
         $field = 'someField';
         $handlerKey = 'someKey';
         $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
-        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
+        $handler = $this->createPartialMock(
+            \Migration\Handler\SetValue::class,
+            ['setField']
+        );
         $this->objectManager->expects($this->any())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig, $handlerKey);
@@ -75,7 +78,10 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     {
         $field = 'someField';
         $handlerConfig = ['class' => \Migration\Handler\SetValue::class, 'params' => ['value' => '12']];
-        $handler = $this->getMock(\Migration\Handler\SetValue::class, ['setField'], [], '', false);
+        $handler = $this->createPartialMock(
+            \Migration\Handler\SetValue::class,
+            ['setField']
+        );
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
@@ -98,7 +104,8 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
      */
     public function testInitHandlerEmptyClass()
     {
-        $this->setExpectedException('Exception', 'Handler class name not specified.');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Handler class name not specified.');
         $config = ['class' => '', 'params' => ['value' => '12']];
         $this->manager->initHandler('anyfield', $config);
     }
@@ -110,9 +117,12 @@ class ManagerTest extends \PHPUnit_Framework_TestCase
     public function testInitInvalidHandler()
     {
         $handlerConfig = ['class' => "Migration\\Migration", 'params' => ['value' => '12']];
-        $invalidHandler = $this->getMock(\Migration\Migration::class, [], [], '', false);
+        $invalidHandler = $this->getMockBuilder(\Migration\Migration::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($invalidHandler));
-        $this->setExpectedException('\Exception', "'Migration\\Migration' is not correct handler.");
+        $this->expectException('\Exception');
+        $this->expectExceptionMessage("'Migration\\Migration' is not correct handler.");
         $this->manager->initHandler('somefield', $handlerConfig);
     }
 }

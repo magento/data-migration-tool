@@ -41,7 +41,7 @@ class GroupsFactory
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Migration\Config $config,
-        $instanceName = '\\Migration\\Reader\\Groups'
+        $instanceName = \Migration\Reader\Groups::class
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;

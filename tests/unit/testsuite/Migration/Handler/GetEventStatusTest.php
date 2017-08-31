@@ -11,7 +11,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class GetDestinationValueTest
  */
-class GetEventStatusTest extends \PHPUnit_Framework_TestCase
+class GetEventStatusTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -67,6 +67,5 @@ class GetEventStatusTest extends \PHPUnit_Framework_TestCase
                 'status' => GetEventStatus::EVENT_UPCOMING
             ]
         ];
-        
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SerializeToJson;
 
-class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
+class SalesOrderItemTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $serialized
@@ -29,7 +29,7 @@ class SalesOrderItemTest extends \PHPUnit_Framework_TestCase
             ->getMock();
         $handler = new SalesOrderItem();
         $handler->setField($fieldName);
-        $handler->handle($record, $record2);
+        $this->assertNull($handler->handle($record, $record2));
     }
 
     public function handleDataProvider()

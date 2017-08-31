@@ -10,7 +10,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class SerializedDataTest
  */
-class SerializedDataTest extends \PHPUnit_Framework_TestCase
+class SerializedDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void

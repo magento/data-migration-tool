@@ -12,7 +12,7 @@ use Migration\Model\Eav\AttributeGroupNameToCodeMap;
 /**
  * Class SetGroupCodeTest
  */
-class SetGroupCodeTest extends \PHPUnit_Framework_TestCase
+class SetGroupCodeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void

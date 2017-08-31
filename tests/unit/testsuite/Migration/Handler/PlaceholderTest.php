@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-class PlaceholderTest extends \PHPUnit_Framework_TestCase
+class PlaceholderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -20,17 +20,17 @@ class PlaceholderTest extends \PHPUnit_Framework_TestCase
             . '</p>';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
+        $record = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['getValue', 'setValue', 'getFields']
         );
         $record->expects($this->once())->method('getValue')->with($fieldName)->willReturn($content);
         $record->expects($this->once())->method('setValue')->with($fieldName, $contentConverted);
         $record->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $classMap = $this->getMock(\Migration\Reader\ClassMap::class, ['getMap'], [], '', false);
+        $classMap = $this->createPartialMock(
+            \Migration\Reader\ClassMap::class,
+            ['getMap']
+        );
         $classMap->expects($this->once())->method('getMap')->willReturn($classMapData);
         $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()

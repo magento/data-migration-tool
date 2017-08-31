@@ -8,7 +8,7 @@ namespace Migration\App\Progress;
 
 use Magento\Framework\App\Filesystem\DirectoryList;
 
-class FileTest extends \PHPUnit_Framework_TestCase
+class FileTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\Filesystem\Driver\File|\PHPUnit_Framework_MockObject_MockObject
@@ -55,7 +55,7 @@ class FileTest extends \PHPUnit_Framework_TestCase
     {
         $data = ['key' => ['other_key' => 'value']];
         $this->filesystemDriver->expects($this->any())->method('isExists')->will($this->returnValue(true));
-        $this->file->saveData($data);
+        $this->assertTrue($this->file->saveData($data));
     }
 
     /**

@@ -12,7 +12,7 @@ use Migration\ResourceModel;
 /**
  * Class HelperTest
  */
-class HelperTest extends \PHPUnit_Framework_TestCase
+class HelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Helper

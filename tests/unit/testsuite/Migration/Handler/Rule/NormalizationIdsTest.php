@@ -12,7 +12,7 @@ use Migration\ResourceModel\Destination;
 /**
  * Class NormalizationIdsTest
  */
-class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
+class NormalizationIdsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConditionSql|\PHPUnit_Framework_MockObject_MockObject

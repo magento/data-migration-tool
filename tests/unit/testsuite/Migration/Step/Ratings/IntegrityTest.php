@@ -8,7 +8,7 @@ namespace Migration\Step\Ratings;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -45,27 +45,30 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix'],
-            [],
-            '',
-            false
+            ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix']
         );
         $this->destination
             ->expects($this->any())
             ->method('addDocumentPrefix')
             ->will($this->returnValueMap([['rating_store', 'rating_store'], ['rating', 'rating']]));
 
-        $this->structure = $this->getMock(\Migration\ResourceModel\Structure::class, ['getFields'], [], '', false);
-        $this->document = $this->getMock(\Migration\ResourceModel\Document::class, ['getStructure'], [], '', false);
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['warning', 'error'], [], '', false);
-        $this->progress = $this->getMock(
+        $this->structure = $this->createPartialMock(
+            \Migration\ResourceModel\Structure::class,
+            ['getFields']
+        );
+        $this->document = $this->createPartialMock(
+            \Migration\ResourceModel\Document::class,
+            ['getStructure']
+        );
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['warning', 'error']
+        );
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'advance', 'finish'],
-            [],
-            '',
-            false
+            ['start', 'advance', 'finish']
         );
     }
 

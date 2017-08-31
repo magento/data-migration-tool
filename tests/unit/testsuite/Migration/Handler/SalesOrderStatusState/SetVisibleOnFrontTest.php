@@ -10,7 +10,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class SetVisibleOnFrontTest
  */
-class SetVisibleOnFrontTest extends \PHPUnit_Framework_TestCase
+class SetVisibleOnFrontTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \PHPUnit_Framework_MockObject_MockObject|Record

@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * Adapter Factory Test
  */
-class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
+class AdapterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
@@ -31,13 +31,13 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
-        $this->objectManager = $this->getMock(
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
+        );
+        $this->objectManager = $this->createPartialMock(
             \Magento\Framework\ObjectManager\ObjectManager::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
         $this->adapterFactory = new \Migration\ResourceModel\AdapterFactory($this->objectManager, $this->config);
     }
@@ -49,7 +49,9 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
     {
         $adapterClassName = \Migration\ResourceModel\Adapter\Mysql::class;
         $data = ['config' => ['key' => 'value']];
-        $adapter = $this->getMock($adapterClassName, [], [], '', false);
+        $adapter = $this->getMockBuilder($adapterClassName)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->config->expects($this->once())
             ->method('getOption')
             ->with('resource_adapter_class_name')

@@ -93,6 +93,7 @@ class Data implements StageInterface
      * @param Config $config
      * @param Helper $helper
      *
+     * @SuppressWarnings(CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(

@@ -11,7 +11,7 @@ use Migration\Reader\MapInterface;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -53,36 +53,33 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'error'], [], '', false);
-        $this->source = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['debug', 'error']
+        );
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument']
         );
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+            ['start', 'finish', 'advance']
         );
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument']
         );
         $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('customer_attr_map_file')->willReturn($this->map);
 
-        $this->readerGroups = $this->getMock(\Migration\Reader\Groups::class, ['getGroup'], [], '', false);
+        $this->readerGroups = $this->createPartialMock(
+            \Migration\Reader\Groups::class,
+            ['getGroup']
+        );
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['source_documents', ['document1' => '']]
@@ -90,7 +87,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock(\Migration\Reader\GroupsFactory::class, ['create'], [], '', false);
+        $groupsFactory = $this->createPartialMock(
+            \Migration\Reader\GroupsFactory::class,
+            ['create']
+        );
         $groupsFactory->expects($this->any())
             ->method('create')
             ->with('customer_attr_document_groups_file')

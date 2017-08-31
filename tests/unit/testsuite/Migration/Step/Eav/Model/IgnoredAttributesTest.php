@@ -11,7 +11,7 @@ use Migration\Step\Eav\InitialData;
 /**
  * Class IgnoredAttributesTest
  */
-class IgnoredAttributesTest extends \PHPUnit_Framework_TestCase
+class IgnoredAttributesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var IgnoredAttributes

@@ -46,6 +46,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
      * @param AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity
      * @param string $mapConfigOption
+     *
+     * @SuppressWarnings(ExcessiveParameterList)
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
