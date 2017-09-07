@@ -8,7 +8,7 @@ namespace Migration;
 /**
  * Class ConfigTest
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -46,7 +46,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidConfigFile()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'Invalid config filename: non-existent.xml');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Invalid config filename: non-existent.xml');
 
         $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
@@ -65,7 +66,8 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidXml()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'XML file is invalid');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('XML file is invalid');
 
         $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()

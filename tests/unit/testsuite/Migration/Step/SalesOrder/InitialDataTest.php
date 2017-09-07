@@ -12,7 +12,7 @@ use Migration\ResourceModel\Source;
 /**
  * Class InitialDataTest
  */
-class InitialDataTest extends \PHPUnit_Framework_TestCase
+class InitialDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Source|\PHPUnit_Framework_MockObject_MockObject
@@ -39,15 +39,15 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
-        $this->destination = $this->getMock(
+        $this->source = $this->createMock(\Migration\ResourceModel\Source::class);
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount'],
-            [],
-            '',
-            false
+            ['getRecordsCount']
         );
-        $this->helper = $this->getMock(\Migration\Step\SalesOrder\Helper::class, ['getDestEavDocument'], [], '', false);
+        $this->helper = $this->createPartialMock(
+            \Migration\Step\SalesOrder\Helper::class,
+            ['getDestEavDocument']
+        );
         $this->initialData = new InitialData($this->source, $this->destination, $this->helper);
     }
 

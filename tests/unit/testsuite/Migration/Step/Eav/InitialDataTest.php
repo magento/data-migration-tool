@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 /**
  * Class InitialDataTest
  */
-class InitialDataTest extends \PHPUnit_Framework_TestCase
+class InitialDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\InitialData
@@ -45,7 +45,7 @@ class InitialDataTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
         $this->source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)->disableOriginalConstructor()

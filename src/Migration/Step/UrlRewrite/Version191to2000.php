@@ -223,7 +223,6 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
             $this->progress->advance();
             $this->destination->saveRecords(self::DESTINATION, $destinationRecords);
             $this->destination->saveRecords(self::DESTINATION_PRODUCT_CATEGORY, $destProductCategoryRecords);
-
         }
         $this->saveCmsPageRewrites();
         $this->progress->finish();

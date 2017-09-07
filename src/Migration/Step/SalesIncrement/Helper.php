@@ -215,6 +215,5 @@ class Helper
             $entityTypeIds[$record['entity_type_code']] = $record['entity_type_id'];
         }
         return $entityTypeIds;
-        
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\PostProcessing\Data;
 
-class EavLeftoverDataCleanerTest extends \PHPUnit_Framework_TestCase
+class EavLeftoverDataCleanerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var EavLeftoverDataCleaner
@@ -37,33 +37,21 @@ class EavLeftoverDataCleanerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['deleteRecords', 'getRecordsCount'],
-            [],
-            '',
-            false
+            ['deleteRecords', 'getRecordsCount']
         );
-        $this->progressBar = $this->getMock(
+        $this->progressBar = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['advance'],
-            [],
-            '',
-            false
+            ['advance']
         );
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\Progress::class,
-            ['saveProcessedEntities'],
-            [],
-            '',
-            false
+            ['saveProcessedEntities']
         );
-        $this->eavLeftoverDataModel = $this->getMock(
+        $this->eavLeftoverDataModel = $this->createPartialMock(
             \Migration\Step\PostProcessing\Model\EavLeftoverData::class,
-            ['getDocumentsToCheck', 'getLeftoverAttributeIds'],
-            [],
-            '',
-            false
+            ['getDocumentsToCheck', 'getLeftoverAttributeIds']
         );
     }
 

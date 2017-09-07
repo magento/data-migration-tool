@@ -6,7 +6,7 @@
 
 namespace Migration\ResourceModel\Adapter\Pdo;
 
-class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
+class MysqlBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
@@ -90,12 +90,12 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
         ]);
         $this->objectManager->expects($this->at(0))
             ->method('create')
-            ->with("\\Magento\\Framework\\DB\\SelectFactory", ['parts' => []])
+            ->with(\Magento\Framework\DB\SelectFactory::class, ['parts' => []])
             ->willReturn($this->selectFactory);
         $this->objectManager->expects($this->at(1))
             ->method('create')
             ->with(
-                "\\Magento\\Framework\\DB\\Adapter\\Pdo\\Mysql",
+                \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
                 ['config' => $mysqlPdoConfig, 'selectFactory' => $this->selectFactory]
             )
             ->willReturn($this->pdoMysql);

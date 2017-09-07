@@ -11,6 +11,7 @@ use Migration\Handler\AbstractHandler;
 
 /**
  * Handler to transform field from sales_order_item
+ * @SuppressWarnings(CyclomaticComplexity)
  */
 class SalesOrderItem extends AbstractHandler
 {

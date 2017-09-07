@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\Settings;
 
-class EncryptTest extends \PHPUnit_Framework_TestCase
+class EncryptTest extends \PHPUnit\Framework\TestCase
 {
 
     const CRYPT_KEY = 'crypt_key';
@@ -35,17 +35,20 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->encryptor = $this->getMock(\Magento\Framework\Encryption\Encryptor::class, ['encrypt'], [], '', false);
-
-        $this->configReader = $this->getMock(\Migration\Config::class, ['getOption'], [], '', false);
-
-        $this->cryptFactory = $this->getMock(
-            \Magento\Framework\Encryption\CryptFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+        $this->encryptor = $this->createPartialMock(
+            \Magento\Framework\Encryption\Encryptor::class,
+            ['encrypt']
         );
+
+        $this->configReader = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
+        );
+
+        $this->cryptFactory = $this->getMockBuilder(\Magento\Framework\Encryption\CryptFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
     }
 
     /**
@@ -63,12 +66,9 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
         list($decryptedValue, $newValue) = array_values($expected);
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['getValue', 'setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($dbValue);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $newValue);
@@ -77,9 +77,10 @@ class EncryptTest extends \PHPUnit_Framework_TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $crypt = $this->getMock(\Magento\Framework\Encryption\Crypt::class, ['decrypt'], [
-            $key, $cypher, $mode, $initVector,
-        ], '', true);
+        $crypt = $this->getMockBuilder(\Magento\Framework\Encryption\Crypt::class)
+            ->setConstructorArgs([$key, $cypher, $mode, $initVector])
+            ->setMethods(['decrypt'])
+            ->getMock();
 
         $crypt->expects($this->once())
             ->method('decrypt')

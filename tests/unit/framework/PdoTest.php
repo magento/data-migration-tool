@@ -12,6 +12,5 @@ class PdoTest extends \PDO
      */
     public function __construct()
     {
-
     }
 }

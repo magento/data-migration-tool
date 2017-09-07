@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 /**
  * Class AbstractResourceTest
  */
-class AbstractResourceTest extends \PHPUnit_Framework_TestCase
+class AbstractResourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -62,62 +62,41 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = $this->getMock(
+        $this->config = $this->createPartialMock(
             \Migration\Config::class,
-            ['getOption'],
-            [],
-            '',
-            false
+            ['getOption']
         );
-        $this->adapter = $this->getMock(
+        $this->adapter = $this->createPartialMock(
             \Migration\ResourceModel\Adapter\Mysql::class,
-            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
-            [],
-            '',
-            false
+            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage']
         );
-        $this->adapterFactorySource = $this->getMock(
+        $this->adapterFactorySource = $this->createPartialMock(
             \Migration\ResourceModel\AdapterFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
         $this->adapterFactorySource->expects($this->any())
             ->method('create')
             ->with(['resourceType' => 'source'])
             ->will($this->returnValue($this->adapter));
-        $this->adapterFactoryDestination = $this->getMock(
+        $this->adapterFactoryDestination = $this->createPartialMock(
             \Migration\ResourceModel\AdapterFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+            ['create']
         );
         $this->adapterFactoryDestination->expects($this->any())
             ->method('create')
             ->with(['resourceType' => 'destination'])
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock(
-            \Migration\ResourceModel\DocumentFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->structureFactory = $this->getMock(
-            \Migration\ResourceModel\StructureFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->documentCollection = $this->getMock(
+        $this->documentFactory = $this->getMockBuilder(\Migration\ResourceModel\DocumentFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->structureFactory = $this->getMockBuilder(\Migration\ResourceModel\StructureFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->documentCollection = $this->createPartialMock(
             \Migration\ResourceModel\Document\Collection::class,
-            ['addDocument'],
-            [],
-            '',
-            false
+            ['addDocument']
         );
 
         $this->resourceDestination = new \Migration\ResourceModel\Destination(
@@ -147,8 +126,8 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $structureData = ['id' => 'int'];
-        $structure = $this->getMock(\Migration\ResourceModel\Structure::class, [], [], '', false);
-        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $structure = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
             ['edition_migrate', 'ce-to-ee'],
             [$optionName, $prefix]

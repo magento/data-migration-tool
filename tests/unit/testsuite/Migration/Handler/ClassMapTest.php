@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-class ClassMapTest extends \PHPUnit_Framework_TestCase
+class ClassMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -16,12 +16,9 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         $classNewStyle = 'Magento\\Catalog\\Block\\Product\\Widget\\Link';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
+        $record = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['getValue', 'setValue', 'getFields']
         );
         $record->expects($this->once())->method('getValue')->with($fieldName)->willReturn($classOldFashion);
         $record->expects($this->once())->method('setValue')->with($fieldName, $classNewStyle);
@@ -29,7 +26,10 @@ class ClassMapTest extends \PHPUnit_Framework_TestCase
         $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $classMap = $this->getMock(\Migration\Reader\ClassMap::class, ['convertClassName'], [], '', false);
+        $classMap = $this->createPartialMock(
+            \Migration\Reader\ClassMap::class,
+            ['convertClassName']
+        );
         $classMap->expects($this->once())
             ->method('convertClassName')
             ->with($classOldFashion)

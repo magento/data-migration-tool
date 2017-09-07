@@ -13,7 +13,7 @@ use Migration\Step\Eav\Helper;
 /**
  * Class AttributeGroupNamesTest
  */
-class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
+class AttributeGroupNamesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeGroupNames|\PHPUnit_Framework_MockObject_MockObject

@@ -6,22 +6,19 @@
 
 namespace Migration\Handler;
 
-class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
+class SerializeToJsonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
-     * @dataProvider testHandleDataProvider
+     * @dataProvider handleDataProvider
      */
     public function testHandle($serializedData, $unserializedData)
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
+        $record = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['setValue', 'getValue', 'getFields'],
-            [],
-            '',
-            false
+            ['setValue', 'getValue', 'getFields']
         );
         $record->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($serializedData);
@@ -33,10 +30,10 @@ class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
 
         $handler = new SerializeToJson();
         $handler->setField($fieldName);
-        $handler->handle($record, $record2);
+        $this->assertNull($handler->handle($record, $record2));
     }
 
-    public function testHandleDataProvider()
+    public function handleDataProvider()
     {
         $array = ['some_field' => 'value'];
         return [

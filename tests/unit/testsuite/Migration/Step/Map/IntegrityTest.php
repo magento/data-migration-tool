@@ -8,7 +8,7 @@ namespace Migration\Step\Map;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -55,34 +55,28 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['debug', 'addRecord', 'warning'], [], '', false);
-        $this->source = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['debug', 'addRecord', 'warning']
+        );
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument']
         );
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+            ['start', 'finish', 'advance']
         );
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getDocument']
         );
         $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap', 'init', 'isDocumentIgnored', 'isFieldDataTypeIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()->getMock();
@@ -204,10 +198,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->will($this->returnValue('field2'));
 
         $this->logger->expects($this->at(0))->method('addRecord')->with(
-            400, 'Source fields are not mapped. Document: document. Fields: field1'
+            400,
+            'Source fields are not mapped. Document: document. Fields: field1'
         );
         $this->logger->expects($this->at(1))->method('addRecord')->with(
-            400, 'Destination fields are not mapped. Document: document. Fields: field2'
+            400,
+            'Destination fields are not mapped. Document: document. Fields: field2'
         );
 
         $this->integrity->perform();

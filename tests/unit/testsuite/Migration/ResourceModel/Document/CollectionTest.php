@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel\Document;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var []
@@ -22,11 +22,11 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $document1 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document1 = $this->createMock(\Migration\ResourceModel\Document::class);
         $document1->expects($this->any())->method('getName')->will($this->returnValue('Doc1'));
-        $document2 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document2 = $this->createMock(\Migration\ResourceModel\Document::class);
         $document2->expects($this->any())->method('getName')->will($this->returnValue('Doc2'));
-        $document3 = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document3 = $this->createMock(\Migration\ResourceModel\Document::class);
         $document3->expects($this->any())->method('getName')->will($this->returnValue('Doc3'));
         $this->data = [$document1, $document2, $document3];
         $this->documentCollection = new \Migration\ResourceModel\Document\Collection($this->data);
@@ -66,7 +66,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     public function testAddDocument()
     {
-        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $document->expects($this->any())->method('getName')->will($this->returnValue('Doc4'));
         $this->documentCollection->addDocument($document);
         $this->assertSame($document, $this->documentCollection->getDocument('Doc4'));

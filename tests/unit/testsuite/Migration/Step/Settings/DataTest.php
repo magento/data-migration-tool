@@ -8,7 +8,7 @@ namespace Migration\Step\Settings;
 /**
  * Class DataTest
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -55,42 +55,33 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords'],
-            [],
-            '',
-            false
+            ['getRecordsCount', 'getRecords', 'getDocument', 'getDocumentList', 'clearDocument', 'saveRecords']
         );
-        $this->source = $this->getMock(
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getRecordsCount', 'getRecords', 'getDocumentList'],
-            [],
-            '',
-            false
+            ['getRecordsCount', 'getRecords', 'getDocumentList']
         );
-        $this->readerSettings = $this->getMock(
+        $this->readerSettings = $this->createPartialMock(
             \Migration\Reader\Settings::class,
-            ['isNodeIgnored', 'getNodeMap', 'getValueHandler'],
-            [],
-            '',
-            false
+            ['isNodeIgnored', 'getNodeMap', 'getValueHandler']
         );
-        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, ['create'], [], '', false);
-        $this->handlerManagerFactory = $this->getMock(
-            \Migration\Handler\ManagerFactory::class,
-            ['create'],
-            [],
-            '',
-            false
+        $this->recordFactory = $this->getMockBuilder(\Migration\ResourceModel\RecordFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->handlerManagerFactory = $this->getMockBuilder(\Migration\Handler\ManagerFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['error']
         );
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['error'], [], '', false);
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'advance', 'finish'],
-            [],
-            '',
-            false
+            ['start', 'advance', 'finish']
         );
     }
 
@@ -121,14 +112,11 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ['some/path1', ['class' => 'Some\\Class', 'params' => []]],
             ['some/path3', []]
         ];
-        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
-        $destinationRecord = $this->getMock(\Migration\ResourceModel\Record::class, [], [], '', false);
-        $sourceRecord = $this->getMock(
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
+        $destinationRecord = $this->createMock(\Migration\ResourceModel\Record::class);
+        $sourceRecord = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getData', 'getValue', 'setValue'],
-            [],
-            '',
-            false
+            ['getData', 'getValue', 'setValue']
         );
         $sourceRecord->expects($this->any())
             ->method('getValue')
@@ -138,12 +126,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
         $sourceRecord->expects($this->any())->method('getData')->willReturn($sourceRecords[1]);
         $handler = $this->getMockBuilder(\Migration\Handler\HandlerInterface::class)->getMock();
         $handler->expects($this->any())->method('handle')->with($sourceRecord, $destinationRecord);
-        $handlerManager = $this->getMock(
+        $handlerManager = $this->createPartialMock(
             \Migration\Handler\Manager::class,
-            ['initHandler', 'getHandler'],
-            [],
-            '',
-            false
+            ['initHandler', 'getHandler']
         );
         $handlerManager->expects($this->once())
             ->method('initHandler')

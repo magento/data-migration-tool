@@ -79,8 +79,7 @@ class AttributeFrontendInput
         $result = [];
         $filterGroupCodes = $this->helper->getAttributesGroupCodes('frontend_input_empty_allowed');
         foreach ($records as $record) {
-            if (
-                empty($record['frontend_input']) &&
+            if (empty($record['frontend_input']) &&
                 (
                     !array_key_exists($record['attribute_code'], $filterGroupCodes) ||
                     !in_array($record['entity_type_id'], $filterGroupCodes[$record['attribute_code']])

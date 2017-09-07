@@ -9,7 +9,7 @@ use Migration\Logger\Logger;
 use Migration\Reader\Map;
 use Migration\ResourceModel;
 
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -56,34 +56,25 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, ['addRecord'], [], '', false);
-        $this->progressBar = $this->getMock(
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['addRecord']
+        );
+        $this->progressBar = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+            ['start', 'finish', 'advance']
         );
-        $this->progress = $this->getMock(
+        $this->progress = $this->createPartialMock(
             \Migration\App\Progress::class,
-            ['getProcessedEntities'],
-            [],
-            '',
-            false
+            ['getProcessedEntities']
         );
-        $this->source = $this->getMock(
+        $this->source = $this->createPartialMock(
             \Migration\ResourceModel\Source::class,
-            ['getDocumentList', 'getRecordsCount'],
-            [],
-            '',
-            false
+            ['getDocumentList', 'getRecordsCount']
         );
-        $this->destination = $this->getMock(
+        $this->destination = $this->createPartialMock(
             \Migration\ResourceModel\Destination::class,
-            ['getRecordsCount', 'getDocument'],
-            [],
-            '',
-            false
+            ['getRecordsCount', 'getDocument']
         );
 
         $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
@@ -91,7 +82,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         $this->helper = $this->getMockBuilder(\Migration\Step\Map\Helper::class)->disableOriginalConstructor()

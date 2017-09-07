@@ -8,7 +8,7 @@ namespace Migration\Reader;
 /**
  * Class SettingsTest
  */
-class SettingsTest extends \PHPUnit_Framework_TestCase
+class SettingsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Settings
@@ -165,7 +165,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     public function testNoConfigFile()
     {
         $config = $this->getConfigFile('invalid_file_name');
-        $this->setExpectedException(\Migration\Exception::class, 'Invalid map filename:');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Invalid map filename:');
 
         $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
@@ -183,7 +184,8 @@ class SettingsTest extends \PHPUnit_Framework_TestCase
     public function testInvalidConfigFile()
     {
         $config = $this->getConfigFile('tests/unit/testsuite/Migration/_files/settings-invalid.xml');
-        $this->setExpectedException(\Migration\Exception::class, 'XML file is invalid.');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('XML file is invalid.');
 
         $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()

@@ -42,7 +42,7 @@ class MysqlBuilder
     public function __construct(
         ObjectManagerInterface $objectManager,
         Config $config,
-        $instanceName = '\\Magento\\Framework\\DB\\Adapter\\Pdo\\Mysql'
+        $instanceName = \Magento\Framework\DB\Adapter\Pdo\Mysql::class
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;
@@ -119,6 +119,6 @@ class MysqlBuilder
         if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
             $parts['disable_staging_preview'] = true;
         }
-        return $this->objectManager->create('\\Magento\\Framework\\DB\\SelectFactory', ['parts' => $parts]);
+        return $this->objectManager->create(\Magento\Framework\DB\SelectFactory::class, ['parts' => $parts]);
     }
 }

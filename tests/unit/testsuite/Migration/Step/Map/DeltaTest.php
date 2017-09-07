@@ -7,7 +7,7 @@ namespace Migration\Step\Map;
 
 use Migration\Reader\MapInterface;
 
-class DeltaTest extends \PHPUnit_Framework_TestCase
+class DeltaTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
@@ -59,20 +59,28 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->source = $this->getMock(\Migration\ResourceModel\Source::class, [], [], '', false);
-        $this->logger = $this->getMock(\Migration\Logger\Logger::class, [], [], '', false);
-        $this->map = $this->getMock(\Migration\Reader\Map::class, [], [], '', false);
+        $this->source = $this->createMock(\Migration\ResourceModel\Source::class);
+        $this->logger = $this->createMock(\Migration\Logger\Logger::class);
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
+            ->setMethods(['getDocumentMap', 'getDeltaDocuments'])
+            ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
-        $this->destination = $this->getMock(\Migration\ResourceModel\Destination::class, ['getAdapter'], [], '', false);
-        $this->recordFactory = $this->getMock(\Migration\ResourceModel\RecordFactory::class, [], [], '', false);
-        $this->recordTransformerFactory = $this->getMock(\Migration\RecordTransformerFactory::class, [], [], '', false);
-        $this->data = $this->getMock(\Migration\Step\Map\Data::class, [], [], '', false);
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getAdapter']
+        );
+        $this->recordFactory = $this->createMock(\Migration\ResourceModel\RecordFactory::class);
+        $this->recordTransformerFactory = $this->createMock(\Migration\RecordTransformerFactory::class);
+        $this->data = $this->createMock(\Migration\Step\Map\Data::class);
 
-        $this->readerGroups = $this->getMock(\Migration\Reader\Groups::class, ['getGroup'], [], '', false);
+        $this->readerGroups = $this->createPartialMock(
+            \Migration\Reader\Groups::class,
+            ['getGroup']
+        );
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['delta_map', ['orders' => 'order_id']]
@@ -80,7 +88,10 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock(\Migration\Reader\GroupsFactory::class, ['create'], [], '', false);
+        $groupsFactory = $this->createPartialMock(
+            \Migration\Reader\GroupsFactory::class,
+            ['create']
+        );
         $groupsFactory->expects($this->any())
             ->method('create')
             ->with('delta_document_groups_file')
@@ -117,12 +128,9 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->method('getRecordsCount')
             ->with($sourceDeltaName)
             ->willReturn(1);
-        $adapter = $this->getMock(
+        $adapter = $this->createPartialMock(
             \Migration\ResourceModel\Adapter\Mysql::class,
-            ['setForeignKeyChecks'],
-            [],
-            '',
-            false
+            ['setForeignKeyChecks']
         );
         $adapter->expects($this->at(0))
             ->method('setForeignKeyChecks')
@@ -134,7 +142,7 @@ class DeltaTest extends \PHPUnit_Framework_TestCase
             ->method('getAdapter')
             ->willReturn($adapter);
         /** @var \Migration\ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject $source */
-        $document = $this->getMock(\Migration\ResourceModel\Document::class, [], [], '', false);
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $this->source->expects($this->any())
             ->method('getDocument')
             ->willReturn($document);

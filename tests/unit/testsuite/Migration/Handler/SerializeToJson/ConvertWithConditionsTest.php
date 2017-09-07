@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\SerializeToJson;
 
-class ConvertWithConditionsTest extends \PHPUnit_Framework_TestCase
+class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject
@@ -44,7 +44,7 @@ class ConvertWithConditionsTest extends \PHPUnit_Framework_TestCase
             $ignoreBrokenData
         );
         $handler->setField($fieldName);
-        $handler->handle($this->model, $this->model);
+        $this->assertNull($handler->handle($this->model, $this->model));
     }
 
     /**

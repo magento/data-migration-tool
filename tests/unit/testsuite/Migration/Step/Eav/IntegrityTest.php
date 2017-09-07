@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Integrity|\PHPUnit_Framework_MockObject_MockObject
@@ -96,7 +96,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->willReturn([]);
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('eav_map_file')->willReturn($this->map);
 
         $this->readerGroups = $this->getMockBuilder(\Migration\Reader\Groups::class)

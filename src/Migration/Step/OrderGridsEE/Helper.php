@@ -37,7 +37,7 @@ class Helper extends \Migration\Step\OrderGrids\Helper
     {
         $columnsData = parent::getColumnsData($gridName);
         if (!$columnsData) {
-            switch ($gridName){
+            switch ($gridName) {
                 case 'magento_sales_order_grid_archive':
                     $columnsData = $this->getSalesOrderColumnsGrid();
                     break;
@@ -50,7 +50,8 @@ class Helper extends \Migration\Step\OrderGrids\Helper
                 case 'magento_sales_creditmemo_grid_archive':
                     $columnsData = $this->getSalesCreditMemoColumnsGrid();
                     break;
-                default: null;
+                default:
+                    null;
             }
         }
         return $columnsData;

@@ -13,7 +13,7 @@ use Migration\ResourceModel\Source;
 /**
  * Class ConditionSqlTest
  */
-class ConditionSqlTest extends \PHPUnit_Framework_TestCase
+class ConditionSqlTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConditionSql|\PHPUnit_Framework_MockObject_MockObject
@@ -39,7 +39,7 @@ class ConditionSqlTest extends \PHPUnit_Framework_TestCase
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock(\Migration\Reader\MapFactory::class, [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
         /** @var Source|\PHPUnit_Framework_MockObject_MockObject $source */

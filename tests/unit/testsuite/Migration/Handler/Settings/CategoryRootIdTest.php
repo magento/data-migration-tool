@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\Settings;
 
-class CategoryRootIdTest extends \PHPUnit_Framework_TestCase
+class CategoryRootIdTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -16,12 +16,9 @@ class CategoryRootIdTest extends \PHPUnit_Framework_TestCase
         $categoryRootIdHandled = null;
         $fieldName = 'value';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
+        $recordToHandle = $this->createPartialMock(
             \Migration\ResourceModel\Record::class,
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+            ['getValue', 'setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($categoryRootId);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $categoryRootIdHandled);

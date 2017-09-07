@@ -9,7 +9,7 @@ namespace Migration\Handler;
 /**
  * Class AddPrefixTest
  */
-class AddPrefixTest extends \PHPUnit_Framework_TestCase
+class AddPrefixTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void

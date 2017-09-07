@@ -6,7 +6,7 @@
 
 namespace Migration\Mode;
 
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Data
@@ -59,7 +59,10 @@ class DataTest extends \PHPUnit_Framework_TestCase
             ->setMethods(['perform'])
             ->getMock();
         $setupDeltaLog->expects($this->any())->method('perform')->willReturn(true);
-        $this->config = $this->getMock(\Migration\Config::class, ['getStep'], [], '', false);
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getStep']
+        );
 
         $this->data = new Data($this->progress, $this->logger, $stepListFactory, $setupDeltaLog, $this->config);
     }
@@ -69,7 +72,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunStepsIntegrityFail()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'Integrity Check failed');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Integrity Check failed');
         $step = $this->getMockBuilder(\Migration\App\Step\StageInterface::class)->getMock();
         $step->expects($this->once())->method('perform')->will($this->returnValue(false));
         $this->progress->expects($this->any())->method('saveResult')->willReturnSelf();
@@ -106,7 +110,8 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function testRunStepsDataMigrationFail()
     {
-        $this->setExpectedException(\Migration\Exception::class, 'Data Migration failed');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Data Migration failed');
         $stageIntegrity = $this->getMockBuilder(\Migration\App\Step\StageInterface::class)->getMock();
         $stageIntegrity->expects($this->once())->method('perform')->will($this->returnValue(true));
         $stageData = $this->getMockBuilder(\Migration\App\Step\StageInterface::class)->getMock();

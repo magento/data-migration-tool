@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel;
 
-class DocumentTest extends \PHPUnit_Framework_TestCase
+class DocumentTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record\CollectionFactory|\PHPUnit_Framework_MockObject_MockObject
@@ -27,20 +27,11 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->structure = $this->getMock(
-            \Migration\ResourceModel\Structure::class,
-            [],
-            [],
-            '',
-            false
-        );
-        $this->recordCollectionFactory = $this->getMock(
-            \Migration\ResourceModel\Record\CollectionFactory::class,
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $this->structure = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $this->recordCollectionFactory = $this->getMockBuilder(\Migration\ResourceModel\Record\CollectionFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
         $this->document = new \Migration\ResourceModel\Document(
             $this->recordCollectionFactory,
             $this->structure,
@@ -53,13 +44,7 @@ class DocumentTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRecords()
     {
-        $recordCollection = $this->getMock(
-            \Migration\ResourceModel\Record\RecordCollection::class,
-            [],
-            [],
-            '',
-            false
-        );
+        $recordCollection = $this->createMock(\Migration\ResourceModel\Record\Collection::class);
         $this->recordCollectionFactory->expects($this->atLeastOnce())
             ->method('create')
             ->with($this->equalTo([
