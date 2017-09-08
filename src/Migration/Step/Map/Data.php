@@ -21,6 +21,7 @@ use Migration\Logger\Logger;
 /**
  * Class Data
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(CyclomaticComplexity)
  */
 class Data implements StageInterface
 {
