@@ -10,7 +10,7 @@ namespace Migration\Step\UrlRewrite;
  * UrlRewrite step test class
  * @dbFixture url_rewrite_191
  */
-class Version191o2000Test extends \PHPUnit_Framework_TestCase
+class Version191o2000Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string

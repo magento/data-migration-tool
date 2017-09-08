@@ -9,7 +9,7 @@ namespace Migration\Step\Eav;
  * Eav step test
  * @dbFixture eav
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Integrity;

@@ -89,7 +89,8 @@
         <tier_price_map_file>tests/integration/testsuite/Migration/_files/map-tier-price.xml</tier_price_map_file>
         <tier_price_map_file_fail>tests/integration/testsuite/Migration/_files/map-tier-price-fail.xml</tier_price_map_file_fail>
         <class_map>tests/integration/testsuite/Migration/_files/class-map.xml</class_map>
-        <stores_map_file>tests/integration/testsuite/Migration/_files/map-stores.xml.dist</stores_map_file>
+        <stores_map_file>tests/integration/testsuite/Migration/_files/map-stores.xml</stores_map_file>
+        <customer_map_file>tests/integration/testsuite/Migration/_files/map-customer.xml</customer_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />

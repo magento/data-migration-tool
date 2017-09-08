@@ -9,7 +9,7 @@ namespace Migration\Step\TierPrice;
  * Class DataTest
  * @dbFixture tier_price
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     const TIRE_PRICE_TABLE_DESTINATION = 'catalog_product_entity_tier_price';
     

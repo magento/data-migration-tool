@@ -9,7 +9,7 @@ namespace Migration\Step\Map;
 /**
  * Data step test class
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @throws \Migration\Exception
@@ -17,12 +17,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $progress = $this->getMock(
+        $progress = $this->createPartialMock(
             \Migration\App\Progress::class,
-            ['getProcessedEntities', 'addProcessedEntity'],
-            [],
-            '',
-            false
+            ['getProcessedEntities', 'addProcessedEntity']
         );
         $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $progress->expects($this->any())->method('addProcessedEntity');

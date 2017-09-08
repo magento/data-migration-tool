@@ -9,7 +9,7 @@ namespace Migration\Step\PostProcessing\Data;
  * EavLeftoverDataTest class test
  * @dbFixture post_processing
  */
-class EavLeftoverDataTest extends \PHPUnit_Framework_TestCase
+class EavLeftoverDataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void

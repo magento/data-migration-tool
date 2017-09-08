@@ -9,7 +9,7 @@ namespace Migration\Step\DataIntegrity;
  * Class IntegrityTest
  * @dbFixture data_integrity
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -84,7 +84,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
             ->expects($this->any())
             ->method('getDocumentList')
             ->willReturn($documents);
-
+        \Migration\Logger\Logger::clearMessages();
         $this->assertEquals($result, $this->dataIntegrity->perform());
         $this->assertEquals($messages, \Migration\Logger\Logger::getMessages());
     }

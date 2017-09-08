@@ -9,7 +9,7 @@ namespace Migration\Step\SalesOrder;
  * SalesOrder step run test class
  * @dbFixture sales_order
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @throws \Migration\Exception

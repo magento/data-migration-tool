@@ -9,7 +9,7 @@ namespace Migration\Step\Settings;
 /**
  * Settings Data step test class
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @throws \Migration\Exception

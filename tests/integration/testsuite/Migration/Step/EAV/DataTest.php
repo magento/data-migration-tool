@@ -9,7 +9,7 @@ namespace Migration\Step\Eav;
  * Eav step test
  * @dbFixture eav
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Data;

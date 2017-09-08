@@ -9,7 +9,7 @@ namespace Migration\Step\SalesIncrement;
  * SalesIncrement step run test class
  * @dbFixture sales_increment
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array

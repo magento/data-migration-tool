@@ -9,7 +9,7 @@ namespace Migration\Step\Eav;
  * Eav step test
  * @dbFixture eav
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Data;
@@ -29,7 +29,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
         $objectManager->get(\Migration\Config::class)->init(dirname(__DIR__) . '/../_files/config.xml');
         $initialData = $objectManager->get(\Migration\Step\Eav\InitialData::class);
-        $ignoredAttributes = $objectManager->get(Migration\Step\Eav\Model\IgnoredAttributes::class);
+        $ignoredAttributes = $objectManager->get(\Migration\Step\Eav\Model\IgnoredAttributes::class);
         $this->data = $objectManager->create(
             \Migration\Step\Eav\Data::class,
             [

@@ -9,7 +9,7 @@ namespace Migration\App;
 /**
  * Delta step test class
  */
-class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
+class SetupDeltaLogTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
