@@ -119,6 +119,7 @@
         <map_document_groups>etc/ce-to-ee/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/ce-to-ee/class-map.xml.dist</class_map>
         <tier_price_map_file>etc/ce-to-ee/1.9.3.4/map-tier-price.xml.dist</tier_price_map_file>
+        <stores_map_file>etc/ce-to-ee/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->

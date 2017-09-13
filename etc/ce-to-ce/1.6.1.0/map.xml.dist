@@ -126,22 +126,10 @@
                 <document>catalog_category_flat_cl</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index</document>
+                <document>catalog_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_cl</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_enbl_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_enbl_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_product_index_tmp</document>
+                <document>catalog_category_product_index_*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
@@ -166,21 +154,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_bundle_stock_index</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_group_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price*</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_tier_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_website</document>
             </ignore>
             <ignore>
                 <document>catalogindex_aggregation</document>
@@ -369,24 +342,6 @@
                 <document>customer_eav_attribute</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_decimal_tmp</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_idx</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_eav_tmp</document>
-            </ignore>
-            <ignore>
                 <document>eav_attribute</document>
             </ignore>
             <ignore>
@@ -495,9 +450,6 @@
                 <document>catalog_product_super_attribute_pricing</document>
             </ignore>
             <ignore>
-                <document>core_website</document>
-            </ignore>
-            <ignore>
                 <document>paybox_question_number</document>
             </ignore>
             <ignore>
@@ -511,6 +463,15 @@
             </ignore>
             <ignore>
                 <document>googlebase_types</document>
+            </ignore>
+            <ignore>
+                <document>core_store</document>
+            </ignore>
+            <ignore>
+                <document>core_store_group</document>
+            </ignore>
+            <ignore>
+                <document>core_website</document>
             </ignore>
             <rename>
                 <document>catalogsearch_query</document>
@@ -527,14 +488,6 @@
             <rename>
                 <document>core_email_template</document>
                 <to>email_template</to>
-            </rename>
-            <rename>
-                <document>core_store</document>
-                <to>store</to>
-            </rename>
-            <rename>
-                <document>core_store_group</document>
-                <to>store_group</to>
             </rename>
             <rename>
                 <document>core_translate</document>
@@ -953,23 +906,89 @@
                 <field>catalogsearch_query.synonym_for</field>
                 <handler class="\Migration\Handler\Synonym"/>
             </transform>
+            <transform>
+                <field>sales_flat_quote_payment.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_order_item.product_options</field>
+                <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem"/>
+            </transform>
+            <transform>
+                <field>sales_flat_order_payment.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_shipment.packages</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_payment_transaction.additional_information</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ConvertWithConditions">
+                    <param name="conditionalField" value="code" />
+                    <param name="conditionalFieldValuesPattern" value="/(parameters)|(info_buyRequest)|(attributes)|(bundle_option_ids)|(bundle_selection_ids)|(bundle_selection_attributes)/" />
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+            </transform>
+            <transform>
+                <field>wishlist_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ConvertWithConditions">
+                    <param name="conditionalField" value="code" />
+                    <param name="conditionalFieldValuesPattern" value="/(parameters)|(info_buyRequest)|(attributes)|(bundle_option_ids)|(bundle_selection_ids)|(bundle_selection_attributes)/" />
+                </handler>
+            </transform>
+            <transform>
+                <field>wishlist_item_option.value</field>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_address.applied_taxes</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_address.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>widget_instance.widget_parameters</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>salesrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>salesrule.actions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>catalogrule.conditions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>catalogrule.actions_serialized</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>admin_user.extra</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
             <ignore>
                 <field>admin_rule.assert_id</field>
-            </ignore>
-            <ignore>
-                <field>core_website.is_staging</field>
-            </ignore>
-            <ignore>
-                <field>core_website.master_login</field>
-            </ignore>
-            <ignore>
-                <field>core_website.master_password</field>
-            </ignore>
-            <ignore>
-                <field>core_website.visibility</field>
             </ignore>
             <ignore>
                 <field>sales_order_tax.hidden</field>
@@ -1235,6 +1254,33 @@
            <ignore>
                <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
            </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -1342,25 +1388,31 @@
                 <document>customer_eav_attribute_website</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav</document>
+                <document>catalog_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_decimal</document>
+                <document>catalog_category_product_index_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_decimal_idx</document>
+                <document>catalog_product_frontend_action</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_decimal_tmp</document>
+                <document>cataloginventory_stock_status_replica</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_idx</document>
+                <document>catalogrule_group_website_replica</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_eav_tmp</document>
+                <document>catalogrule_product_price_replica</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_tmp</document>
+                <document>catalogrule_product_replica</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_product_replica</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_replica</document>
             </ignore>
             <ignore>
                 <document>eav_attribute</document>
@@ -1472,6 +1524,12 @@
             </ignore>
             <ignore>
                 <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
+            <ignore>
+                <document>store</document>
+            </ignore>
+            <ignore>
+                <document>store_group</document>
             </ignore>
             <ignore>
                 <document>store_website</document>
@@ -1654,6 +1712,22 @@
             <transform>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
                 <handler class="\Migration\Handler\Gallery\SetEntityId"/>
+            </transform>
+            <transform>
+                <field>catalog_product_bundle_option_value.parent_product_id</field>
+                <handler class="\Migration\Handler\BundleParentProduct">
+                    <param name="parentField" value="option_id"/>
+                    <param name="documentWithProductId" value="catalog_product_bundle_option"/>
+                    <param name="fieldWithProductId" value="parent_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_bundle_selection_price.parent_product_id</field>
+                <handler class="\Migration\Handler\BundleParentProduct">
+                    <param name="parentField" value="selection_id"/>
+                    <param name="documentWithProductId" value="catalog_product_bundle_selection"/>
+                    <param name="fieldWithProductId" value="parent_product_id"/>
+                </handler>
             </transform>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
@@ -1863,6 +1937,12 @@
                 <field>cms_page.meta_title</field>
             </ignore>
             <ignore>
+                <field>catalog_product_bundle_selection_price.parent_product_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_bundle_option_value.parent_product_id</field>
+            </ignore>
+            <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
@@ -1916,6 +1996,42 @@
            <ignore>
                <datatype>catalogrule_product.customer_group_id</datatype>
            </ignore>
+		    <ignore>
+                <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_group_website.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalogrule_product_price.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_customer_group.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_product_attribute.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
+            </ignore>
+            <ignore>
+                <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
         </field_rules>
     </destination>
 </map>

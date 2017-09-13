@@ -90,6 +90,10 @@
                 </handler>
             </transform>
             <transform>
+                <field>customer_eav_attribute.validate_rules</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
                 <field>eav_entity_type.entity_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
             </transform>

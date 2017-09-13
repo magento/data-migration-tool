@@ -140,6 +140,7 @@
         <map_document_groups>etc/ee-to-ee/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/ee-to-ee/class-map.xml.dist</class_map>
         <tier_price_map_file>etc/ee-to-ee/1.11.1.0/map-tier-price.xml.dist</tier_price_map_file>
+        <stores_map_file>etc/ee-to-ee/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
         -->
