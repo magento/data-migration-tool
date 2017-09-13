@@ -1214,12 +1214,6 @@
            <ignore>
                <datatype>salesrule_product_attribute.customer_group_id</datatype>
            </ignore>
-           <ignore>
-               <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
-           </ignore>
             <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
             </ignore>
@@ -1816,9 +1810,6 @@
            </ignore>
            <ignore>
                <datatype>salesrule_product_attribute.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
            </ignore>
            <ignore>
                <datatype>catalogrule_product.customer_group_id</datatype>

@@ -468,6 +468,12 @@
                 <document>catalog_product_super_attribute_pricing</document>
             </ignore>
             <ignore>
+                <document>catalog_product_entity_group_price</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_entity_tier_price</document>
+            </ignore>
+            <ignore>
                 <document>googlebase_attributes</document>
             </ignore>
             <ignore>
@@ -1385,12 +1391,6 @@
                 <datatype>salesrule_product_attribute.customer_group_id</datatype>
             </ignore>
             <ignore>
-                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
             </ignore>
             <ignore>
@@ -2038,6 +2038,9 @@
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_video</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
                 <document>customer_grid_flat</document>
@@ -3226,9 +3229,6 @@
             </ignore>
             <ignore>
                 <datatype>salesrule_product_attribute.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_entity_tier_price.customer_group_id</datatype>
             </ignore>
             <ignore>
                 <datatype>catalogrule_product.customer_group_id</datatype>
