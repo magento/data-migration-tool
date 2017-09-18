@@ -73,8 +73,8 @@ class AbstractMigrateCommand extends Command
         $this->setDefinition([
             new InputArgument(
                 self::INPUT_KEY_CONFIG,
-                InputArgument::REQUIRED,
-                'Path to main configuration file, i.e.: etc/m1_version/config.xml'
+                InputArgument::OPTIONAL,
+                'Path to main configuration file, i.e.: etc/[ce/ee]-to[ce/ee]/[m1-version]/config.xml'
             ),
             new InputOption(
                 self::INPUT_KEY_RESET,
@@ -93,8 +93,17 @@ class AbstractMigrateCommand extends Command
     {
 
         $config = $input->getArgument(self::INPUT_KEY_CONFIG);
+
+        if (!$config) {
+            $dialog = $this->getHelperSet()->get('dialog');
+            $config = $dialog->ask($output, '<question>What is the path to your config.xml file?</question> <comment>[./etc/config.xml]</comment> ');
+        }
+
+        if (!$config) {
+            $output->writeln('<info>The default path ./etc/config.xml will be tried. If this does not exist, copy the config.xml from the etc/[ce/ee]-to-[ce/ee]/[m1-version]/config.xml.dist to a new file.</info>');
+        }
+
         $this->config->init($config);
-        //@todo: interactively ask for config file
 
         $reset = $input->getOption(self::INPUT_KEY_RESET);
         if ($reset) {
