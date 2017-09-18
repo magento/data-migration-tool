@@ -1,3 +1,14 @@
+2.1.9
+=============
+* Added support for versions:
+
+   * Magento CE: 1.9.3.6, 2.1.9
+   * Magento EE: 1.14.3.6, 2.1.9
+
+* Fixed bugs:
+
+   * [Issue #351](https://github.com/magento/data-migration-tool/issues/351): An error `Class adminhtml/catalog_product_helper_form_config does not exist` appeared on EAV step during migration 
+
 2.1.8
 =============
 * Added support for versions:
