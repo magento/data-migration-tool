@@ -245,6 +245,9 @@
             <path>crontab/jobs/sitemap_generate/run/model</path>
         </ignore>
         <ignore>
+            <path>crontab/jobs/scheduled_operation_*</path>
+        </ignore>
+        <ignore>
             <path>customer/address_templates/js_template</path>
         </ignore>
         <ignore>
