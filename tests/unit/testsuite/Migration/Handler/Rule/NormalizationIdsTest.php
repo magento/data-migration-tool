@@ -57,7 +57,7 @@ class NormalizationIdsTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['getOption'])
             ->getMock();
         $this->config->expects($this->once())->method('getOption')
-            ->willReturn(\Migration\Config::EDITION_MIGRATE_CE_TO_CE);
+            ->willReturn(\Migration\Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE);
         $this->handler = new NormalizationIds(
             $this->destination,
             $this->config,

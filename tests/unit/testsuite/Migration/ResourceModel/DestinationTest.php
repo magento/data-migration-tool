@@ -91,7 +91,7 @@ class DestinationTest extends \PHPUnit\Framework\TestCase
         $resourceName = 'core_config_data';
 
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['bulk_size', 3],
             ['dest_prefix', $prefix],
             ['init_statements_destination', 'SET NAMES utf8;']
@@ -153,7 +153,7 @@ class DestinationTest extends \PHPUnit\Framework\TestCase
         $docName = 'somename';
         $this->adapter->expects($this->once())->method('deleteAllRecords')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'pfx_'],
             ['init_statements_destination', 'SET NAMES utf8;']
         ]);
@@ -168,7 +168,7 @@ class DestinationTest extends \PHPUnit\Framework\TestCase
         $docName = 'somename';
         $this->adapter->expects($this->once())->method('backupDocument')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'pfx_'],
             ['init_statements_destination', 'SET NAMES utf8;']
         ]);
@@ -183,7 +183,7 @@ class DestinationTest extends \PHPUnit\Framework\TestCase
         $docName = 'somename';
         $this->adapter->expects($this->once())->method('rollbackDocument')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'pfx_'],
             ['init_statements_destination', 'SET NAMES utf8;']
         ]);
@@ -198,7 +198,7 @@ class DestinationTest extends \PHPUnit\Framework\TestCase
         $docName = 'somename';
         $this->adapter->expects($this->once())->method('deleteBackup')->with('pfx_' . $docName);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'pfx_'],
             ['init_statements_destination', 'SET NAMES utf8;']
         ]);

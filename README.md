@@ -19,11 +19,11 @@ Magento 2 uses new approaches and technologies that give merchants an unmatched 
 ### Supported versions
 This edition of tool supports the following versions for migration:
 
-*	Community Edition (CE) version 1.6.x, 1.7.x, 1.8.x, 1.9.x
+*	Magento Open Source version 1.6.x, 1.7.x, 1.8.x, 1.9.x
 
-*	Enterprise Edition (EE) version 1.11.x, 1.12.x, 1.13.x, 1.14.x
+*	Magento Commerce version 1.11.x, 1.12.x, 1.13.x, 1.14.x
 
-Also the following versions are already supported if you choose to migrate from Magento 1 CE to Magento 2 EE:
+If you migrate from Magento Open Source to Magento Commerce, the following versions are supported:
 
 *    1.6.x, 1.7.x, 1.8.x, 1.9.x
 

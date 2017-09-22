@@ -95,7 +95,7 @@
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
-        <edition_migrate>ee-to-ee</edition_migrate>
+        <edition_migrate>commerce-to-commerce</edition_migrate>
         <edition_number>1.14.3.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>

@@ -53,7 +53,7 @@ class InsertValueToEntity extends AbstractHandler
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
             ? $this->entityField
             : 'row_id';
         $record['value_id'] = $recordToHandle->getValue($this->field);

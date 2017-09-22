@@ -95,7 +95,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
     public function testLoadPage()
     {
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['bulk_size', $this->bulkSize],
             ['init_statements_source', 'SET NAMES utf8;']
         ]);
@@ -111,7 +111,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
         $this->adapter->expects($this->once())->method('createDelta')
             ->with('spfx_document', 'spfx_m2_cl_document', 'key_field');
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             [Source::CONFIG_DOCUMENT_PREFIX, 'spfx_'],
             ['init_statements_source', 'SET NAMES utf8;']
         ]);
@@ -126,7 +126,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
         $this->adapter->expects($this->once())->method('loadChangedRecords')
             ->with('document', 'm2_cl_document', 'key_field', 0, 100);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['source_prefix', ''],
             ['bulk_size', 100],
             ['init_statements_source', 'SET NAMES utf8;']
@@ -142,7 +142,7 @@ class SourceTest extends \PHPUnit\Framework\TestCase
         $this->adapter->expects($this->once())->method('loadDeletedRecords')
             ->with('m2_cl_document', 'key_field', 0, 100);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['source_prefix', ''],
             ['bulk_size', 100],
             ['init_statements_source', 'SET NAMES utf8;']

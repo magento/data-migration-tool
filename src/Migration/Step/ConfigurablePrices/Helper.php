@@ -58,7 +58,7 @@ class Helper
      */
     public function getDestinationFields()
     {
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
             ? 'entity_id'
             : 'row_id';
         return [

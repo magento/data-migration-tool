@@ -116,7 +116,8 @@ class MysqlBuilder
     {
         $parts = [];
         $editionMigrate = $this->config->getOption('edition_migrate');
-        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
+        $commerce = [Config::EDITION_MIGRATE_OPENSOURCE_TO_COMMERCE, Config::EDITION_MIGRATE_COMMERCE_TO_COMMERCE];
+        if (in_array($editionMigrate, $commerce)) {
             $parts['disable_staging_preview'] = true;
         }
         return $this->objectManager->create(\Magento\Framework\DB\SelectFactory::class, ['parts' => $parts]);

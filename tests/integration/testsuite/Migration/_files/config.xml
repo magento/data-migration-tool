@@ -88,7 +88,7 @@
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
-        <edition_migrate>ce-to-ce</edition_migrate>
+        <edition_migrate>opensource-to-opensource</edition_migrate>
         <edition_number>1.9.2.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>

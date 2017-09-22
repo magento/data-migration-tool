@@ -67,8 +67,7 @@ class Helper
         $fieldStaging = $this->stagingConfig['field_staging'];
         $tablesStaging = $this->stagingConfig['tables'];
 
-        if (empty($this->editionMigrate)
-            || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE
+        if ($this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
             || $resourceType == MapInterface::TYPE_SOURCE
             || !in_array($tableName, $tablesStaging)
         ) {

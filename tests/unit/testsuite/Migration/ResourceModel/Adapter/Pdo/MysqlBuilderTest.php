@@ -85,7 +85,7 @@ class MysqlBuilderTest extends \PHPUnit\Framework\TestCase
             ->with($resourceType)
             ->willReturn($resourceConfig);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ce'],
+            ['edition_migrate', 'opensource-to-opensource'],
             ['init_statements_' . $resourceType, $initStatements]
         ]);
         $this->objectManager->expects($this->at(0))

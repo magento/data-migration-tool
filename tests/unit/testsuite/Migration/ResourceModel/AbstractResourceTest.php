@@ -129,7 +129,7 @@ class AbstractResourceTest extends \PHPUnit\Framework\TestCase
         $structure = $this->createMock(\Migration\ResourceModel\Structure::class);
         $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             [$optionName, $prefix]
         ]);
         $this->documentFactory->expects($this->any())
@@ -169,7 +169,7 @@ class AbstractResourceTest extends \PHPUnit\Framework\TestCase
     public function testGetWrongDocument()
     {
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'prefix_']
         ]);
         $this->adapter->expects($this->any())
@@ -186,7 +186,7 @@ class AbstractResourceTest extends \PHPUnit\Framework\TestCase
     {
         $prefix = 'prefix_';
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', $prefix]
         ]);
         $resourceName = 'core_config_data';
@@ -206,7 +206,7 @@ class AbstractResourceTest extends \PHPUnit\Framework\TestCase
         $resourceName = 'core_config_data';
         $pageNumber = 2;
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['bulk_size', 100],
             ['dest_prefix', 100],
         ]);
@@ -219,7 +219,10 @@ class AbstractResourceTest extends \PHPUnit\Framework\TestCase
      */
     public function testGetAdapter()
     {
-        $this->config->expects($this->any())->method('getOption')->willReturnMap([['edition_migrate', 'ce-to-ee']]);
+        $this->config
+            ->expects($this->any())
+            ->method('getOption')
+            ->willReturnMap([['edition_migrate', 'opensource-to-commerce']]);
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }

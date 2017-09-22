@@ -91,11 +91,13 @@ class Volume extends AbstractVolume
         foreach ($sourceDocuments as $sourceDocName) {
             $this->progressBar->advance();
             $destinationName = $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE);
-            if (!$destinationName || !$this->destination->getDocument($destinationName)) {
+            if (!$destinationName
+                || !$this->destination->getDocument($destinationName)
+                || $this->helper->getFieldsUpdateOnDuplicate($destinationName)
+            ) {
                 continue;
             }
-            $distinctFields = $this->helper->getFieldsUpdateOnDuplicate($destinationName);
-            $sourceCount = $this->source->getRecordsCount($sourceDocName, true, $distinctFields);
+            $sourceCount = $this->source->getRecordsCount($sourceDocName, true);
             $destinationCount = $this->getDestinationRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
                 $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
