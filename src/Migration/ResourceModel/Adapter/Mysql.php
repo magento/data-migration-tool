@@ -308,9 +308,14 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function updateChangedRecords($document, $data)
+    public function updateChangedRecords($document, $data, $updateOnDuplicate = false)
     {
-        return $this->resourceAdapter->insertOnDuplicate($document, $data);
+        if (is_array($updateOnDuplicate) && !empty($updateOnDuplicate)) {
+            $result = $this->resourceAdapter->insertOnDuplicate($document, $data, $updateOnDuplicate);
+        } else {
+            $result = $this->resourceAdapter->insertOnDuplicate($document, $data);
+        }
+        return $result;
     }
 
     /**

@@ -50,6 +50,11 @@ class DeltaTest extends \PHPUnit\Framework\TestCase
     protected $data;
 
     /**
+     * @var Helper|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $helper;
+
+    /**
      * @var Delta|\PHPUnit_Framework_MockObject_MockObject
      */
     protected $delta;
@@ -87,6 +92,12 @@ class DeltaTest extends \PHPUnit\Framework\TestCase
             ]
         );
 
+        $this->helper = $this->createPartialMock(
+            \Migration\Step\Map\Helper::class,
+            ['getDocumentsDuplicateOnUpdate']
+        );
+        $this->helper->expects($this->any())->method('getDocumentsDuplicateOnUpdate')->willReturn(false);
+
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
         $groupsFactory = $this->createPartialMock(
             \Migration\Reader\GroupsFactory::class,
@@ -105,7 +116,8 @@ class DeltaTest extends \PHPUnit\Framework\TestCase
             $this->destination,
             $this->recordFactory,
             $this->recordTransformerFactory,
-            $this->data
+            $this->data,
+            $this->helper
         );
     }
 

@@ -65,6 +65,11 @@ abstract class AbstractDelta implements StageInterface
     protected $eolOnce = false;
 
     /**
+     * @var array
+     */
+    protected $documentsDuplicateOnUpdate = [];
+
+    /**
      * @param Source $source
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
@@ -199,8 +204,10 @@ abstract class AbstractDelta implements StageInterface
                     $destinationRecords
                 );
             }
-
-            $this->destination->updateChangedRecords($destinationName, $destinationRecords);
+            $fieldsUpdateOnDuplicate = (!empty($this->documentsDuplicateOnUpdate[$destinationName]))
+                ? $this->documentsDuplicateOnUpdate[$destinationName]
+                : false;
+            $this->destination->updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
             $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);

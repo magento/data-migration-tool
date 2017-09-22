@@ -117,9 +117,10 @@ interface AdapterInterface
      *
      * @param mixed $document
      * @param array $data
+     * @param bool|array $updateOnDuplicate
      * @return int
      */
-    public function updateChangedRecords($document, $data);
+    public function updateChangedRecords($document, $data, $updateOnDuplicate = false);
 
     /**
      * @param string $documentName

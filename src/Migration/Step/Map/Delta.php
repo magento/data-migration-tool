@@ -39,6 +39,7 @@ class Delta extends AbstractDelta
      * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Data $data
+     * @param Helper
      */
     public function __construct(
         Source $source,
@@ -48,9 +49,11 @@ class Delta extends AbstractDelta
         Destination $destination,
         ResourceModel\RecordFactory $recordFactory,
         \Migration\RecordTransformerFactory $recordTransformerFactory,
-        Data $data
+        Data $data,
+        Helper $helper
     ) {
         $this->data = $data;
+        $this->documentsDuplicateOnUpdate = $helper->getDocumentsDuplicateOnUpdate();
         parent::__construct(
             $source,
             $mapFactory,

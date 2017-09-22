@@ -104,9 +104,10 @@ class Destination extends AbstractResource
     /**
      * @param string $documentName
      * @param \Migration\ResourceModel\Record\Collection $records
+     * @param array|bool $updateOnDuplicate
      * @return void
      */
-    public function updateChangedRecords($documentName, $records)
+    public function updateChangedRecords($documentName, $records, $updateOnDuplicate = false)
     {
         $documentName = $this->addDocumentPrefix($documentName);
         $data = [];
@@ -115,7 +116,11 @@ class Destination extends AbstractResource
             $data[] = $row->getData();
         }
         if (!empty($data)) {
-            $this->getAdapter()->updateChangedRecords($this->addDocumentPrefix($documentName), $data);
+            $this->getAdapter()->updateChangedRecords(
+                $this->addDocumentPrefix($documentName),
+                $data,
+                $updateOnDuplicate
+            );
         }
     }
 

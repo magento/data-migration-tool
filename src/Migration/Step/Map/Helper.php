@@ -27,6 +27,9 @@ class Helper
     ) {
         $this->readerGroups = $groupsFactory->create('map_document_groups');
         $this->documentsDuplicateOnUpdate = $this->readerGroups->getGroup('destination_documents_update_on_duplicate');
+        foreach ($this->documentsDuplicateOnUpdate as $document => $fields) {
+            $this->documentsDuplicateOnUpdate[$document] = explode(',', $fields);
+        }
     }
 
     /**
@@ -35,10 +38,18 @@ class Helper
      */
     public function getFieldsUpdateOnDuplicate($documentName)
     {
-        $updateOnDuplicate = false;
-        if (array_key_exists($documentName, $this->documentsDuplicateOnUpdate)) {
-            $updateOnDuplicate = explode(',', $this->documentsDuplicateOnUpdate[$documentName]);
-        }
-        return $updateOnDuplicate;
+        return (!empty($this->documentsDuplicateOnUpdate[$documentName]))
+            ? $this->documentsDuplicateOnUpdate[$documentName]
+            : false;
+    }
+
+    /**
+     *  Get all documents for duplicate on update operation
+     *
+     * @return array
+     */
+    public function getDocumentsDuplicateOnUpdate()
+    {
+        return $this->documentsDuplicateOnUpdate;
     }
 }
