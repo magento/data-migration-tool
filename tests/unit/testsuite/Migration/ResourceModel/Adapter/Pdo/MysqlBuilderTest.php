@@ -74,8 +74,7 @@ class MysqlBuilderTest extends \PHPUnit\Framework\TestCase
             ],
         ];
         $mysqlPdoConfig = [
-            'host' => 'localhost',
-            'port' => '9999',
+            'host' => 'localhost:9999',
             'dbname' => 'db1',
             'username' => 'root',
             'password' => 'root'

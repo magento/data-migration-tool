@@ -84,7 +84,7 @@ class MysqlBuilder
         $config['username'] = $resource['user'];
         $config['password'] = !empty($resource['password']) ? $resource['password'] : '';
         if (!empty($resource['port'])) {
-            $config['port'] = $resource['port'];
+            $config['host'] = $config['host'] . ':' . $resource['port'];
         }
         if (isset($resource['ssl_key']) && isset($resource['ssl_cert']) && isset($resource['ssl_ca'])) {
             $config['driver_options'][\PDO::MYSQL_ATTR_SSL_KEY] = $resource['ssl_key'];
