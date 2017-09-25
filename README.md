@@ -4,7 +4,7 @@ We're pleased you're considering moving from the world's #1 eCommerce platformâ€
 Magento 2 migration involves four components: data, extensions and custom code, themes, and customizations.
 
 ### Data
-We've developed the **Magento 2 Data Migration Tool** to help you efficiently move all of your products, customers, and order data, store configurations, promotions and more to Magento 2. See the <a href="http://devdocs.magento.com/guides/v2.1/migration/bk-migration-guide.html" target="_blank">Magento Migration Guide</a> for details.
+We've developed the **Magento 2 Data Migration Tool** to help you efficiently move all of your products, customers, and order data, store configurations, promotions and more to Magento 2. See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html" target="_blank">Magento Migration Guide</a> for details.
 
 ### Extensions and custom code
 We've been working hard with the development community to help you use your Magento 1 extensions in Magento 2. Now we're proud to present the <a href="https://marketplace.magento.com/" target="_blank">Magento Marketplace</a>, where you can download or purchase the latest versions of your favourite extensions.
@@ -41,8 +41,6 @@ Before you start your migration, you must do all of the following:
 *	Check that the data migration tool has a network connection to the Magento 1.x and Magento 2 databases.
 
 	Open ports in your firewall so the migration tool can communicate with the databases and so the databases can communicate with each other.
-
-*	To provide redundancy in the event of unexpected issues, we advise you to replicate your Magento 1.x database.
 
 *	Migrate Magento 1.x extension and custom code to Magento 2.
 
@@ -105,4 +103,4 @@ To update `composer.json`:
 9.	Wait while dependencies are installed.
 
 ## More details
-See the <a href="http://devdocs.magento.com/guides/v2.1/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
+See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
