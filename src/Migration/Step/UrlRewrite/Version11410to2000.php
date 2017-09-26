@@ -278,7 +278,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             && empty($this->duplicateIndex)
         ) {
             foreach ($duplicates as $row) {
-                $this->duplicateIndex[$row['request_path']][] = $row;
+                $this->duplicateIndex[strtolower($row['request_path'])][] = $row;
             }
         }
 
@@ -393,9 +393,11 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
                 $destinationRecord->setValue('entity_id', 0);
             }
 
-            if (!empty($this->duplicateIndex[$sourceRecord->getValue('request_path')])) {
+            $normalizedRequestPath = strtolower($sourceRecord->getValue('request_path'));
+            if (!empty($this->duplicateIndex[$normalizedRequestPath])) {
                 $shouldResolve = false;
-                foreach ($this->duplicateIndex[$sourceRecord->getValue('request_path')] as &$duplicate) {
+
+                foreach ($this->duplicateIndex[$normalizedRequestPath] as &$duplicate) {
                     $onStore = $duplicate['store_id'] == $sourceRecord->getValue('store_id');
                     if ($onStore && empty($duplicate['used'])) {
                         $duplicate['used'] = true;
