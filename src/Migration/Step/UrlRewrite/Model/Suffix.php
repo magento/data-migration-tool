@@ -82,6 +82,7 @@ class Suffix
                 if ($row['store_path'] !== null) {
                     $suffix = $row['store_value'];
                 }
+                $suffix = $this->ensureSuffixBeginsWithDot($suffix);
                 $this->suffixData[$suffixFor][] = [
                     'store_id' => $row['store_id'],
                     'suffix' => $suffix
@@ -96,5 +97,10 @@ class Suffix
         $suffix .= " ELSE '{$suffixDefault}' END";
 
         return $suffix;
+    }
+
+    private function ensureSuffixBeginsWithDot($suffix)
+    {
+        return substr($suffix, 0, 1) === "." ? $suffix : '.' . $suffix;
     }
 }
