@@ -20,7 +20,7 @@ class Config
 
     const RESOURCE_TYPE_DESTINATION = 'destination';
 
-    const EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE = 'opensource_to_opensource';
+    const EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE = 'opensource-to-opensource';
 
     const EDITION_MIGRATE_OPENSOURCE_TO_COMMERCE = 'opensource-to-commerce';
 
