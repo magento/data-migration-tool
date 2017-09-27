@@ -4,7 +4,7 @@
     "version": "2.2.0",
     "require": {
         "symfony/console": "~2.3, !=2.7.0",
-        "magento/framework": "~100.2.0",
+        "magento/framework": "~101.0.0",
         "monolog/monolog": "^1.17"
     },
     "autoload": {
