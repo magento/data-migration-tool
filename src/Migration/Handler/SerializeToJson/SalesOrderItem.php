@@ -41,8 +41,8 @@ class SalesOrderItem extends AbstractHandler
                     $value['bundle_selection_attributes'];
                 $value['bundle_selection_attributes'] = json_encode($bundleSelectionAttributes);
             }
-            $newValue = $value ? json_encode($value) : $value;
+            $value = $value ? json_encode($value) : $value;
         }
-        $recordToHandle->setValue($this->field, $newValue);
+        $recordToHandle->setValue($this->field, $value);
     }
 }
