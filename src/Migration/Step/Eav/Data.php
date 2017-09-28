@@ -552,17 +552,15 @@ class Data implements StageInterface, RollbackInterface
         foreach ($recordsToSave as $record) {
             $attributeId = $record->getValue('attribute_id');
             $entityTypeId = $record->getValue('entity_type_id');
+            $attributeSetId = $record->getValue('attribute_set_id');
             if (!isset($attributes[$attributeId])
                 || $entityTypeId != $productEntityType['entity_type_id']
+                || $attributeCode != $attributes[$attributeId]['attribute_code']
+                || !array_key_exists($attributeSetId, $attributeSetGroups)
             ) {
                 continue;
             }
-            if ($attributes[$attributeId]['attribute_code'] == $attributeCode) {
-                $record->setValue(
-                    'attribute_group_id',
-                    $attributeSetGroups[$record->getValue('attribute_set_id')][$attributeGroupCode]
-                );
-            }
+            $record->setValue('attribute_group_id', $attributeSetGroups[$attributeSetId][$attributeGroupCode]);
         }
         return $recordsToSave;
     }
@@ -605,6 +603,7 @@ class Data implements StageInterface, RollbackInterface
         }
         foreach ($attributeGroups as $attributeGroup) {
             if ($attributeGroup['attribute_group_code'] == $attributeGroupCode
+                && array_key_exists($attributeGroup['attribute_set_id'], $attributeSets)
                 && $attributeSets[$attributeGroup['attribute_set_id']]['entity_type_id'] == $productEntityTypeId
                 && !isset($attributeSetGroupsFound[$attributeGroup['attribute_set_id']])
             ) {
