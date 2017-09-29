@@ -367,9 +367,10 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkDocumentFieldsData()
     {
         $isSuccess = true;
+        $logLevel = $this->config->getOption(Config::OPTION_AUTO_RESOLVE) ? Logger::WARNING : Logger::ERROR;
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] as $errorDetail) {
-                $this->logger->error(sprintf(
+                $this->logger->addRecord($logLevel, sprintf(
                     'Incompatibility in data. Source document: %s. Field: %s. Error: %s',
                     $errorDetail['document'],
                     $errorDetail['field'],
@@ -380,7 +381,7 @@ abstract class AbstractIntegrity implements StageInterface
         }
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
-                $this->logger->error(sprintf(
+                $this->logger->addRecord($logLevel, sprintf(
                     'Incompatibility in data. Destination document: %s. Field: %s. Error: %s',
                     $errorDetail['document'],
                     $errorDetail['field'],

@@ -67,6 +67,7 @@ class Integrity extends DatabaseStage implements StageInterface
      */
     public function perform()
     {
+        $logLevel = $this->configReader->getOption(Config::OPTION_AUTO_RESOLVE) ? Logger::WARNING : Logger::ERROR;
         $documentList = $this->getDocumentList();
         $this->progress->start(count($documentList), LogManager::LOG_LEVEL_INFO);
 
@@ -84,7 +85,7 @@ class Integrity extends DatabaseStage implements StageInterface
         $this->progress->finish(LogManager::LOG_LEVEL_INFO);
 
         foreach ($errorMessages as $message) {
-            $this->logger->error($message);
+            $this->logger->addRecord($logLevel, $message);
         }
         return empty($errorMessages);
     }
