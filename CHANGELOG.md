@@ -1,3 +1,19 @@
+2.2.0
+=============
+* Integrity check errors can be ignored with new `-a|--auto` CLI argument
+* Customer step was rewritten to be more clear
+* Added support for mapping functionality into Stores step
+* Added possibility of using secure connection to MySQL
+* Added support for PHPUnit 6
+* Added support for versions:
+
+   * Magento Open Source: 2.2.0
+   * Magento Commerce: 2.2.0
+
+* Fixed bugs:
+
+   * An error on EAV step when records from `eav_entity_attribute` table have references to not existing records from `eav_attribute_set` table
+
 2.1.9
 =============
 * Added support for versions:
