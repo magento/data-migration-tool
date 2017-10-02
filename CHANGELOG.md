@@ -1,6 +1,6 @@
 2.2.0
 =============
-* Integrity check errors can be ignored with new `-a|--auto` CLI argument
+* Integrity check errors can be ignored with a new `-a|--auto` CLI argument
 * Customer step was rewritten to be more clear
 * Added support for mapping functionality into Stores step
 * Added possibility of using secure connection to MySQL
@@ -12,7 +12,7 @@
 
 * Fixed bugs:
 
-   * An error on EAV step when records from `eav_entity_attribute` table have references to not existing records from `eav_attribute_set` table
+   * An error on EAV step when records from the `eav_entity_attribute` table have references to non-existent records from the `eav_attribute_set` table
 
 2.1.9
 =============
