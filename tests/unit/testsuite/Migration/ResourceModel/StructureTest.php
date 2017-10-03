@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel;
 
-class StructureTest extends \PHPUnit_Framework_TestCase
+class StructureTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Structure

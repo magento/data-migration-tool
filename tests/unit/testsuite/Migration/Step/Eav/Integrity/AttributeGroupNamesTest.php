@@ -13,7 +13,7 @@ use Migration\Step\Eav\Helper;
 /**
  * Class AttributeGroupNamesTest
  */
-class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
+class AttributeGroupNamesTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeGroupNames|\PHPUnit_Framework_MockObject_MockObject
@@ -30,15 +30,15 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')
+        $this->helper = $this->getMockBuilder(\Migration\Step\Eav\Helper::class)
             ->disableOriginalConstructor()
             ->setMethods(['getSourceRecords'])
             ->getMock();
 
         $objectHelper = new ObjectManager($this);
-        $groupNameToCodeMap = $objectHelper->getObject('\Migration\Model\Eav\AttributeGroupNameToCodeMap');
+        $groupNameToCodeMap = $objectHelper->getObject(\Migration\Model\Eav\AttributeGroupNameToCodeMap::class);
 
-        $this->model = $objectHelper->getObject('\Migration\Step\Eav\Integrity\AttributeGroupNames', [
+        $this->model = $objectHelper->getObject(\Migration\Step\Eav\Integrity\AttributeGroupNames::class, [
             'helper' => $this->helper,
             'groupNameToCodeMap' => $groupNameToCodeMap
         ]);
@@ -78,7 +78,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Design'],
-                        13 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'catalog_product' => ['entity_type_id' => 4]
@@ -96,8 +96,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
-                        13 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Images'],
-                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
+                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'catalog_product' => ['entity_type_id' => 4]
@@ -109,7 +109,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         4 => ['attribute_set_id' => 4, 'entity_type_id' => 4, 'attribute_set_name' => 'Default_3']
                     ]
                 ],
-                2
+                3
             ], [
                 [
                     'eav_attribute_group' => [
@@ -117,8 +117,8 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         7 => ['attribute_set_id' => 3, 'attribute_group_name' => 'General'],
                         8 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Prices'],
                         11 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Design'],
-                        13 => ['attribute_set_id' => 3, 'attribute_group_name' => 'Images'],
-                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General']
+                        12 => ['attribute_set_id' => 4, 'attribute_group_name' => 'General'],
+                        14 => ['attribute_set_id' => 4, 'attribute_group_name' => 'Images']
                     ],
                     'eav_entity_type' => [
                         'customer' => ['entity_type_id' => 1],
@@ -132,7 +132,7 @@ class AttributeGroupNamesTest extends \PHPUnit_Framework_TestCase
                         4 => ['attribute_set_id' => 4, 'entity_type_id' => 4, 'attribute_set_name' => 'Default_3']
                     ]
                 ],
-                1
+                2
             ],
         ];
     }

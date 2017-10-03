@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler;
 
-class TimezoneTest extends \PHPUnit_Framework_TestCase
+class TimezoneTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param $timeAndOffset array
@@ -21,15 +21,15 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
         $fieldName  = 'fieldname';
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
-            'Migration\ResourceModel\Record',
-            ['getValue', 'setValue', 'getFields', 'getStructure'],
-            [],
-            '',
-            false
+        $recordToHandle = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['getValue', 'setValue', 'getFields', 'getStructure']
         );
 
-        $structure = $this->getMock('\Migration\Structure', ['getFields'], [], '', false);
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['getFields'])
+            ->getMock();
 
         $structure->expects($this->any())->method('getFields')->willReturn([
             $fieldName => ['DATA_TYPE' => $dataType]
@@ -40,13 +40,13 @@ class TimezoneTest extends \PHPUnit_Framework_TestCase
         $recordToHandle->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
         $recordToHandle->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 
         $handler = new Timezone($offset);
         $handler->setField($fieldName);
-        $handler->handle($recordToHandle, $oppositeRecord);
+        $this->assertNull($handler->handle($recordToHandle, $oppositeRecord));
     }
 
     /**

@@ -12,7 +12,7 @@ use Migration\ResourceModel\Destination;
 /**
  * Class NormalizationIdsTest
  */
-class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
+class NormalizationIdsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ConditionSql|\PHPUnit_Framework_MockObject_MockObject
@@ -49,14 +49,15 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMockBuilder('Migration\ResourceModel\Destination')->disableOriginalConstructor()
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
+            ->disableOriginalConstructor()
             ->setMethods(['clearDocument', 'saveRecords'])
             ->getMock();
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+        $this->config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods(['getOption'])
             ->getMock();
         $this->config->expects($this->once())->method('getOption')
-            ->willReturn(\Migration\Config::EDITION_MIGRATE_CE_TO_CE);
+            ->willReturn(\Migration\Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE);
         $this->handler = new NormalizationIds(
             $this->destination,
             $this->config,
@@ -80,12 +81,12 @@ class NormalizationIdsTest extends \PHPUnit_Framework_TestCase
         ];
 
         /** @var Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'getFields'])
             ->disableOriginalConstructor()
             ->getMock();
         /** @var Record $oppositeRecord|\PHPUnit_Framework_MockObject_MockObject */
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
 

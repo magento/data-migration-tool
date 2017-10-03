@@ -6,17 +6,25 @@
 namespace Migration\Handler;
 
 use Migration\ResourceModel\Record;
-use Migration\Exception;
 
 /**
  * Handler to transform field according to the map
  */
-class SerializeToJson extends AbstractHandler implements HandlerInterface
+class SerializeToJson extends AbstractHandler
 {
     /**
-     * @var string
+     * Sometimes fields has a broken serialize data, for example enterprise_logging_event_changes.result_data.
+     * If property sets to true, ignore all notices from unserialize()
+     *
+     * @var bool
+     *
      */
-    protected $map = [];
+    protected $ignoreBrokenData;
+
+    public function __construct($ignoreBrokenData = false)
+    {
+        $this->ignoreBrokenData = (bool)$ignoreBrokenData;
+    }
 
     /**
      * {@inheritdoc}
@@ -25,7 +33,10 @@ class SerializeToJson extends AbstractHandler implements HandlerInterface
     {
         $this->validate($recordToHandle);
         $value = $recordToHandle->getValue($this->field);
-        $newValue = json_encode(unserialize($value));
-        $recordToHandle->setValue($this->field, $newValue);
+        if (null !== $value) {
+            $unserializeData = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
+            $value = false === $unserializeData ? json_encode([]) : json_encode($unserializeData);
+        }
+        $recordToHandle->setValue($this->field, $value);
     }
 }

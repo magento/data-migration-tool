@@ -12,7 +12,7 @@ use Migration\ResourceModel;
 /**
  * Class HelperTest
  */
-class HelperTest extends \PHPUnit_Framework_TestCase
+class HelperTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Helper
@@ -34,7 +34,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->groups = $this->getMockBuilder('Migration\Reader\Groups')
+        $this->groups = $this->getMockBuilder(\Migration\Reader\Groups::class)
             ->disableOriginalConstructor()
             ->setMethods(['getGroup'])
             ->getMock();
@@ -46,7 +46,7 @@ class HelperTest extends \PHPUnit_Framework_TestCase
                 $this->fieldsUpdateOnDuplicate['document'] => implode(',', $this->fieldsUpdateOnDuplicate['fields'])
             ]);
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMockBuilder('Migration\Reader\GroupsFactory')
+        $groupsFactory = $this->getMockBuilder(\Migration\Reader\GroupsFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();

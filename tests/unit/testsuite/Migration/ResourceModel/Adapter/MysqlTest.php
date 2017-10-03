@@ -6,7 +6,7 @@
 
 namespace Migration\ResourceModel\Adapter;
 
-class MysqlTest extends \PHPUnit_Framework_TestCase
+class MysqlTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
@@ -23,9 +23,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->pdoMysql = $this->getMock(
-            '\Magento\Framework\DB\Adapter\Pdo\Mysql',
-            [
+
+        $this->pdoMysql = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
+            ->disableOriginalConstructor()
+            ->setMethods([
                 'truncateTable',
                 'query',
                 'describeTable',
@@ -42,19 +43,22 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
                 'isTableExists',
                 'insertFromSelect',
                 'getConnection'
-            ],
-            [],
-            '',
-            false
-        );
+            ])
+            ->getMock();
         $this->pdoMysql->expects($this->any())->method('query');
-        $mysqlBuilder = $this->getMock('\Migration\ResourceModel\Adapter\Pdo\MysqlBuilder', ['build'], [], '', false);
+        $mysqlBuilder = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Pdo\MysqlBuilder::class,
+            ['build']
+        );
         $mysqlBuilder->expects($this->any())
             ->method('build')
             ->with('source')
             ->willReturn($this->pdoMysql);
 
-        $triggerFactory = $this->getMock('\Magento\Framework\DB\Ddl\TriggerFactory', ['create'], [], '', false);
+        $triggerFactory = $this->createPartialMock(
+            \Magento\Framework\DB\Ddl\TriggerFactory::class,
+            ['create']
+        );
         $this->adapterMysql = new Mysql($mysqlBuilder, $triggerFactory, 'source');
     }
 
@@ -86,7 +90,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetRecordsCount()
     {
-        $select = $this->getMock('\Magento\Framework\DB\Select', ['from'], [], '', false);
+        $select = $this->createPartialMock(
+            \Magento\Framework\DB\Select::class,
+            ['from']
+        );
         $select->expects($this->any())
             ->method('from')
             ->with($this->equalTo('some_table'), $this->equalTo('COUNT(*)'));
@@ -107,7 +114,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadPage()
     {
-        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $select->expects($this->any())
             ->method('from')
             ->with($this->equalTo('some_table'), $this->equalTo('*'))
@@ -135,7 +142,10 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
     {
         $data = [['column1' => 'value1'], ['column1' => 'value2']];
 
-        $pdoMock = $this->getMock('\PdoTest', ['prepare', 'execute'], [], '', false);
+        $pdoMock = $this->getMockBuilder(\PdoTest::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['prepare', 'execute'])
+            ->getMock();
         $pdoMock->expects($this->any())->method('prepare')->willReturnSelf();
         $pdoMock->expects($this->any())->method('execute')->willReturnSelf();
         $this->pdoMysql->expects($this->any())->method('getConnection')->willReturn($pdoMock);
@@ -157,7 +167,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetSelect()
     {
-        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $this->pdoMysql->expects($this->any())->method('select')->willReturn($select);
         $this->assertSame($select, $this->adapterMysql->getSelect());
     }
@@ -167,7 +177,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testLoadDataFromSelect()
     {
-        $select = $this->getMock('\Magento\Framework\DB\Select', [], [], '', false);
+        $select = $this->createMock(\Magento\Framework\DB\Select::class);
         $data = [['id' => 1], ['id' => 2]];
         $this->pdoMysql->expects($this->any())->method('fetchAll')->with($select)->willReturn($data);
         $this->assertSame($data, $this->adapterMysql->loadDataFromSelect($select));
@@ -189,7 +199,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetTableDdlCopy()
     {
-        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
+        $table = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)
             ->disableOriginalConstructor()
             ->getMock();
         $this->pdoMysql->expects($this->once())->method('createTableByDdl')
@@ -203,7 +213,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreateTableByDdl()
     {
-        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')
+        $table = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)
             ->setMethods(['getName'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -222,11 +232,11 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $documentName = 'document_name';
         $backupDocumentName = 'migration_backup_document_name';
 
-        $table = $this->getMockBuilder('Magento\Framework\DB\Ddl\Table')->disableOriginalConstructor()
+        $table = $this->getMockBuilder(\Magento\Framework\DB\Ddl\Table::class)->disableOriginalConstructor()
             ->setMethods(['getName'])
             ->getMock();
         $table->expects($this->any())->method('getName')->will($this->returnValue('migration_backup_document_name'));
-        $select = $this->getMockBuilder('\Magento\Framework\DB\Select')->disableOriginalConstructor()
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)->disableOriginalConstructor()
             ->setMethods(['from'])->getMock();
         $select->expects($this->once())->method('from')->with($documentName)->willReturn($select);
 
@@ -253,7 +263,7 @@ class MysqlTest extends \PHPUnit_Framework_TestCase
         $documentName = 'document_name';
         $backupDocumentName = 'migration_backup_document_name';
 
-        $select = $this->getMockBuilder('\Magento\Framework\DB\Select')->disableOriginalConstructor()
+        $select = $this->getMockBuilder(\Magento\Framework\DB\Select::class)->disableOriginalConstructor()
             ->setMethods(['from'])->getMock();
         $select->expects($this->once())->method('from')->with($backupDocumentName)->willReturn($select);
 

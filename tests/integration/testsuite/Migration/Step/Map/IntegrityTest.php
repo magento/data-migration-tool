@@ -10,7 +10,7 @@ namespace Migration\Step\Map;
  * Integrity step test class
  * @dbFixture default
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -21,19 +21,19 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
-        $config = $objectManager->get('\Migration\Config');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $logger->pushHandler($objectManager->create(\Migration\Logger\ConsoleHandler::class));
+        $config = $objectManager->get(\Migration\Config::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */
         $map = $objectManager->create(
-            '\Migration\Step\Map\Integrity',
+            \Migration\Step\Map\Integrity::class,
             [
                 'logger' => $logger,
                 'config' => $config
@@ -54,18 +54,18 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function testIntegrityWithoutMap()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config-with-empty-map.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
-        $config = $objectManager->get('\Migration\Config');
+        $objectManager->get(\Migration\Config::class)->init(dirname(__DIR__) . '/../_files/config-with-empty-map.xml');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $logger->pushHandler($objectManager->create(\Migration\Logger\ConsoleHandler::class));
+        $config = $objectManager->get(\Migration\Config::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\Map\Integrity $map */
         $map = $objectManager->create(
-            '\Migration\Step\Map\Integrity',
+            \Migration\Step\Map\Integrity::class,
             [
                 'logger' => $logger,
                 'config' => $config

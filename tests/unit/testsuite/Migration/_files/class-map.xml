@@ -7,7 +7,7 @@
 -->
 <classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/class-map.xsd">
     <rename>
-        <from>catalog/product_widget_new</from>
-        <to>Magento\Catalog\Block\Product\Widget\NewWidget</to>
+        <from>catalog/product_widget_link</from>
+        <to>Magento\Catalog\Block\Product\Widget\Link</to>
     </rename>
 </classmap>

@@ -42,7 +42,7 @@ class MysqlBuilder
     public function __construct(
         ObjectManagerInterface $objectManager,
         Config $config,
-        $instanceName = '\\Magento\\Framework\\DB\\Adapter\\Pdo\\Mysql'
+        $instanceName = \Magento\Framework\DB\Adapter\Pdo\Mysql::class
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;
@@ -78,13 +78,18 @@ class MysqlBuilder
     private function getConfig($resourceType)
     {
         $resource = $this->config->getResourceConfig($resourceType);
-        $type = $resource['type'];
-        $config['host'] = $resource[$type]['host'];
-        $config['dbname'] = $resource[$type]['name'];
-        $config['username'] = $resource[$type]['user'];
-        $config['password'] = !empty($resource[$type]['password']) ? $resource[$type]['password'] : '';
-        if (!empty($resource[$type]['port'])) {
-            $config['port'] = $resource[$type]['port'];
+        $resource = $resource[$resource['type']];
+        $config['host'] = $resource['host'];
+        $config['dbname'] = $resource['name'];
+        $config['username'] = $resource['user'];
+        $config['password'] = !empty($resource['password']) ? $resource['password'] : '';
+        if (!empty($resource['port'])) {
+            $config['host'] = $config['host'] . ':' . $resource['port'];
+        }
+        if (isset($resource['ssl_key']) && isset($resource['ssl_cert']) && isset($resource['ssl_ca'])) {
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_KEY] = $resource['ssl_key'];
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CERT] = $resource['ssl_cert'];
+            $config['driver_options'][\PDO::MYSQL_ATTR_SSL_CA] = $resource['ssl_ca'];
         }
         return $config;
     }
@@ -111,9 +116,10 @@ class MysqlBuilder
     {
         $parts = [];
         $editionMigrate = $this->config->getOption('edition_migrate');
-        if (in_array($editionMigrate, [Config::EDITION_MIGRATE_CE_TO_EE, Config::EDITION_MIGRATE_EE_TO_EE])) {
+        $commerce = [Config::EDITION_MIGRATE_OPENSOURCE_TO_COMMERCE, Config::EDITION_MIGRATE_COMMERCE_TO_COMMERCE];
+        if (in_array($editionMigrate, $commerce)) {
             $parts['disable_staging_preview'] = true;
         }
-        return $this->objectManager->create('\\Magento\\Framework\\DB\\SelectFactory', ['parts' => $parts]);
+        return $this->objectManager->create(\Magento\Framework\DB\SelectFactory::class, ['parts' => $parts]);
     }
 }

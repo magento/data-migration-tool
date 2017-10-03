@@ -13,6 +13,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
+use Migration\Step\Customer\Model\SourceRecordsCounter;
 
 /**
  * Class Volume
@@ -22,32 +23,32 @@ class Volume extends AbstractVolume
     /**
      * @var ResourceModel\Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var ResourceModel\Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var Map
      */
-    protected $map;
+    private $map;
 
     /**
      * @var ProgressBar\LogLevelProcessor
      */
-    protected $progress;
+    private $progress;
 
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerGroups;
+    private $readerGroups;
 
     /**
-     * @var Helper
+     * @var SourceRecordsCounter
      */
-    protected $helper;
+    private $sourceRecordsCounter;
 
     /**
      * @param Logger $logger
@@ -56,7 +57,7 @@ class Volume extends AbstractVolume
      * @param MapFactory $mapFactory
      * @param ProgressBar\LogLevelProcessor $progress
      * @param GroupsFactory $groupsFactory
-     * @param Helper $helper
+     * @param SourceRecordsCounter $sourceRecordsCounter
      */
     public function __construct(
         Logger $logger,
@@ -65,9 +66,9 @@ class Volume extends AbstractVolume
         MapFactory $mapFactory,
         ProgressBar\LogLevelProcessor $progress,
         GroupsFactory $groupsFactory,
-        Helper $helper
+        SourceRecordsCounter $sourceRecordsCounter
     ) {
-        $this->helper = $helper;
+        $this->sourceRecordsCounter = $sourceRecordsCounter;
         $this->source = $source;
         $this->destination = $destination;
         $this->map = $mapFactory->create('customer_map_file');
@@ -89,7 +90,7 @@ class Volume extends AbstractVolume
             if (!$destinationName) {
                 continue;
             }
-            $sourceCount = $this->helper->getSourceRecordsCount($sourceDocName);
+            $sourceCount = $this->sourceRecordsCounter->getRecordsCount($sourceDocName);
             $destinationCount = $this->destination->getRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
                 $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;

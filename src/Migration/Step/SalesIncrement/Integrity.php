@@ -9,6 +9,7 @@ use Migration\Reader\MapInterface;
 use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel\Destination;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -38,17 +39,20 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @param Destination $destination
      * @param Logger $logger
+     * @param Config $config
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Helper $helper
      */
     public function __construct(
         Destination $destination,
         Logger $logger,
+        Config $config,
         ProgressBar\LogLevelProcessor $progress,
         Helper $helper
     ) {
         $this->destination = $destination;
         $this->logger = $logger;
+        $this->config = $config;
         $this->progress = $progress;
         $this->helper = $helper;
     }

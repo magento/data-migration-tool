@@ -19,6 +19,10 @@
         <log_map_file>tests/integration/testsuite/Migration/_files/map-log.xml</log_map_file>
         <settings_map_file>tests/integration/testsuite/Migration/_files/settings.xml</settings_map_file>
         <sales_order_map_file>test/integration/testsuite/Migration/_files/map/sales.xml</sales_order_map_file>
+        <customer_document_groups_file>tests/integration/testsuite/Migration/_files/customer-document-groups.xml</customer_document_groups_file>
+        <customer_attribute_groups_file>tests/integration/testsuite/Migration/_files/customer-attribute-groups.xml</customer_attribute_groups_file>
+        <stores_map_file>tests/integration/testsuite/Migration/_files/map-stores.xml</stores_map_file>
         <bulk_size>100</bulk_size>
+        <edition_migrate>opensource-to-opensource</edition_migrate>
     </options>
 </config>

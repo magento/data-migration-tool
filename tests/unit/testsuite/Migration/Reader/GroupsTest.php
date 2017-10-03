@@ -8,7 +8,7 @@ namespace Migration\Reader;
 /**
  * Class GroupTest
  */
-class GroupsTest extends \PHPUnit_Framework_TestCase
+class GroupsTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Groups
@@ -25,7 +25,7 @@ class GroupsTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $this->validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();

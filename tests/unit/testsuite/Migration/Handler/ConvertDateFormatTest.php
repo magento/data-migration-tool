@@ -6,7 +6,7 @@
 
 namespace Migration\Handler;
 
-class ConvertDateFormatTest extends \PHPUnit_Framework_TestCase
+class ConvertDateFormatTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -20,21 +20,21 @@ class ConvertDateFormatTest extends \PHPUnit_Framework_TestCase
         $fieldName  = 'fieldname';
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
-            'Migration\ResourceModel\Record',
-            ['setValue', 'getValue', 'getFields'],
-            [],
-            '',
-            false
+        $record = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getValue', 'getFields']
         );
         $record->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($fieldValue);
         $record->expects($this->any())->method('setValue')->with($fieldName, $convertedValue);
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record2 */
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new ConvertDateFormat();
         $handler->setField($fieldName);
-        $handler->handle($record, $record2);
+        $this->assertNull($handler->handle($record, $record2));
     }
 }

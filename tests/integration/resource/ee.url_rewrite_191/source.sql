@@ -126,8 +126,11 @@ INSERT INTO `core_url_rewrite` VALUES
 (1, 0, 1, 1, '1', 'test1.htm', 'contacts', 1, NULL, NULL),
 (2, 1, 1, 1, '2', 'test1.htm', 'catalog/category/view/id/6', 1, NULL, NULL),
 (3, 0, 2, 2, '3', 'test5.htm', 'contacts', 1, NULL, NULL),
-(4, 1, 2, 2, '3', NULL, 'catalog/category/view/id/8', 1, NULL, NULL);
-
+(4, 1, 2, 2, '3', NULL, 'catalog/category/view/id/8', 1, NULL, NULL),
+(5, 1, 3, 2, 'product/2/3', 'newcat/virtual-product.html', 'catalog/product/view/id/2/category/3', 1, '', NULL),
+(6, 1, 1, 1, 'product/1', NULL, 'catalog/product/view/id/1', 1, '', NULL),
+(7, 2, 3, 1, 'product/1/3', NULL, 'catalog/product/view/id/1/category/3', 1, '', NULL),
+(8, 2, 1, 1, 'product/1', NULL, 'catalog/product/view/id/1', 1, '', NULL);
 
 DROP TABLE IF EXISTS `catalog_category_entity`;
 CREATE TABLE `catalog_category_entity` (

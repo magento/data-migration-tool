@@ -8,7 +8,7 @@ namespace Migration\Reader;
 /**
  * Class MapTest
  */
-class MapTest extends \PHPUnit_Framework_TestCase
+class MapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Map
@@ -20,7 +20,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -103,7 +103,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFieldMapWithException()
     {
-        $this->setExpectedException('Exception', 'Document has ambiguous configuration: source-document-ignored');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Document has ambiguous configuration: source-document-ignored');
         $this->map->getFieldMap('source-document-ignored', 'field3', MapInterface::TYPE_SOURCE);
     }
 
@@ -113,7 +114,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFieldMapWithException2()
     {
-        $this->setExpectedException('Exception', 'Document has ambiguous configuration: dest-document-ignored');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Document has ambiguous configuration: dest-document-ignored');
         $this->map->getFieldMap('source-document5', 'field3', MapInterface::TYPE_SOURCE);
     }
 
@@ -123,7 +125,8 @@ class MapTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFieldMapWithException3()
     {
-        $this->setExpectedException('Exception', 'Field has ambiguous configuration: dest-document5.field5');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Field has ambiguous configuration: dest-document5.field5');
         $this->map->getFieldMap('source-document5', 'field4', MapInterface::TYPE_SOURCE);
     }
 
@@ -134,7 +137,7 @@ class MapTest extends \PHPUnit_Framework_TestCase
     {
         $handlerConfig = [
             [
-                'class' => '\Migration\Handler\SetValue',
+                'class' => \Migration\Handler\SetValue::class,
                 'params' => [
                     'default_value' => 10
                 ]

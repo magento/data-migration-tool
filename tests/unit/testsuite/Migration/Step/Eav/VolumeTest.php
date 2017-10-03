@@ -8,7 +8,7 @@ namespace Migration\Step\Eav;
 /**
  * Class VolumeTest
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Helper|\PHPUnit_Framework_MockObject_MockObject
@@ -55,10 +55,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->initialData = $this->getMockBuilder('\Migration\Step\Eav\InitialData')->disableOriginalConstructor()
+        $this->initialData = $this->getMockBuilder(\Migration\Step\Eav\InitialData::class)->disableOriginalConstructor()
             ->setMethods(['getAttributes', 'getAttributeSets', 'getAttributeGroups'])
             ->getMock();
-        $this->helper = $this->getMockBuilder('\Migration\Step\Eav\Helper')->disableOriginalConstructor()
+        $this->helper = $this->getMockBuilder(\Migration\Step\Eav\Helper::class)->disableOriginalConstructor()
             ->setMethods(
                 [
                     'getDestinationRecords',
@@ -67,19 +67,19 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
                     'deleteBackups'
                 ]
             )->getMock();
-        $this->logger = $this->getMockBuilder('\Migration\Logger\Logger')->disableOriginalConstructor()
+        $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
             ->setMethods(['warning', 'addRecord'])
             ->getMock();
-        $this->progress = $this->getMockBuilder('\Migration\App\ProgressBar\LogLevelProcessor')
+        $this->progress = $this->getMockBuilder(\Migration\App\ProgressBar\LogLevelProcessor::class)
             ->disableOriginalConstructor()
             ->setMethods(['start', 'finish', 'advance'])
             ->getMock();
-        $this->readerGroups = $this->getMockBuilder('\Migration\Reader\Groups')
+        $this->readerGroups = $this->getMockBuilder(\Migration\Reader\Groups::class)
             ->disableOriginalConstructor()
             ->setMethods([])
             ->getMock();
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMockBuilder('\Migration\Reader\GroupsFactory')
+        $groupsFactory = $this->getMockBuilder(\Migration\Reader\GroupsFactory::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
@@ -87,7 +87,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
             ->method('create')
             ->with('eav_document_groups_file')
             ->willReturn($this->readerGroups);
-        $this->destination = $this->getMockBuilder('\Migration\ResourceModel\Destination')
+        $this->destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->disableOriginalConstructor()
             ->setMethods(['getDocument'])
             ->getMock();
@@ -243,35 +243,33 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     protected function getDocumentsMap()
     {
         $structureFields = [
-            'eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'catalog_eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'customer_eav_attribute' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
-            'eav_entity_type' =>
-                [
-                    'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                    'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-                ],
+            'eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'catalog_eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'customer_eav_attribute' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
+            'eav_entity_type' => [
+                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
+                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
+            ],
         ];
         $documentsMap = [];
         foreach ($structureFields as $documentName => $structure) {
             $structure = new \Migration\ResourceModel\Structure($structureFields[$documentName]);
-            $destDocument = $this->getMock('\Migration\ResourceModel\Document', ['getStructure'], [], '', false);
+            $destDocument = $this->createPartialMock(
+                \Migration\ResourceModel\Document::class,
+                ['getStructure']
+            );
             $destDocument->expects($this->once())->method('getStructure')->willReturn($structure);
             $documentsMap[] = [$documentName, $destDocument];
         }
-
         return $documentsMap;
     }
 }

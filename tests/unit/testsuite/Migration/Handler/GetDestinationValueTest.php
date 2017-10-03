@@ -10,7 +10,7 @@ use Migration\ResourceModel\Record;
 /**
  * Class GetDestinationValueTest
  */
-class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
+class GetDestinationValueTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -19,11 +19,14 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
+        $recordToHandle = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getFields']
+        );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, null);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -44,11 +47,14 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
         $value = 'value';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
+        $recordToHandle = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getFields']
+        );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $value);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -67,11 +73,14 @@ class GetDestinationValueTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock('Migration\ResourceModel\Record', ['setValue', 'getFields'], [], '', false);
+        $recordToHandle = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getFields']
+        );
         $recordToHandle->expects($this->never())->method('setValue');
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue'])
             ->disableOriginalConstructor()
             ->getMock();

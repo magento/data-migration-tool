@@ -6,7 +6,7 @@
 
 namespace Migration\ResourceModel\Adapter\Pdo;
 
-class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
+class MysqlBuilderTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\DB\Adapter\Pdo\Mysql|\PHPUnit_Framework_MockObject_MockObject
@@ -38,18 +38,18 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->objectManager = $this->getMockBuilder('\Magento\Framework\ObjectManager\ObjectManager')
+        $this->objectManager = $this->getMockBuilder(\Magento\Framework\ObjectManager\ObjectManager::class)
             ->disableOriginalConstructor()
             ->setMethods(['create'])
             ->getMock();
-        $this->config = $this->getMockBuilder('Migration\Config')
+        $this->config = $this->getMockBuilder(\Migration\Config::class)
             ->disableOriginalConstructor()
             ->setMethods(['getResourceConfig', 'getOption'])
             ->getMock();
-        $this->selectFactory = $this->getMockBuilder('Magento\Framework\DB\SelectFactory')
+        $this->selectFactory = $this->getMockBuilder(\Magento\Framework\DB\SelectFactory::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $this->pdoMysql = $this->getMockBuilder('\Magento\Framework\DB\Adapter\Pdo\Mysql')
+        $this->pdoMysql = $this->getMockBuilder(\Magento\Framework\DB\Adapter\Pdo\Mysql::class)
             ->disableOriginalConstructor()
             ->setMethods(['disallowDdlCache', 'query'])
             ->getMock();
@@ -74,8 +74,7 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
             ],
         ];
         $mysqlPdoConfig = [
-            'host' => 'localhost',
-            'port' => '9999',
+            'host' => 'localhost:9999',
             'dbname' => 'db1',
             'username' => 'root',
             'password' => 'root'
@@ -85,17 +84,17 @@ class MysqlBuilderTest extends \PHPUnit_Framework_TestCase
             ->with($resourceType)
             ->willReturn($resourceConfig);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ce'],
+            ['edition_migrate', 'opensource-to-opensource'],
             ['init_statements_' . $resourceType, $initStatements]
         ]);
         $this->objectManager->expects($this->at(0))
             ->method('create')
-            ->with('\Magento\Framework\DB\SelectFactory', ['parts' => []])
+            ->with(\Magento\Framework\DB\SelectFactory::class, ['parts' => []])
             ->willReturn($this->selectFactory);
         $this->objectManager->expects($this->at(1))
             ->method('create')
             ->with(
-                '\Magento\Framework\DB\Adapter\Pdo\Mysql',
+                \Magento\Framework\DB\Adapter\Pdo\Mysql::class,
                 ['config' => $mysqlPdoConfig, 'selectFactory' => $this->selectFactory]
             )
             ->willReturn($this->pdoMysql);

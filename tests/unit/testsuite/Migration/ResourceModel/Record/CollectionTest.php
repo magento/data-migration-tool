@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel\Record;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record[]|\PHPUnit_Framework_MockObject_MockObject[]
@@ -27,18 +27,12 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->structure = $this->getMock(
-            '\Migration\ResourceModel\Structure',
-            [],
-            [],
-            '',
-            false
-        );
-        $record1 = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $this->structure = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $record1 = $this->createMock(\Migration\ResourceModel\Record::class);
         $record1->expects($this->any())->method('getValue')->with('fieldName')->willReturn('item1');
-        $record2 = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $record2 = $this->createMock(\Migration\ResourceModel\Record::class);
         $record2->expects($this->any())->method('getValue')->with('fieldName')->willReturn('item2');
-        $record3 = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $record3 = $this->createMock(\Migration\ResourceModel\Record::class);
         $record3->expects($this->any())->method('getValue')->with('fieldName')->willReturn('item3');
         $this->records = [$record1, $record2, $record3];
         $this->recordCollection = new \Migration\ResourceModel\Record\Collection($this->structure, $this->records);
@@ -73,7 +67,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testAddRecord()
     {
         $this->assertEquals(3, count($this->recordCollection));
-        $record = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $record = $this->createMock(\Migration\ResourceModel\Record::class);
         $record->expects($this->any())->method('getStructure')->willReturn($this->structure);
         $record->expects($this->any())->method('validateStructure')->with($this->equalTo($this->structure))
             ->willReturn(true);
@@ -90,7 +84,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testAddRecordWithException()
     {
         $this->assertEquals(3, count($this->recordCollection));
-        $record = $this->getMock('\Migration\ResourceModel\Record', [], [], '', false);
+        $record = $this->createMock(\Migration\ResourceModel\Record::class);
         $this->recordCollection->addRecord($record);
         $this->assertEquals(4, count($this->recordCollection));
     }
@@ -133,7 +127,10 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
         $this->records[2]->expects($this->any())
             ->method('setValue')
             ->with($this->equalTo('fieldName'), $this->equalTo('default'));
-        $this->recordCollection->setValue('fieldName', 'default');
+        $this->assertInstanceOf(
+            \Migration\ResourceModel\Record\Collection::class,
+            $this->recordCollection->setValue('fieldName', 'default')
+        );
     }
 
     /**

@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>sales_flat_order</document>
+                <to>sales_order</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>sales_flat_order.reward_points_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_order.reward_salesrule_points</field>
+            </ignore>
+            <move>
+                <field>sales_flat_order.hidden_tax_amount</field>
+                <to>sales_order.discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_amount</field>
+                <to>sales_order.base_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.shipping_hidden_tax_amount</field>
+                <to>sales_order.shipping_discount_tax_compensation_amount</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_shipping_hidden_tax_amnt</field>
+                <to>sales_order.base_shipping_discount_tax_compensation_amnt</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_invoiced</field>
+                <to>sales_order.discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_invoiced</field>
+                <to>sales_order.base_discount_tax_compensation_invoiced</to>
+            </move>
+            <move>
+                <field>sales_flat_order.hidden_tax_refunded</field>
+                <to>sales_order.discount_tax_compensation_refunded</to>
+            </move>
+            <move>
+                <field>sales_flat_order.base_hidden_tax_refunded</field>
+                <to>sales_order.base_discount_tax_compensation_refunded</to>
+            </move>
+            <ignore>
+                <datatype>sales_flat_order.customer_group_id</datatype>
+            </ignore>
+            <transform>
+                <field>sales_flat_order.gift_cards</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+        </field_rules>
+    </source>
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>sales_order.send_email</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.coupon_rule_name</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <datatype>sales_order.customer_group_id</datatype>
+            </ignore>
+        </field_rules>
+    </destination>
+</map>

@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\PostProcessing;
 
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner|\PHPUnit_Framework_MockObject_MockObject
@@ -32,26 +32,17 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->eavLeftoverDataCleaner = $this->getMock(
-            'Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner',
-            ['clean', 'getIterationsCount'],
-            [],
-            '',
-            false
+        $this->eavLeftoverDataCleaner = $this->createPartialMock(
+            \Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner::class,
+            ['clean', 'getIterationsCount']
         );
-        $this->productsInRootCatalogCleaner = $this->getMock(
-            'Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner',
-            ['clean'],
-            [],
-            '',
-            false
+        $this->productsInRootCatalogCleaner = $this->createPartialMock(
+            \Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner::class,
+            ['clean']
         );
-        $this->progress = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
-            ['start', 'finish'],
-            [],
-            '',
-            false
+        $this->progress = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'finish']
         );
     }
 

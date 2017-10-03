@@ -10,7 +10,7 @@ use Magento\Framework\TestFramework\Unit\Helper\ObjectManager;
 /**
  * Class AttributeGroupNameToCodeMapTest
  */
-class AttributeGroupNameToCodeMapTest extends \PHPUnit_Framework_TestCase
+class AttributeGroupNameToCodeMapTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Model\Eav\AttributeGroupNameToCodeMap|\PHPUnit_Framework_MockObject_MockObject
@@ -23,7 +23,7 @@ class AttributeGroupNameToCodeMapTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $objectHelper = new ObjectManager($this);
-        $this->model = $objectHelper->getObject('\Migration\Model\Eav\AttributeGroupNameToCodeMap');
+        $this->model = $objectHelper->getObject(\Migration\Model\Eav\AttributeGroupNameToCodeMap::class);
     }
 
     /**

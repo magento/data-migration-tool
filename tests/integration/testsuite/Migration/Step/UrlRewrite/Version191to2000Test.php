@@ -10,7 +10,7 @@ namespace Migration\Step\UrlRewrite;
  * UrlRewrite step test class
  * @dbFixture url_rewrite_191
  */
-class Version191o2000Test extends \PHPUnit_Framework_TestCase
+class Version191o2000Test extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -40,13 +40,13 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $this->objectManager = $helper->getObjectManager();
-        $this->objectManager->get('\Migration\Config')
+        $this->objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->tableName = 'url_rewrite_m2' . md5('url_rewrite_m2');
-        $logManager = $this->objectManager->create('\Migration\Logger\Manager');
-        $this->logger = $this->objectManager->create('\Migration\Logger\Logger');
-        $this->logger->pushHandler($this->objectManager->create('\Migration\Logger\ConsoleHandler'));
-        $this->config = $this->objectManager->get('\Migration\Config');
+        $logManager = $this->objectManager->create(\Migration\Logger\Manager::class);
+        $this->logger = $this->objectManager->create(\Migration\Logger\Logger::class);
+        $this->logger->pushHandler($this->objectManager->create(\Migration\Logger\ConsoleHandler::class));
+        $this->config = $this->objectManager->get(\Migration\Config::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
@@ -58,7 +58,7 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
     public function testIntegrity()
     {
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version191to2000',
+            \Migration\Step\UrlRewrite\Version191to2000::class,
             [
                 'logger' => $this->logger,
                 'config' => $this->config,
@@ -77,7 +77,7 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
     public function testData()
     {
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version191to2000',
+            \Migration\Step\UrlRewrite\Version191to2000::class,
             [
                 'logger' => $this->logger,
                 'config' => $this->config,
@@ -85,7 +85,7 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
             ]
         );
         /** @var \Migration\ResourceModel\Destination $destination */
-        $destination = $this->objectManager->get('\Migration\ResourceModel\Destination');
+        $destination = $this->objectManager->get(\Migration\ResourceModel\Destination::class);
         ob_start();
         $urlRewrite->perform();
         ob_end_clean();
@@ -96,7 +96,7 @@ class Version191o2000Test extends \PHPUnit_Framework_TestCase
         $this->assertEquals(4, $destination->getRecordsCount('catalog_url_rewrite_product_category'));
 
         $urlRewrite = $this->objectManager->create(
-            '\Migration\Step\UrlRewrite\Version191to2000',
+            \Migration\Step\UrlRewrite\Version191to2000::class,
             [
                 'logger' => $this->logger,
                 'config' => $this->config,

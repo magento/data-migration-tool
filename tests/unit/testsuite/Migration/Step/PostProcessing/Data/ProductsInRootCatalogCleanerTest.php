@@ -5,7 +5,7 @@
  */
 namespace Migration\Step\PostProcessing\Data;
 
-class ProductsInRootCatalogCleanerTest extends \PHPUnit_Framework_TestCase
+class ProductsInRootCatalogCleanerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ProductsInRootCatalogCleaner
@@ -27,19 +27,13 @@ class ProductsInRootCatalogCleanerTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
-            ['deleteRecords'],
-            [],
-            '',
-            false
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['deleteRecords']
         );
-        $this->productsInRootCatalogModel = $this->getMock(
-            'Migration\Step\PostProcessing\Model\ProductsInRootCatalog',
-            ['getProductIds', 'getCatalogCategoryProductDocument'],
-            [],
-            '',
-            false
+        $this->productsInRootCatalogModel = $this->createPartialMock(
+            \Migration\Step\PostProcessing\Model\ProductsInRootCatalog::class,
+            ['getProductIds', 'getCatalogCategoryProductDocument']
         );
     }
 

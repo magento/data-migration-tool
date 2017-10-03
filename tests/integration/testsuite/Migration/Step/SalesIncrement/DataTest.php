@@ -9,7 +9,7 @@ namespace Migration\Step\SalesIncrement;
  * SalesIncrement step run test class
  * @dbFixture sales_increment
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var array
@@ -201,19 +201,19 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $config = $objectManager->get('\Migration\Config');
-        $helper = $objectManager->get('\Migration\Step\SalesIncrement\Helper');
-        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $config = $objectManager->get(\Migration\Config::class);
+        $helper = $objectManager->get(\Migration\Step\SalesIncrement\Helper::class);
+        $destination = $objectManager->get(\Migration\ResourceModel\Destination::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
         /** @var \Migration\Step\SalesIncrement\Data $salesIncrement */
         $salesIncrement = $objectManager->create(
-            '\Migration\Step\SalesIncrement\Data',
+            \Migration\Step\SalesIncrement\Data::class,
             [
                 'logger' => $logger,
                 'config' => $config,

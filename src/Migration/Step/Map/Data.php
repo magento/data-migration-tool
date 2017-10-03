@@ -21,6 +21,7 @@ use Migration\Logger\Logger;
 /**
  * Class Data
  * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(CyclomaticComplexity)
  */
 class Data implements StageInterface
 {
@@ -93,6 +94,7 @@ class Data implements StageInterface
      * @param Config $config
      * @param Helper $helper
      *
+     * @SuppressWarnings(CyclomaticComplexity)
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -137,6 +139,9 @@ class Data implements StageInterface
                 continue;
             }
             $destDocument = $this->destination->getDocument($destinationName);
+            if (!$destDocument) {
+                continue;
+            }
             $this->destination->clearDocument($destinationName);
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);

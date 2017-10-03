@@ -9,7 +9,7 @@ namespace Migration\Step\Eav;
  * Eav step test
  * @dbFixture eav
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Step\Eav\Integrity;
@@ -22,10 +22,10 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function setUp()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
-        $initialData = $objectManager->get('Migration\Step\Eav\InitialData');
+        $objectManager->get(\Migration\Config::class)->init(dirname(__DIR__) . '/../_files/config.xml');
+        $initialData = $objectManager->get(\Migration\Step\Eav\InitialData::class);
         $this->eav = $objectManager->create(
-            'Migration\Step\Eav\Integrity',
+            \Migration\Step\Eav\Integrity::class,
             [
                 'initialData' => $initialData,
             ]

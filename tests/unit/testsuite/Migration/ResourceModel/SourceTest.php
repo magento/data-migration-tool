@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * ResourceModel source test class
  */
-class SourceTest extends \PHPUnit_Framework_TestCase
+class SourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -57,22 +57,29 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     protected function setUp()
     {
         $adapterConfigs = ['resourceType' => 'source'];
-        $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
-        $this->adapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
-            ['select', 'fetchAll', 'query', 'loadPage', 'createDelta', 'loadChangedRecords', 'loadDeletedRecords'],
-            [],
-            '',
-            false
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
         );
-        $this->adapterFactory = $this->getMock('\Migration\ResourceModel\AdapterFactory', ['create'], [], '', false);
+        $this->adapter = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Mysql::class,
+            ['select', 'fetchAll', 'query', 'loadPage', 'createDelta', 'loadChangedRecords', 'loadDeletedRecords']
+        );
+        $this->adapterFactory = $this->createPartialMock(
+            \Migration\ResourceModel\AdapterFactory::class,
+            ['create']
+        );
         $this->adapterFactory->expects($this->once())
             ->method('create')
             ->with($adapterConfigs)
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock('\Migration\ResourceModel\DocumentFactory', [], [], '', false);
-        $this->structureFactory = $this->getMock('\Migration\ResourceModel\StructureFactory', [], [], '', false);
-        $this->documentCollection = $this->getMock('\Migration\ResourceModel\Document\Collection', [], [], '', false);
+        $this->documentFactory = $this->getMockBuilder(\Migration\ResourceModel\DocumentFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->structureFactory = $this->getMockBuilder(\Migration\ResourceModel\StructureFactory::class)
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->documentCollection = $this->createMock(\Migration\ResourceModel\Document\Collection::class);
         $this->resourceSource = new \Migration\ResourceModel\Source(
             $this->adapterFactory,
             $this->config,
@@ -88,7 +95,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
     public function testLoadPage()
     {
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['bulk_size', $this->bulkSize],
             ['init_statements_source', 'SET NAMES utf8;']
         ]);
@@ -104,7 +111,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('createDelta')
             ->with('spfx_document', 'spfx_m2_cl_document', 'key_field');
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             [Source::CONFIG_DOCUMENT_PREFIX, 'spfx_'],
             ['init_statements_source', 'SET NAMES utf8;']
         ]);
@@ -119,7 +126,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('loadChangedRecords')
             ->with('document', 'm2_cl_document', 'key_field', 0, 100);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['source_prefix', ''],
             ['bulk_size', 100],
             ['init_statements_source', 'SET NAMES utf8;']
@@ -135,7 +142,7 @@ class SourceTest extends \PHPUnit_Framework_TestCase
         $this->adapter->expects($this->once())->method('loadDeletedRecords')
             ->with('m2_cl_document', 'key_field', 0, 100);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['source_prefix', ''],
             ['bulk_size', 100],
             ['init_statements_source', 'SET NAMES utf8;']

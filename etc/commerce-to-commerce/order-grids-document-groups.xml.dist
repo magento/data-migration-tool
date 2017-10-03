@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+    <group name="source_documents">
+        <document key="entity_id">sales_flat_order</document>
+        <document key="entity_id">sales_flat_order_address</document>
+        <document key="entity_id">sales_flat_invoice</document>
+        <document key="entity_id">sales_flat_shipment</document>
+        <document key="entity_id">sales_flat_creditmemo</document>
+        <document key="entity_id">sales_flat_order_payment</document>
+        <document key="entity_id">sales_flat_order_grid</document>
+        <document key="entity_id">sales_flat_invoice_grid</document>
+        <document key="entity_id">sales_flat_shipment_grid</document>
+        <document key="entity_id">sales_flat_creditmemo_grid</document>
+        <document key="entity_id">enterprise_sales_order_grid_archive</document>
+        <document key="entity_id">enterprise_sales_invoice_grid_archive</document>
+        <document key="entity_id">enterprise_sales_shipment_grid_archive</document>
+        <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
+    </group>
+    <group name="archive_orders">
+        <document key="entity_id">enterprise_sales_order_grid_archive</document>
+        <document key="entity_id">enterprise_sales_invoice_grid_archive</document>
+        <document key="entity_id">enterprise_sales_shipment_grid_archive</document>
+        <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
+    </group>
+</groups>

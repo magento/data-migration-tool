@@ -9,7 +9,7 @@ namespace Migration\Step\TierPrice;
  * Class IntegrityTest
  * @dbFixture tier_price
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     const TIRE_PRICE_TABLE_DESTINATION = 'catalog_product_entity_tier_price';
     
@@ -44,20 +44,26 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     private $mapFactory;
 
     /**
+     * @var \Migration\Config
+     */
+    private $config;
+
+    /**
      * @return void
      */
     public function setUp()
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
-        $this->source = $objectManager->create('Migration\ResourceModel\Source');
-        $this->destination = $objectManager->create('Migration\ResourceModel\Destination');
-        $this->helper = $objectManager->create('Migration\Step\TierPrice\Helper');
-        $this->logger = $objectManager->create('Migration\Logger\Logger');
-        $this->mapFactory = $objectManager->create('Migration\Reader\MapFactory');
+        $this->progress = $objectManager->create(\Migration\App\ProgressBar\LogLevelProcessor::class);
+        $this->source = $objectManager->create(\Migration\ResourceModel\Source::class);
+        $this->destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
+        $this->helper = $objectManager->create(\Migration\Step\TierPrice\Helper::class);
+        $this->logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $this->mapFactory = $objectManager->create(\Migration\Reader\MapFactory::class);
+        $this->config = $objectManager->create(\Migration\Config::class);
     }
 
     /**
@@ -68,6 +74,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $data = new Integrity(
             $this->helper,
             $this->logger,
+            $this->config,
             $this->progress,
             $this->source,
             $this->destination,
@@ -84,6 +91,7 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $data = new Integrity(
             $this->helper,
             $this->logger,
+            $this->config,
             $this->progress,
             $this->source,
             $this->destination,

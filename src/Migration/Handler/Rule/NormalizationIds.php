@@ -65,7 +65,7 @@ class NormalizationIds extends AbstractHandler
         $this->validate($recordToHandle);
         $ids = explode(',', $recordToHandle->getValue($this->field));
         $normalizedRecords = [];
-        $entityIdName = (empty($this->editionMigrate) || $this->editionMigrate == Config::EDITION_MIGRATE_CE_TO_CE)
+        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
             ? 'rule_id'
             : 'row_id';
         foreach ($ids as $id) {

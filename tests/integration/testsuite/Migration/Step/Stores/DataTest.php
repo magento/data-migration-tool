@@ -9,41 +9,51 @@ namespace Migration\Step\Stores;
  * Class DataTest
  * @dbFixture stores
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var array
      */
-    protected $destinationDocuments = [
+    private $destinationDocuments = [
         'store' => 2,
         'store_group' => 2,
         'store_website' => 2
     ];
 
     /**
-     * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\App\ProgressBar\LogLevelProcessor
      */
-    protected $progress;
+    private $progress;
 
     /**
-     * @var \Migration\ResourceModel\Source|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\Source
      */
-    protected $source;
+    private $source;
 
     /**
-     * @var \Migration\ResourceModel\RecordFactory|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\ResourceModel\RecordFactory
      */
-    protected $recordFactory;
+    private $recordFactory;
 
     /**
-     * @var \Migration\Step\Stores\Helper|\PHPUnit_Framework_MockObject_MockObject
+     * @var \Migration\Step\Stores\Model\DocumentsList
      */
-    protected $helper;
+    private $documentsList;
+
+    /**
+     * @var \Migration\RecordTransformerFactory
+     */
+    private $recordTransformerFactory;
+
+    /**
+     * @var \Migration\Reader\MapFactory
+     */
+    private $map;
 
     /**
      * @return void
@@ -52,13 +62,15 @@ class DataTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $this->progress = $objectManager->create('Migration\App\ProgressBar\LogLevelProcessor');
-        $this->source = $objectManager->create('Migration\ResourceModel\Source');
-        $this->destination = $objectManager->create('Migration\ResourceModel\Destination');
-        $this->recordFactory = $objectManager->create('Migration\ResourceModel\RecordFactory');
-        $this->helper = $objectManager->create('Migration\Step\Stores\Helper');
+        $this->progress = $objectManager->create(\Migration\App\ProgressBar\LogLevelProcessor::class);
+        $this->source = $objectManager->create(\Migration\ResourceModel\Source::class);
+        $this->destination = $objectManager->create(\Migration\ResourceModel\Destination::class);
+        $this->recordFactory = $objectManager->create(\Migration\ResourceModel\RecordFactory::class);
+        $this->documentsList = $objectManager->create(\Migration\Step\Stores\Model\DocumentsList::class);
+        $this->recordTransformerFactory = $objectManager->create(\Migration\RecordTransformerFactory::class);
+        $this->map = $objectManager->create(\Migration\Reader\MapFactory::class);
     }
 
     /**
@@ -71,7 +83,9 @@ class DataTest extends \PHPUnit_Framework_TestCase
             $this->source,
             $this->destination,
             $this->recordFactory,
-            $this->helper
+            $this->documentsList,
+            $this->recordTransformerFactory,
+            $this->map
         );
         $this->assertTrue($data->perform());
         foreach ($this->destinationDocuments as $documentName => $recordsCount) {

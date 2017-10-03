@@ -10,6 +10,7 @@ use Migration\App\ProgressBar;
 use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\ResourceModel;
+use Migration\Config;
 
 /**
  * @SuppressWarnings(PHPMD.NumberOfChildren)
@@ -95,8 +96,14 @@ abstract class AbstractIntegrity implements StageInterface
     protected $progress;
 
     /**
+     * @var Config
+     */
+    protected $config;
+
+    /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
@@ -105,12 +112,14 @@ abstract class AbstractIntegrity implements StageInterface
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         $mapConfigOption
     ) {
         $this->logger = $logger;
+        $this->config = $config;
         $this->progress = $progress;
         $this->source = $source;
         $this->destination = $destination;
@@ -234,13 +243,14 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkDocuments()
     {
-        $check = function ($errors, $errorMessagePattern, $type) {
+        $check = function ($data, $messagePattern, $type) {
             $isSuccess = true;
-            if (isset($errors[$type])) {
+            if (isset($data[$type])) {
+                $logLevel = $this->config->getOption(Config::OPTION_AUTO_RESOLVE) ? Logger::WARNING : Logger::ERROR;
                 $isSuccess = false;
-                $this->logger->error(sprintf(
-                    $errorMessagePattern,
-                    implode(',', array_keys($errors[$type]))
+                $this->logger->addRecord($logLevel, sprintf(
+                    $messagePattern,
+                    implode(',', array_keys($data[$type]))
                 ));
             }
             return $isSuccess;
@@ -279,13 +289,14 @@ abstract class AbstractIntegrity implements StageInterface
      */
     protected function checkDocumentFields()
     {
-        $check = function ($errors, $errorMessagePattern, $type) {
+        $check = function ($data, $messagePattern, $type) {
             $isSuccess = true;
-            if (isset($errors[$type])) {
+            if (isset($data[$type])) {
+                $logLevel = $this->config->getOption(Config::OPTION_AUTO_RESOLVE) ? Logger::WARNING : Logger::ERROR;
                 $isSuccess = false;
-                foreach ($errors[$type] as $document => $fields) {
-                    $this->logger->error(sprintf(
-                        $errorMessagePattern,
+                foreach ($data[$type] as $document => $fields) {
+                    $this->logger->addRecord($logLevel, sprintf(
+                        $messagePattern,
                         $document,
                         implode(',', $fields)
                     ));
@@ -356,9 +367,10 @@ abstract class AbstractIntegrity implements StageInterface
     protected function checkDocumentFieldsData()
     {
         $isSuccess = true;
+        $logLevel = $this->config->getOption(Config::OPTION_AUTO_RESOLVE) ? Logger::WARNING : Logger::ERROR;
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] as $errorDetail) {
-                $this->logger->error(sprintf(
+                $this->logger->addRecord($logLevel, sprintf(
                     'Incompatibility in data. Source document: %s. Field: %s. Error: %s',
                     $errorDetail['document'],
                     $errorDetail['field'],
@@ -369,7 +381,7 @@ abstract class AbstractIntegrity implements StageInterface
         }
         if (isset($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST])) {
             foreach ($this->incompatibleDocumentFieldsData[MapInterface::TYPE_DEST] as $errorDetail) {
-                $this->logger->error(sprintf(
+                $this->logger->addRecord($logLevel, sprintf(
                     'Incompatibility in data. Destination document: %s. Field: %s. Error: %s',
                     $errorDetail['document'],
                     $errorDetail['field'],

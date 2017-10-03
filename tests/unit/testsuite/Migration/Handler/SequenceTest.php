@@ -6,7 +6,7 @@
 
 namespace Migration\Handler;
 
-class SequenceTest extends \PHPUnit_Framework_TestCase
+class SequenceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @param string $table
@@ -21,26 +21,34 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
         $createdVersionField = 'fieldname_version';
         $version = 1;
 
-        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMockBuilder('Migration\ResourceModel\Record')
-            ->setMethods(['getValue', 'setValue', 'getFields'])
+        /** @var \Migration\ResourceModel\Structure|\PHPUnit_Framework_MockObject_MockObject $record */
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
+            ->setMethods(['getFields'])
             ->disableOriginalConstructor()
             ->getMock();
-
+        $structure->expects($this->any())->method('getFields')->willReturn([$fieldName]);
+        /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
+        $record = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->setMethods(['getValue', 'setValue', 'getFields', 'getStructure'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $record->expects($this->any())->method('getStructure')->willReturn($structure);
         $record->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($id);
         $record->expects($this->any())->method('setValue')->with($fieldName, $id);
 
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record2 */
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')
-            ->setMethods(['setValue'])
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->setMethods(['getValue', 'setValue', 'getFields', 'getStructure'])
             ->disableOriginalConstructor()
             ->getMock();
 
         $record2->expects($this->any())->method('setValue')->willReturn($createdVersionField, $version);
+        $record2->expects($this->any())->method('getFields')->willReturn([$fieldName]);
+        $record2->expects($this->any())->method('getStructure')->willReturn($structure);
 
         /** @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject $destination */
-        $destination = $this->getMockBuilder('Migration\ResourceModel\Destination')
+        $destination = $this->getMockBuilder(\Migration\ResourceModel\Destination::class)
             ->setMethods(['clearDocument', 'saveRecords'])
             ->disableOriginalConstructor()
             ->getMock();
@@ -51,7 +59,7 @@ class SequenceTest extends \PHPUnit_Framework_TestCase
 
         $handler = new Sequence($table, $destination);
         $handler->setField($fieldName);
-        $handler->handle($record, $record2);
+        $this->assertNull($handler->handle($record, $record2));
     }
 
     /**

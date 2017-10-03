@@ -9,7 +9,7 @@ use Migration\Logger\Logger;
 use Migration\Reader\Map;
 use Migration\ResourceModel;
 
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -56,45 +56,36 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
-        $this->progressBar = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['addRecord']
         );
-        $this->progress = $this->getMock(
-            '\Migration\App\Progress',
-            ['getProcessedEntities'],
-            [],
-            '',
-            false
+        $this->progressBar = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'finish', 'advance']
         );
-        $this->source = $this->getMock(
-            'Migration\ResourceModel\Source',
-            ['getDocumentList', 'getRecordsCount'],
-            [],
-            '',
-            false
+        $this->progress = $this->createPartialMock(
+            \Migration\App\Progress::class,
+            ['getProcessedEntities']
         );
-        $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
-            ['getRecordsCount'],
-            [],
-            '',
-            false
+        $this->source = $this->createPartialMock(
+            \Migration\ResourceModel\Source::class,
+            ['getDocumentList', 'getRecordsCount']
+        );
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getRecordsCount', 'getDocument']
         );
 
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->setMethods(['getDocumentMap'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('map_file')->willReturn($this->map);
 
-        $this->helper = $this->getMockBuilder('\Migration\Step\Map\Helper')->disableOriginalConstructor()
+        $this->helper = $this->getMockBuilder(\Migration\Step\Map\Helper::class)->disableOriginalConstructor()
             ->setMethods(['getFieldsUpdateOnDuplicate'])
             ->getMock();
 
@@ -117,9 +108,17 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $sourceDocName = 'core_config_data';
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $dstDocName = 'config_data';
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(3);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->destination
+            ->expects($this->once())
+            ->method('getDocument')
+            ->with($dstDocName)
+            ->willReturn($destinationDocument);
         $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
             ->willReturn(false);
         $this->assertTrue($this->volume->perform());
@@ -136,6 +135,7 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('getRecordsCount');
+        $this->destination->expects($this->never())->method('getDocument');
         $this->helper->expects($this->never())->method('getFieldsUpdateOnDuplicate');
         $this->assertTrue($this->volume->perform());
     }
@@ -147,10 +147,18 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     {
         $sourceDocName = 'core_config_data';
         $dstDocName = 'config_data';
+        $destinationDocument = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->source->expects($this->once())->method('getDocumentList')->willReturn([$sourceDocName]);
         $this->map->expects($this->once())->method('getDocumentMap')->willReturn($dstDocName);
         $this->source->expects($this->once())->method('getRecordsCount')->willReturn(2);
         $this->destination->expects($this->once())->method('getRecordsCount')->willReturn(3);
+        $this->destination
+            ->expects($this->once())
+            ->method('getDocument')
+            ->with($dstDocName)
+            ->willReturn($destinationDocument);
         $this->logger->expects($this->once())->method('addRecord')->with(
             Logger::WARNING,
             'Mismatch of entities in the document: ' . $dstDocName

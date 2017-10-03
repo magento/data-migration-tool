@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
+    <group name="source_documents">
+        <document key="entity_id">customer_entity</document>
+        <document key="value_id">customer_entity_datetime</document>
+        <document key="value_id">customer_entity_decimal</document>
+        <document key="value_id">customer_entity_int</document>
+        <document key="value_id">customer_entity_text</document>
+        <document key="value_id">customer_entity_varchar</document>
+        <document key="entity_id">customer_address_entity</document>
+        <document key="value_id">customer_address_entity_datetime</document>
+        <document key="value_id">customer_address_entity_decimal</document>
+        <document key="value_id">customer_address_entity_int</document>
+        <document key="value_id">customer_address_entity_text</document>
+        <document key="value_id">customer_address_entity_varchar</document>
+    </group>
+    <group name="eav_entities">
+        <document>customer</document>
+        <document>customer_address</document>
+    </group>
+    <group name="customer">
+        <document key="entity_id">customer_entity</document>
+        <document key="value_id">customer_entity_datetime</document>
+        <document key="value_id">customer_entity_decimal</document>
+        <document key="value_id">customer_entity_int</document>
+        <document key="value_id">customer_entity_text</document>
+        <document key="value_id">customer_entity_varchar</document>
+    </group>
+    <group name="customer_address">
+        <document key="entity_id">customer_address_entity</document>
+        <document key="value_id">customer_address_entity_datetime</document>
+        <document key="value_id">customer_address_entity_decimal</document>
+        <document key="value_id">customer_address_entity_int</document>
+        <document key="value_id">customer_address_entity_text</document>
+        <document key="value_id">customer_address_entity_varchar</document>
+    </group>
+    <group name="source_entity_documents">
+        <document>customer_entity</document>
+        <document>customer_address_entity</document>
+    </group>
+</groups>

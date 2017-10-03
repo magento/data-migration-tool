@@ -190,7 +190,7 @@ class Record
      */
     public function getFields()
     {
-        if (empty($this->structure)) {
+        if (empty($this->getStructure())) {
             throw new Exception("Structure not set");
         }
 

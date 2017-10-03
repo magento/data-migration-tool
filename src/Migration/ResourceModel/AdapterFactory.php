@@ -15,7 +15,7 @@ class AdapterFactory
     /**
      * @var string
      */
-    protected $defaultClassName = '\Migration\ResourceModel\Adapter\Mysql';
+    protected $defaultClassName = \Migration\ResourceModel\Adapter\Mysql::class;
 
     /**
      * @var \Migration\Config

@@ -11,6 +11,8 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\MapInterface;
 use Migration\App\ProgressBar;
 use Migration\ResourceModel;
+use Migration\Step\Customer\Model;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -20,42 +22,44 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerGroups;
+    private $readerGroups;
 
     /**
      * @var \Migration\Reader\Groups
      */
-    protected $readerAttributes;
+    private $readerAttributes;
 
     /**
-     * @var Helper
+     * @var Model\AttributesDataToSkip
      */
-    protected $helper;
+    private $attributesDataToSkip;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Logger $logger
+     * @param Config $config
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
-     * @param Helper $helper
+     * @param Model\AttributesDataToSkip $attributesDataToSkip
      * @param GroupsFactory $groupsFactory
      * @param string $mapConfigOption
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progress,
         Logger $logger,
+        Config $config,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
-        Helper $helper,
+        Model\AttributesDataToSkip $attributesDataToSkip,
         GroupsFactory $groupsFactory,
         $mapConfigOption = 'customer_map_file'
     ) {
-        $this->helper = $helper;
+        $this->attributesDataToSkip = $attributesDataToSkip;
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->readerAttributes = $groupsFactory->create('customer_attribute_groups_file');
-        parent::__construct($progress, $logger, $source, $destination, $mapFactory, $mapConfigOption);
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
     /**
@@ -67,7 +71,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
         $attributesError = false;
         try {
-            $this->helper->getSkippedAttributes();
+            $this->attributesDataToSkip->getSkippedAttributes();
         } catch (\Migration\Exception $e) {
             $this->logger->error($e->getMessage());
             $attributesError = true;

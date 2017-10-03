@@ -8,6 +8,7 @@ namespace Migration\TestFramework;
 
 /**
  * Helper for preparing databases, initialize ObjectManager
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
  */
 class Helper
 {
@@ -103,18 +104,20 @@ class Helper
             $this->objectManager = $this->initObjectManager();
         }
         $this->objectManager->configure([
-            'preferences' => ['Migration\App\ProgressBar\LogLevelProcessor' => 'Migration\TestFramework\ProgressBar'],
-            'Migration\Logger\Logger' => [
+            'preferences' => [
+                \Migration\App\ProgressBar\LogLevelProcessor::class => \Migration\TestFramework\ProgressBar::class
+            ],
+            \Migration\Logger\Logger::class => [
                 'arguments' => [
                     'handlers' => [
                         'quiet' => [
-                            'instance' => '\Migration\TestFramework\QuietLogHandler'
+                            'instance' => \Migration\TestFramework\QuietLogHandler::class
                         ]
                     ]
                 ]
             ],
-            'Migration\ResourceModel\Source' => ['shared' => false],
-            'Migration\ResourceModel\Destination' => ['shared' => false],
+            \Migration\ResourceModel\Source::class => ['shared' => false],
+            \Migration\ResourceModel\Destination::class => ['shared' => false],
         ]);
         return $this->objectManager;
     }

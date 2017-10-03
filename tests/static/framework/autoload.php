@@ -4,14 +4,24 @@
  * See COPYING.txt for license details.
  */
 
-$magentoDir = require __DIR__ . '/../../../etc/magento_path.php';
-require_once $magentoDir . '/app/autoload.php';
+use \Magento\Framework\App\Filesystem\DirectoryList;
 
-$vendorDir = require $magentoDir . '/app/etc/vendor_path.php';
-$vendorAutoload = require $magentoDir . "/{$vendorDir}/autoload.php";
-$testsBaseDir = "$magentoDir/$vendorDir/magento/data-migration-tool/tests/static";
-$vendorAutoload->addPsr4('Migration\\Test\\', "{$testsBaseDir}/testsuite/Migration/");
-$vendorAutoload->addPsr4(
+$baseDir = require __DIR__ . '/../../../etc/magento_path.php';
+require $baseDir . '/app/autoload.php';
+require $baseDir . '/vendor/squizlabs/php_codesniffer/autoload.php';
+$testsBaseDir = $baseDir . '/dev/tests/static';
+$testsBaseDirMigration = $baseDir . '/vendor/magento/data-migration-tool/tests/static';
+$autoloadWrapper = \Magento\Framework\Autoload\AutoloaderRegistry::getAutoloader();
+$autoloadWrapper->addPsr4('Magento\\', $testsBaseDir . '/testsuite/Magento/');
+$autoloadWrapper->addPsr4('Magento\\', $testsBaseDirMigration . '/testsuite/Migration/');
+$autoloadWrapper->addPsr4(
     'Magento\\TestFramework\\',
-    $magentoDir . '/dev/tests/static/framework/Magento/TestFramework/'
+    [
+        $testsBaseDir . '/framework/Magento/TestFramework/',
+        $testsBaseDir . '/../integration/framework/Magento/TestFramework/',
+    ]
 );
+$autoloadWrapper->addPsr4('Magento\\CodeMessDetector\\', $testsBaseDir . '/framework/Magento/CodeMessDetector');
+
+$generatedCode = DirectoryList::getDefaultConfig()[DirectoryList::GENERATED_CODE][DirectoryList::PATH];
+$autoloadWrapper->addPsr4('Magento\\', $baseDir . '/' . $generatedCode . '/Magento/');

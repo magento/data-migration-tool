@@ -9,7 +9,7 @@ namespace Migration\App;
 /**
  * Delta step test class
  */
-class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
+class SetupDeltaLogTest extends \PHPUnit\Framework\TestCase
 {
 
     /**
@@ -34,12 +34,12 @@ class SetupDeltaLogTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $this->objectManager = $helper->getObjectManager();
-        $this->objectManager->get('\Migration\Config')
+        $this->objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
         $this->setupDeltaLog = $this->objectManager->create(
-            '\Migration\App\SetupDeltaLog'
+            \Migration\App\SetupDeltaLog::class
         );
-        $this->source = $this->objectManager->create('\Migration\ResourceModel\Source');
+        $this->source = $this->objectManager->create(\Migration\ResourceModel\Source::class);
     }
 
     /**

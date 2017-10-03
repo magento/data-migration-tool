@@ -5,7 +5,7 @@
  */
 namespace Migration\Handler\Settings;
 
-class TemplateTest extends \PHPUnit_Framework_TestCase
+class TemplateTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
@@ -16,17 +16,14 @@ class TemplateTest extends \PHPUnit_Framework_TestCase
         $templateNewStyle = 'new_update_email_template';
         $fieldName = 'value';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
-        $recordToHandle = $this->getMock(
-            'Migration\ResourceModel\Record',
-            ['getValue', 'setValue', 'getFields'],
-            [],
-            '',
-            false
+        $recordToHandle = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['getValue', 'setValue', 'getFields']
         );
         $recordToHandle->expects($this->once())->method('getValue')->with($fieldName)->willReturn($templateOldFashion);
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $templateNewStyle);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $oppositeRecord = $this->getMockBuilder('Migration\ResourceModel\Record')
+        $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
         $oppositeRecord->expects($this->once())->method('getValue')->with($fieldName)->willReturn($templateNewStyle);

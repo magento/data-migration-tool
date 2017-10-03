@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * Adapter Factory Test
  */
-class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
+class AdapterFactoryTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Magento\Framework\ObjectManager\ObjectManager|\PHPUnit_Framework_MockObject_MockObject
@@ -31,13 +31,13 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = $this->getMock('\Migration\Config', ['getOption'], [], '', false);
-        $this->objectManager = $this->getMock(
-            '\Magento\Framework\ObjectManager\ObjectManager',
-            ['create'],
-            [],
-            '',
-            false
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
+        );
+        $this->objectManager = $this->createPartialMock(
+            \Magento\Framework\ObjectManager\ObjectManager::class,
+            ['create']
         );
         $this->adapterFactory = new \Migration\ResourceModel\AdapterFactory($this->objectManager, $this->config);
     }
@@ -47,16 +47,18 @@ class AdapterFactoryTest extends \PHPUnit_Framework_TestCase
      */
     public function testCreate()
     {
-        $adapterClassName = '\Migration\ResourceModel\Adapter\Mysql';
+        $adapterClassName = \Migration\ResourceModel\Adapter\Mysql::class;
         $data = ['config' => ['key' => 'value']];
-        $adapter = $this->getMock($adapterClassName, [], [], '', false);
+        $adapter = $this->getMockBuilder($adapterClassName)
+            ->disableOriginalConstructor()
+            ->getMock();
         $this->config->expects($this->once())
             ->method('getOption')
             ->with('resource_adapter_class_name')
             ->will($this->returnValue(null));
         $this->objectManager->expects($this->once())
             ->method('create')
-            ->with('\Migration\ResourceModel\Adapter\Mysql', $data)
+            ->with(\Migration\ResourceModel\Adapter\Mysql::class, $data)
             ->will($this->returnValue($adapter));
         $this->assertInstanceOf($adapterClassName, $this->adapterFactory->create($data));
     }

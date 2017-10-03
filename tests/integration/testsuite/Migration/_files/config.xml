@@ -80,11 +80,15 @@
         <class_map>tests/integration/testsuite/Migration/_files/class-map.xml</class_map>
         <tier_price_map_file>tests/integration/testsuite/Migration/_files/map-tier-price.xml</tier_price_map_file>
         <tier_price_map_file_fail>tests/integration/testsuite/Migration/_files/map-tier-price-fail.xml</tier_price_map_file_fail>
+        <customer_document_groups_file>tests/integration/testsuite/Migration/_files/customer-document-groups.xml</customer_document_groups_file>
+        <customer_attribute_groups_file>tests/integration/testsuite/Migration/_files/customer-attribute-groups.xml</customer_attribute_groups_file>
+        <customer_map_file>tests/integration/testsuite/Migration/_files/map-customer.xml</customer_map_file>
+        <stores_map_file>tests/integration/testsuite/Migration/_files/map-stores.xml</stores_map_file>
         <bulk_size>100</bulk_size>
         <source_prefix />
         <dest_prefix />
         <auto_resolve_urlrewrite_duplicates>1</auto_resolve_urlrewrite_duplicates>
-        <edition_migrate>ce-to-ce</edition_migrate>
+        <edition_migrate>opensource-to-opensource</edition_migrate>
         <edition_number>1.9.2.1</edition_number>
         <init_statements_source>SET NAMES utf8;</init_statements_source>
         <init_statements_destination>SET NAMES utf8;</init_statements_destination>

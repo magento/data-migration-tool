@@ -1,11 +1,11 @@
 {
     "name": "magento/data-migration-tool",
     "description": "Migration Tool",
-    "version": "2.1.9",
+    "version": "2.2.0",
     "require": {
-        "symfony/console": "~2.3",
-        "magento/framework": "~100.1",
-        "monolog/monolog": "~1.16.0"
+        "symfony/console": "~2.3, !=2.7.0",
+        "magento/framework": "~101.0.0",
+        "monolog/monolog": "^1.17"
     },
     "autoload": {
         "psr-4": {"Migration\\": ["src/Migration", "tests/unit/testsuite/Migration"]},

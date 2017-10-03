@@ -10,7 +10,7 @@ use Migration\Reader\Map;
 /**
  * Class IntegrityTest
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -57,49 +57,43 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('\Migration\Logger\Logger', ['debug', 'error'], [], '', false);
-        $this->source = $this->getMock(
-            '\Migration\ResourceModel\Source',
-            ['getDocumentList', 'getDocument'],
-            [],
-            '',
-            false
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['debug', 'addRecord', 'error']
         );
-        $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+        $this->source = $this->createPartialMock(
+            \Migration\ResourceModel\Source::class,
+            ['getDocumentList', 'getDocument']
         );
-        $this->helper = $this->getMock(
-            '\Migration\Step\SalesOrder\Helper',
-            ['getDocumentList', 'getEavAttributes', 'getDestEavDocument'],
-            [],
-            '',
-            false
+        $this->progress = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'finish', 'advance']
         );
-        $this->destination = $this->getMock(
-            '\Migration\ResourceModel\Destination',
-            ['getDocumentList', 'getDocument', 'getRecords'],
-            [],
-            '',
-            false
+        $this->helper = $this->createPartialMock(
+            \Migration\Step\SalesOrder\Helper::class,
+            ['getDocumentList', 'getEavAttributes', 'getDestEavDocument']
         );
-        $this->map = $this->getMockBuilder('\Migration\Reader\Map')
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getDocumentList', 'getDocument', 'getRecords']
+        );
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)
             ->disableOriginalConstructor()
             ->setMethods(['getFieldMap', 'getDocumentMap', 'isDocumentIgnored'])
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('sales_order_map_file')->willReturn($this->map);
 
-        $this->config = $this->getMockBuilder('\Migration\Config')->disableOriginalConstructor()
+        $this->config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
             ->setMethods([])->getMock();
+
+        $config = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()->getMock();
         $this->salesOrder = new Integrity(
             $this->progress,
             $this->logger,
+            $config,
             $this->source,
             $this->destination,
             $mapFactory,
@@ -122,10 +116,12 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
         $this->helper->expects($this->once())->method('getEavAttributes')->willReturn(['eav_entity']);
         $this->progress->expects($this->once())->method('start')->with(3);
         $this->progress->expects($this->any())->method('advance');
-        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->willReturn($fields);
-        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $document->expects($this->any())->method('getStructure')->willReturn($structure);
         $this->source->expects($this->any())->method('getDocumentList')->willReturn(['source_doc']);
         $this->destination->expects($this->once())->method('getDocumentList')->willReturn(['dest_doc']);

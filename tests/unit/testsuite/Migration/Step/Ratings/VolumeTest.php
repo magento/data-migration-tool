@@ -10,7 +10,7 @@ use Migration\Logger\Logger;
 /**
  * Class VolumeTest
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Destination|\PHPUnit_Framework_MockObject_MockObject
@@ -47,32 +47,29 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
-            ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix'],
-            [],
-            '',
-            false
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getAdapter', 'getDocumentList', 'getDocument', 'addDocumentPrefix']
         );
         $this->destination
             ->expects($this->any())
             ->method('addDocumentPrefix')
             ->will($this->returnValueMap([['rating_store', 'rating_store'], ['rating', 'rating']]));
-        $this->select = $this->getMock('Magento\Framework\DB\Select', ['from', 'where'], [], '', false);
-        $this->adapter = $this->getMock(
-            'Migration\ResourceModel\Adapter\Mysql',
-            ['getSelect', 'loadDataFromSelect', 'updateDocument'],
-            [],
-            '',
-            false
+        $this->select = $this->createPartialMock(
+            \Magento\Framework\DB\Select::class,
+            ['from', 'where']
         );
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['addRecord'], [], '', false);
-        $this->progress = $this->getMock(
-            'Migration\App\ProgressBar\LogLevelProcessor',
-            ['start', 'advance', 'finish'],
-            [],
-            '',
-            false
+        $this->adapter = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Mysql::class,
+            ['getSelect', 'loadDataFromSelect', 'updateDocument']
+        );
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['addRecord']
+        );
+        $this->progress = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'advance', 'finish']
         );
     }
 

@@ -6,7 +6,12 @@
 namespace Migration\Step\Stores;
 
 use Migration\ResourceModel;
+use Migration\Logger\Logger;
 use Migration\App\ProgressBar;
+use Migration\Reader\MapInterface;
+use Migration\Reader\MapFactory;
+use Migration\Step\Stores\Model\DocumentsList;
+use Migration\Config;
 
 /**
  * Class Integrity
@@ -14,41 +19,32 @@ use Migration\App\ProgressBar;
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
-     * @var ResourceModel\Source
+     * @var DocumentsList
      */
-    protected $source;
+    protected $documentsList;
 
     /**
-     * @var ResourceModel\Destination
-     */
-    protected $destination;
-
-    /**
-     * @var ProgressBar\LogLevelProcessor
-     */
-    protected $progress;
-
-    /**
-     * @var Helper
-     */
-    protected $helper;
-
-    /**
+     * @param DocumentsList $documentsList
+     * @param Logger $logger
+     * @param Config $config
      * @param ProgressBar\LogLevelProcessor $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
-     * @param Helper $helper
+     * @param MapFactory $mapFactory
+     * @param string $mapConfigOption
      */
     public function __construct(
+        DocumentsList $documentsList,
+        Logger $logger,
+        Config $config,
         ProgressBar\LogLevelProcessor $progress,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
-        Helper $helper
+        MapFactory $mapFactory,
+        $mapConfigOption = 'stores_map_file'
     ) {
-        $this->progress = $progress;
-        $this->source = $source;
-        $this->destination = $destination;
-        $this->helper = $helper;
+        parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
+        $this->documentsList = $documentsList;
     }
 
     /**
@@ -56,22 +52,21 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $result = true;
-        $this->progress->start(count($this->helper->getDocumentList()));
-        foreach ($this->helper->getDocumentList() as $sourceName => $destinationName) {
-            $this->progress->advance();
-            $result &= (bool)$this->source->getDocument($sourceName);
-            $result &= (bool)$this->destination->getDocument($destinationName);
-        }
+        $this->progress->start($this->getIterationsCount());
+        $this->check($this->documentsList->getSourceDocuments(), MapInterface::TYPE_SOURCE);
+        $this->check($this->documentsList->getDestinationDocuments(), MapInterface::TYPE_DEST);
         $this->progress->finish();
-        return (bool)$result;
+        return $this->checkForErrors();
     }
 
     /**
-     * {@inheritdoc}
+     * Get iterations count for step
+     *
+     * @return int
      */
     protected function getIterationsCount()
     {
-        return 0;
+        return count($this->documentsList->getSourceDocuments())
+            + count($this->documentsList->getDestinationDocuments());
     }
 }

@@ -9,6 +9,6 @@ namespace Migration\Step;
 /**
  * Class CustomCustomerAttributesTest
  */
-abstract class CustomCustomerAttributesTest extends \PHPUnit_Framework_TestCase
+abstract class CustomCustomerAttributesTest extends \PHPUnit\Framework\TestCase
 {
 }

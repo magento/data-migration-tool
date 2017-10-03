@@ -16,7 +16,7 @@ use Magento\Framework\App\Utility\Files;
 /**
  * Set of tests for static code analysis, e.g. code style, code complexity, copy paste detecting, etc.
  */
-class LiveCodeTest extends PHPUnit_Framework_TestCase
+class LiveCodeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var string
@@ -169,7 +169,7 @@ class LiveCodeTest extends PHPUnit_Framework_TestCase
             $this->markTestSkipped('PHP Mess Detector is not available.');
         }
 
-        self::setupFileLists();
+        self::setupFileLists('phpmd');
         $this->assertEquals(
             Command::EXIT_SUCCESS,
             $codeMessDetector->run(self::$whiteList),

@@ -66,7 +66,7 @@ COMMENT='Catalog Category Table'
 COLLATE='utf8_general_ci'
 ENGINE=InnoDB
 ;
-INSERT INTO `catalog_category_entity` VALUES (1, 3, 0, 0, '0000-00-00 00:00:00', '2016-07-13 11:43:28', '1', 0, 0, 2),
+INSERT INTO `catalog_category_entity` VALUES (1, 3, 0, 0, '1975-01-01 00:00:00', '2016-07-13 11:43:28', '1', 0, 0, 2),
 (2, 3, 3, 1, '2016-07-13 11:43:28', '2016-07-13 11:43:28', '1/2', 1, 1, 1),
 (3, 3, 3, 2, '2016-07-13 12:30:21', '2016-07-13 12:30:21', '1/2/3', 1, 2, 0);
 

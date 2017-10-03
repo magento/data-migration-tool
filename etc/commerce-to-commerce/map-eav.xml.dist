@@ -1,0 +1,239 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>enterprise_rma_item_eav_attribute</document>
+                <to>magento_rma_item_eav_attribute</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <transform>
+                <field>eav_attribute.attribute_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.backend_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.backend_table</field>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_attribute.frontend_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.frontend_input</field>
+                <handler class="\Migration\Handler\GetDestinationValue" />
+            </transform>
+            <transform>
+                <field>eav_attribute.is_required</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.frontend_class</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.frontend_label</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.source_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.default_value</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+            <transform>
+                <field>eav_attribute.note</field>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
+            </transform>
+
+            <transform>
+                <field>catalog_eav_attribute.frontend_input_renderer</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>catalog_eav_attribute.is_visible</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+
+            <transform>
+                <field>customer_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\GetDestinationValue"/>
+            </transform>
+            <transform>
+                <field>customer_eav_attribute.data_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>customer_eav_attribute.is_visible</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="middlename"/>
+                    <param name="value" value="0"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>customer_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="created_at"/>
+                    <param name="value" value="null"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_entity_type.entity_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_entity_type.attribute_model</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>eav_entity_type.entity_table</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[
+                    customer/entity:customer_entity;
+                    customer/address_entity:customer_address_entity;
+                    sales/order:sales_order;
+                    sales/order_entity:sales_order_entity;
+                    catalog/category:catalog_category_entity;
+                    catalog/product:catalog_product_entity;
+                    sales/quote:quote;
+                    sales/quote_address:quote_address;
+                    sales/quote_entity:quote_entity;
+                    sales/quote_item:quote_item;
+                    sales/invoice:sales_invoice;
+                    enterprise_rma/item_entity:magento_rma_item_entity
+                    ]"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_entity_type.increment_model</field>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_entity_type.additional_attribute_table</field>
+                <handler class="\Migration\Handler\GetDestinationValue">
+                    <param name="setNullIfEmpty" value="true"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_entity_type.entity_attribute_collection</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+
+            <transform>
+                <field>eav_attribute_set.sort_order</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="100"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_attribute_set.attribute_set_name</field>
+                <handler class="\Migration\Handler\AddPrefix">
+                    <param name="prefix" value="Migration_"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_attribute_group.attribute_group_name</field>
+                <handler class="\Migration\Handler\AddPrefix">
+                    <param name="prefix" value="Migration_"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>eav_attribute_group.default_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="0"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>enterprise_rma_item_eav_attribute.input_filter</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertModel"/>
+            </transform>
+            <transform>
+                <field>catalog_eav_attribute.apply_to</field>
+                <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
+            </transform>
+            <transform>
+                <field>magento_rma_item_eav_attribute.validate_rules</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <transform>
+                <field>customer_eav_attribute.validate_rules</field>
+                <handler class="\Migration\Handler\SerializeToJson"/>
+            </transform>
+            <ignore>
+                <field>catalog_eav_attribute.is_configurable</field>
+            </ignore>
+            <ignore>
+                <datatype>catalog_eav_attribute.search_weight</datatype>
+            </ignore>
+        </field_rules>
+    </source>
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>catalog_eav_attribute.is_required_in_admin_store</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute_group.attribute_group_code</field>
+            </ignore>
+            <ignore>
+                <field>eav_attribute_group.tab_group_code</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.search_weight</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.additional_data</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_used_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_visible_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_filterable_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_used_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_visible_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_filterable_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>customer_eav_attribute.is_searchable_in_grid</field>
+            </ignore>
+            <transform>
+                <field>eav_attribute_group.attribute_group_code</field>
+                <handler class="\Migration\Handler\EavAttributeGroup\SetGroupCode" />
+            </transform>
+            <transform>
+                <field>eav_attribute_group.tab_group_code</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="basic"/>
+                </handler>
+            </transform>
+        </field_rules>
+    </destination>
+</map>

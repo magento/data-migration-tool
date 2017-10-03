@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 /**
  * Class RecordTransformerTest
  */
-class RecordTransformerTest extends \PHPUnit_Framework_TestCase
+class RecordTransformerTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var ResourceModel\Document|\PHPUnit_Framework_MockObject_MockObject
@@ -42,16 +42,16 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->sourceDocument = $this->getMock(
-            'Migration\ResourceModel\Document',
-            ['getStructure', 'getName'],
-            [],
-            '',
-            false
+        $this->sourceDocument = $this->createPartialMock(
+            \Migration\ResourceModel\Document::class,
+            ['getStructure', 'getName']
         );
-        $this->destDocument = $this->getMock('Migration\ResourceModel\Document', ['getStructure'], [], '', false);
+        $this->destDocument = $this->createPartialMock(
+            \Migration\ResourceModel\Document::class,
+            ['getStructure']
+        );
         $this->mapReader = $this->getMockForAbstractClass(
-            'Migration\Reader\MapInterface',
+            \Migration\Reader\MapInterface::class,
             [],
             '',
             false
@@ -60,13 +60,10 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
             ['class' => 'FirstHandlerFullyQualifiedName', 'params' => []],
             ['class' => 'SecondHandlerFullyQualifiedName', 'params' => []]
         ]);
-        $this->handlerManagerFactory = $this->getMock(
-            'Migration\Handler\ManagerFactory',
-            ['create'],
-            [],
-            '',
-            false
-        );
+        $this->handlerManagerFactory = $this->getMockBuilder(\Migration\Handler\ManagerFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
         $this->recordTransformer = new RecordTransformer(
             $this->sourceDocument,
             $this->destDocument,
@@ -82,11 +79,17 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
      */
     protected function initHandler($document, $callNumber = 1)
     {
-        $handlerManager = $this->getMock('Migration\Handler\Manager', ['initHandler', 'getHandlers'], [], '', false);
+        $handlerManager = $this->createPartialMock(
+            \Migration\Handler\Manager::class,
+            ['initHandler', 'getHandlers']
+        );
         $this->handlerManagerFactory->expects($this->at($callNumber))->method('create')->will(
             $this->returnValue($handlerManager)
         );
-        $structure = $this->getMock('Migration\ResourceModel\Structure', ['getFields'], [], '', false);
+        $structure = $this->createPartialMock(
+            \Migration\ResourceModel\Structure::class,
+            ['getFields']
+        );
         $document->expects($this->once())->method('getStructure')->will($this->returnValue($structure));
         $fields = ['field1' => '', 'field2' => '', 'field3' => '',];
         $structure->expects($this->once())->method('getFields')->will($this->returnValue($fields));
@@ -113,14 +116,17 @@ class RecordTransformerTest extends \PHPUnit_Framework_TestCase
         $destHandler = $this->initHandler($this->destDocument, 1);
         $this->recordTransformer->init();
         $this->sourceDocument->expects($this->any())->method('getName')->willReturn('source_document_name');
-        $recordFrom = $this->getMock('Migration\ResourceModel\Record', [], [], '', false);
+        $recordFrom = $this->createMock(\Migration\ResourceModel\Record::class);
         $recordFrom->expects($this->any())->method('getFields')->will($this->returnValue(['field1', 'field2']));
         $recordFrom->expects($this->any())->method('getData')->will($this->returnValue(['field1' => 1, 'field2' => 2]));
-        $recordTo = $this->getMock('Migration\ResourceModel\Record', [], [], '', false);
+        $recordTo = $this->createMock(\Migration\ResourceModel\Record::class);
         $recordTo->expects($this->any())->method('getFields')->will($this->returnValue(['field2']));
         $recordTo->expects($this->any())->method('setData')->with(['field2' => 2]);
 
-        $field2Handler = $this->getMock('Migration\Handler\SetValue', ['handle'], [], '', false);
+        $field2Handler = $this->createPartialMock(
+            \Migration\Handler\SetValue::class,
+            ['handle']
+        );
         $field2Handler->expects($this->once())->method('handle');
         $srcHandler->expects($this->any())->method('getHandlers')->willReturn(['field2' => $field2Handler]);
         $destHandler->expects($this->any())->method('getHandlers')->willReturn([]);

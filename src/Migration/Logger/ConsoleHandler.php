@@ -49,6 +49,9 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
             case Logger::WARNING:
                 echo PHP_EOL . $this->colorize($record['formatted'], self::COLOR_YELLOW);
                 break;
+            case Logger::NOTICE:
+                echo PHP_EOL . $this->colorize($record['formatted'], self::COLOR_BLUE);
+                break;
             default:
                 echo PHP_EOL . $record['formatted'];
         }

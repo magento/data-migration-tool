@@ -6,7 +6,7 @@
 
 namespace Migration\Handler;
 
-class ConvertTest extends \PHPUnit_Framework_TestCase
+class ConvertTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return array
@@ -38,18 +38,17 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
     {
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
-            'Migration\ResourceModel\Record',
-            ['setValue', 'getValue', 'getFields'],
-            [],
-            '',
-            false
+        $record = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getValue', 'getFields']
         );
         $record->expects($this->once())->method('getValue')->will($this->returnValue($initialValue));
         $record->expects($this->once())->method('setValue')->with($fieldName, $processedValue);
         $record->expects($this->any())->method('getFields')->will($this->returnValue([$fieldName]));
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new Convert($map);
         $handler->setField($fieldName);
@@ -61,10 +60,12 @@ class ConvertTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidMap()
     {
-        $this->setExpectedException('Exception');
+        $this->expectException('Exception');
         $handler = new Convert('[dummy]');
-        $record = $this->getMock('Migration\ResourceModel\Record', [], [], '', false);
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record = $this->createMock(\Migration\ResourceModel\Record::class);
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $handler->handle($record, $record2, 'dummy');
     }
 }

@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel\Structure;
 
-class CollectionTest extends \PHPUnit_Framework_TestCase
+class CollectionTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var []
@@ -22,9 +22,9 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $structure1 = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
-        $structure2 = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
-        $structure3 = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
+        $structure1 = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $structure2 = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $structure3 = $this->createMock(\Migration\ResourceModel\Structure::class);
         $this->structures = ['table1' => $structure1, 'table2' => $structure2, 'table3' => $structure3];
         $this->structureCollection = new \Migration\ResourceModel\Structure\Collection($this->structures);
     }
@@ -35,7 +35,7 @@ class CollectionTest extends \PHPUnit_Framework_TestCase
     public function testAddStructure()
     {
         $this->assertEquals(3, count($this->structureCollection));
-        $structure = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
+        $structure = $this->createMock(\Migration\ResourceModel\Structure::class);
         $this->structureCollection->addStructure('table4', $structure);
         $this->assertEquals(4, count($this->structureCollection));
     }

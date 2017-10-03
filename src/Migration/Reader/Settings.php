@@ -153,7 +153,6 @@ class Settings
 
         $this->ignoredNodes[$path] = $result;
         return $this->ignoredNodes[$path];
-
     }
 
     /**

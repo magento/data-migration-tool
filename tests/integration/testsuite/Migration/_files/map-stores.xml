@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/map.xsd">
+    <source>
+        <document_rules>
+            <rename>
+                <document>core_store</document>
+                <to>store</to>
+            </rename>
+            <rename>
+                <document>core_store_group</document>
+                <to>store_group</to>
+            </rename>
+            <rename>
+                <document>core_website</document>
+                <to>store_website</to>
+            </rename>
+        </document_rules>
+        <field_rules>
+            <ignore>
+                <field>core_website.is_staging</field>
+            </ignore>
+            <ignore>
+                <field>core_website.master_login</field>
+            </ignore>
+            <ignore>
+                <field>core_website.master_password</field>
+            </ignore>
+            <ignore>
+                <field>core_website.visibility</field>
+            </ignore>
+        </field_rules>
+    </source>
+    <destination>
+        <field_rules>
+            <ignore>
+                <field>store_group.code</field>
+            </ignore>
+            <transform>
+                <field>store_group.code</field>
+                <handler class="\Migration\Handler\StoreGroupCode" />
+            </transform>
+        </field_rules>
+    </destination>
+</map>

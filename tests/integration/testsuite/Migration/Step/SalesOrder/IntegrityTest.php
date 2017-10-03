@@ -9,7 +9,7 @@ namespace Migration\Step\SalesOrder;
  * SalesOrder step run test class
  * @dbFixture sales_order
  */
-class IntegrityTest extends \PHPUnit_Framework_TestCase
+class IntegrityTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @throws \Migration\Exception
@@ -18,18 +18,18 @@ class IntegrityTest extends \PHPUnit_Framework_TestCase
     public function testPerform()
     {
         $objectManager = \Migration\TestFramework\Helper::getInstance()->getObjectManager();
-        $objectManager->get('\Migration\Config')->init(dirname(__DIR__) . '/../_files/config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $config = $objectManager->get('\Migration\Config');
-        $initialData = $objectManager->get('\Migration\Step\SalesOrder\InitialData');
+        $objectManager->get(\Migration\Config::class)->init(dirname(__DIR__) . '/../_files/config.xml');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $config = $objectManager->get(\Migration\Config::class);
+        $initialData = $objectManager->get(\Migration\Step\SalesOrder\InitialData::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         /** @var \Migration\Step\SalesOrder\Integrity $salesOrder */
         $salesOrder = $objectManager->create(
-            '\Migration\Step\SalesOrder\Integrity',
+            \Migration\Step\SalesOrder\Integrity::class,
             [
                 'logger' => $logger,
                 'config' => $config,

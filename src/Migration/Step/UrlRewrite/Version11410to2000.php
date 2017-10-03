@@ -371,9 +371,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             $categoryId = $sourceRecord->getValue('category_id');
             $cmsPageId = $sourceRecord->getValue('cms_page_id');
             if (!empty($productId) && !empty($categoryId)) {
-                $length = strlen($categoryId);
-                $metadata = sprintf('a:1:{s:11:"category_id";s:%s:"%s";}', $length, $categoryId);
-                $destinationRecord->setValue('metadata', $metadata);
+                $destinationRecord->setValue('metadata', json_encode(['category_id' => $categoryId]));
                 $destinationRecord->setValue('entity_type', 'product');
                 $destinationRecord->setValue('entity_id', $productId);
                 $targetPath = "catalog/product/view/id/$productId/category/$categoryId";

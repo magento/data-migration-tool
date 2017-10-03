@@ -83,7 +83,7 @@ class EavLeftoverData
     public function getDocumentsToCheck()
     {
         $documents = array_keys($this->readerDocument->getGroup('documents_leftover_values'));
-        if (!empty($this->editionMigrate) && $this->editionMigrate != Config::EDITION_MIGRATE_CE_TO_CE) {
+        if ($this->editionMigrate != Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE) {
             $documents = array_merge(
                 $documents,
                 array_keys($this->readerDocument->getGroup('documents_leftover_values_ee'))

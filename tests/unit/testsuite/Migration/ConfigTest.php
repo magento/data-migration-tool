@@ -8,7 +8,7 @@ namespace Migration;
 /**
  * Class ConfigTest
  */
-class ConfigTest extends \PHPUnit_Framework_TestCase
+class ConfigTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var Config
@@ -21,7 +21,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -46,9 +46,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidConfigFile()
     {
-        $this->setExpectedException('Migration\Exception', 'Invalid config filename: non-existent.xml');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('Invalid config filename: non-existent.xml');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -65,9 +66,10 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testInvalidXml()
     {
-        $this->setExpectedException('Migration\Exception', 'XML file is invalid');
+        $this->expectException(\Migration\Exception::class);
+        $this->expectExceptionMessage('XML file is invalid');
 
-        $validationState = $this->getMockBuilder('Magento\Framework\App\Arguments\ValidationState')
+        $validationState = $this->getMockBuilder(\Magento\Framework\App\Arguments\ValidationState::class)
             ->disableOriginalConstructor()
             ->setMethods(['isValidationRequired'])
             ->getMock();
@@ -85,12 +87,12 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
     {
         $steps = [
             'Step1' => [
-                'integrity' => 'Migration\Step\SomeStep\Integrity',
-                'volume' => 'Migration\Step\SomeStep\Volume'
+                'integrity' => \Migration\Step\SomeStep\Integrity::class,
+                'volume' => \Migration\Step\SomeStep\Volume::class
             ],
             'Step2' => [
-                'integrity' => 'Migration\Step\SomeStep\Integrity',
-                'volume' => 'Migration\Step\SomeStep\Volume'
+                'integrity' => \Migration\Step\SomeStep\Integrity::class,
+                'volume' => \Migration\Step\SomeStep\Volume::class
             ]
         ];
         $this->assertEquals($steps, $this->config->getSteps('data'));
@@ -101,7 +103,7 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetStep()
     {
-        $step = ['delta' => 'Migration\Step\SomeStep\Integrity'];
+        $step = ['delta' => \Migration\Step\SomeStep\Integrity::class];
         $this->assertEquals($step, $this->config->getStep('delta', 'Step1'));
     }
 
@@ -148,5 +150,14 @@ class ConfigTest extends \PHPUnit_Framework_TestCase
         $this->assertEquals('100', $this->config->getOption('bulk_size'));
         $this->assertEquals('custom_option_value', $this->config->getOption('custom_option'));
         $this->assertEquals('map-sales.xml', $this->config->getOption('sales_order_map_file'));
+    }
+
+    /**
+     * @return void
+     */
+    public function testSetOption()
+    {
+        $this->config->setOption('option1', 'value1');
+        $this->assertEquals('value1', $this->config->getOption('option1'));
     }
 }

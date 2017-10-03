@@ -9,7 +9,7 @@ namespace Migration\Step\Map;
 /**
  * Data step test class
  */
-class DataTest extends \PHPUnit_Framework_TestCase
+class DataTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @throws \Migration\Exception
@@ -17,31 +17,28 @@ class DataTest extends \PHPUnit_Framework_TestCase
      */
     public function testPerform()
     {
-        $progress = $this->getMock(
-            'Migration\App\Progress',
-            ['getProcessedEntities', 'addProcessedEntity'],
-            [],
-            '',
-            false
+        $progress = $this->createPartialMock(
+            \Migration\App\Progress::class,
+            ['getProcessedEntities', 'addProcessedEntity']
         );
         $progress->expects($this->once())->method('getProcessedEntities')->will($this->returnValue([]));
         $progress->expects($this->any())->method('addProcessedEntity');
 
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/../_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $logManager = $objectManager->create('\Migration\Logger\Manager');
-        $logger = $objectManager->create('\Migration\Logger\Logger');
-        $logger->pushHandler($objectManager->create('\Migration\Logger\ConsoleHandler'));
-        $config = $objectManager->get('\Migration\Config');
-        $destination = $objectManager->get('\Migration\ResourceModel\Destination');
+        $logManager = $objectManager->create(\Migration\Logger\Manager::class);
+        $logger = $objectManager->create(\Migration\Logger\Logger::class);
+        $logger->pushHandler($objectManager->create(\Migration\Logger\ConsoleHandler::class));
+        $config = $objectManager->get(\Migration\Config::class);
+        $destination = $objectManager->get(\Migration\ResourceModel\Destination::class);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
 
         $map = $objectManager->create(
-            '\Migration\Step\Map\Data',
+            \Migration\Step\Map\Data::class,
             [
                 'logger' => $logger,
                 'config' => $config,

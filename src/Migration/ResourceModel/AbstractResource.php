@@ -104,7 +104,6 @@ abstract class AbstractResource
                 );
             }
         } catch (\Exception $e) {
-
         }
 
         return $document;
@@ -224,7 +223,7 @@ abstract class AbstractResource
     {
         $memoryLimit = trim($memoryLimit);
         $last = strtolower($memoryLimit[strlen($memoryLimit)-1]);
-        switch($last) {
+        switch ($last) {
             case 'g':
                 $memoryLimit *= 1024;
                 // fall-through intentional

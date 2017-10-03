@@ -6,31 +6,45 @@
 
 namespace Migration\Handler;
 
-class SerializeToJsonTest extends \PHPUnit_Framework_TestCase
+class SerializeToJsonTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @return void
+     * @dataProvider handleDataProvider
      */
-    public function testHandle()
+    public function testHandle($serializedData, $unserializedData)
     {
-        $array = ['some_field' => 'value'];
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
-        $record = $this->getMock(
-            'Migration\ResourceModel\Record',
-            ['setValue', 'getValue', 'getFields'],
-            [],
-            '',
-            false
+        $record = $this->createPartialMock(
+            \Migration\ResourceModel\Record::class,
+            ['setValue', 'getValue', 'getFields']
         );
         $record->expects($this->any())->method('getFields')->willReturn([$fieldName]);
-        $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn(serialize($array));
-        $record->expects($this->any())->method('setValue')->with($fieldName, json_encode($array));
+        $record->expects($this->any())->method('getValue')->with($fieldName)->willReturn($serializedData);
+        $record->expects($this->any())->method('setValue')->with($fieldName, $unserializedData);
 
-        $record2 = $this->getMockBuilder('Migration\ResourceModel\Record')->disableOriginalConstructor()->getMock();
+        $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
+            ->disableOriginalConstructor()
+            ->getMock();
 
         $handler = new SerializeToJson();
         $handler->setField($fieldName);
-        $handler->handle($record, $record2);
+        $this->assertNull($handler->handle($record, $record2));
+    }
+
+    public function handleDataProvider()
+    {
+        $array = ['some_field' => 'value'];
+        return [
+            [
+                serialize($array),
+                json_encode($array)
+            ],
+            [
+                null,
+                null
+            ]
+        ];
     }
 }

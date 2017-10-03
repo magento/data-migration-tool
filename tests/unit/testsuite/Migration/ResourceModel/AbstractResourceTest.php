@@ -10,7 +10,7 @@ use Migration\Reader\MapInterface;
 /**
  * Class AbstractResourceTest
  */
-class AbstractResourceTest extends \PHPUnit_Framework_TestCase
+class AbstractResourceTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
@@ -62,62 +62,41 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->config = $this->getMock(
-            '\Migration\Config',
-            ['getOption'],
-            [],
-            '',
-            false
+        $this->config = $this->createPartialMock(
+            \Migration\Config::class,
+            ['getOption']
         );
-        $this->adapter = $this->getMock(
-            '\Migration\ResourceModel\Adapter\Mysql',
-            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage'],
-            [],
-            '',
-            false
+        $this->adapter = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Mysql::class,
+            ['insertRecords', 'getRecordsCount', 'getDocumentStructure', 'getDocumentList', 'loadPage']
         );
-        $this->adapterFactorySource = $this->getMock(
-            '\Migration\ResourceModel\AdapterFactory',
-            ['create'],
-            [],
-            '',
-            false
+        $this->adapterFactorySource = $this->createPartialMock(
+            \Migration\ResourceModel\AdapterFactory::class,
+            ['create']
         );
         $this->adapterFactorySource->expects($this->any())
             ->method('create')
             ->with(['resourceType' => 'source'])
             ->will($this->returnValue($this->adapter));
-        $this->adapterFactoryDestination = $this->getMock(
-            '\Migration\ResourceModel\AdapterFactory',
-            ['create'],
-            [],
-            '',
-            false
+        $this->adapterFactoryDestination = $this->createPartialMock(
+            \Migration\ResourceModel\AdapterFactory::class,
+            ['create']
         );
         $this->adapterFactoryDestination->expects($this->any())
             ->method('create')
             ->with(['resourceType' => 'destination'])
             ->will($this->returnValue($this->adapter));
-        $this->documentFactory = $this->getMock(
-            '\Migration\ResourceModel\DocumentFactory',
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->structureFactory = $this->getMock(
-            '\Migration\ResourceModel\StructureFactory',
-            ['create'],
-            [],
-            '',
-            false
-        );
-        $this->documentCollection = $this->getMock(
-            '\Migration\ResourceModel\Document\Collection',
-            ['addDocument'],
-            [],
-            '',
-            false
+        $this->documentFactory = $this->getMockBuilder(\Migration\ResourceModel\DocumentFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->structureFactory = $this->getMockBuilder(\Migration\ResourceModel\StructureFactory::class)
+            ->disableOriginalConstructor()
+            ->setMethods(['create'])
+            ->getMock();
+        $this->documentCollection = $this->createPartialMock(
+            \Migration\ResourceModel\Document\Collection::class,
+            ['addDocument']
         );
 
         $this->resourceDestination = new \Migration\ResourceModel\Destination(
@@ -147,10 +126,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $resourceName = 'core_config_data';
         $structureData = ['id' => 'int'];
-        $structure = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
-        $document = $this->getMock('\Migration\ResourceModel\Document', [], [], '', false);
+        $structure = $this->createMock(\Migration\ResourceModel\Structure::class);
+        $document = $this->createMock(\Migration\ResourceModel\Document::class);
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             [$optionName, $prefix]
         ]);
         $this->documentFactory->expects($this->any())
@@ -190,7 +169,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     public function testGetWrongDocument()
     {
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', 'prefix_']
         ]);
         $this->adapter->expects($this->any())
@@ -207,7 +186,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
     {
         $prefix = 'prefix_';
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['dest_prefix', $prefix]
         ]);
         $resourceName = 'core_config_data';
@@ -227,7 +206,7 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
         $resourceName = 'core_config_data';
         $pageNumber = 2;
         $this->config->expects($this->any())->method('getOption')->willReturnMap([
-            ['edition_migrate', 'ce-to-ee'],
+            ['edition_migrate', 'opensource-to-commerce'],
             ['bulk_size', 100],
             ['dest_prefix', 100],
         ]);
@@ -240,7 +219,10 @@ class AbstractResourceTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetAdapter()
     {
-        $this->config->expects($this->any())->method('getOption')->willReturnMap([['edition_migrate', 'ce-to-ee']]);
+        $this->config
+            ->expects($this->any())
+            ->method('getOption')
+            ->willReturnMap([['edition_migrate', 'opensource-to-commerce']]);
         $this->assertSame($this->adapter, $this->resourceDestination->getAdapter());
     }
 }

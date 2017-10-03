@@ -20,11 +20,13 @@ class Config
 
     const RESOURCE_TYPE_DESTINATION = 'destination';
 
-    const EDITION_MIGRATE_CE_TO_CE = 'ce-to-ce';
+    const EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE = 'opensource-to-opensource';
 
-    const EDITION_MIGRATE_CE_TO_EE = 'ce-to-ee';
+    const EDITION_MIGRATE_OPENSOURCE_TO_COMMERCE = 'opensource-to-commerce';
 
-    const EDITION_MIGRATE_EE_TO_EE = 'ee-to-ee';
+    const EDITION_MIGRATE_COMMERCE_TO_COMMERCE = 'commerce-to-commerce';
+
+    const OPTION_AUTO_RESOLVE = 'auto_resolve';
 
     /**
      * @var \DOMXPath
@@ -76,7 +78,9 @@ class Config
         }
 
         $this->config = new \DOMXPath($document->getDom());
-        $this->options = null;
+        foreach ($this->config->query('//options/*') as $item) {
+            $this->options[$item->nodeName] = $item->nodeValue;
+        }
         return $this;
     }
 
@@ -210,13 +214,18 @@ class Config
      */
     public function getOption($name)
     {
-        if ($this->options === null) {
-            $this->options = [];
-            foreach ($this->config->query('//options/*') as $item) {
-                $this->options[$item->nodeName] = $item->nodeValue;
-            }
-        }
-
         return isset($this->options[$name]) ? $this->options[$name] : null;
+    }
+
+    /**
+     * Set value for option
+     *
+     * @param string $name
+     * @param string $value
+     * @return void
+     */
+    public function setOption($name, $value)
+    {
+        $this->options[$name] = $value;
     }
 }

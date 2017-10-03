@@ -39,7 +39,7 @@ class MapFactory
     public function __construct(
         \Magento\Framework\ObjectManagerInterface $objectManager,
         \Migration\Config $config,
-        $instanceName = '\\Migration\\Reader\\Map'
+        $instanceName = \Migration\Reader\Map::class
     ) {
         $this->objectManager = $objectManager;
         $this->config = $config;

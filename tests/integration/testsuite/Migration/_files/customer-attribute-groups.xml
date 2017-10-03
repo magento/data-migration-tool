@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/groups.xsd">
+    <group name="customer_entity">
+        <attribute>created_in</attribute>
+        <attribute>prefix</attribute>
+        <attribute>firstname</attribute>
+        <attribute>middlename</attribute>
+        <attribute>lastname</attribute>
+        <attribute>suffix</attribute>
+        <attribute>dob</attribute>
+        <attribute>password_hash</attribute>
+        <attribute>rp_token</attribute>
+        <attribute>rp_token_created_at</attribute>
+        <attribute>default_billing</attribute>
+        <attribute>default_shipping</attribute>
+        <attribute>taxvat</attribute>
+        <attribute>confirmation</attribute>
+        <attribute>gender</attribute>
+    </group>
+    <group name="customer_address_entity">
+        <attribute>city</attribute>
+        <attribute>company</attribute>
+        <attribute>country_id</attribute>
+        <attribute>fax</attribute>
+        <attribute>firstname</attribute>
+        <attribute>lastname</attribute>
+        <attribute>middlename</attribute>
+        <attribute>postcode</attribute>
+        <attribute>prefix</attribute>
+        <attribute>region</attribute>
+        <attribute>region_id</attribute>
+        <attribute>street</attribute>
+        <attribute>suffix</attribute>
+        <attribute>telephone</attribute>
+        <attribute>vat_id</attribute>
+        <attribute>vat_is_valid</attribute>
+        <attribute>vat_request_date</attribute>
+        <attribute>vat_request_id</attribute>
+        <attribute>vat_request_success</attribute>
+    </group>
+</groups>

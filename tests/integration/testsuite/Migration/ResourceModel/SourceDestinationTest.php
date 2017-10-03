@@ -9,7 +9,7 @@ namespace Migration\ResourceModel;
 /**
  * ResourceModel source and destination test class
  */
-class SourceDestinationTest extends \PHPUnit_Framework_TestCase
+class SourceDestinationTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Source $source
@@ -28,10 +28,10 @@ class SourceDestinationTest extends \PHPUnit_Framework_TestCase
     {
         $helper = \Migration\TestFramework\Helper::getInstance();
         $objectManager = $helper->getObjectManager();
-        $objectManager->get('\Migration\Config')
+        $objectManager->get(\Migration\Config::class)
             ->init(dirname(__DIR__) . '/_files/' . $helper->getFixturePrefix() . 'config.xml');
-        $this->source = $objectManager->get('\Migration\ResourceModel\Source');
-        $this->destination = $objectManager->get('\Migration\ResourceModel\Destination');
+        $this->source = $objectManager->get(\Migration\ResourceModel\Source::class);
+        $this->destination = $objectManager->get(\Migration\ResourceModel\Destination::class);
     }
 
     /**

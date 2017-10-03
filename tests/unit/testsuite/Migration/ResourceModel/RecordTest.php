@@ -5,7 +5,7 @@
  */
 namespace Migration\ResourceModel;
 
-class RecordTest extends \PHPUnit_Framework_TestCase
+class RecordTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\ResourceModel\Record
@@ -22,17 +22,14 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     protected function setUp()
     {
-        $this->structure = $this->getMock(
-            '\Migration\ResourceModel\Structure',
-            [],
-            [],
-            '',
-            false
-        );
+        $this->structure = $this->createMock(\Migration\ResourceModel\Structure::class);
         $this->structure->expects($this->any())->method('hasField')->willReturnCallback(function ($fieldName) {
             return in_array($fieldName, ['id', 'name']);
         });
-        $document = $this->getMock('\Migration\ResourceModel\Document', ['getStructure'], [], '', false);
+        $document = $this->createPartialMock(
+            \Migration\ResourceModel\Document::class,
+            ['getStructure']
+        );
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($this->structure));
         $this->record = new \Migration\ResourceModel\Record(['id' => 10, 'name' => 'item1'], $document);
     }
@@ -66,17 +63,17 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function validateStructureDataProvider()
     {
-        $structureValid = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
+        $structureValid = $this->createMock(\Migration\ResourceModel\Structure::class);
         $structureValid->expects($this->any())->method('getFields')->willReturn(['id' => [], 'name' => []]);
         $structureValid->expects($this->any())->method('hasField')->willReturnCallback(function ($fieldName) {
             return in_array($fieldName, ['id', 'name']);
         });
-        $structureValid2 = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
+        $structureValid2 = $this->createMock(\Migration\ResourceModel\Structure::class);
         $structureValid2->expects($this->any())->method('getFields')
             ->willReturn(['id' => [], 'name' => [], 'address' => []]);
         $structureValid2->expects($this->any())->method('hasField')->willReturn(false);
 
-        $structureNotValid = $this->getMock('\Migration\ResourceModel\Structure', [], [], '', false);
+        $structureNotValid = $this->createMock(\Migration\ResourceModel\Structure::class);
         $structureNotValid->expects($this->any())->method('getFields')
             ->willReturn(['id' => []]);
         $structureNotValid->expects($this->any())->method('hasField')->willReturn(false);
@@ -183,7 +180,10 @@ class RecordTest extends \PHPUnit_Framework_TestCase
      */
     public function testGetFields($structureData, $fields)
     {
-        $structure = $this->getMock('\Migration\ResourceModel\Structure', ['getFields'], [], '', false);
+        $structure = $this->createPartialMock(
+            \Migration\ResourceModel\Structure::class,
+            ['getFields']
+        );
         $structure->expects($this->once())->method('getFields')->will($this->returnValue($structureData));
         $this->record->setStructure($structure);
         $this->assertEquals($fields, $this->record->getFields());
@@ -196,7 +196,8 @@ class RecordTest extends \PHPUnit_Framework_TestCase
     public function testGetFieldsInvalid()
     {
         $this->record->setStructure(null);
-        $this->setExpectedException('Exception', 'Structure not set');
+        $this->expectException('Exception');
+        $this->expectExceptionMessage('Structure not set');
         $this->record->getFields();
     }
 }

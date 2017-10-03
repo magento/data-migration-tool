@@ -12,7 +12,7 @@ use Migration\Step\Eav\Model\IgnoredAttributes;
 /**
  * Class AttributeFrontendInputTest
  */
-class AttributeFrontendInputTest extends \PHPUnit_Framework_TestCase
+class AttributeFrontendInputTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var AttributeFrontendInput|\PHPUnit_Framework_MockObject_MockObject

@@ -5,7 +5,7 @@
  */
 namespace Migration\Logger;
 
-class LoggerTest extends \PHPUnit_Framework_TestCase
+class LoggerTest extends \PHPUnit\Framework\TestCase
 {
     /** @var Logger */
     protected $logger;
@@ -37,7 +37,7 @@ class LoggerTest extends \PHPUnit_Framework_TestCase
     {
         $infoMessage = 'info1';
         $errorMessage = 'error1';
-        $consoleHandler = $this->getMockBuilder('\Migration\Logger\ConsoleHandler')
+        $consoleHandler = $this->getMockBuilder(\Migration\Logger\ConsoleHandler::class)
             ->disableOriginalConstructor()
             ->setMethods(['handle'])
             ->getMock();

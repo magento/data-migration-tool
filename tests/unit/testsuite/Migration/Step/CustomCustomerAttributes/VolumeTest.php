@@ -12,7 +12,7 @@ use Migration\ResourceModel;
 /**
  * Class VolumeTest
  */
-class VolumeTest extends \PHPUnit_Framework_TestCase
+class VolumeTest extends \PHPUnit\Framework\TestCase
 {
     /**
      * @var \Migration\App\ProgressBar\LogLevelProcessor|\PHPUnit_Framework_MockObject_MockObject
@@ -54,37 +54,34 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
      */
     public function setUp()
     {
-        $this->logger = $this->getMock('Migration\Logger\Logger', ['error'], [], '', false);
-        $this->progress = $this->getMock(
-            '\Migration\App\ProgressBar\LogLevelProcessor',
-            ['start', 'finish', 'advance'],
-            [],
-            '',
-            false
+        $this->logger = $this->createPartialMock(
+            \Migration\Logger\Logger::class,
+            ['error']
         );
-        $this->source = $this->getMock(
-            'Migration\ResourceModel\Source',
-            ['getDocumentList', 'getRecordsCount', 'getDocument'],
-            [],
-            '',
-            false
+        $this->progress = $this->createPartialMock(
+            \Migration\App\ProgressBar\LogLevelProcessor::class,
+            ['start', 'finish', 'advance']
         );
-        $this->destination = $this->getMock(
-            'Migration\ResourceModel\Destination',
-            ['getRecordsCount', 'getDocument'],
-            [],
-            '',
-            false
+        $this->source = $this->createPartialMock(
+            \Migration\ResourceModel\Source::class,
+            ['getDocumentList', 'getRecordsCount', 'getDocument']
+        );
+        $this->destination = $this->createPartialMock(
+            \Migration\ResourceModel\Destination::class,
+            ['getRecordsCount', 'getDocument']
         );
 
-        $this->map = $this->getMockBuilder('Migration\Reader\Map')->disableOriginalConstructor()
+        $this->map = $this->getMockBuilder(\Migration\Reader\Map::class)->disableOriginalConstructor()
             ->getMock();
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
-        $mapFactory = $this->getMock('\Migration\Reader\MapFactory', [], [], '', false);
+        $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
         $mapFactory->expects($this->any())->method('create')->with('customer_attr_map_file')->willReturn($this->map);
 
-        $this->readerGroups = $this->getMock('\Migration\Reader\Groups', ['getGroup'], [], '', false);
+        $this->readerGroups = $this->createPartialMock(
+            \Migration\Reader\Groups::class,
+            ['getGroup']
+        );
         $this->readerGroups->expects($this->any())->method('getGroup')->willReturnMap(
             [
                 ['source_documents', ['document1' => '']]
@@ -92,7 +89,10 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
         );
 
         /** @var \Migration\Reader\GroupsFactory|\PHPUnit_Framework_MockObject_MockObject $groupsFactory */
-        $groupsFactory = $this->getMock('\Migration\Reader\GroupsFactory', ['create'], [], '', false);
+        $groupsFactory = $this->createPartialMock(
+            \Migration\Reader\GroupsFactory::class,
+            ['create']
+        );
         $groupsFactory->expects($this->any())
             ->method('create')
             ->with('customer_attr_document_groups_file')
@@ -115,11 +115,13 @@ class VolumeTest extends \PHPUnit_Framework_TestCase
     {
         $fields = ['field1' => []];
 
-        $structure = $this->getMockBuilder('\Migration\ResourceModel\Structure')
+        $structure = $this->getMockBuilder(\Migration\ResourceModel\Structure::class)
             ->disableOriginalConstructor()->setMethods([])->getMock();
         $structure->expects($this->any())->method('getFields')->will($this->returnValue($fields));
 
-        $document = $this->getMockBuilder('\Migration\ResourceModel\Document')->disableOriginalConstructor()->getMock();
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->disableOriginalConstructor()
+            ->getMock();
         $document->expects($this->any())->method('getStructure')->will($this->returnValue($structure));
 
         $this->map->expects($this->once())->method('getDocumentMap')->with('document1')->willReturn('document2');

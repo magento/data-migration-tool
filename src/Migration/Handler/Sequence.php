@@ -72,7 +72,9 @@ class Sequence extends AbstractHandler implements HandlerInterface
         if ($id && $this->table) {
             $this->destination->saveRecords($this->table, [['sequence_value' => $id]]);
         }
-        $oppositeRecord->setValue($this->createdVersionField, $this->minVersion);
-        $oppositeRecord->setValue($this->updatedVersionField, $this->maxVersion);
+        if (!array_diff([$this->createdVersionField, $this->updatedVersionField], $oppositeRecord->getFields())) {
+            $oppositeRecord->setValue($this->createdVersionField, $this->minVersion);
+            $oppositeRecord->setValue($this->updatedVersionField, $this->maxVersion);
+        }
     }
 }
