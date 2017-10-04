@@ -5,11 +5,17 @@
  */
 namespace Migration\Console;
 
+use Migration\Exception;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MigrateDataCommand extends AbstractMigrateCommand
 {
+    /**
+     * @var \Migration\Mapper\Interactive
+     */
+    protected $mapper;
+
     /**
      * @var \Migration\Mode\Data
      */
@@ -25,9 +31,11 @@ class MigrateDataCommand extends AbstractMigrateCommand
         \Migration\Config $config,
         \Migration\Logger\Manager $logManager,
         \Migration\App\Progress $progress,
-        \Migration\Mode\Data $dataMode
+        \Migration\Mode\Data $dataMode,
+        \Migration\Mapper\Interactive $mapper
     ) {
         $this->dataMode = $dataMode;
+        $this->mapper = $mapper;
         parent::__construct($config, $logManager, $progress);
     }
 
@@ -48,6 +56,15 @@ class MigrateDataCommand extends AbstractMigrateCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $this->dataMode->run();
+        try {
+            $this->dataMode->run();
+        } catch (Exception $e) {
+
+            if (empty($this->dataMode->notMappedDocuments) && empty($this->dataMode->notMappedDocumentFields)) {
+                throw $e;
+            }
+
+            $this->mapper->init($input, $output, $this->getHelper('question'), $this->dataMode);
+        }
     }
 }
