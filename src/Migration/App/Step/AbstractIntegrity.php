@@ -127,6 +127,22 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * @return array
+     */
+    public function getNotMappedDocuments(): array
+    {
+        return (is_array($this->notMappedDocuments) ? $this->notMappedDocuments : []);
+    }
+
+    /**
+     * @return array
+     */
+    public function getNotMappedDocumentFields(): array
+    {
+        return (is_array($this->notMappedDocumentFields) ? $this->notMappedDocumentFields : []);
+    }
+
+    /**
      * Returns number of iterations for integrity check
      *
      * @return mixed

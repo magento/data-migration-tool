@@ -33,6 +33,10 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     protected $configReader;
 
+    public $notMappedDocumentFields = [];
+
+    public $notMappedDocuments = [];
+
     /**
      * @param Progress $progress
      * @param Logger $logger
@@ -88,6 +92,12 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
                 $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
+                if ($step['integrity'] && method_exists($step['integrity'], 'getNotMappedDocuments')) {
+                    $this->notMappedDocuments = array_merge($this->notMappedDocuments, $step['integrity']->getNotMappedDocuments());
+                }
+                if ($step['integrity'] && method_exists($step['integrity'], 'getNotMappedDocumentFields')) {
+                    $this->notMappedDocumentFields = array_merge($this->notMappedDocumentFields, $step['integrity']->getNotMappedDocumentFields());
+                }
             }
         }
         if (!$result && !$autoResolve) {
