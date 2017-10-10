@@ -216,20 +216,21 @@ abstract class AbstractResource
     }
 
     /**
-     * @param string $memoryLimit
+     * @param string $iniMemoryLimit
      * @return int|string
      */
-    protected function getBytes($memoryLimit)
+    protected function getBytes($iniMemoryLimit)
     {
-        $memoryLimit = trim($memoryLimit);
-        $last = strtolower($memoryLimit[strlen($memoryLimit)-1]);
+        $iniMemoryLimit = trim($iniMemoryLimit);
+        $memoryLimit = (int) $iniMemoryLimit;
+        $last = strtolower(substr($iniMemoryLimit, -1));
         switch ($last) {
             case 'g':
-                $memoryLimit *= 1024;
-                // fall-through intentional
+                $memoryLimit *= pow(1024, 3);
+                break;
             case 'm':
-                $memoryLimit *= 1024;
-                // fall-through intentional
+                $memoryLimit *= pow(1024, 2);
+                break;
             case 'k':
                 $memoryLimit *= 1024;
                 break;
