@@ -16,6 +16,23 @@ use Migration\Handler\AbstractHandler;
 class SalesOrderItem extends AbstractHandler
 {
     /**
+     * Sometimes fields has a broken serialize data
+     * If property sets to true, ignore all notices from unserialize()
+     *
+     * @var bool
+     *
+     */
+    private $ignoreBrokenData;
+
+    /**
+     * @param bool $ignoreBrokenData
+     */
+    public function __construct($ignoreBrokenData = false)
+    {
+        $this->ignoreBrokenData = (bool)$ignoreBrokenData;
+    }
+
+    /**
      * @param Record $recordToHandle
      * @param Record $oppositeRecord
      * @return void
@@ -25,7 +42,7 @@ class SalesOrderItem extends AbstractHandler
         $this->validate($recordToHandle);
         $value = $recordToHandle->getValue($this->field);
         if (null !== $value) {
-            $value = $value ? unserialize($value) : $value;
+            $value = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
             if (isset($value['options'])) {
                 foreach ($value['options'] as $key => $option) {
                     if (array_key_exists('option_type', $option) && $option['option_type'] === 'file') {
@@ -41,7 +58,7 @@ class SalesOrderItem extends AbstractHandler
                     $value['bundle_selection_attributes'];
                 $value['bundle_selection_attributes'] = json_encode($bundleSelectionAttributes);
             }
-            $value = $value ? json_encode($value) : $value;
+            $value = (false === $value) ? json_encode([]) : json_encode($value);
         }
         $recordToHandle->setValue($this->field, $value);
     }
