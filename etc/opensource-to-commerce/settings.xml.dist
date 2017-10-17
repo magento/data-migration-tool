@@ -1267,5 +1267,13 @@
 			<path>payment_services/centinel/password</path>
             <handler class="\Migration\Handler\Settings\Encrypt"/>
         </transform>
+        <transform>
+            <path>cataloginventory/item_options/min_sale_qty</path>
+            <handler class="\Migration\Handler\SerializeToJson"/>
+        </transform>
+        <transform>
+            <path>currency/options/customsymbol</path>
+            <handler class="\Migration\Handler\SerializeToJson"/>
+        </transform>
     </value>
 </settings>
