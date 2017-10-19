@@ -6,8 +6,9 @@
 namespace Migration\Handler\SerializeToJson;
 
 use Migration\ResourceModel\Record;
-use Migration\Exception;
 use Migration\Handler\AbstractHandler;
+use Migration\Logger\Logger;
+use Migration\Model\DocumentIdField;
 
 /**
  * Handler to transform field from sales_order_item
@@ -25,11 +26,25 @@ class SalesOrderItem extends AbstractHandler
     private $ignoreBrokenData;
 
     /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * @var DocumentIdField
+     */
+    private $documentIdFiled;
+
+    /**
+     * @param Logger $logger
+     * @param DocumentIdField $documentIdField
      * @param bool $ignoreBrokenData
      */
-    public function __construct($ignoreBrokenData = false)
+    public function __construct(Logger $logger, DocumentIdField $documentIdField, $ignoreBrokenData = true)
     {
+        $this->logger = $logger;
         $this->ignoreBrokenData = (bool)$ignoreBrokenData;
+        $this->documentIdFiled = $documentIdField;
     }
 
     /**
@@ -42,23 +57,33 @@ class SalesOrderItem extends AbstractHandler
         $this->validate($recordToHandle);
         $value = $recordToHandle->getValue($this->field);
         if (null !== $value) {
-            $value = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
-            if (isset($value['options'])) {
-                foreach ($value['options'] as $key => $option) {
+            $unserializeData = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
+            if (isset($unserializeData['options'])) {
+                foreach ($unserializeData['options'] as $key => $option) {
                     if (array_key_exists('option_type', $option) && $option['option_type'] === 'file') {
                         $optionValue = $option['option_value'] ? unserialize($option['option_value']) :
                             $option['option_value'];
-                        $value['options'][$key]['option_value'] = json_encode($optionValue);
+                        $unserializeData['options'][$key]['option_value'] = json_encode($optionValue);
                     }
                 }
             }
-            if (isset($value['bundle_selection_attributes'])) {
-                $bundleSelectionAttributes = $value['bundle_selection_attributes'] ?
-                    unserialize($value['bundle_selection_attributes']) :
-                    $value['bundle_selection_attributes'];
-                $value['bundle_selection_attributes'] = json_encode($bundleSelectionAttributes);
+            if (isset($unserializeData['bundle_selection_attributes'])) {
+                $bundleSelectionAttributes = $unserializeData['bundle_selection_attributes'] ?
+                    unserialize($unserializeData['bundle_selection_attributes']) :
+                    $unserializeData['bundle_selection_attributes'];
+                $unserializeData['bundle_selection_attributes'] = json_encode($bundleSelectionAttributes);
             }
-            $value = (false === $value) ? json_encode([]) : json_encode($value);
+            if (false === $unserializeData) {
+                $this->logger->warning(sprintf(
+                    'Could not unserialize data of %s.%s with record id %s',
+                    $recordToHandle->getDocument()->getName(),
+                    $this->field,
+                    $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
+                ));
+                $this->logger->warning("\n");
+            } else {
+                $value = json_encode($unserializeData);
+            }
         }
         $recordToHandle->setValue($this->field, $value);
     }

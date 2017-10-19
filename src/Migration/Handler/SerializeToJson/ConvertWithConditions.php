@@ -9,6 +9,7 @@ use Migration\Logger\Logger;
 use Migration\ResourceModel\Record;
 use Migration\Exception;
 use Migration\Handler\AbstractHandler;
+use Migration\Model\DocumentIdField;
 
 /**
  * Handler to transform field according to the map for special tables with additional logic
@@ -39,15 +40,34 @@ class ConvertWithConditions extends AbstractHandler
     protected $ignoreBrokenData;
 
     /**
+     * @var Logger
+     */
+    protected $logger;
+
+    /**
+     * @var DocumentIdField
+     */
+    protected $documentIdFiled;
+
+    /**
      * @param string $conditionalField
      * @param string $conditionalFieldValuesPattern
+     * @param Logger $logger
+     * @param DocumentIdField $documentIdField
      * @param bool $ignoreBrokenData
      */
-    public function __construct($conditionalField, $conditionalFieldValuesPattern, $ignoreBrokenData = false)
-    {
+    public function __construct(
+        $conditionalField,
+        $conditionalFieldValuesPattern,
+        Logger $logger,
+        DocumentIdField $documentIdField,
+        $ignoreBrokenData = true
+    ) {
         $this->conditionalField = $conditionalField;
         $this->conditionalFieldValuesPattern = $conditionalFieldValuesPattern;
+        $this->logger = $logger;
         $this->ignoreBrokenData = $ignoreBrokenData;
+        $this->documentIdFiled = $documentIdField;
     }
 
     /**
@@ -60,7 +80,17 @@ class ConvertWithConditions extends AbstractHandler
         if (null !== $value) {
             if ($this->shouldProcessField($recordToHandle->getData()[$this->conditionalField])) {
                 $unserializeData = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
-                $value = false === $unserializeData ? json_encode([]) : json_encode($unserializeData);
+                if (false === $unserializeData) {
+                    $this->logger->warning(sprintf(
+                        'Could not unserialize data of %s.%s with record id %s',
+                        $recordToHandle->getDocument()->getName(),
+                        $this->field,
+                        $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
+                    ));
+                    $this->logger->warning("\n");
+                } else {
+                    $value = json_encode($unserializeData);
+                }
             }
         }
         $recordToHandle->setValue($this->field, $value);
