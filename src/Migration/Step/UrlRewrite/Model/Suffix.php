@@ -99,6 +99,10 @@ class Suffix
         return $suffix;
     }
 
+    /**
+     * @param $suffix
+     * @return string
+     */
     private function ensureSuffixBeginsWithDot($suffix)
     {
         return substr($suffix, 0, 1) === "." ? $suffix : '.' . $suffix;
