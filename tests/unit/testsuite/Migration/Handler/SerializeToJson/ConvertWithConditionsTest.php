@@ -12,13 +12,32 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
      */
     protected $model;
 
+    /**
+     * @var \Migration\Logger\Logger|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $logger;
+
+    /**
+     * @var \Migration\Model\DocumentIdField|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $documentIdField;
+
     public function setUp()
     {
         $this->model = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
-            ->setMethods(['setValue', 'getValue', 'getFields', 'getData'])
+            ->setMethods(['setValue', 'getValue', 'getFields', 'getData', 'getDocument'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)
+            ->setMethods(['warning'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->documentIdField = $this->getMockBuilder(\Migration\Model\DocumentIdField::class)
+            ->setMethods(['getFiled'])
             ->disableOriginalConstructor()
             ->getMock();
     }
+
     /**
      * @param string $dataToConvert
      * @param string $expectedJson
@@ -33,14 +52,28 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
         $expectedResult
     ) {
         $fieldName = 'fieldname';
+        $document = $this->getMockBuilder(\Migration\ResourceModel\Document::class)
+            ->setMethods(['getName'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $document->expects($this->any())->method('getName')->willReturn('document1');
+        $this->documentIdField->expects($this->any())->method('getFiled')->with($document)->willReturn('fieldid');
 
+        $this->model->expects($this->any())->method('getDocument')->willReturn($document);
         $this->model->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $this->model->expects($this->any())->method('getData')->willReturn(['code' => 'info_buyRequest']);
-        $this->model->expects($this->any())->method('getValue')->with($fieldName)->willReturn($dataToConvert);
+        $this->model->expects($this->any())->method('getValue')->willReturnMap(
+            [
+                [$fieldName, $dataToConvert],
+                ['fieldid', 5]
+            ]
+        );
         $this->model->expects($this->any())->method('setValue')->with($fieldName, $expectedResult);
         $handler = new ConvertWithConditions(
             $conditionalField,
             $conditionalFieldValuesPattern,
+            $this->logger,
+            $this->documentIdField,
             $ignoreBrokenData
         );
         $handler->setField($fieldName);
@@ -55,7 +88,7 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
         $fieldName = 'fieldname';
         $this->model->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $this->model->expects($this->any())->method('getData')->willReturn(['some_value' => null]);
-        $handler = new ConvertWithConditions('code', null);
+        $handler = new ConvertWithConditions('code', null, $this->logger, $this->documentIdField);
         $handler->setField($fieldName);
         $handler->handle($this->model, $this->model);
     }
@@ -74,7 +107,7 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
             [
                 null,
                 null,
-                false,
+                true,
                 null,
                 null
             ],
@@ -83,7 +116,7 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
                 '/(parameters)|(info_buyRequest)|(bundle_option_ids)|(bundle_selection_attributes)/',
                 true,
                 'brokenString',
-                json_encode([])
+                'brokenString'
             ],
         ];
     }

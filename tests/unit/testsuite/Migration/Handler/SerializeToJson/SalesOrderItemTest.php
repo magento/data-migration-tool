@@ -27,7 +27,15 @@ class SalesOrderItemTest extends \PHPUnit\Framework\TestCase
         $record2 = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
             ->getMock();
-        $handler = new SalesOrderItem();
+        $documentIdField = $this->getMockBuilder(\Migration\Model\DocumentIdField::class)
+            ->setMethods(['getFiled'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger = $this->getMockBuilder(\Migration\Logger\Logger::class)
+            ->setMethods(['warning'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $handler = new SalesOrderItem($logger, $documentIdField);
         $handler->setField($fieldName);
         $this->assertNull($handler->handle($record, $record2));
     }
