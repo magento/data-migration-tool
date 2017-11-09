@@ -40,6 +40,12 @@ abstract class AbstractMode
     protected $canBeCompleted = true;
 
     /**
+     * @var string
+     */
+    protected $autoResolveMessage = 'You can use --auto or -a option to ignore not mapped differences'
+        . ' between source and destination to continue migration';
+
+    /**
      * @param Progress $progress
      * @param Logger $logger
      * @param \Migration\App\Mode\StepListFactory $stepListFactory

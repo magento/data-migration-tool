@@ -961,6 +961,9 @@
         <ignore>
             <path>admin/security/session_cookie_lifetime</path>
         </ignore>
+        <ignore>
+            <path>web/cookie/*</path>
+        </ignore>
         <rename>
             <path>api/config/charset</path>
             <to>webapi/soap/charset</to>

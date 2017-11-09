@@ -91,10 +91,7 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
             }
         }
         if (!$result && !$autoResolve) {
-            $this->logger->notice(
-                'You can use --auto or -a option to ignore not mapped differences'
-                    . ' between source and destination to continue migration'
-            );
+            $this->logger->notice($this->autoResolveMessage);
             throw new Exception('Integrity Check failed');
         }
     }

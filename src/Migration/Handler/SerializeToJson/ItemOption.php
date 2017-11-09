@@ -30,7 +30,7 @@ class ItemOption extends AbstractHandler
         if (null !== $value) {
             if ($this->shouldProcessField($recordToHandle->getData()[self::ITEM_OPTION_FIELD])) {
                 $unserializeData = @unserialize($value);
-                $value = false === $unserializeData ? $value : json_encode($unserializeData);
+                $value = (false === $unserializeData) ? $value : json_encode($unserializeData);
             }
         }
         $recordToHandle->setValue($this->field, $value);

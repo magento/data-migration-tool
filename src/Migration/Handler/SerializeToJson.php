@@ -6,6 +6,8 @@
 namespace Migration\Handler;
 
 use Migration\ResourceModel\Record;
+use Migration\Logger\Logger;
+use Migration\Model\DocumentIdField;
 
 /**
  * Handler to transform field according to the map
@@ -19,10 +21,22 @@ class SerializeToJson extends AbstractHandler
      * @var bool
      *
      */
-    protected $ignoreBrokenData;
+    private $ignoreBrokenData;
 
-    public function __construct($ignoreBrokenData = false)
+    /**
+     * @var Logger
+     */
+    private $logger;
+
+    /**
+     * @var DocumentIdField
+     */
+    private $documentIdFiled;
+
+    public function __construct(Logger $logger, DocumentIdField $documentIdField, $ignoreBrokenData = true)
     {
+        $this->logger = $logger;
+        $this->documentIdFiled = $documentIdField;
         $this->ignoreBrokenData = (bool)$ignoreBrokenData;
     }
 
@@ -35,7 +49,17 @@ class SerializeToJson extends AbstractHandler
         $value = $recordToHandle->getValue($this->field);
         if (null !== $value) {
             $unserializeData = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
-            $value = false === $unserializeData ? json_encode([]) : json_encode($unserializeData);
+            if (false === $unserializeData) {
+                $this->logger->warning(sprintf(
+                    'Could not unserialize data of %s.%s with record id %s',
+                    $recordToHandle->getDocument()->getName(),
+                    $this->field,
+                    $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
+                ));
+                $this->logger->warning("\n");
+            } else {
+                $value = json_encode($unserializeData);
+            }
         }
         $recordToHandle->setValue($this->field, $value);
     }

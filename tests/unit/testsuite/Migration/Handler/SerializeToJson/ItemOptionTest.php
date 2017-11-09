@@ -50,7 +50,15 @@ class ItemOptionTest extends \PHPUnit\Framework\TestCase
         $fieldName = 'fieldname';
         $this->model->expects($this->any())->method('getFields')->willReturn([$fieldName]);
         $this->model->expects($this->any())->method('getData')->willReturn(['some_value' => null]);
-        $handler = new ConvertWithConditions('code', null);
+        $documentIdField = $this->getMockBuilder(\Migration\Model\DocumentIdField::class)
+            ->setMethods(['getFiled'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $logger = $this->getMockBuilder(\Migration\Logger\Logger::class)
+            ->setMethods(['warning'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $handler = new ConvertWithConditions('code', null, $logger, $documentIdField);
         $handler->setField($fieldName);
         $handler->handle($this->model, $this->model);
     }

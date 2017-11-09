@@ -6,7 +6,10 @@
 namespace Migration\Mode;
 
 use Migration\App\Mode\StepList;
+use Migration\App\Progress;
+use Migration\Logger\Logger;
 use Migration\Exception;
+use Migration\Config;
 
 /**
  * Class Settings
@@ -17,6 +20,27 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
      * @inheritdoc
      */
     protected $mode = 'settings';
+
+    /**
+     * @var \Migration\Config
+     */
+    protected $configReader;
+
+    /**
+     * @param Progress $progress
+     * @param Logger $logger
+     * @param \Migration\App\Mode\StepListFactory $stepListFactory
+     * @param \Migration\Config $configReader
+     */
+    public function __construct(
+        Progress $progress,
+        Logger $logger,
+        \Migration\App\Mode\StepListFactory $stepListFactory,
+        Config $configReader
+    ) {
+        parent::__construct($progress, $logger, $stepListFactory);
+        $this->configReader = $configReader;
+    }
 
     /**
      * {@inheritdoc}
@@ -48,13 +72,15 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     private function runIntegrity(StepList $steps)
     {
+        $autoResolve = $this->configReader->getOption(Config::OPTION_AUTO_RESOLVE);
         $result = true;
         foreach ($steps->getSteps() as $stepName => $step) {
             if (!empty($step['integrity'])) {
                 $result = $this->runStage($step['integrity'], $stepName, 'integrity check') && $result;
             }
         }
-        if (!$result) {
+        if (!$result && !$autoResolve) {
+            $this->logger->notice($this->autoResolveMessage);
             throw new Exception('Integrity Check failed');
         }
     }

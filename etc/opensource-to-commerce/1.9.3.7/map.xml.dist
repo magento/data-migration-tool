@@ -9,9 +9,6 @@
     <source>
         <document_rules>
             <ignore>
-                <document>find_feed_import_codes</document>
-            </ignore>
-            <ignore>
                 <document>googleshopping_attributes</document>
             </ignore>
             <ignore>
@@ -76,6 +73,18 @@
             </ignore>
             <ignore>
                 <document>admin_assert</document>
+            </ignore>
+            <ignore>
+                <document>api2_acl_attribute</document>
+            </ignore>
+            <ignore>
+                <document>api2_acl_role</document>
+            </ignore>
+            <ignore>
+                <document>api2_acl_rule</document>
+            </ignore>
+            <ignore>
+                <document>api2_acl_user</document>
             </ignore>
             <ignore>
                 <document>api_assert</document>
@@ -243,22 +252,22 @@
                 <document>protx_api_debug</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_application</document>
+            	<document>xmlconnect_application</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_config_data</document>
+            	<document>xmlconnect_config_data</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_history</document>
+            	<document>xmlconnect_history</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_images</document>
+            	<document>xmlconnect_images</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_notification_template</document>
+            	<document>xmlconnect_notification_template</document>
             </ignore>
             <ignore>
-                <document>xmlconnect_queue</document>
+            	<document>xmlconnect_queue</document>
             </ignore>
             <ignore>
                 <document>googlecheckout_notification</document>
@@ -456,10 +465,10 @@
                 <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
-                <document>paybox_question_number</document>
+                <document>permission_block</document>
             </ignore>
             <ignore>
-                <document>strikeiron_tax_rate</document>
+                <document>permission_variable</document>
             </ignore>
             <ignore>
                 <document>googlebase_attributes</document>
@@ -469,6 +478,9 @@
             </ignore>
             <ignore>
                 <document>googlebase_types</document>
+            </ignore>
+            <ignore>
+                <document>customer_flowpassword</document>
             </ignore>
             <ignore>
                 <document>core_store</document>
@@ -773,6 +785,82 @@
                 <field>sales_flat_quote_item.base_hidden_tax_amount</field>
                 <to>quote_item.base_discount_tax_compensation_amount</to>
             </move>
+            <move>
+                <field>catalog_category_entity_datetime.entity_id</field>
+                <to>catalog_category_entity_datetime.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_decimal.entity_id</field>
+                <to>catalog_category_entity_decimal.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_int.entity_id</field>
+                <to>catalog_category_entity_int.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_text.entity_id</field>
+                <to>catalog_category_entity_text.row_id</to>
+            </move>
+            <move>
+                <field>catalog_category_entity_varchar.entity_id</field>
+                <to>catalog_category_entity_varchar.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_datetime.entity_id</field>
+                <to>catalog_product_entity_datetime.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_decimal.entity_id</field>
+                <to>catalog_product_entity_decimal.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_gallery.entity_id</field>
+                <to>catalog_product_entity_gallery.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_int.entity_id</field>
+                <to>catalog_product_entity_int.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_text.entity_id</field>
+                <to>catalog_product_entity_text.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_varchar.entity_id</field>
+                <to>catalog_product_entity_varchar.row_id</to>
+            </move>
+            <move>
+                <field>catalogrule_customer_group.rule_id</field>
+                <to>catalogrule_customer_group.row_id</to>
+            </move>
+            <move>
+                <field>catalogrule_website.rule_id</field>
+                <to>catalogrule_website.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_customer_group.rule_id</field>
+                <to>salesrule_customer_group.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_product_attribute.rule_id</field>
+                <to>salesrule_product_attribute.row_id</to>
+            </move>
+            <move>
+                <field>salesrule_website.rule_id</field>
+                <to>salesrule_website.row_id</to>
+            </move>
+            <move>
+                <field>cms_block_store.block_id</field>
+                <to>cms_block_store.row_id</to>
+            </move>
+            <move>
+                <field>cms_page_store.page_id</field>
+                <to>cms_page_store.row_id</to>
+            </move>
+            <move>
+                <field>catalog_product_entity_tier_price.entity_id</field>
+                <to>catalog_product_entity_tier_price.row_id</to>
+            </move>
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
@@ -853,40 +941,12 @@
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
             </transform>
             <transform>
-                <field>catalogrule.customer_group_ids</field>
-                <handler class="\Migration\Handler\Rule\NormalizationIds">
-                    <param name="normalizationDocument" value="catalogrule_customer_group" />
-                    <param name="normalizationField" value="customer_group_id" />
-                </handler>
-            </transform>
-            <transform>
-                <field>catalogrule.website_ids</field>
-                <handler class="\Migration\Handler\Rule\NormalizationIds">
-                    <param name="normalizationDocument" value="catalogrule_website" />
-                    <param name="normalizationField" value="website_id" />
-                </handler>
-            </transform>
-            <transform>
                 <field>salesrule.conditions_serialized</field>
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
             </transform>
             <transform>
                 <field>salesrule.actions_serialized</field>
                 <handler class="\Migration\Handler\Rule\SerializedData"/>
-            </transform>
-            <transform>
-                <field>salesrule.customer_group_ids</field>
-                <handler class="\Migration\Handler\Rule\NormalizationIds">
-                    <param name="normalizationDocument" value="salesrule_customer_group" />
-                    <param name="normalizationField" value="customer_group_id" />
-                </handler>
-            </transform>
-            <transform>
-                <field>salesrule.website_ids</field>
-                <handler class="\Migration\Handler\Rule\NormalizationIds">
-                    <param name="normalizationDocument" value="salesrule_website" />
-                    <param name="normalizationField" value="website_id" />
-                </handler>
             </transform>
             <transform>
                 <field>sales_flat_order_item.weee_tax_applied</field>
@@ -905,8 +965,64 @@
                 <handler class="Migration\Handler\SerializeToJson"/>
             </transform>
             <transform>
+                <field>rating_option_vote.remote_ip_long</field>
+                <handler class="\Migration\Handler\ConvertIp"/>
+            </transform>
+            <transform>
+                <field>sendfriend_log.ip</field>
+                <handler class="\Migration\Handler\ConvertIp"/>
+            </transform>
+            <transform>
                 <field>catalog_product_entity_media_gallery.value_id</field>
                 <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
+            </transform>
+            <transform>
+                <field>catalogrule.rule_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_catalogrule"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>salesrule.rule_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_salesrule"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_category_entity.entity_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_catalog_category"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity.entity_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_product"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_block.block_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_cms_block"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_page.page_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_cms_page"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_bundle_option.option_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_product_bundle_option"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_bundle_selection.selection_id</field>
+                <handler class="\Migration\Handler\Sequence">
+                    <param name="table" value="sequence_product_bundle_selection"/>
+                </handler>
             </transform>
             <transform>
                 <field>catalogsearch_query.synonym_for</field>
@@ -1108,16 +1224,7 @@
                 <field>newsletter_template.template_text_preprocessed</field>
             </ignore>
             <ignore>
-                <field>catalogrule.customer_group_ids</field>
-            </ignore>
-            <ignore>
-                <field>catalogrule.website_ids</field>
-            </ignore>
-            <ignore>
-                <field>salesrule.customer_group_ids</field>
-            </ignore>
-            <ignore>
-                <field>salesrule.website_ids</field>
+                <field>catalogsearch_query.synonym_for</field>
             </ignore>
             <ignore>
                 <field>catalogrule.sub_is_enable</field>
@@ -1133,9 +1240,6 @@
             </ignore>
             <ignore>
                 <field>catalogrule_product.sub_discount_amount</field>
-            </ignore>
-            <ignore>
-                <field>catalogsearch_query.synonym_for</field>
             </ignore>
             <ignore>
                 <field>sales_flat_invoice.customer_id</field>
@@ -1213,10 +1317,25 @@
                 <field>sales_flat_order_payment.customer_payment_id</field>
             </ignore>
             <ignore>
+                <field>sales_bestsellers_aggregated_daily.product_type_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_bestsellers_aggregated_monthly.product_type_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_bestsellers_aggregated_yearly.product_type_id</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
                 <datatype>weee_tax.state</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sendfriend_log.ip</datatype>
+            </ignore>
+            <ignore>
+                <datatype>rating_option_vote.remote_ip_long</datatype>
             </ignore>
             <ignore>
                 <datatype>oauth_consumer.callback_url</datatype>
@@ -1227,33 +1346,6 @@
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
-           <ignore>
-               <datatype>catalogrule_customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_group_website.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_product.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_product_price.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>paypal_settlement_report.report_date</datatype>
-           </ignore>
-           <ignore>
-               <datatype>sales_flat_order.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>salesrule_customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>salesrule_product_attribute.customer_group_id</datatype>
-           </ignore>
             <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
             </ignore>
@@ -1322,10 +1414,19 @@
                 <document>customer_address_entity_varchar</document>
             </ignore>
             <ignore>
-                <document>ui_bookmark</document>
+                <document>magento_acknowledged_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_operation</document>
             </ignore>
             <ignore>
                 <document>signifyd_case</document>
+            </ignore>
+            <ignore>
+                <document>ui_bookmark</document>
             </ignore>
             <ignore>
                 <document>migration_backup_*</document>
@@ -1499,19 +1600,169 @@
                 <document>sequence_rma_item_*</document>
             </ignore>
             <ignore>
-                <document>vault_payment_token</document>
+                <document>catalogsearch_recommendations</document>
             </ignore>
             <ignore>
-                <document>vault_payment_token_order_payment_link</document>
+                <document>enterprise_admin_passwords</document>
             </ignore>
             <ignore>
-                <document>search_synonyms</document>
+                <document>magento_banner</document>
             </ignore>
             <ignore>
-                <document>eav_attribute_option_swatch</document>
+                <document>magento_banner_catalogrule</document>
             </ignore>
             <ignore>
-                <document>import_history</document>
+                <document>magento_banner_content</document>
+            </ignore>
+            <ignore>
+                <document>magento_banner_customersegment</document>
+            </ignore>
+            <ignore>
+                <document>magento_banner_salesrule</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogevent_event</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogevent_event_image</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_product</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_product_tmp</document>
+            </ignore>
+            <ignore>
+                <document>magento_catalogpermissions_index_tmp</document>
+            </ignore>
+            <ignore>
+                <document>magento_customerbalance</document>
+            </ignore>
+            <ignore>
+                <document>magento_customerbalance_history</document>
+            </ignore>
+            <ignore>
+                <document>magento_customercustomattributes_sales_flat_order</document>
+            </ignore>
+            <ignore>
+                <document>magento_customercustomattributes_sales_flat_order_address</document>
+            </ignore>
+            <ignore>
+                <document>magento_customercustomattributes_sales_flat_quote</document>
+            </ignore>
+            <ignore>
+                <document>magento_customercustomattributes_sales_flat_quote_address</document>
+            </ignore>
+            <ignore>
+                <document>magento_customersegment_customer</document>
+            </ignore>
+            <ignore>
+                <document>magento_customersegment_event</document>
+            </ignore>
+            <ignore>
+                <document>magento_customersegment_segment</document>
+            </ignore>
+            <ignore>
+                <document>magento_customersegment_website</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftcard_amount</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftcardaccount</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftcardaccount_history</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftcardaccount_pool</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_data</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_entity</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_item</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_item_option</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_label</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_person</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_type</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftregistry_type_info</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftwrapping</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftwrapping_store_attributes</document>
+            </ignore>
+            <ignore>
+                <document>magento_giftwrapping_website</document>
+            </ignore>
+            <ignore>
+                <document>magento_invitation</document>
+            </ignore>
+            <ignore>
+                <document>magento_invitation_status_history</document>
+            </ignore>
+            <ignore>
+                <document>magento_invitation_track</document>
+            </ignore>
+            <ignore>
+                <document>magento_logging_event</document>
+            </ignore>
+            <ignore>
+                <document>magento_logging_event_changes</document>
+            </ignore>
+            <ignore>
+                <document>magento_reminder_rule</document>
+            </ignore>
+            <ignore>
+                <document>magento_reminder_rule_coupon</document>
+            </ignore>
+            <ignore>
+                <document>magento_reminder_rule_log</document>
+            </ignore>
+            <ignore>
+                <document>magento_reminder_rule_website</document>
+            </ignore>
+            <ignore>
+                <document>magento_reminder_template</document>
+            </ignore>
+            <ignore>
+                <document>magento_reward</document>
+            </ignore>
+            <ignore>
+                <document>magento_reward_history</document>
+            </ignore>
+            <ignore>
+                <document>magento_reward_rate</document>
+            </ignore>
+            <ignore>
+                <document>magento_reward_salesrule</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_grid</document>
             </ignore>
             <ignore>
                 <document>sales_creditmemo_grid</document>
@@ -1526,7 +1777,46 @@
                 <document>sales_shipment_grid</document>
             </ignore>
             <ignore>
-                <document>catalogsearch_fulltext_scope*</document>
+                <document>magento_rma_item_eav_attribute</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_eav_attribute_website</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity_datetime</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity_decimal</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity_int</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity_text</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_entity_varchar</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_item_form_attribute</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_shipping_label</document>
+            </ignore>
+            <ignore>
+                <document>magento_rma_status_history</document>
+            </ignore>
+            <ignore>
+                <document>magento_sales_creditmemo_grid_archive</document>
+            </ignore>
+            <ignore>
+                <document>magento_sales_invoice_grid_archive</document>
+            </ignore>
+            <ignore>
+                <document>magento_sales_order_grid_archive</document>
             </ignore>
             <ignore>
                 <document>store</document>
@@ -1538,49 +1828,82 @@
                 <document>store_website</document>
             </ignore>
             <ignore>
-                <document>captcha_log</document>
+                <document>support_report</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_group_price</document>
+                <document>magento_sales_shipment_grid_archive</document>
             </ignore>
             <ignore>
-                <document>catalogrule_customer_group</document>
+                <document>magento_scheduled_operations</document>
             </ignore>
             <ignore>
-                <document>catalogrule_website</document>
+                <document>magento_targetrule</document>
             </ignore>
             <ignore>
-                <document>oauth_consumer</document>
+                <document>magento_targetrule_customersegment</document>
             </ignore>
             <ignore>
-                <document>oauth_nonce</document>
+                <document>magento_targetrule_index</document>
             </ignore>
             <ignore>
-                <document>oauth_token</document>
+                <document>magento_targetrule_index_crosssell</document>
             </ignore>
             <ignore>
-                <document>report_viewed_product_aggregated_daily</document>
+                <document>magento_targetrule_index_crosssell_product</document>
             </ignore>
             <ignore>
-                <document>report_viewed_product_aggregated_monthly</document>
+                <document>magento_targetrule_index_related</document>
             </ignore>
             <ignore>
-                <document>report_viewed_product_aggregated_yearly</document>
+                <document>magento_targetrule_index_related_product</document>
             </ignore>
             <ignore>
-                <document>salesrule_coupon_aggregated_updated</document>
+                <document>magento_targetrule_index_upsell</document>
             </ignore>
             <ignore>
-                <document>salesrule_customer_group</document>
+                <document>magento_targetrule_index_upsell_product</document>
             </ignore>
             <ignore>
-                <document>salesrule_website</document>
+                <document>magento_targetrule_product</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price</document>
+                <document>magento_versionscms_hierarchy_lock</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price*</document>
+                <document>magento_versionscms_hierarchy_metadata</document>
+            </ignore>
+            <ignore>
+                <document>magento_versionscms_hierarchy_node</document>
+            </ignore>
+            <ignore>
+                <document>magento_versionscms_increment</document>
+            </ignore>
+            <ignore>
+                <document>magento_versionscms_page_revision</document>
+            </ignore>
+            <ignore>
+                <document>magento_versionscms_page_version</document>
+            </ignore>
+            <ignore>
+                <document>paypal_billing_agreement</document>
+            </ignore>
+            <ignore>
+                <document>paypal_billing_agreement_order</document>
+            </ignore>
+            <ignore>
+                <document>eav_attribute_option_swatch</document>
+            </ignore>
+            <ignore>
+                <document>import_history</document>
+            </ignore>
+            <ignore>
+                <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
+            <ignore>
+                <document>log_visitor_info</document>
+            </ignore>
+            <ignore>
+                <document>log_visitor_online</document>
             </ignore>
             <ignore>
                 <document>reporting_module_status</document>
@@ -1598,7 +1921,22 @@
                 <document>reporting_counts</document>
             </ignore>
             <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
+            <ignore>
                 <document>admin_passwords</document>
+            </ignore>
+            <ignore>
+                <document>support_backup</document>
+            </ignore>
+            <ignore>
+                <document>support_backup_item</document>
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_to_entity</document>
@@ -1613,16 +1951,67 @@
                 <document>customer_grid_flat</document>
             </ignore>
             <ignore>
-                <document>admin_user_session</document>
-            </ignore>
-            <ignore>
-                <document>password_reset_request_event</document>
+                <document>visual_merchandiser_rule</document>
             </ignore>
             <ignore>
                 <document>oauth_token_request_log</document>
             </ignore>
             <ignore>
                 <document>design_config_grid_flat</document>
+            </ignore>
+            <ignore>
+                <document>admin_user_session</document>
+            </ignore>
+            <ignore>
+                <document>magento_salesrule_filter</document>
+            </ignore>
+            <ignore>
+                <document>multiinventory_warehouse</document>
+            </ignore>
+            <ignore>
+                <document>password_reset_request_event</document>
+            </ignore>
+            <ignore>
+                <document>queue_lock</document>
+            </ignore>
+            <ignore>
+                <document>quote_preview</document>
+            </ignore>
+            <ignore>
+                <document>search_synonyms</document>
+            </ignore>
+            <ignore>
+                <document>sequence_catalog_category</document>
+            </ignore>
+            <ignore>
+                <document>sequence_catalogrule</document>
+            </ignore>
+            <ignore>
+                <document>sequence_cms_block</document>
+            </ignore>
+            <ignore>
+                <document>sequence_cms_page</document>
+            </ignore>
+            <ignore>
+                <document>sequence_product</document>
+            </ignore>
+            <ignore>
+                <document>sequence_salesrule</document>
+            </ignore>
+            <ignore>
+                <document>sequence_product_bundle_selection</document>
+            </ignore>
+            <ignore>
+                <document>sequence_product_bundle_option</document>
+            </ignore>
+            <ignore>
+                <document>staging_update</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token</document>
+            </ignore>
+            <ignore>
+                <document>vault_payment_token_order_payment_link</document>
             </ignore>
         </document_rules>
         <field_rules>
@@ -1703,21 +2092,44 @@
                 <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
             </transform>
             <transform>
-                <field>translation.crc_string</field>
-                <handler class="\Migration\Handler\SetHash">
-                    <param name="hash" value="crc32" />
-                    <param name="baseField" value="string" />
-                </handler>
-            </transform>
-            <transform>
-                <field>catalogrule_product.sub_simple_action</field>
-                <handler class="\Migration\Handler\SetValue">
-                    <param name="value" value="by_percent" />
-                </handler>
-            </transform>
-            <transform>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
                 <handler class="\Migration\Handler\Gallery\SetEntityId"/>
+            </transform>
+            <transform>
+                <field>catalog_category_entity.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="entity_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>catalogrule.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="rule_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_block.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="block_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>cms_page.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="page_id"/>
+                </handler>
+            </transform>
+            <transform>
+                <field>salesrule.row_id</field>
+                <handler class="\Migration\Handler\FieldCopy">
+                    <param name="fieldCopy" value="rule_id"/>
+                </handler>
             </transform>
             <transform>
                 <field>catalog_product_bundle_option_value.parent_product_id</field>
@@ -1749,15 +2161,6 @@
             </ignore>
             <ignore>
                 <field>admin_user.interface_locale</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.failures_num</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.first_failure</field>
-            </ignore>
-            <ignore>
-                <field>admin_user.lock_expires</field>
             </ignore>
             <ignore>
                 <field>rating.is_active</field>
@@ -1847,97 +2250,703 @@
                 <field>sales_order.send_email</field>
             </ignore>
             <ignore>
-                <field>cataloginventory_stock_item.is_decimal_divided</field>
+                <field>admin_user.failures_num</field>
             </ignore>
             <ignore>
-                <field>catalogrule_product.sub_simple_action</field>
+                <field>admin_user.first_failure</field>
             </ignore>
             <ignore>
-                <field>catalogrule_product.sub_discount_amount</field>
+                <field>admin_user.lock_expires</field>
             </ignore>
             <ignore>
-                <field>paypal_settlement_report_row.payment_tracking_id</field>
+                <field>cms_page.published_revision_id</field>
             </ignore>
             <ignore>
-                <field>paypal_settlement_report_row.store_id</field>
+                <field>cms_page.website_root</field>
             </ignore>
             <ignore>
-                <field>quote_address.vat_id</field>
+                <field>cms_page.under_version_control</field>
             </ignore>
             <ignore>
-                <field>quote_address.vat_is_valid</field>
+                <field>quote.customer_balance_amount_used</field>
             </ignore>
             <ignore>
-                <field>quote_address.vat_request_id</field>
+                <field>quote.base_customer_bal_amount_used</field>
             </ignore>
             <ignore>
-                <field>quote_address.vat_request_date</field>
+                <field>quote.use_customer_balance</field>
             </ignore>
             <ignore>
-                <field>quote_address.vat_request_success</field>
+                <field>quote.gift_cards</field>
             </ignore>
             <ignore>
-                <field>sales_order_address.vat_id</field>
+                <field>quote.gift_cards_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_address.vat_is_valid</field>
+                <field>quote.base_gift_cards_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order_address.vat_request_id</field>
+                <field>quote.gift_cards_amount_used</field>
             </ignore>
             <ignore>
-                <field>sales_order_address.vat_request_date</field>
+                <field>quote.base_gift_cards_amount_used</field>
             </ignore>
             <ignore>
-                <field>sales_order_address.vat_request_success</field>
+                <field>quote.gw_id</field>
             </ignore>
             <ignore>
-                <field>sales_creditmemo.discount_description</field>
+                <field>quote.gw_allow_gift_receipt</field>
             </ignore>
             <ignore>
-                <field>sales_invoice.discount_description</field>
+                <field>quote.gw_add_card</field>
             </ignore>
             <ignore>
-                <field>sales_order_item.base_tax_refunded</field>
+                <field>quote.gw_base_price</field>
             </ignore>
             <ignore>
-                <field>sales_order_item.discount_refunded</field>
+                <field>quote.gw_price</field>
             </ignore>
             <ignore>
-                <field>sales_order_item.base_discount_refunded</field>
+                <field>quote.gw_items_base_price</field>
             </ignore>
             <ignore>
-                <field>salesrule.use_auto_generation</field>
+                <field>quote.gw_items_price</field>
             </ignore>
             <ignore>
-                <field>salesrule.uses_per_coupon</field>
+                <field>quote.gw_card_base_price</field>
             </ignore>
             <ignore>
-                <field>salesrule_coupon.created_at</field>
+                <field>quote.gw_card_price</field>
             </ignore>
             <ignore>
-                <field>salesrule_coupon.type</field>
+                <field>quote.gw_base_tax_amount</field>
             </ignore>
             <ignore>
-                <field>salesrule_coupon_aggregated.rule_name</field>
+                <field>quote.gw_tax_amount</field>
             </ignore>
             <ignore>
-                <field>salesrule_coupon_aggregated_order.rule_name</field>
+                <field>quote.gw_items_base_tax_amount</field>
             </ignore>
             <ignore>
-                <field>tax_calculation_rule.calculate_subtotal</field>
+                <field>quote.gw_items_tax_amount</field>
             </ignore>
             <ignore>
-                <field>translation.crc_string</field>
+                <field>quote.gw_card_base_tax_amount</field>
             </ignore>
             <ignore>
-                <field>sales_order.coupon_rule_name</field>
+                <field>quote.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.use_reward_points</field>
+            </ignore>
+            <ignore>
+                <field>quote.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>quote.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.used_gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_allow_gift_receipt</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_add_card</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_address_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.event_id</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.bs_customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_creditmemo.reward_points_balance_refund</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_invoice.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_customer_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_balance_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.bs_customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.customer_bal_total_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_gift_cards_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gift_cards_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_allow_gift_receipt</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_add_card</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_tax_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_points_balance</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_currency_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_rwrd_crrncy_amt_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.rwrd_currency_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.base_rwrd_crrncy_amnt_refnded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.rwrd_crrncy_amnt_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.reward_points_balance_refund</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.qty_returned</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount_invoiced</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_price_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_base_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.gw_tax_amount_refunded</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.event_id</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_item.giftregistry_item_id</field>
+            </ignore>
+            <ignore>
+                <field>wishlist.name</field>
+            </ignore>
+            <ignore>
+                <field>wishlist.visibility</field>
             </ignore>
             <ignore>
                 <field>checkout_agreement.mode</field>
             </ignore>
             <ignore>
+                <field>cataloginventory_stock_item.deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>cataloginventory_stock_item.use_config_deferred_stock_update</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_items_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_base_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>sales_order.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.created_in</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.created_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.created_in</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.created_in</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.updated_in</field>
+            </ignore>
+            <ignore>
+                <field>catalog_category_entity.row_id</field>
+            </ignore>
+            <ignore>
                 <field>catalog_category_product.entity_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity.row_id</field>
+            </ignore>
+            <ignore>
+                <field>catalog_product_entity_media_gallery_value.row_id</field>
+            </ignore>
+            <ignore>
+                <field>catalogrule.row_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_block.row_id</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.row_id</field>
+            </ignore>
+            <ignore>
+                <field>salesrule.row_id</field>
             </ignore>
             <ignore>
                 <field>cms_page.meta_title</field>
@@ -1955,6 +2964,12 @@
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
+                <datatype>sendfriend_log.ip</datatype>
+            </ignore>
+            <ignore>
+                <datatype>rating_option_vote.remote_ip_long</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_consumer.callback_url</datatype>
             </ignore>
             <ignore>
@@ -1963,42 +2978,6 @@
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
-           <ignore>
-               <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalog_product_index_price.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_group_website.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_product_price.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>paypal_settlement_report.report_date</datatype>
-           </ignore>
-           <ignore>
-               <datatype>sales_order.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>salesrule_customer_group.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>salesrule_product_attribute.customer_group_id</datatype>
-           </ignore>
-           <ignore>
-               <datatype>catalogrule_product.customer_group_id</datatype>
-           </ignore>
 		    <ignore>
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
             </ignore>

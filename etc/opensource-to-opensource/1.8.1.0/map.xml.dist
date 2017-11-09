@@ -1288,6 +1288,9 @@
                 <document>ui_bookmark</document>
             </ignore>
             <ignore>
+                <document>signifyd_case</document>
+            </ignore>
+            <ignore>
                 <document>migration_backup_*</document>
             </ignore>
             <ignore>

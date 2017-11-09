@@ -34,6 +34,11 @@ class SettingsTest extends \PHPUnit\Framework\TestCase
     protected $progress;
 
     /**
+     * @var \Migration\Config|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $configReader;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -49,13 +54,15 @@ class SettingsTest extends \PHPUnit\Framework\TestCase
         $stepListFactory->expects($this->any())->method('create')->with(['mode' => 'settings'])
             ->willReturn($this->stepList);
         $this->logger = $this->getMockBuilder(\Migration\Logger\Logger::class)->disableOriginalConstructor()
-            ->setMethods(['info', 'warning'])
+            ->setMethods(['info', 'warning', 'notice'])
             ->getMock();
         $this->progress = $this->getMockBuilder(\Migration\App\Progress::class)->disableOriginalConstructor()
             ->setMethods(['saveResult', 'isCompleted'])
             ->getMock();
+        $this->configReader = $this->getMockBuilder(\Migration\Config::class)->disableOriginalConstructor()
+            ->getMock();
 
-        $this->settings = new Settings($this->progress, $this->logger, $stepListFactory);
+        $this->settings = new Settings($this->progress, $this->logger, $stepListFactory, $this->configReader);
     }
 
     /**

@@ -21,7 +21,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     /**
      * @var Model\TemporaryTable
      */
-    private $temporaryTable;
+    protected $temporaryTable;
 
     /**
      * @var string

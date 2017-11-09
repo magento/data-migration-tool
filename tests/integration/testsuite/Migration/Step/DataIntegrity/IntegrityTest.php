@@ -63,7 +63,7 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
             ->setMethods(['getDocumentList'])
             ->getMock();
         $this->setProperties($this->dataIntegrity, [
-            'config' => $this->config,
+            'configReader' => $this->config,
             'logger' => $this->logger,
             'progress' => $this->progress,
             'source' => $this->source,
