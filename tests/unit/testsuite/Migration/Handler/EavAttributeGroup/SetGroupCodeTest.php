@@ -22,6 +22,8 @@ class SetGroupCodeTest extends \PHPUnit\Framework\TestCase
         $groupName = 'Migration General';
         $groupCode = 'migration-general';
         $fieldName = 'fieldname';
+        $entityType = 'catalog_product';
+        $attributeSetId = '4';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $recordToHandle */
         $recordToHandle = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->setMethods(['getValue', 'setValue', 'getFields'])
@@ -39,16 +41,42 @@ class SetGroupCodeTest extends \PHPUnit\Framework\TestCase
             ->getMock();
         $attributeGroupNameToCodeMap->expects($this->once())
             ->method('getGroupCodeMap')
-            ->with($groupName)
+            ->with($groupName, $entityType)
             ->willReturn($groupCode);
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$fieldName]));
-        $recordToHandle->expects($this->once())->method('getValue')->with('attribute_group_name')
-            ->willReturn($groupName);
+        $recordToHandle->expects($this->any())->method('getValue')->willReturnMap(
+            [
+                ['attribute_group_name', $groupName],
+                ['attribute_set_id', $attributeSetId]
+            ]
+        );
         $recordToHandle->expects($this->once())->method('setValue')->with($fieldName, $groupCode);
         $config = $this->getMockBuilder(\Migration\Config::class)
             ->disableOriginalConstructor()->setMethods(['getSource'])->getMock();
         $config->expects($this->once())->method('getSource')->willReturn(['type' => DatabaseStage::SOURCE_TYPE]);
-        $handler = new SetGroupCode($config, $attributeGroupNameToCodeMap);
+
+        $source = $this->getMockBuilder(\Migration\ResourceModel\Source::class)
+            ->setMethods(['getAdapter', 'addDocumentPrefix'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $mySqlAdapter = $this->createPartialMock(
+            \Migration\ResourceModel\Adapter\Mysql::class,
+            ['getSelect', 'fetchOne']
+        );
+        $dbSelect = $this->createPartialMock(
+            \Magento\Framework\DB\Select::class,
+            ['from', 'where', 'join', 'getAdapter']
+        );
+        $mySqlAdapter->expects($this->any())->method('getSelect')->willReturn($dbSelect);
+        $source->expects($this->any())->method('getAdapter')->willReturn($mySqlAdapter);
+        $source->expects($this->any())->method('addDocumentPrefix')->willReturnArgument(0);
+        $dbSelect->expects($this->any())->method('from')->willReturnSelf();
+        $dbSelect->expects($this->any())->method('where')->willReturnSelf();
+        $dbSelect->expects($this->any())->method('join')->willReturnSelf();
+        $dbSelect->expects($this->any())->method('getAdapter')->willReturn($mySqlAdapter);
+        $mySqlAdapter->expects($this->once())->method('fetchOne')->willReturn($entityType);
+
+        $handler = new SetGroupCode($config, $attributeGroupNameToCodeMap, $source);
         $handler->setField($fieldName);
         $handler->handle($recordToHandle, $oppositeRecord);
     }
