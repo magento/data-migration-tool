@@ -13,6 +13,7 @@ use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
 use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
+use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
 use Migration\Step\Customer\Model;
@@ -51,6 +52,13 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     /**
      * @var ProgressBar\LogLevelProcessor
      */
+    private $progressBar;
+
+    /**
+     * Progress instance, saves the state of the process
+     *
+     * @var Progress
+     */
     private $progress;
 
     /**
@@ -80,7 +88,8 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
 
     /**
      * @param \Migration\Config $config
-     * @param ProgressBar\LogLevelProcessor $progress
+     * @param ProgressBar\LogLevelProcessor $progressBar
+     * @param Progress $progress
      * @param ResourceModel\Source $source
      * @param ResourceModel\Destination $destination
      * @param ResourceModel\RecordFactory $recordFactory
@@ -96,7 +105,8 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      */
     public function __construct(
         \Migration\Config $config,
-        ProgressBar\LogLevelProcessor $progress,
+        ProgressBar\LogLevelProcessor $progressBar,
+        Progress $progress,
         ResourceModel\Source $source,
         ResourceModel\Destination $destination,
         ResourceModel\RecordFactory $recordFactory,
@@ -113,6 +123,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $this->recordFactory = $recordFactory;
         $this->recordTransformerFactory = $recordTransformerFactory;
         $this->map = $mapFactory->create('customer_map_file');
+        $this->progressBar = $progressBar;
         $this->progress = $progress;
         $this->readerGroups = $groupsFactory->create('customer_document_groups_file');
         $this->logger = $logger;
@@ -127,11 +138,23 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      */
     public function perform()
     {
+        $stage = 'run';
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
-        $this->progress->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
-        $this->migrateCustomerEntities();
-        $this->migrateCustomerData();
-        $this->progress->finish(LogManager::LOG_LEVEL_INFO);
+        $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
+        $sourceDataDocuments = array_diff($sourceDocuments, $sourceEntityDocuments);
+        $skippedAttributes = array_keys($this->attributesDataToSkip->getSkippedAttributes());
+        $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
+        $this->progressBar->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
+        foreach (array_diff($sourceEntityDocuments, $processedDocuments) as $sourceEntityDocument) {
+            $this->transformDocumentRecords($sourceEntityDocument);
+            $this->progress->addProcessedEntity($this, $stage, $sourceEntityDocument);
+        }
+        foreach (array_diff($sourceDataDocuments, $processedDocuments) as $sourceDataDocument) {
+            $this->transformDocumentRecords($sourceDataDocument, $skippedAttributes);
+            $this->progress->addProcessedEntity($this, $stage, $sourceDataDocument);
+        }
+        $this->attributesToStatic->update();
+        $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
 
@@ -166,7 +189,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $recordTransformer->init();
         $pageNumber = 0;
         $this->logger->debug('migrating', ['table' => $sourceDocName]);
-        $this->progress->start(
+        $this->progressBar->start(
             ceil($this->source->getRecordsCount($sourceDocName) / $this->source->getPageSize($sourceDocName)),
             LogManager::LOG_LEVEL_DEBUG
         );
@@ -192,36 +215,10 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
                     ->updateCustomerEntities($sourceDocName, $destinationRecords);
             }
             $this->source->setLastLoadedRecord($sourceDocName, end($bulk));
-            $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
+            $this->progressBar->advance(LogManager::LOG_LEVEL_DEBUG);
             $this->destination->saveRecords($destinationName, $destinationRecords);
         }
-        $this->progress->advance(LogManager::LOG_LEVEL_INFO);
-        $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
-    }
-
-    /**
-     * Migrate customer entity tables
-     */
-    private function migrateCustomerEntities()
-    {
-        $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
-        foreach ($sourceEntityDocuments as $sourceEntityDocument) {
-            $this->transformDocumentRecords($sourceEntityDocument);
-        }
-        $this->attributesToStatic->update();
-    }
-
-    /**
-     * Migrate data of customers
-     */
-    private function migrateCustomerData()
-    {
-        $skippedAttributes = array_keys($this->attributesDataToSkip->getSkippedAttributes());
-        $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
-        $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
-        $sourceDataDocuments = array_diff($sourceDocuments, $sourceEntityDocuments);
-        foreach ($sourceDataDocuments as $sourceDataDocument) {
-            $this->transformDocumentRecords($sourceDataDocument, $skippedAttributes);
-        }
+        $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
+        $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
     }
 }
