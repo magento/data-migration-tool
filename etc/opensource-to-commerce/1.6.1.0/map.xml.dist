@@ -2061,6 +2061,9 @@
                 <document>design_config_grid_flat</document>
             </ignore>
             <ignore>
+                <document>release_notification_viewer_log</document>
+            </ignore>
+            <ignore>
                 <document>admin_user_session</document>
             </ignore>
             <ignore>
