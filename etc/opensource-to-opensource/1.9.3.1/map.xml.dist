@@ -1903,30 +1903,6 @@
             <ignore>
                 <datatype>paypal_settlement_report.report_date</datatype>
             </ignore>
-            <ignore>
-                <datatype>magestore_bannerslider_slider.show_title</datatype>
-            </ignore>
-            <ignore>
-                <datatype>magestore_bannerslider_slider.position_note</datatype>
-            </ignore>
-            <ignore>
-                <datatype>magestore_bannerslider_slider.min_item</datatype>
-            </ignore>
-            <ignore>
-                <datatype>magestore_bannerslider_slider.max_item</datatype>
-            </ignore>
-            <ignore>
-                <field>magestore_bannerslider_banner.style_slide</field>
-            </ignore>
-            <ignore>
-                <field>magestore_bannerslider_banner.caption</field>
-            </ignore>
-            <ignore>
-                <field>magestore_bannerslider_banner.slider_id</field>
-            </ignore>
-            <ignore>
-                <field>magestore_bannerslider_banner.target</field>
-            </ignore>
         </field_rules>
     </destination>
 </map>
