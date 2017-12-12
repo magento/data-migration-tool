@@ -1,3 +1,17 @@
+2.2.2
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.2.2
+   * Magento Commerce: 2.2.2
+
+* Fixed bugs:
+
+   * Customer Attribute step did not remember its position
+   * Wrong value for `eav_attribute_group.attribute_group_code` field was set for not product entities
+   * [Issue #355](https://github.com/magento/data-migration-tool/issues/355): Data integrity check errors did not indicate source where it come from
+   * [Issue #378](https://github.com/magento/data-migration-tool/issues/378): Settings step threw an error in case additional fields from extensions in `core_config_data` table
+
 2.2.1
 =============
 * Broken serialized data does not stop migration
