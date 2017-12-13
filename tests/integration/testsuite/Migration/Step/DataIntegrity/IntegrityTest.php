@@ -106,9 +106,9 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
                 'result' => false,
                 'messages' => [
                     \Monolog\Logger::ERROR => [
-                        'Foreign key (FK_EAV_ATTR_SET_ENTT_TYPE_ID_EAV_ENTT_TYPE_ENTT_TYPE_ID) constraint fails. ' .
-                        'Orphan records id: 2,3 from `eav_attribute_set`.`entity_type_id` has no referenced records ' .
-                        'in `eav_entity_type`'
+                        'Foreign key (FK_EAV_ATTR_SET_ENTT_TYPE_ID_EAV_ENTT_TYPE_ENTT_TYPE_ID) constraint fails ' .
+                        'on source database. Orphan records id: 2,3 from `eav_attribute_set`.`entity_type_id` '.
+                        'has no referenced records in `eav_entity_type`'
                     ]
                 ]
             ]

@@ -13,11 +13,13 @@ class AttributeGroupNameToCodeMap
     /**
      * @var array
      */
-    protected $map = [
-        'General' => 'product-details',
-        'Prices' => 'advanced-pricing',
-        'Design' => 'design',
-        'Images' => 'image-management'
+    private $map = [
+        'catalog_product' => [
+            'General' => 'product-details',
+            'Prices' => 'advanced-pricing',
+            'Design' => 'design',
+            'Images' => 'image-management'
+        ]
     ];
 
     /**
@@ -27,22 +29,26 @@ class AttributeGroupNameToCodeMap
 
     /**
      * @param string $groupName
+     * @param string $entityType
      * @return array
      */
-    public function getGroupCodeMap($groupName)
+    public function getGroupCodeMap($groupName, $entityType)
     {
         $groupNameOriginal = preg_replace('/^' . $this->attributeGroupNamePrefix . '/', '', $groupName);
-        $groupCodeMap = isset($this->map[$groupNameOriginal]) ? $this->map[$groupNameOriginal] : null;
+        $groupCodeMap = isset($this->map[$entityType][$groupNameOriginal])
+            ? $this->map[$entityType][$groupNameOriginal]
+            : null;
         $groupCodeTransformed = preg_replace('/[^a-z0-9]+/', '-', strtolower($groupName));
         $groupCode = $groupCodeMap ?: $groupCodeTransformed;
         return $groupCode;
     }
 
     /**
+     * @param string $entityType
      * @return array
      */
-    public function getMap()
+    public function getMap($entityType)
     {
-        return $this->map;
+        return isset($this->map[$entityType]) ? $this->map[$entityType] : [];
     }
 }

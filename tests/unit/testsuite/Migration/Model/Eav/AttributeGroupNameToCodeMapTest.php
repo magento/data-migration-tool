@@ -29,12 +29,13 @@ class AttributeGroupNameToCodeMapTest extends \PHPUnit\Framework\TestCase
     /**
      * @dataProvider getGroupsData()
      * @param string $groupName
+     * @param string $entityType
      * @param string $groupCode
      * @return void
      */
-    public function testGetGroupCodeMap($groupName, $groupCode)
+    public function testGetGroupCodeMap($groupName, $entityType, $groupCode)
     {
-        $result = $this->model->getGroupCodeMap($groupName);
+        $result = $this->model->getGroupCodeMap($groupName, $entityType);
         $this->assertEquals($result, $groupCode);
     }
 
@@ -44,10 +45,11 @@ class AttributeGroupNameToCodeMapTest extends \PHPUnit\Framework\TestCase
     public function getGroupsData()
     {
         return [
-            ['Migration_General', 'product-details'],
-            ['Migration_Prices', 'advanced-pricing'],
-            ['Migration_Design', 'design'],
-            ['Migration_Something', 'migration-something'],
+            ['Migration_General', 'catalog_product', 'product-details'],
+            ['Migration_Prices', 'catalog_product', 'advanced-pricing'],
+            ['Migration_Design', 'catalog_product', 'design'],
+            ['Migration_Something', 'catalog_product', 'migration-something'],
+            ['Migration_General', 'catalog_category', 'migration-general'],
         ];
     }
 }

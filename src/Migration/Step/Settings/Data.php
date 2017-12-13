@@ -31,6 +31,17 @@ class Data implements StageInterface
     const CONFIG_FIELD_VALUE = 'value';
 
     /**
+     * @var array
+     */
+    protected $configTableSchema = [
+        self::CONFIG_FIELD_CONFIG_ID,
+        self::CONFIG_FIELD_SCOPE,
+        self::CONFIG_FIELD_SCOPE_ID,
+        self::CONFIG_FIELD_PATH,
+        self::CONFIG_FIELD_VALUE
+    ];
+
+    /**
      * @var Destination
      */
     protected $destination;
@@ -113,6 +124,7 @@ class Data implements StageInterface
         );
         foreach ($sourceRecords as $sourceRecord) {
             $this->progress->advance();
+            $sourceRecord = array_intersect_key($sourceRecord, array_flip($this->configTableSchema));
             if (!$this->readerSettings->isNodeIgnored($sourceRecord[self::CONFIG_FIELD_PATH])) {
                 $sourceRecordPathMapped = $this->readerSettings->getNodeMap($sourceRecord[self::CONFIG_FIELD_PATH]);
                 foreach ($destinationRecords as &$destinationRecord) {

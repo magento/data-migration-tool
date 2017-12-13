@@ -114,8 +114,10 @@ class Integrity extends DatabaseStage implements StageInterface
      */
     private function buildLogMessage(OrphanRecordsChecker $checker)
     {
+        $message = 'Foreign key (%s) constraint fails on source database.'
+            . ' Orphan records id: %s from `%s`.`%s` has no referenced records in `%s`';
         return sprintf(
-            'Foreign key (%s) constraint fails. Orphan records id: %s from `%s`.`%s` has no referenced records in `%s`',
+            $message,
             $checker->getKeyName(),
             implode(',', $checker->getOrphanRecordsIds()),
             $checker->getChildTable(),

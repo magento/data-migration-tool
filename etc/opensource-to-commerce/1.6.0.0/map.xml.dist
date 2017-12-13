@@ -474,6 +474,12 @@
                 <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
+                <document>permission_block</document>
+            </ignore>
+            <ignore>
+                <document>permission_variable</document>
+            </ignore>
+            <ignore>
                 <document>find_feed_import_codes</document>
             </ignore>
             <ignore>
@@ -2044,6 +2050,9 @@
             </ignore>
             <ignore>
                 <document>design_config_grid_flat</document>
+            </ignore>
+            <ignore>
+                <document>release_notification_viewer_log</document>
             </ignore>
             <ignore>
                 <document>admin_user_session</document>
