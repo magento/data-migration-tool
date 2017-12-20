@@ -1514,6 +1514,42 @@
                 <document>search_synonyms</document>
             </ignore>
             <ignore>
+                <document>email_automation</document>
+            </ignore>
+            <ignore>
+                <document>email_campaign</document>
+            </ignore>
+            <ignore>
+                <document>email_catalog</document>
+            </ignore>
+            <ignore>
+                <document>email_contact</document>
+            </ignore>
+            <ignore>
+                <document>email_importer</document>
+            </ignore>
+            <ignore>
+                <document>email_order</document>
+            </ignore>
+            <ignore>
+                <document>email_review</document>
+            </ignore>
+            <ignore>
+                <document>email_rules</document>
+            </ignore>
+            <ignore>
+                <document>email_wishlist</document>
+            </ignore>
+            <ignore>
+                <document>temando_checkout_address</document>
+            </ignore>
+            <ignore>
+                <document>temando_order</document>
+            </ignore>
+            <ignore>
+                <document>temando_shipment</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
@@ -1953,6 +1989,12 @@
             </ignore>
             <ignore>
                 <field>catalog_product_bundle_option_value.parent_product_id</field>
+            </ignore>
+            <ignore>
+                <field>admin_user.refresh_token</field>
+            </ignore>
+            <ignore>
+                <field>salesrule_coupon.generated_by_dotmailer</field>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
