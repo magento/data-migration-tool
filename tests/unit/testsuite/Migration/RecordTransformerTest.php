@@ -52,7 +52,7 @@ class RecordTransformerTest extends \PHPUnit\Framework\TestCase
         );
         $this->mapReader = $this->getMockForAbstractClass(
             \Migration\Reader\MapInterface::class,
-            [],
+            ['getHandlerConfigs', 'getFieldMap', 'isFieldIgnored'],
             '',
             false
         );
@@ -117,11 +117,15 @@ class RecordTransformerTest extends \PHPUnit\Framework\TestCase
         $this->recordTransformer->init();
         $this->sourceDocument->expects($this->any())->method('getName')->willReturn('source_document_name');
         $recordFrom = $this->createMock(\Migration\ResourceModel\Record::class);
-        $recordFrom->expects($this->any())->method('getFields')->will($this->returnValue(['field1', 'field2']));
-        $recordFrom->expects($this->any())->method('getData')->will($this->returnValue(['field1' => 1, 'field2' => 2]));
+        $recordFrom->expects($this->any())->method('getFields')->will($this->returnValue(
+            ['field1', 'field2', 'field3']
+        ));
+        $recordFrom->expects($this->any())->method('getData')->will($this->returnValue(
+            ['field1' => 1, 'field2' => 2, 'field3' => 3]
+        ));
         $recordTo = $this->createMock(\Migration\ResourceModel\Record::class);
         $recordTo->expects($this->any())->method('getFields')->will($this->returnValue(['field2']));
-        $recordTo->expects($this->any())->method('setData')->with(['field2' => 2]);
+        $recordTo->expects($this->once())->method('setValue')->with('field2', 2);
 
         $field2Handler = $this->createPartialMock(
             \Migration\Handler\SetValue::class,
@@ -132,6 +136,11 @@ class RecordTransformerTest extends \PHPUnit\Framework\TestCase
         $destHandler->expects($this->any())->method('getHandlers')->willReturn([]);
         $this->mapReader->expects($this->any())->method('getFieldMap')->with('source_document_name', 'field1')
             ->willReturnArgument(1);
+        $this->mapReader->expects($this->any())->method('isFieldIgnored')->willReturnMap([
+            ['source_document_name', 'field1', 'source', false],
+            ['source_document_name', 'field2', 'source', false],
+            ['source_document_name', 'field3', 'source', true]
+        ]);
         $this->recordTransformer->transform($recordFrom, $recordTo);
     }
 }
