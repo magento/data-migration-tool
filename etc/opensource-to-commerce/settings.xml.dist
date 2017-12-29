@@ -890,6 +890,12 @@
             <path>web/unsecure/base_link_url</path>
         </ignore>
         <ignore>
+            <path>admin/url/custom</path>
+        </ignore>
+        <ignore>
+            <path>admin/url/custom/path</path>
+        </ignore>
+        <ignore>
             <path>catalog/search/solr_server_password</path>
         </ignore>
         <ignore>
