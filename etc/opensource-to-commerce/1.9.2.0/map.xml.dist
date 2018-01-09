@@ -1993,6 +1993,36 @@
                 <document>release_notification_viewer_log</document>
             </ignore>
             <ignore>
+                <document>catalog_category_product_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_attribute_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_category_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalog_product_price_cl</document>
+            </ignore>
+            <ignore>
+                <document>cataloginventory_stock_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_product_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalogrule_rule_cl</document>
+            </ignore>
+            <ignore>
+                <document>catalogsearch_fulltext_cl</document>
+            </ignore>
+            <ignore>
+                <document>customer_dummy_cl</document>
+            </ignore>
+            <ignore>
+                <document>design_config_dummy_cl</document>
+            </ignore>
+            <ignore>
                 <document>admin_user_session</document>
             </ignore>
             <ignore>
