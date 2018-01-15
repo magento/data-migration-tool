@@ -11,6 +11,20 @@ namespace Migration\Model\Eav;
 class AttributeGroupNameToCodeMap
 {
     /**
+     * @var \Magento\Framework\Filter\Translit
+     */
+    private $translitFilter;
+
+    /**
+     * @param \Magento\Framework\Filter\Translit $translitFilter
+     */
+    public function __construct(
+        \Magento\Framework\Filter\Translit $translitFilter
+    ) {
+        $this->translitFilter = $translitFilter;
+    }
+
+    /**
      * @var array
      */
     private $map = [
@@ -38,7 +52,15 @@ class AttributeGroupNameToCodeMap
         $groupCodeMap = isset($this->map[$entityType][$groupNameOriginal])
             ? $this->map[$entityType][$groupNameOriginal]
             : null;
-        $groupCodeTransformed = preg_replace('/[^a-z0-9]+/', '-', strtolower($groupName));
+        $groupCodeTransformed = trim(
+            preg_replace(
+                '/[^a-z0-9]+/',
+                '-',
+                $this->translitFilter->filter(strtolower($groupName))
+            ),
+            '-'
+        );
+        $groupCodeTransformed = empty($groupCodeTransformed) ? md5($groupCodeTransformed) : $groupCodeTransformed;
         $groupCode = $groupCodeMap ?: $groupCodeTransformed;
         return $groupCode;
     }
