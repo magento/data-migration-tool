@@ -1530,9 +1530,7 @@
             </transform>
             <transform>
                 <field>enterprise_logging_event_changes.result_data</field>
-                <handler class="\Migration\Handler\SerializeToJson">
-                    <param name="ignoreBrokenData" value="true"/>
-                </handler>
+                <handler class="\Migration\Handler\SerializeToJson"/>
             </transform>
             <transform>
                 <field>enterprise_rma_item_entity.product_options</field>

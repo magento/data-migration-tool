@@ -1794,7 +1794,9 @@
         </transform>
         <transform>
             <path>cataloginventory/item_options/min_sale_qty</path>
-            <handler class="\Migration\Handler\SerializeToJson"/>
+            <handler class="\Migration\Handler\SerializeToJson">
+                <param name="suppressWarning" value="true"/>
+            </handler>
         </transform>
         <transform>
             <path>currency/options/customsymbol</path>
