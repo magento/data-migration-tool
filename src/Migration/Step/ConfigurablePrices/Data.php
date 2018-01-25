@@ -190,8 +190,13 @@ class Data implements StageInterface
             ->joinInner(
                 ['pint' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
                 'pint.entity_id = supl.product_id and pint.attribute_id = sup_a.attribute_id ' .
-                ' and pint.value = sup_ap.value_index and pint.store_id = sup_ap.website_id',
+                ' and pint.value = sup_ap.value_index',
                 []
+            )
+            ->joinInner(
+                ['cs' => $this->source->addDocumentPrefix('core_store')],
+                'cs.website_id = sup_ap.website_id',
+                ['store_id']
             )
             ->where('mt.entity_id in (?)', $entitiesExpr)
             ->where('mt.attribute_id = ?', $priceAttributeId)
