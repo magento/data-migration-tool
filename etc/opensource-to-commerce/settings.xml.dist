@@ -236,15 +236,6 @@
             <path>crontab/jobs/catalog_product_alert/run/model</path>
         </ignore>
         <ignore>
-            <path>crontab/jobs/log_clean/run/model</path>
-        </ignore>
-        <ignore>
-            <path>crontab/jobs/send_notification/run/model</path>
-        </ignore>
-        <ignore>
-            <path>crontab/jobs/sitemap_generate/run/model</path>
-        </ignore>
-        <ignore>
             <path>customer/address_templates/js_template</path>
         </ignore>
         <ignore>
@@ -1043,12 +1034,32 @@
             <to>crontab/default/jobs/log_clean/schedule/cron_expr</to>
         </rename>
         <rename>
+            <path>crontab/jobs/log_clean/run/model</path>
+            <to>crontab/default/jobs/log_clean/run/model</to>
+        </rename>
+        <rename>
             <path>crontab/jobs/send_notification/schedule/cron_expr</path>
             <to>crontab/default/jobs/send_notification/schedule/cron_expr</to>
         </rename>
         <rename>
+            <path>crontab/jobs/send_notification/run/model</path>
+            <to>crontab/default/jobs/send_notification/run/model</to>
+        </rename>
+        <rename>
             <path>crontab/jobs/sitemap_generate/schedule/cron_expr</path>
             <to>crontab/default/jobs/sitemap_generate/schedule/cron_expr</to>
+        </rename>
+        <rename>
+            <path>crontab/jobs/sitemap_generate/run/model</path>
+            <to>crontab/default/jobs/sitemap_generate/run/model</to>
+        </rename>
+        <rename>
+            <path>crontab/jobs/system_backup/schedule/cron_expr</path>
+            <to>crontab/default/jobs/system_backup/schedule/cron_expr</to>
+        </rename>
+        <rename>
+            <path>crontab/jobs/system_backup/run/model</path>
+            <to>crontab/default/jobs/system_backup/run/model</to>
         </rename>
         <rename>
             <path>design/head/default_robots</path>
