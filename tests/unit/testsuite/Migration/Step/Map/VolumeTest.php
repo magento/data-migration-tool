@@ -161,7 +161,7 @@ class VolumeTest extends \PHPUnit\Framework\TestCase
             ->willReturn($destinationDocument);
         $this->logger->expects($this->once())->method('addRecord')->with(
             Logger::WARNING,
-            'Mismatch of entities in the document: ' . $dstDocName
+            'Mismatch of entities in the document: ' . $dstDocName . ' Source: 2 Destination: 3'
         );
         $this->helper->expects($this->once())->method('getFieldsUpdateOnDuplicate')->with($dstDocName)
             ->willReturn(false);

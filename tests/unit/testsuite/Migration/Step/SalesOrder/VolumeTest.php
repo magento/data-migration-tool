@@ -207,7 +207,7 @@ class VolumeTest extends \PHPUnit\Framework\TestCase
             ->willReturn(0);
         $this->logger->expects($this->once())->method('addRecord')->with(
             Logger::WARNING,
-            'Mismatch of entities in the document: ' . $destDocumentName
+            'Mismatch of entities in the document: ' . $destDocumentName . ' Source: 1 Destination: 2'
         );
         $this->assertFalse($this->salesOrder->perform());
     }

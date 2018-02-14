@@ -61,12 +61,17 @@ class Volume extends AbstractVolume
     public function perform()
     {
         $this->progressBar->start($this->getIterationsCount());
-        foreach ($this->helper->getDocumentList() as $sourceDocumentName => $destinationDocumentName) {
+        foreach ($this->helper->getDocumentList() as $sourceName => $destinationName) {
             $this->progressBar->advance();
-            $sourceRecordsCount = $this->source->getRecordsCount($sourceDocumentName);
-            $destinationRecordsCount = $this->destination->getRecordsCount($destinationDocumentName);
-            if ($sourceRecordsCount != $destinationRecordsCount) {
-                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationDocumentName;
+            $sourceCount = $this->source->getRecordsCount($sourceName);
+            $destinationCount = $this->destination->getRecordsCount($destinationName);
+            if ($sourceCount != $destinationCount) {
+                $this->errors[] = sprintf(
+                    'Mismatch of entities in the document: %s Source: %s Destination: %s',
+                    $destinationName,
+                    $sourceCount,
+                    $destinationCount
+                );
             }
         }
 
