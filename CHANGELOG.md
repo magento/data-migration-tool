@@ -1,3 +1,22 @@
+2.2.3
+=============
+* Added support for versions:
+
+   * Magento Open Source: 1.9.3.8, 2.2.3
+   * Magento Commerce: 1.14.3.8, 2.2.3
+
+* Fixed bugs:
+
+   * Dotmailer Marketing and Temando tables caused errors during migration
+   * `Duplicate entry` error on customer_group table when bulk_size was set to 1
+   * Error during migration when min cart qty was not serialized
+   * CMS pages content was not filtered from 3rd party customizations
+   * Prices that were setup per website scope for Configurable products were not migrated properly
+   * [Issue #433](https://github.com/magento/data-migration-tool/issues/433): Enterprise gift card accounts did not work in delta mode
+   * [Issue #411](https://github.com/magento/data-migration-tool/issues/411): CMS Pages caused errors if contained XML layout code
+   * [Issue #445](https://github.com/magento/data-migration-tool/issues/445): Not able to migrate attribute group names if contain non-latin characters 
+   * [Issue #454](https://github.com/magento/data-migration-tool/issues/454): Volume check errors were not detailed
+
 2.2.2
 =============
 * Added support for versions:
