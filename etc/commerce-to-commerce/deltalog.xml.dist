@@ -71,6 +71,7 @@
         <document key="invitation_id">enterprise_invitation</document>
         <document key="history_id">enterprise_invitation_status_history</document>
         <document key="track_id">enterprise_invitation_track</document>
+        <document key="history_id">enterprise_giftcardaccount_history</document>
     </group>
     <group name="delta_sales">
         <document key="entity_id">sales_flat_order</document>

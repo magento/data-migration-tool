@@ -87,8 +87,15 @@ class Volume extends AbstractVolume
             if (!empty(array_diff_key($sourceFields, $destinationFields))) {
                 $this->errors[] = 'Mismatch of fields in the document: ' . $destinationName;
             }
-            if ($this->source->getRecordsCount($sourceName) != $this->destination->getRecordsCount($destinationName)) {
-                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
+            $sourceCount = $this->source->getRecordsCount($sourceName);
+            $destinationCount = $this->destination->getRecordsCount($destinationName);
+            if ($sourceCount != $destinationCount) {
+                $this->errors[] = sprintf(
+                    'Mismatch of entities in the document: %s Source: %s Destination: %s',
+                    $destinationName,
+                    $sourceCount,
+                    $destinationCount
+                );
             }
         }
         $this->progress->finish();

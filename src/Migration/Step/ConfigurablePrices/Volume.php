@@ -61,14 +61,7 @@ class Volume extends AbstractVolume
      */
     public function perform()
     {
-        $documents = $this->helper->getDocumentList();
         $this->progressBar->start(1);
-        $oldDestinationRecordsCount = $this->helper->getDestinationRecordsCount();
-        $newDestinationRecordsCount = $this->destination->getRecordsCount($documents[MapInterface::TYPE_DEST])
-            - $oldDestinationRecordsCount;
-        if ($newDestinationRecordsCount != 0) {
-            $this->errors[] = 'Mismatch of entities in the document: ' . $documents[MapInterface::TYPE_DEST];
-        }
         $this->progressBar->finish();
         return $this->checkForErrors(Logger::ERROR);
     }

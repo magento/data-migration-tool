@@ -14,10 +14,12 @@ class PlaceholderTest extends \PHPUnit\Framework\TestCase
     {
         $classMapData = ['catalog/product_widget_new' => \Magento\Catalog\Block\Product\Widget\NewWidget::class];
         $content = '<p>hello1 {{widget type="catalog/product_widget_new" display_type="all_products" '
-            . 'products_count="10" template="catalog/product/widget/new/content/new_grid.phtml"}}</p>';
+            . 'products_count="10" template="catalog/product/widget/new/content/new_grid.phtml"}}</p>'
+            . '<p>{{widget type="extensions/widget_1" anchor_text="widget1" '
+            . 'template="extensions/widget/link/link_block.phtml" page_id="3"}}</p>';
         $contentConverted = '<p>hello1 {{widget type="Magento\\\\Catalog\\\\Block\\\\Product\\\\Widget\\\\NewWidget"'
             .' display_type="all_products" products_count="10" template="product/widget/new/content/new_grid.phtml"}}'
-            . '</p>';
+            . '</p><p></p>';
         $fieldName = 'fieldname';
         /** @var \Migration\ResourceModel\Record|\PHPUnit_Framework_MockObject_MockObject $record */
         $record = $this->createPartialMock(

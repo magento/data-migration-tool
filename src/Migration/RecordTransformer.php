@@ -130,6 +130,12 @@ class RecordTransformer
         $data = $from->getData();
         $sourceFields = $from->getFields();
         $destinationFields = $to->getFields();
+        foreach ($sourceFields as $key => $field) {
+            if ($this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
+                unset($sourceFields[$key]);
+                unset($data[$field]);
+            }
+        }
         $diff = array_diff($sourceFields, $destinationFields);
         foreach ($diff as $field) {
             if (!$this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {

@@ -84,7 +84,12 @@ class Volume extends AbstractVolume
             $sourceCount = $this->source->getRecordsCount($sourceDocName);
             $destinationCount = $this->destination->getRecordsCount($destinationName);
             if ($sourceCount != $destinationCount) {
-                $this->errors[] = 'Mismatch of entities in the document: ' . $destinationName;
+                $this->errors[] = sprintf(
+                    'Mismatch of entities in the document: %s Source: %s Destination: %s',
+                    $destinationName,
+                    $sourceCount,
+                    $destinationCount
+                );
             }
         }
         if (!$this->checkCleared(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')))) {

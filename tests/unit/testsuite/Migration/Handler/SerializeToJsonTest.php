@@ -36,7 +36,7 @@ class SerializeToJsonTest extends \PHPUnit\Framework\TestCase
             ->disableOriginalConstructor()
             ->getMock();
 
-        $handler = new SerializeToJson($logger, $documentIdField);
+        $handler = new SerializeToJson($logger, $documentIdField, true, false);
         $handler->setField($fieldName);
         $this->assertNull($handler->handle($record, $record2));
     }

@@ -72,6 +72,9 @@ class Source extends AbstractResource
             }
             if (isset($this->lastLoadedIdentityId[$documentName])) {
                 $identityId = $this->lastLoadedIdentityId[$documentName];
+                if ($identityId == 0) {
+                    $this->lastLoadedIdentityId[$documentName] = ++$identityId;
+                }
             }
         }
 
@@ -93,8 +96,9 @@ class Source extends AbstractResource
      */
     public function setLastLoadedRecord($documentName, array $record)
     {
-        if ($this->getIdentityField($documentName) && isset($record[$this->getIdentityField($documentName)])) {
-            $this->lastLoadedIdentityId[$documentName] = $record[$this->getIdentityField($documentName)];
+        $identityField = $this->getIdentityField($documentName);
+        if ($identityField && isset($record[$identityField])) {
+            $this->lastLoadedIdentityId[$documentName] = $record[$identityField];
         } elseif (empty($record)) {
             unset($this->lastLoadedIdentityId[$documentName]);
         }
