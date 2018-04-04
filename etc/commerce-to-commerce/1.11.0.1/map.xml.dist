@@ -2510,6 +2510,9 @@
                 <document>temando_shipment</document>
             </ignore>
             <ignore>
+                <document>temando_rma_shipment</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>
