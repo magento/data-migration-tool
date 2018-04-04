@@ -7,7 +7,7 @@
 
 * Fixed bugs:
 
-   * New table `email_abandoned_cart` caused error during migration
+   * New tables `email_abandoned_cart` and `temando_rma_shipment` caused error during migration
    * [Issue #481](https://github.com/magento/data-migration-tool/issues/481): Url rewrite suffix contained only dot symbol
    * [Issue #487](https://github.com/magento/data-migration-tool/issues/487): Important tables were missing in `deltalog.xml.dist`
 
