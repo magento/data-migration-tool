@@ -1572,6 +1572,40 @@
                 <document>temando_shipment</document>
             </ignore>
             <ignore>
+                <document>amazon_customer</document>
+                <document>amazon_customer</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_authorization</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_capture</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_refund</document>
+            </ignore>
+            <ignore>
+                <document>amazon_quote</document>
+            </ignore>
+            <ignore>
+                <document>amazon_sales_order</document>
+            </ignore>
+            <ignore>
+                <document>klarna_core_order</document>
+            </ignore>
+            <ignore>
+                <document>klarna_payments_quote</document>
+            </ignore>
+            <ignore>
+                <document>vertex_customer_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_invoice_sent</document>
+            </ignore>
+            <ignore>
+                <document>vertex_taxrequest</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
@@ -1890,6 +1924,9 @@
             </ignore>
             <ignore>
                 <field>sales_order.send_email</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.is_excluded_product</field>
             </ignore>
             <ignore>
                 <field>checkout_agreement.mode</field>

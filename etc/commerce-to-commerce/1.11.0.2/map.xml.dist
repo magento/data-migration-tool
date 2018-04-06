@@ -2498,6 +2498,39 @@
                 <document>temando_rma_shipment</document>
             </ignore>
             <ignore>
+                <document>amazon_customer</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_authorization</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_capture</document>
+            </ignore>
+            <ignore>
+                <document>amazon_pending_refund</document>
+            </ignore>
+            <ignore>
+                <document>amazon_quote</document>
+            </ignore>
+            <ignore>
+                <document>amazon_sales_order</document>
+            </ignore>
+            <ignore>
+                <document>klarna_core_order</document>
+            </ignore>
+            <ignore>
+                <document>klarna_payments_quote</document>
+            </ignore>
+            <ignore>
+                <document>vertex_customer_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_invoice_sent</document>
+            </ignore>
+            <ignore>
+                <document>vertex_taxrequest</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>
@@ -2960,6 +2993,9 @@
             </ignore>
             <ignore>
                 <field>quote_address.gw_card_price_incl_tax</field>
+            </ignore>
+            <ignore>
+                <field>quote_item.is_excluded_product</field>
             </ignore>
             <ignore>
                 <field>catalog_category_entity.created_in</field>
