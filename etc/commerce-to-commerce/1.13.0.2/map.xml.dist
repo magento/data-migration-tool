@@ -2392,6 +2392,15 @@
                 <document>temando_shipment</document>
             </ignore>
             <ignore>
+                <document>temando_collection_point_search</document>
+            </ignore>
+            <ignore>
+                <document>temando_order_collection_point</document>
+            </ignore>
+            <ignore>
+                <document>temando_quote_collection_point</document>
+            </ignore>
+            <ignore>
                 <document>temando_rma_shipment</document>
             </ignore>
             <ignore>
