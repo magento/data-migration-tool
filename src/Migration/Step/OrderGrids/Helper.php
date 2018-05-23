@@ -171,6 +171,7 @@ class Helper
             'subtotal' => 'sales_order.base_subtotal',
             'shipping_and_handling' => 'sales_order.base_shipping_amount',
             'grand_total' => 'sales_invoice.grand_total',
+            'base_grand_total' => 'sales_invoice.base_grand_total',
             'created_at' => 'sales_invoice.created_at',
             'updated_at' => 'sales_invoice.updated_at'
         ];
