@@ -37,6 +37,7 @@
         <document key="entity_id">sales_flat_shipment_item</document>
         <document key="entity_id">sales_flat_shipment_track</document>
         <document key="entity_id">sales_flat_shipment_grid</document>
+        <document key="entity_id">sales_flat_shipment_comment</document>
         <document key="entity_id">sales_flat_creditmemo</document>
         <document key="entity_id">sales_flat_creditmemo_item</document>
         <document key="entity_id">sales_flat_creditmemo_grid</document>

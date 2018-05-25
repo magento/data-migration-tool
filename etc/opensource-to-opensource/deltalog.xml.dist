@@ -37,6 +37,7 @@
         <document key="entity_id">sales_flat_shipment_item</document>
         <document key="entity_id">sales_flat_shipment_track</document>
         <document key="entity_id">sales_flat_shipment_grid</document>
+        <document key="entity_id">sales_flat_shipment_comment</document>
         <document key="entity_id">sales_flat_creditmemo</document>
         <document key="entity_id">sales_flat_creditmemo_item</document>
         <document key="entity_id">sales_flat_creditmemo_grid</document>
@@ -50,6 +51,7 @@
         <document key="tax_id">sales_order_tax</document>
         <document key="tax_item_id">sales_order_tax_item</document>
         <document key="entity_id">sales_flat_order</document>
+        <document key="transaction_id">sales_payment_transaction</document>
     </group>
     <group name="delta_log">
         <document key="visitor_id">log_visitor</document>

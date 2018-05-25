@@ -1,3 +1,17 @@
+2.2.4
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.2.4
+   * Magento Commerce: 2.2.4
+
+* Fixed bugs:
+
+   * New tables `email_abandoned_cart` and `temando_rma_shipment` caused error during migration
+   * [Issue #481](https://github.com/magento/data-migration-tool/issues/481): Url rewrite suffix contained only dot symbol
+   * [Issue #487](https://github.com/magento/data-migration-tool/issues/487): Important tables were missing in `deltalog.xml.dist`
+
+
 2.2.3
 =============
 * Added support for versions:
