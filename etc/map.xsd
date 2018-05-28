@@ -10,35 +10,35 @@
 
     <xs:complexType name="mapType">
         <xs:all>
-            <xs:element name="source" type="sourceRulesType" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="destination" type="destinationRulesType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="source" type="sourceRulesType" maxOccurs="1" minOccurs="1" />
+            <xs:element name="destination" type="destinationRulesType" maxOccurs="1" minOccurs="1" />
         </xs:all>
     </xs:complexType>
 
     <xs:complexType name="sourceRulesType">
         <xs:sequence>
-            <xs:element name="document_rules" type="sourceDocumentRulesType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="field_rules" type="sourceFieldRulesType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="document_rules" type="sourceDocumentRulesType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="field_rules" type="sourceFieldRulesType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="destinationRulesType">
         <xs:sequence>
-            <xs:element name="document_rules" type="destinationDocumentRulesType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="field_rules" type="destinationFieldRulesType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="document_rules" type="destinationDocumentRulesType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="field_rules" type="destinationFieldRulesType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="sourceDocumentRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="rename" type="renameDocumentType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="rename" type="renameDocumentType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0" />
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="destinationDocumentRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="ignore" type="ignoreDocumentType" maxOccurs="unbounded" minOccurs="0" />
         </xs:choice>
     </xs:complexType>
 
@@ -56,36 +56,36 @@
     </xs:complexType>
     <xs:complexType name="sourceFieldRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="move" type="moveFieldType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="transform" type="transformFieldType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="move" type="moveFieldType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="transform" type="transformFieldType" minOccurs="0" maxOccurs="unbounded" />
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="destinationFieldRulesType">
         <xs:choice minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded"/>
-            <xs:element name="transform" type="transformFieldType" minOccurs="0" maxOccurs="unbounded"/>
+            <xs:element name="ignore" type="ignoreFieldType" minOccurs="0" maxOccurs="unbounded" />
+            <xs:element name="transform" type="transformFieldType" minOccurs="0" maxOccurs="unbounded" />
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="ignoreFieldType">
         <xs:choice minOccurs="1" maxOccurs="1">
-            <xs:element name="field" type="fieldFormatType" minOccurs="1" maxOccurs="1"/>
-            <xs:element name="datatype" type="fieldFormatType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="field" type="fieldFormatType" minOccurs="1" maxOccurs="1" />
+            <xs:element name="datatype" type="fieldFormatType" minOccurs="1" maxOccurs="1" />
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="moveFieldType">
         <xs:sequence>
-            <xs:element name="field" type="fieldFormatType"/>
-            <xs:element name="to" type="fieldFormatType"/>
+            <xs:element name="field" type="fieldFormatType" />
+            <xs:element name="to" type="fieldFormatType" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="transformFieldType">
         <xs:sequence>
-            <xs:element name="field" type="fieldFormatType"/>
+            <xs:element name="field" type="fieldFormatType" />
             <xs:element name="handler" type="handlerType">
                 <xs:unique name="uniqueParamName">
                     <xs:selector xpath="param" />
@@ -102,26 +102,26 @@
         <xs:attribute name="class" use="required">
             <xs:simpleType>
                 <xs:restriction base="xs:string">
-                    <xs:pattern value="[0-9a-zA-Z_\\\\]+"/>
+                    <xs:pattern value="[0-9a-zA-Z_\\\\]+" />
                 </xs:restriction>
             </xs:simpleType>
         </xs:attribute>
     </xs:complexType>
     <xs:complexType name="handlerParamType">
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="value" type="xs:string" use="required"/>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="value" type="xs:string" use="required" />
     </xs:complexType>
     <xs:simpleType name="fieldFormatType">
         <xs:annotation>
             <xs:documentation>Field format: "document_name.field_name"</xs:documentation>
         </xs:annotation>
         <xs:restriction base="xs:string">
-            <xs:pattern value="[^.]+\.[^.]+"/>
+            <xs:pattern value="[^.]+\.[^.]+" />
         </xs:restriction>
     </xs:simpleType>
     <xs:simpleType name="notEmptyString">
         <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
+            <xs:minLength value="1" />
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

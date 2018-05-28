@@ -35,7 +35,7 @@
             </move>
             <transform>
                 <field>merchandiser_category_values.smart_attributes</field>
-                <handler class="\Migration\Handler\VisualMerchandiser\SmartAttribute"/>
+                <handler class="\Migration\Handler\VisualMerchandiser\SmartAttribute" />
             </transform>
         </field_rules>
     </source>

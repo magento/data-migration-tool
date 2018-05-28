@@ -116,10 +116,10 @@
         </step>
     </steps>
     <source>
-        <database host="localhost" name="magento1" user="root"/>
+        <database host="localhost" name="magento1" user="root" />
     </source>
     <destination>
-        <database host="localhost" name="magento2" user="root"/>
+        <database host="localhost" name="magento2" user="root" />
     </destination>
     <options>
         <map_file>etc/commerce-to-commerce/1.11.0.1/map.xml.dist</map_file>

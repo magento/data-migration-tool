@@ -57,7 +57,7 @@
             </ignore>
             <transform>
                 <field>sales_flat_order.gift_cards</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
         </field_rules>
     </source>
