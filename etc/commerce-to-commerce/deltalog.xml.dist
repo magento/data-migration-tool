@@ -109,6 +109,6 @@
         <document key="entity_id">enterprise_sales_creditmemo_grid_archive</document>
     </group>
     <group name="delta_sales_sequence">
-         <document key="entity_store_id">eav_entity_store</document>
+        <document key="entity_store_id">eav_entity_store</document>
     </group>
 </groups>
