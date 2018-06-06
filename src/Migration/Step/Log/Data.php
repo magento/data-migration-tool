@@ -135,8 +135,8 @@ class Data implements StageInterface
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
+                $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             }
-            $this->progress->advance(LogManager::LOG_LEVEL_INFO);
             $this->progress->finish(LogManager::LOG_LEVEL_DEBUG);
         }
         $this->clearLog(array_keys($this->readerGroups->getGroup('destination_documents_to_clear')));
