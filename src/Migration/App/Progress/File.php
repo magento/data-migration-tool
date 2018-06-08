@@ -53,19 +53,7 @@ class File
     {
         if (empty($this->data)) {
             $fileContents = $this->filesystemDriver->fileGetContents($this->getLockFile());
-            $isJson = (strpos($fileContents, '{') === 0);
-            
-            if ($isJson) {
-                $data = json_decode($fileContents, true);
-            } else {
-                //Convert file to JSON format
-                $data = @unserialize($fileContents);
-                
-                if (is_array($data)) {
-                    $this->saveData($data);
-                }
-            }
-            
+            $data = $this->serializeToJson($fileContents);
             if (is_array($data)) {
                 $this->data = $data;
             }
@@ -109,5 +97,26 @@ class File
     {
         $this->saveData([]);
         return $this;
+    }
+
+    /**
+     * @param $fileContents
+     * @return mixed
+     */
+    private function serializeToJson($fileContents)
+    {
+        $isJson = (strpos($fileContents, '{') === 0);
+
+        if ($isJson) {
+            $data = json_decode($fileContents, true);
+        } else {
+            //Convert file to JSON format
+            $data = @unserialize($fileContents);
+
+            if (is_array($data)) {
+                $this->saveData($data);
+            }
+        }
+        return $data;
     }
 }
