@@ -14,7 +14,7 @@
    * [Issue #536](https://github.com/magento/data-migration-tool/issues/536): Prohibited tabs and format XML files in code of the project
    * [Issue #537](https://github.com/magento/data-migration-tool/issues/537): Comments to the function declaration were missed
    * [Issue #532](https://github.com/magento/data-migration-tool/issues/532): Serialization was used instead of json format for lock file
-   * [Issue #533](https://github.com/magento/data-migration-tool/issues/533): Duplicate node was used mapping files
+   * [Issue #533](https://github.com/magento/data-migration-tool/issues/533): Duplicate node was used in mapping files
 
 2.2.4
 =============
