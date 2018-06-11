@@ -2482,6 +2482,9 @@
                 <document>vertex_taxrequest</document>
             </ignore>
             <ignore>
+                <document>vertex_order_invoice_status</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>

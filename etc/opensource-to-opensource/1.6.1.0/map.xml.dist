@@ -1589,6 +1589,9 @@
                 <document>vertex_taxrequest</document>
             </ignore>
             <ignore>
+                <document>vertex_order_invoice_status</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
