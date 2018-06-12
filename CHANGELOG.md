@@ -2,8 +2,8 @@
 =============
 * Added support for versions:
 
-   * Magento Open Source: 2.2.5
-   * Magento Commerce: 2.2.5
+   * Magento Open Source: 1.9.3.9, 2.2.5
+   * Magento Commerce: 1.14.3.9, 2.2.5
 
 * Fixed bugs:
 
