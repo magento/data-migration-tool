@@ -26,6 +26,11 @@ class SetEntityId extends AbstractHandler
     protected $valueIdField = 'value_id';
 
     /**
+     * @var string
+     */
+    protected $entityIdField = 'entity_id';
+
+    /**
      * @var Source
      */
     protected $source;
@@ -59,7 +64,7 @@ class SetEntityId extends AbstractHandler
         $query = $adapter->getSelect()
             ->from(
                 ['mg' => $this->source->addDocumentPrefix($this->mediaGalleryDocument)],
-                [$this->field]
+                [$this->entityIdField]
             )->where("mg.{$this->valueIdField} = ?", $valueId);
         return (int) $query->getAdapter()->fetchOne($query);
     }

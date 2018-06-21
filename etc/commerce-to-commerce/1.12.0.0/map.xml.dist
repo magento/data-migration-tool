@@ -2659,7 +2659,7 @@
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
-                <field>catalog_product_entity_media_gallery_value.entity_id</field>
+                <field>catalog_product_entity_media_gallery_value.row_id</field>
                 <handler class="\Migration\Handler\Gallery\SetEntityId" />
             </transform>
             <transform>
