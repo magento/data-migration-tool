@@ -8,6 +8,7 @@
 * Fixed bugs:
 
    * New table `tablevertex_order_invoice_status` caused error during migration
+   * Image excluding and sort order did not migrate properly on Magento Commerce
    * [Issue #514](https://github.com/magento/data-migration-tool/issues/514): `base_grand_total` field was not migrated in invoice grid table
    * [Issue #534](https://github.com/magento/data-migration-tool/issues/534): The migration step Log did not update the progress bar with large data
    * [Issue #535](https://github.com/magento/data-migration-tool/issues/535): B2B destination tables caused errors during migration for Commerce Edition
