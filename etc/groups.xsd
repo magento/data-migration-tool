@@ -8,29 +8,29 @@
 <xs:schema elementFormDefault="qualified" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:element name="groups" type="groupsType">
         <xs:unique name="uniqueGroup">
-            <xs:selector xpath="group"/>
-            <xs:field xpath="@name"/>
+            <xs:selector xpath="group" />
+            <xs:field xpath="@name" />
         </xs:unique>
     </xs:element>
 
     <xs:complexType name="groupsType">
         <xs:sequence>
-            <xs:element name="group" type="groupType" maxOccurs="unbounded" minOccurs="1"/>
+            <xs:element name="group" type="groupType" maxOccurs="unbounded" minOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
     <xs:complexType name="groupType">
         <xs:sequence>
-            <xs:element name="document" type="documentType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="attribute" type="attributeType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="document" type="documentType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="attribute" type="attributeType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
-        <xs:attribute name="name" type="notEmptyString" use="required"/>
+        <xs:attribute name="name" type="notEmptyString" use="required" />
     </xs:complexType>
 
     <xs:complexType name="documentType">
         <xs:simpleContent>
             <xs:extension base="notEmptyString">
-                <xs:attribute name="key" type="notEmptyString" use="optional"/>
+                <xs:attribute name="key" type="notEmptyString" use="optional" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
@@ -38,15 +38,15 @@
     <xs:complexType name="attributeType">
         <xs:simpleContent>
             <xs:extension base="notEmptyString">
-                <xs:attribute name="key" type="notEmptyString" use="optional"/>
-                <xs:attribute name="type" type="notEmptyString" use="optional"/>
+                <xs:attribute name="key" type="notEmptyString" use="optional" />
+                <xs:attribute name="type" type="notEmptyString" use="optional" />
             </xs:extension>
         </xs:simpleContent>
     </xs:complexType>
 
     <xs:simpleType name="notEmptyString">
         <xs:restriction base="xs:string">
-            <xs:minLength value="1"/>
+            <xs:minLength value="1" />
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

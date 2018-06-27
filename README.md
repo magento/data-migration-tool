@@ -19,9 +19,9 @@ Magento 2 uses new approaches and technologies that give merchants an unmatched 
 ### Supported versions
 This edition of tool supports the following versions for migration:
 
-*	Magento Open Source version 1.6.x, 1.7.x, 1.8.x, 1.9.x
+*    Magento Open Source version 1.6.x, 1.7.x, 1.8.x, 1.9.x
 
-*	Magento Commerce version 1.11.x, 1.12.x, 1.13.x, 1.14.x
+*    Magento Commerce version 1.11.x, 1.12.x, 1.13.x, 1.14.x
 
 If you migrate from Magento Open Source to Magento Commerce, the following versions are supported:
 
@@ -30,21 +30,21 @@ If you migrate from Magento Open Source to Magento Commerce, the following versi
 ## Prerequisites
 Before you start your migration, you must do all of the following:
 
-*	Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v1.0/install-gde/system-requirements.html">system requirements</a>.
+*    Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v1.0/install-gde/system-requirements.html">system requirements</a>.
 
-	Set up your system using a topology and design that at least matches your existing Magento 1.x system.
+    Set up your system using a topology and design that at least matches your existing Magento 1.x system.
 
-*	Do not start Magento 2 cron jobs.
+*    Do not start Magento 2 cron jobs.
 
-*	Back up or <a href="https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html">dump</a> your Magento 2 database as soon after installation as possible.
+*    Back up or <a href="https://dev.mysql.com/doc/refman/5.1/en/mysqldump.html">dump</a> your Magento 2 database as soon after installation as possible.
 
-*	Check that the data migration tool has a network connection to the Magento 1.x and Magento 2 databases.
+*    Check that the data migration tool has a network connection to the Magento 1.x and Magento 2 databases.
 
-	Open ports in your firewall so the migration tool can communicate with the databases and so the databases can communicate with each other.
+    Open ports in your firewall so the migration tool can communicate with the databases and so the databases can communicate with each other.
 
-*	Migrate Magento 1.x extension and custom code to Magento 2.
+*    Migrate Magento 1.x extension and custom code to Magento 2.
 
-	Reach out to your extension providers to see if they have been ported yet.
+    Reach out to your extension providers to see if they have been ported yet.
 
 ## Install the Data Migration Tool
 This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
@@ -54,53 +54,53 @@ This section discusses how to install the Magento Data Migration Tool. You can i
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
 
-1.	Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v1.0/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
+1.  Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v1.0/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
 2.  Go to Magento 2 root directory.
-3.	Enter the following commands:
+3.  Enter the following commands:
 
-		composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
-		composer require magento/data-migration-tool:<version>
+        composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
+        composer require magento/data-migration-tool:<version>
 
-	where `<version>` is release version (e.g. 2.1.0)
+    where `<version>` is release version (e.g. 2.1.0)
 
-3.	Wait while dependencies are updated.
+3.  Wait while dependencies are updated.
 
 ### Install the tool from repo.magento.com
 To install the Data Migration Tool, you must update `composer.json` in the Magento root installation directory to provide the location of the migration tool package.
 
 To install the migration tool, you must:
 
-1.	Decide the version of `magento/data-migration-tool` you want as discussed in the preceding section.
+1.  Decide the version of `magento/data-migration-tool` you want as discussed in the preceding section.
 
-2.	Run the `composer config` and `composer require` commands to update `composer.json`.
+2.  Run the `composer config` and `composer require` commands to update `composer.json`.
 
 3.  When prompted, enter your <a href="http://devdocs.magento.com/guides/v2.0/install-gde/prereq/connect-auth.html" target="_blank">authentication keys</a>. Your public key is your username; your private key is your password.
 
 To update `composer.json`:
 
-1.	Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v1.0/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
+1.  Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v1.0/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
 
-2.	Change to your Magento installation directory.
+2.  Change to your Magento installation directory.
 
-7.	Enter the following command to reference Magento packages in `composer.json`:
+3.  Enter the following command to reference Magento packages in `composer.json`:
 
-		composer config repositories.magento composer https://repo.magento.com
+        composer config repositories.magento composer https://repo.magento.com
 
-8.	Enter the following command to require the current version of the package:
+4.  Enter the following command to require the current version of the package:
 
-		composer require magento/data-migration-tool:<version>
+        composer require magento/data-migration-tool:<version>
 
-	where `<version>` is either an exact version or next significant release syntax.
+    where `<version>` is either an exact version or next significant release syntax.
 
-	Exact version example:
+    Exact version example:
 
-		composer require magento/data-migration-tool:2.1.0
+        composer require magento/data-migration-tool:2.1.0
 
-	Next significant release example:
+    Next significant release example:
 
-		composer require magento/data-migration-tool:~2.0
+        composer require magento/data-migration-tool:~2.0
 
-9.	Wait while dependencies are installed.
+5.  Wait while dependencies are installed.
 
 ## More details
 See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.

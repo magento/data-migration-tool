@@ -11,17 +11,17 @@
         <xs:documentation>Migration Tool Configuration</xs:documentation>
     </xs:annotation>
 
-    <xs:element name="config" type="configType"/>
+    <xs:element name="config" type="configType" />
 
     <xs:complexType name="configType">
         <xs:annotation>
             <xs:documentation>Configuration root node</xs:documentation>
         </xs:annotation>
         <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="steps" type="stepsType" maxOccurs="unbounded" minOccurs="1"/>
-            <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1"/>
-            <xs:element name="options" type="optionsType" maxOccurs="1" minOccurs="1"/>
+            <xs:element name="steps" type="stepsType" maxOccurs="unbounded" minOccurs="1" />
+            <xs:element name="source" type="sourceType" maxOccurs="1" minOccurs="1" />
+            <xs:element name="destination" type="destinationType" maxOccurs="1" minOccurs="1" />
+            <xs:element name="options" type="optionsType" maxOccurs="1" minOccurs="1" />
         </xs:sequence>
     </xs:complexType>
 
@@ -30,24 +30,24 @@
             <xs:documentation>Definition of steps.</xs:documentation>
         </xs:annotation>
         <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="step" type="stepType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="step" type="stepType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
-        <xs:attribute name="mode" type="xs:string" use="required"/>
+        <xs:attribute name="mode" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:complexType name="stepType">
         <xs:sequence maxOccurs="unbounded" minOccurs="0">
-            <xs:element name="integrity" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="data" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="delta" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
-            <xs:element name="volume" type="stageType" maxOccurs="unbounded" minOccurs="0"/>
+            <xs:element name="integrity" type="stageType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="data" type="stageType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="delta" type="stageType" maxOccurs="unbounded" minOccurs="0" />
+            <xs:element name="volume" type="stageType" maxOccurs="unbounded" minOccurs="0" />
         </xs:sequence>
-        <xs:attribute name="title" type="xs:string" use="required"/>
+        <xs:attribute name="title" type="xs:string" use="required" />
     </xs:complexType>
 
     <xs:simpleType name="stageType">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[a-zA-Z][a-zA-Z0-9_\\\\]+"/>
+            <xs:pattern value="[a-zA-Z][a-zA-Z0-9_\\\\]+" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -56,7 +56,7 @@
             <xs:documentation>Definition data source.</xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="database" type="resourceTypeDatabase"/>
+            <xs:element name="database" type="resourceTypeDatabase" />
         </xs:choice>
     </xs:complexType>
 
@@ -65,24 +65,24 @@
             <xs:documentation>Definition of data destination.</xs:documentation>
         </xs:annotation>
         <xs:choice>
-            <xs:element name="database" type="resourceTypeDatabase"/>
+            <xs:element name="database" type="resourceTypeDatabase" />
         </xs:choice>
     </xs:complexType>
 
     <xs:complexType name="resourceTypeDatabase">
-        <xs:attribute name="name" type="xs:string" use="required"/>
-        <xs:attribute name="host" type="xs:string" use="required"/>
-        <xs:attribute name="port" type="xs:string" use="optional"/>
-        <xs:attribute name="user" type="xs:string" use="required"/>
-        <xs:attribute name="password" type="xs:string" use="optional"/>
-        <xs:attribute name="ssl_ca" type="xs:string" use="optional"/>
-        <xs:attribute name="ssl_cert" type="xs:string" use="optional"/>
-        <xs:attribute name="ssl_key" type="xs:string" use="optional"/>
+        <xs:attribute name="name" type="xs:string" use="required" />
+        <xs:attribute name="host" type="xs:string" use="required" />
+        <xs:attribute name="port" type="xs:string" use="optional" />
+        <xs:attribute name="user" type="xs:string" use="required" />
+        <xs:attribute name="password" type="xs:string" use="optional" />
+        <xs:attribute name="ssl_ca" type="xs:string" use="optional" />
+        <xs:attribute name="ssl_cert" type="xs:string" use="optional" />
+        <xs:attribute name="ssl_key" type="xs:string" use="optional" />
     </xs:complexType>
 
     <xs:simpleType name="resourceType">
         <xs:restriction base="xs:string">
-            <xs:enumeration value="database"/>
+            <xs:enumeration value="database" />
         </xs:restriction>
     </xs:simpleType>
 
@@ -91,28 +91,28 @@
             <xs:documentation>Definition of options.</xs:documentation>
         </xs:annotation>
         <xs:choice minOccurs="1" maxOccurs="unbounded">
-            <xs:element name="map_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="eav_map_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="log_map_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="settings_map_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="sales_order_map_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="delta_document_groups_file" type="xmlFile" maxOccurs="1"/>
-            <xs:element name="bulk_size" type="xs:int" maxOccurs="1"/>
-            <xs:element name="resource_adapter_class_name" type="xs:string" maxOccurs="1"/>
-            <xs:element name="log_file" type="xs:string" maxOccurs="1"/>
-            <xs:element name="progress_bar_format" type="xs:string" maxOccurs="1"/>
-            <xs:element name="upgrade_customer_password_hash" type="xs:string" maxOccurs="1"/>
-            <xs:element name="crypt_key" type="xs:string" maxOccurs="1"/>
-            <xs:element name="edition_migrate" type="xs:string" maxOccurs="1"/>
-            <xs:element name="init_statements_source" type="xs:string" maxOccurs="1"/>
-            <xs:element name="init_statements_destination" type="xs:string" maxOccurs="1"/>
-            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip"/>
+            <xs:element name="map_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="eav_map_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="log_map_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="settings_map_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="sales_order_map_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="delta_document_groups_file" type="xmlFile" maxOccurs="1" />
+            <xs:element name="bulk_size" type="xs:int" maxOccurs="1" />
+            <xs:element name="resource_adapter_class_name" type="xs:string" maxOccurs="1" />
+            <xs:element name="log_file" type="xs:string" maxOccurs="1" />
+            <xs:element name="progress_bar_format" type="xs:string" maxOccurs="1" />
+            <xs:element name="upgrade_customer_password_hash" type="xs:string" maxOccurs="1" />
+            <xs:element name="crypt_key" type="xs:string" maxOccurs="1" />
+            <xs:element name="edition_migrate" type="xs:string" maxOccurs="1" />
+            <xs:element name="init_statements_source" type="xs:string" maxOccurs="1" />
+            <xs:element name="init_statements_destination" type="xs:string" maxOccurs="1" />
+            <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
         </xs:choice>
     </xs:complexType>
 
     <xs:simpleType name="xmlFile">
         <xs:restriction base="xs:string">
-            <xs:pattern value="[-/A-Za-z0-9\._]+\.(xml|dist)"/>
+            <xs:pattern value="[-/A-Za-z0-9\._]+\.(xml|dist)" />
         </xs:restriction>
     </xs:simpleType>
 </xs:schema>

@@ -40,6 +40,9 @@ class SalesOrderItemTest extends \PHPUnit\Framework\TestCase
         $this->assertNull($handler->handle($record, $record2));
     }
 
+    /**
+     * @return array
+     */
     public function handleDataProvider()
     {
         // @codingStandardsIgnoreStart

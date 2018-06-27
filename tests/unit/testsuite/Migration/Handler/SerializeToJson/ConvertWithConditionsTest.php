@@ -93,6 +93,9 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
         $handler->handle($this->model, $this->model);
     }
 
+    /**
+     * @return array
+     */
     public function convertDataProvider()
     {
         $data = ['product' => '2', 'form_key' => '2SYziDL1rBficzaP'];

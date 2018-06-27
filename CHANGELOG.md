@@ -1,3 +1,22 @@
+2.2.5
+=============
+* Added support for versions:
+
+   * Magento Open Source: 1.9.3.9, 2.2.5
+   * Magento Commerce: 1.14.3.9, 2.2.5
+
+* Fixed bugs:
+
+   * New table `tablevertex_order_invoice_status` caused error during migration
+   * Image excluding and sort order did not migrate properly on Magento Commerce
+   * [Issue #514](https://github.com/magento/data-migration-tool/issues/514): `base_grand_total` field was not migrated in invoice grid table
+   * [Issue #534](https://github.com/magento/data-migration-tool/issues/534): The migration step Log did not update the progress bar with large data
+   * [Issue #535](https://github.com/magento/data-migration-tool/issues/535): B2B destination tables caused errors during migration for Commerce Edition
+   * [Issue #536](https://github.com/magento/data-migration-tool/issues/536): Prohibited tabs and format XML files in code of the project
+   * [Issue #537](https://github.com/magento/data-migration-tool/issues/537): Comments to the function declaration were missed
+   * [Issue #532](https://github.com/magento/data-migration-tool/issues/532): Serialization was used instead of json format for lock file
+   * [Issue #533](https://github.com/magento/data-migration-tool/issues/533): Duplicate node was used in mapping files
+
 2.2.4
 =============
 * Added support for versions:
@@ -10,7 +29,6 @@
    * New tables `email_abandoned_cart` and `temando_rma_shipment` caused error during migration
    * [Issue #481](https://github.com/magento/data-migration-tool/issues/481): Url rewrite suffix contained only dot symbol
    * [Issue #487](https://github.com/magento/data-migration-tool/issues/487): Important tables were missing in `deltalog.xml.dist`
-
 
 2.2.3
 =============
@@ -233,9 +251,9 @@
     * Magento EE version 1.14.2.3, 2.0.2
 
 * Fixed bugs:
-    *	Fixed an issue with migrating passwords
-    *   [Issue#48](https://github.com/magento/data-migration-tool-ce/issues/48) We no longer migrate backup tables
-    *   [Issue#15](https://github.com/magento/data-migration-tool-ce/issues/15) Improved error reporting for migrating URL rewrites
-    *   [Issue#46](https://github.com/magento/data-migration-tool-ce/issues/46) Improved URL rewrite validation
-    *   [Issue#33](https://github.com/magento/data-migration-tool-ce/issues/33) Resolved issue that resulted in the `inet_ntop(): Invalid in_addr value` error
-    *   [Issue#12](https://github.com/magento/data-migration-tool-ce/issues/12) Duplicate entries in the `catalogsearch_query` table are no longer migrated
+    * Fixed an issue with migrating passwords
+    * [Issue#48](https://github.com/magento/data-migration-tool-ce/issues/48) We no longer migrate backup tables
+    * [Issue#15](https://github.com/magento/data-migration-tool-ce/issues/15) Improved error reporting for migrating URL rewrites
+    * [Issue#46](https://github.com/magento/data-migration-tool-ce/issues/46) Improved URL rewrite validation
+    * [Issue#33](https://github.com/magento/data-migration-tool-ce/issues/33) Resolved issue that resulted in the `inet_ntop(): Invalid in_addr value` error
+    * [Issue#12](https://github.com/magento/data-migration-tool-ce/issues/12) Duplicate entries in the `catalogsearch_query` table are no longer migrated

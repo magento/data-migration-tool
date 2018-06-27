@@ -1223,45 +1223,45 @@
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
-                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
-                    <param name="attributeCode" value="page_layout"/>
+                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
+                    <param name="attributeCode" value="page_layout" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\TruncateSuffix">
-                    <param name="suffixPath" value="catalog/seo/category_url_suffix"/>
-                    <param name="attributeCodes" value="[url_path]"/>
-                    <param name="entityTypeCode" value="catalog_category"/>
+                    <param name="suffixPath" value="catalog/seo/category_url_suffix" />
+                    <param name="attributeCodes" value="[url_path]" />
+                    <param name="entityTypeCode" value="catalog_category" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
-                     <param name="attributeCode" value="custom_design"/>
-                     <param name="value" value="null"/>
+                    <param name="attributeCode" value="custom_design" />
+                    <param name="value" value="null" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity_text.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
-                     <param name="attributeCode" value="custom_layout_update"/>
-                     <param name="value" value="null"/>
+                    <param name="attributeCode" value="custom_layout_update" />
+                    <param name="value" value="null" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\ConvertEavValue">
-                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]"/>
-                    <param name="attributeCode" value="page_layout"/>
+                    <param name="map" value="[one_column:1column;two_columns_left:2columns-left;two_columns_right:2columns-right;three_columns:3columns]" />
+                    <param name="attributeCode" value="page_layout" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\TruncateSuffix">
-                    <param name="suffixPath" value="catalog/seo/product_url_suffix"/>
-                    <param name="attributeCodes" value="[url_key,url_path]"/>
-                    <param name="entityTypeCode" value="catalog_product"/>
+                    <param name="suffixPath" value="catalog/seo/product_url_suffix" />
+                    <param name="attributeCodes" value="[url_key,url_path]" />
+                    <param name="entityTypeCode" value="catalog_product" />
                 </handler>
             </transform>
             <transform>
@@ -1293,11 +1293,11 @@
             </transform>
             <transform>
                 <field>catalogrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>catalogrule.actions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>catalogrule.customer_group_ids</field>
@@ -1315,11 +1315,11 @@
             </transform>
             <transform>
                 <field>salesrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>salesrule.actions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>salesrule.customer_group_ids</field>
@@ -1337,23 +1337,23 @@
             </transform>
             <transform>
                 <field>enterprise_targetrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>enterprise_targetrule.actions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>enterprise_reminder_rule.conditions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>enterprise_reminder_rule.condition_sql</field>
-                <handler class="Migration\Handler\Rule\ConditionSql"/>
+                <handler class="Migration\Handler\Rule\ConditionSql" />
             </transform>
             <transform>
                 <field>enterprise_customersegment_segment.conditions_serialized</field>
-                <handler class="\Migration\Handler\Rule\SerializedData"/>
+                <handler class="\Migration\Handler\Rule\SerializedData" />
             </transform>
             <transform>
                 <field>enterprise_customersegment_segment.condition_sql</field>
@@ -1363,103 +1363,103 @@
             </transform>
             <transform>
                 <field>sales_flat_order_item.weee_tax_applied</field>
-                <handler class="Migration\Handler\SerializeToJson"/>
+                <handler class="Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_quote_item.weee_tax_applied</field>
-                <handler class="Migration\Handler\SerializeToJson"/>
+                <handler class="Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_creditmemo_item.weee_tax_applied</field>
-                <handler class="Migration\Handler\SerializeToJson"/>
+                <handler class="Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_invoice_item.weee_tax_applied</field>
-                <handler class="Migration\Handler\SerializeToJson"/>
+                <handler class="Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>catalog_product_entity_media_gallery.value_id</field>
-                <handler class="\Migration\Handler\Gallery\InsertValueToEntity"/>
+                <handler class="\Migration\Handler\Gallery\InsertValueToEntity" />
             </transform>
             <transform>
                 <field>enterprise_giftregistry_type.meta_xml</field>
-                <handler class="\Migration\Handler\ConvertDateFormat"/>
+                <handler class="\Migration\Handler\ConvertDateFormat" />
             </transform>
             <transform>
                 <field>catalogrule.rule_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_catalogrule"/>
+                    <param name="table" value="sequence_catalogrule" />
                 </handler>
             </transform>
             <transform>
                 <field>salesrule.rule_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_salesrule"/>
+                    <param name="table" value="sequence_salesrule" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity.entity_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_catalog_category"/>
+                    <param name="table" value="sequence_catalog_category" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity.entity_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_product"/>
+                    <param name="table" value="sequence_product" />
                 </handler>
             </transform>
             <transform>
                 <field>cms_block.block_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_cms_block"/>
+                    <param name="table" value="sequence_cms_block" />
                 </handler>
             </transform>
             <transform>
                 <field>cms_page.page_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_cms_page"/>
+                    <param name="table" value="sequence_cms_page" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_bundle_option.option_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_product_bundle_option"/>
+                    <param name="table" value="sequence_product_bundle_option" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_bundle_selection.selection_id</field>
                 <handler class="\Migration\Handler\Sequence">
-                    <param name="table" value="sequence_product_bundle_selection"/>
+                    <param name="table" value="sequence_product_bundle_selection" />
                 </handler>
             </transform>
             <transform>
                 <field>catalogsearch_query.synonym_for</field>
-                <handler class="\Migration\Handler\Synonym"/>
+                <handler class="\Migration\Handler\Synonym" />
             </transform>
             <transform>
                 <field>sales_flat_quote_payment.additional_information</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_reward_history.additional_data</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_order_item.product_options</field>
-                <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem"/>
+                <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem" />
             </transform>
             <transform>
                 <field>sales_flat_order_payment.additional_information</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_shipment.packages</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_payment_transaction.additional_information</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_quote_item_option.value</field>
@@ -1470,7 +1470,7 @@
             </transform>
             <transform>
                 <field>sales_flat_quote_item_option.value</field>
-                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption" />
             </transform>
             <transform>
                 <field>enterprise_giftregistry_item_option.value</field>
@@ -1481,7 +1481,7 @@
             </transform>
             <transform>
                 <field>enterprise_giftregistry_item_option.value</field>
-                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption" />
             </transform>
             <transform>
                 <field>wishlist_item_option.value</field>
@@ -1492,103 +1492,103 @@
             </transform>
             <transform>
                 <field>wishlist_item_option.value</field>
-                <handler class="\Migration\Handler\SerializeToJson\ItemOption"/>
+                <handler class="\Migration\Handler\SerializeToJson\ItemOption" />
             </transform>
             <transform>
                 <field>sales_flat_quote.gift_cards</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_quote_address.applied_taxes</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_quote_address.gift_cards</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>widget_instance.widget_parameters</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_reminder_rule.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_targetrule.actions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_targetrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_targetrule.action_select_bind</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>salesrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>salesrule.actions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>catalogrule.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>catalogrule.actions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_customersegment_segment.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>admin_user.extra</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_logging_event.info</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_logging_event_changes.original_data</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_logging_event_changes.result_data</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_rma_item_entity.product_options</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_rma_shipping_label.packages</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_giftregistry_person.custom_values</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_giftregistry_entity.custom_values</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_giftregistry_entity.shipping_address</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_scheduled_operations.file_info</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>enterprise_scheduled_operations.entity_attributes</field>
-                <handler class="\Migration\Handler\SerializeToJson"/>
+                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -2528,6 +2528,9 @@
                 <document>vertex_taxrequest</document>
             </ignore>
             <ignore>
+                <document>vertex_order_invoice_status</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>
@@ -2559,6 +2562,78 @@
             </ignore>
             <ignore>
                 <document>vault_payment_token_order_payment_link</document>
+            </ignore>
+            <ignore>
+                <document>company</document>
+            </ignore>
+            <ignore>
+                <document>company_advanced_customer_entity</document>
+            </ignore>
+            <ignore>
+                <document>company_credit</document>
+            </ignore>
+            <ignore>
+                <document>company_credit_history</document>
+            </ignore>
+            <ignore>
+                <document>company_order_entity</document>
+            </ignore>
+            <ignore>
+                <document>company_payment</document>
+            </ignore>
+            <ignore>
+                <document>company_permissions</document>
+            </ignore>
+            <ignore>
+                <document>company_roles</document>
+            </ignore>
+            <ignore>
+                <document>company_structure</document>
+            </ignore>
+            <ignore>
+                <document>company_team</document>
+            </ignore>
+            <ignore>
+                <document>company_user_roles</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_comment</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_comment_attachment</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_company_config</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_grid</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_history</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_item</document>
+            </ignore>
+            <ignore>
+                <document>negotiable_quote_purged_content</document>
+            </ignore>
+            <ignore>
+                <document>requisition_list</document>
+            </ignore>
+            <ignore>
+                <document>requisition_list_item</document>
+            </ignore>
+            <ignore>
+                <document>shared_catalog</document>
+            </ignore>
+            <ignore>
+                <document>shared_catalog_product_item</document>
+            </ignore>
+            <ignore>
+                <document>sharedcatalog_category_permissions</document>
             </ignore>
         </document_rules>
         <field_rules>
@@ -2648,7 +2723,7 @@
             </transform>
             <transform>
                 <field>sales_order_status_state.visible_on_front</field>
-                <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront"/>
+                <handler class="\Migration\Handler\SalesOrderStatusState\SetVisibleOnFront" />
             </transform>
             <transform>
                 <field>translation.crc_string</field>
@@ -2662,63 +2737,63 @@
                 <handler class="\Migration\Handler\Placeholder" />
             </transform>
             <transform>
-                <field>catalog_product_entity_media_gallery_value.entity_id</field>
-                <handler class="\Migration\Handler\Gallery\SetEntityId"/>
+                <field>catalog_product_entity_media_gallery_value.row_id</field>
+                <handler class="\Migration\Handler\Gallery\SetEntityId" />
             </transform>
             <transform>
                 <field>catalog_category_entity.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="entity_id"/>
+                    <param name="fieldCopy" value="entity_id" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="entity_id"/>
+                    <param name="fieldCopy" value="entity_id" />
                 </handler>
             </transform>
             <transform>
                 <field>catalogrule.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="rule_id"/>
+                    <param name="fieldCopy" value="rule_id" />
                 </handler>
             </transform>
             <transform>
                 <field>cms_block.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="block_id"/>
+                    <param name="fieldCopy" value="block_id" />
                 </handler>
             </transform>
             <transform>
                 <field>cms_page.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="page_id"/>
+                    <param name="fieldCopy" value="page_id" />
                 </handler>
             </transform>
             <transform>
                 <field>salesrule.row_id</field>
                 <handler class="\Migration\Handler\FieldCopy">
-                    <param name="fieldCopy" value="rule_id"/>
+                    <param name="fieldCopy" value="rule_id" />
                 </handler>
             </transform>
             <transform>
                 <field>magento_catalogevent_event.status</field>
-                <handler class="\Migration\Handler\GetEventStatus"/>
+                <handler class="\Migration\Handler\GetEventStatus" />
             </transform>
             <transform>
                 <field>catalog_product_bundle_option_value.parent_product_id</field>
                 <handler class="\Migration\Handler\BundleParentProduct">
-                    <param name="parentField" value="option_id"/>
-                    <param name="documentWithProductId" value="catalog_product_bundle_option"/>
-                    <param name="fieldWithProductId" value="parent_id"/>
+                    <param name="parentField" value="option_id" />
+                    <param name="documentWithProductId" value="catalog_product_bundle_option" />
+                    <param name="fieldWithProductId" value="parent_id" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_bundle_selection_price.parent_product_id</field>
                 <handler class="\Migration\Handler\BundleParentProduct">
-                    <param name="parentField" value="selection_id"/>
-                    <param name="documentWithProductId" value="catalog_product_bundle_selection"/>
-                    <param name="fieldWithProductId" value="parent_product_id"/>
+                    <param name="parentField" value="selection_id" />
+                    <param name="documentWithProductId" value="catalog_product_bundle_selection" />
+                    <param name="fieldWithProductId" value="parent_product_id" />
                 </handler>
             </transform>
             <ignore>
@@ -3093,7 +3168,7 @@
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
             </ignore>
-		    <ignore>
+            <ignore>
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
             </ignore>
             <ignore>
@@ -3147,7 +3222,7 @@
             <ignore>
                 <datatype>enterprise_logging_event.info</datatype>
             </ignore>
-		    <ignore>
+            <ignore>
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
             </ignore>
             <ignore>

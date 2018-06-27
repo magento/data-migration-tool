@@ -52,7 +52,8 @@ class File
     public function getData()
     {
         if (empty($this->data)) {
-            $data = @unserialize($this->filesystemDriver->fileGetContents($this->getLockFile()));
+            $fileContents = $this->filesystemDriver->fileGetContents($this->getLockFile());
+            $data = $this->serializeToJson($fileContents);
             if (is_array($data)) {
                 $this->data = $data;
             }
@@ -69,7 +70,7 @@ class File
     public function saveData($data)
     {
         if ($this->filesystemDriver->isExists($this->getLockFile())) {
-            $this->filesystemDriver->filePutContents($this->getLockFile(), serialize($data));
+            $this->filesystemDriver->filePutContents($this->getLockFile(), json_encode($data));
             $this->data = $data;
             return true;
         }
@@ -96,5 +97,26 @@ class File
     {
         $this->saveData([]);
         return $this;
+    }
+
+    /**
+     * @param $fileContents
+     * @return mixed
+     */
+    private function serializeToJson($fileContents)
+    {
+        $isJson = (strpos($fileContents, '{') === 0);
+
+        if ($isJson) {
+            $data = json_decode($fileContents, true);
+        } else {
+            //Convert file to JSON format
+            $data = @unserialize($fileContents);
+
+            if (is_array($data)) {
+                $this->saveData($data);
+            }
+        }
+        return $data;
     }
 }
