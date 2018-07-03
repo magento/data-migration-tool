@@ -1576,7 +1576,6 @@
             </ignore>
             <ignore>
                 <document>amazon_customer</document>
-                <document>amazon_customer</document>
             </ignore>
             <ignore>
                 <document>amazon_pending_authorization</document>
