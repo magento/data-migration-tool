@@ -147,7 +147,7 @@
         <visual_merchandiser_document_groups>etc/commerce-to-commerce/visual_merchandiser_document_groups.xml.dist</visual_merchandiser_document_groups>
         <visual_merchandiser_attribute_groups>etc/commerce-to-commerce/visual_merchandiser_attribute_groups.xml.dist</visual_merchandiser_attribute_groups>
         <map_document_groups>etc/commerce-to-commerce/map-document-groups.xml.dist</map_document_groups>
-        <tier_price_map_file>etc/commerce-to-commerce/1.14.3.4/map-tier-price.xml.dist</tier_price_map_file>
+        <tier_price_map_file>etc/commerce-to-commerce/1.14.3.7/map-tier-price.xml.dist</tier_price_map_file>
         <stores_map_file>etc/commerce-to-commerce/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.

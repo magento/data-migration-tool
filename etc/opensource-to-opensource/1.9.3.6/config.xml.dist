@@ -118,7 +118,7 @@
         <order_grids_document_groups_file>etc/opensource-to-opensource/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
         <map_document_groups>etc/opensource-to-opensource/map-document-groups.xml.dist</map_document_groups>
         <class_map>etc/opensource-to-opensource/class-map.xml.dist</class_map>
-        <tier_price_map_file>etc/opensource-to-opensource/1.9.3.4/map-tier-price.xml.dist</tier_price_map_file>
+        <tier_price_map_file>etc/opensource-to-opensource/1.9.3.6/map-tier-price.xml.dist</tier_price_map_file>
         <stores_map_file>etc/opensource-to-opensource/map-stores.xml.dist</stores_map_file>
         <!--
         In case bulk_size=0 it will be auto-detected for every document.
