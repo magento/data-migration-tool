@@ -692,9 +692,6 @@
             <path>payment/payflow_link/mobile_optimized</path>
         </ignore>
         <ignore>
-            <path>payment/paypal_wps_express/active</path>
-        </ignore>
-        <ignore>
             <path>payment/verisign/active</path>
         </ignore>
         <ignore>
@@ -1116,6 +1113,14 @@
         <rename>
             <path>payment/paypaluk_express_bml/active</path>
             <to>payment/payflow_express_bml/active</to>
+        </rename>
+        <rename>
+            <path>payment/paypal_standard/active</path>
+            <to>payment/wps_express/active</to>
+        </rename>
+        <rename>
+            <path>payment/paypal_wps_express/active</path>
+            <to>payment/wps_express/active</to>
         </rename>
         <rename>
             <path>rss/order/status_notified</path>
