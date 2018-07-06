@@ -456,12 +456,6 @@
                 <document>admin_rule</document>
             </ignore>
             <ignore>
-                <document>admin_role</document>
-            </ignore>
-            <ignore>
-                <document>admin_rule</document>
-            </ignore>
-            <ignore>
                 <document>catalogrule_affected_product</document>
             </ignore>
             <ignore>
