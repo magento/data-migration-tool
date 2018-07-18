@@ -145,7 +145,7 @@ class Progress
         } else {
             $name = get_class($object);
         }
-        
+
         return $name;
     }
 }

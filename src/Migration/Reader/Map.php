@@ -290,7 +290,7 @@ class Map implements MapInterface
         $nodes = $this->xml->query(
             sprintf('//%s/field_rules/transform[field/text()="%s.%s"]/handler', $type, $document, $field)
         );
-        
+
         /** @var \DOMElement $node */
         foreach ($nodes as $node) {
             $config = [
