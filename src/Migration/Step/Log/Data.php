@@ -182,7 +182,7 @@ class Data implements StageInterface
             )
             ->group('lv.visitor_id')
             ->order('lv.visitor_id');
-        
+
         return $select;
     }
 
