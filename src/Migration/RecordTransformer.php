@@ -134,16 +134,9 @@ class RecordTransformer
             }
         }
 
-        $data = [];
         foreach ($sourceFields as $field) {
-            if (!$this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
-                $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
-                $data[$fieldMap] = $from->getValue($field);
-            }
-        }
-
-        foreach ($data as $key => $value) {
-            $to->setValue($key, $value);
+            $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
+            $to->setValue($fieldMap, $from->getValue($field));
         }
     }
 }
