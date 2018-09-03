@@ -906,14 +906,14 @@ class Data implements StageInterface, RollbackInterface
             ['entity_type_id', 'attribute_code']
         );
         foreach ($this->initialData->getAttributes('dest') as $keyOld => $attributeOld) {
-            list($entityTypeId, $attributeCodeDest) = explode('-', $keyOld);
+            list($entityTypeId, $attributeCodeDest) = explode('-', $keyOld, 2);
             $keyMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeId] . '-' . $attributeCodeDest;
             $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] =
                 $newAttributes[$keyMapped]['attribute_id'];
         }
         foreach ($this->initialData->getAttributes('source') as $idSource => $attributeSource) {
             foreach ($this->initialData->getAttributes('dest') as $keyDest => $attributeDest) {
-                list($entityTypeIdDest, $attributeCodeDest) = explode('-', $keyDest);
+                list($entityTypeIdDest, $attributeCodeDest) = explode('-', $keyDest, 2);
                 $keyDestMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeIdDest] . '-' . $attributeCodeDest;
                 $keySource = $attributeSource['entity_type_id'] . '-' . $attributeSource['attribute_code'];
                 if ($keySource == $keyDestMapped) {
