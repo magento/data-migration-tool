@@ -2385,6 +2385,12 @@
                 <document>email_abandoned_cart</document>
             </ignore>
             <ignore>
+                <document>email_contact_consent</document>
+            </ignore>
+            <ignore>
+                <document>email_failed_auth</document>
+            </ignore>
+            <ignore>
                 <document>temando_checkout_address</document>
             </ignore>
             <ignore>
