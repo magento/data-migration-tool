@@ -486,12 +486,6 @@
                 <document>sales_flat_order</document>
             </ignore>
             <ignore>
-                <document>admin_role</document>
-            </ignore>
-            <ignore>
-                <document>admin_rule</document>
-            </ignore>
-            <ignore>
                 <document>enterprise_url_rewrite</document>
             </ignore>
             <ignore>
@@ -2394,6 +2388,12 @@
             </ignore>
             <ignore>
                 <document>email_abandoned_cart</document>
+            </ignore>
+            <ignore>
+                <document>email_contact_consent</document>
+            </ignore>
+            <ignore>
+                <document>email_failed_auth</document>
             </ignore>
             <ignore>
                 <document>temando_checkout_address</document>

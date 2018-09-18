@@ -127,24 +127,15 @@ class RecordTransformer
     protected function copy(Record $from, Record $to)
     {
         $sourceDocumentName = $this->sourceDocument->getName();
-        $data = $from->getData();
         $sourceFields = $from->getFields();
-        $destinationFields = $to->getFields();
+        $data = [];
         foreach ($sourceFields as $key => $field) {
             if ($this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
                 unset($sourceFields[$key]);
-                unset($data[$field]);
+                continue;
             }
-        }
-        $diff = array_diff($sourceFields, $destinationFields);
-        foreach ($diff as $field) {
-            if (!$this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
-                $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
-                if ($fieldMap != $field) {
-                    $data[$fieldMap] = $from->getValue($field);
-                }
-            }
-            unset($data[$field]);
+            $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
+            $data[$fieldMap] = $from->getValue($field);
         }
         foreach ($data as $key => $value) {
             $to->setValue($key, $value);

@@ -1,3 +1,21 @@
+2.2.6
+=============
+* Added support for versions:
+
+   * Magento Open Source: 1.9.3.10, 2.2.6
+   * Magento Commerce: 1.14.3.10, 2.2.6
+
+* Fixed bugs:
+
+   * Duplicate `amazon_customer` record in `map.xml` file
+   * [Issue #557](https://github.com/magento/data-migration-tool/issues/557): `map-tier-pricing.xml.dist` references were incorrect
+   * [Issue #545](https://github.com/magento/data-migration-tool/issues/545): PayPal standard settings for active/sandbox mode was not carried across
+   * [Issue #554](https://github.com/magento/data-migration-tool/issues/554): Duplicate `ignore` mappings found in EE-to-EE platform
+   * [Issue #555](https://github.com/magento/data-migration-tool/issues/555): Duplicate `ignore` mappings found in CE-to-EE platform
+   * [Issue #556](https://github.com/magento/data-migration-tool/issues/556): Duplicate `ignore` mappings found in CE-to-CE platform
+   * [Issue #561](https://github.com/magento/data-migration-tool/issues/561): Incorrect migration of records when value must be moved to a different destination field
+   * [Issue #578](https://github.com/magento/data-migration-tool/issues/578): Attributes with dash in attribute codes gave error
+
 2.2.5
 =============
 * Added support for versions:
