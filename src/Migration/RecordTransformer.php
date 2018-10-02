@@ -128,13 +128,16 @@ class RecordTransformer
     {
         $sourceDocumentName = $this->sourceDocument->getName();
         $sourceFields = $from->getFields();
+        $sourceFieldsExtra = array_diff($sourceFields, $to->getFields());
         $data = [];
         foreach ($sourceFields as $key => $field) {
             if ($this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
-                unset($sourceFields[$key]);
                 continue;
             }
             $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
+            if ($fieldMap == $field && in_array($field, $sourceFieldsExtra)) {
+                continue;
+            }
             $data[$fieldMap] = $from->getValue($field);
         }
         foreach ($data as $key => $value) {

@@ -39,6 +39,29 @@ LOCK TABLES `common_table` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `common_table_extra_field`
+--
+
+DROP TABLE IF EXISTS `common_table_extra_field`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `common_table_extra_field` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  `common_field` int(11) DEFAULT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `common_table_extra_field`
+--
+
+LOCK TABLES `common_table_extra_field` WRITE;
+/*!40000 ALTER TABLE `common_table_extra_field` DISABLE KEYS */;
+/*!40000 ALTER TABLE `common_table_extra_field` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `dest_table_ignored`
 --
 
