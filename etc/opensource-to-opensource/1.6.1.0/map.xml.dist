@@ -1747,6 +1747,9 @@
             <ignore>
                 <document>design_config_dummy_cl</document>
             </ignore>
+            <ignore>
+                <document>patch_list</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>

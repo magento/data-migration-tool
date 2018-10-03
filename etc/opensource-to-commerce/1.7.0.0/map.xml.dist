@@ -2215,6 +2215,9 @@
             <ignore>
                 <document>sharedcatalog_category_permissions</document>
             </ignore>
+            <ignore>
+                <document>patch_list</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
