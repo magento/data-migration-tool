@@ -42,9 +42,16 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
         ob_start();
         $map->perform();
         ob_end_clean();
-
         $logOutput = \Migration\Logger\Logger::getMessages();
-        $this->assertFalse(isset($logOutput[\Monolog\Logger::ERROR]));
+        $this->assertTrue(isset($logOutput[\Monolog\Logger::ERROR]));
+
+        $config->setOption(\Migration\Config::OPTION_AUTO_RESOLVE, 1);
+        \Migration\Logger\Logger::clearMessages();
+        ob_start();
+        $map->perform();
+        ob_end_clean();
+        $logOutput = \Migration\Logger\Logger::getMessages();
+        $this->assertTrue(isset($logOutput[\Monolog\Logger::WARNING]));
     }
 
     /**
@@ -59,6 +66,7 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
         $logger = $objectManager->create(\Migration\Logger\Logger::class);
         $logger->pushHandler($objectManager->create(\Migration\Logger\ConsoleHandler::class));
         $config = $objectManager->get(\Migration\Config::class);
+        $config->setOption(\Migration\Config::OPTION_AUTO_RESOLVE, 0);
         /** @var \Migration\Logger\Manager $logManager */
         $logManager->process(\Migration\Logger\Manager::LOG_LEVEL_ERROR);
         \Migration\Logger\Logger::clearMessages();
