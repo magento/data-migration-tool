@@ -71,6 +71,10 @@
             <data>Migration\Step\SalesIncrement\Data</data>
             <volume>Migration\Step\SalesIncrement\Volume</volume>
         </step>
+        <step title="Inventory Step">
+            <integrity>Migration\Step\Inventory\Integrity</integrity>
+            <data>Migration\Step\Inventory\Data</data>
+        </step>
         <step title="PostProcessing Step">
             <data>Migration\Step\PostProcessing\Data</data>
         </step>
