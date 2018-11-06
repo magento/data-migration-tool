@@ -56,9 +56,8 @@ class BundleParentProduct extends AbstractHandler
         $this->validate($recordToHandle);
         $parentRowId  = $recordToHandle->getValue($this->parentField);
         $productId = $this->getProductId($parentRowId);
-        if ($productId) {
-            $recordToHandle->setValue($this->field, $productId);
-        }
+        $productId = $productId ?: 0;
+        $recordToHandle->setValue($this->field, $productId);
     }
 
     /**
