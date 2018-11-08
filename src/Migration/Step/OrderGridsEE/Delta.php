@@ -63,22 +63,19 @@ class Delta extends \Migration\Step\OrderGrids\Delta
 
             $destinationDocument = $documentMap[$sourceDocName];
             do {
-                $idArray = array();
-                if (is_array($items[0])) {
-                    foreach ($items as $key => $value) {
-                        $idArray[] = $value[$idKey];
-                    }
-                } else {
-                    $idArray = $items;
+                $ids = [];
+                foreach ($items as $value) {
+                    echo('.');
+                    $ids[] = $value[$idKey];
                 }
                 $this->destination->deleteRecords(
                     $this->destination->addDocumentPrefix($destinationDocument),
                     $idKey,
-                    $idArray
+                    $ids
                 );
                 $documentNameDelta = $this->source->getDeltaLogName($sourceDocName);
                 $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-                $this->markRecordsProcessed($documentNameDelta, $idKey, $idArray);
+                $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
             } while (!empty($items = $this->source->getChangedRecords($sourceDocName, $idKey, $page++)));
         }
         return true;
