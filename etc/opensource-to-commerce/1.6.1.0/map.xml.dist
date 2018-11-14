@@ -2336,6 +2336,27 @@
             <ignore>
                 <document>inventory_stock_*</document>
             </ignore>
+            <ignore>
+                <document>magento_acknowledged_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_operation</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_lock</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
