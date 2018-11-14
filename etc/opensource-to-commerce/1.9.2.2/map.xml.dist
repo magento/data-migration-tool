@@ -2238,6 +2238,33 @@
             <ignore>
                 <document>patch_list</document>
             </ignore>
+            <ignore>
+                <document>inventory_low_stock_notification_configuration</document>
+            </ignore>
+            <ignore>
+                <document>inventory_reservation</document>
+            </ignore>
+            <ignore>
+                <document>inventory_shipment_source</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_carrier_link</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_item</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_stock_link</document>
+            </ignore>
+            <ignore>
+                <document>inventory_stock</document>
+            </ignore>
+            <ignore>
+                <document>inventory_stock_*</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
