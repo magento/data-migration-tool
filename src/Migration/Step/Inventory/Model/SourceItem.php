@@ -11,7 +11,7 @@ use Magento\Framework\DB\Adapter\Pdo\Mysql;
 /**
  * Class SourceItem
  */
-class SourceItem
+class SourceItem implements TableInterface, InventoryModelInterface
 {
     /**
      * Destination resource
@@ -21,9 +21,9 @@ class SourceItem
     private $destination;
 
     /**
-     * @var string
+     * @var InventorySource
      */
-    private $defaultSourceCode = 'default';
+    private $inventorySource;
 
     /**
      * @var string
@@ -34,6 +34,7 @@ class SourceItem
      * @var array
      */
     private $sourceItemTableFields = [
+        'source_item_id',
         'source_code',
         'quantity',
         'status',
@@ -52,27 +53,29 @@ class SourceItem
 
     /**
      * @param Destination $destination
+     * @param InventorySource $inventorySource
      */
     public function __construct(
-        Destination $destination
+        Destination $destination,
+        InventorySource $inventorySource
     ) {
+        $this->inventorySource = $inventorySource;
         $this->destination = $destination;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
-    public function fill()
+    public function prepareSelect()
     {
-        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
-        $adapter = $this->destination->getAdapter();
-        $selectForInsert = $adapter->getSelect()
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->destination->getAdapter()->getSelect()
             ->from(
-                ['legacy_stock_item' => $this->destination->addDocumentPrefix($this->legacyStockItemTable)],
+                ['legacy_stock_item' => $this->getSourceTableName()],
                 [
-                    'source_code' => new \Zend_Db_Expr('\'' . $this->defaultSourceCode . '\''),
-                    'qty',
-                    'is_in_stock'
+                    'source_code' => new \Zend_Db_Expr("'" . $this->inventorySource->getDefaultSourceCode() . "'"),
+                    'quantity' => 'qty',
+                    'status' => 'is_in_stock'
                 ]
             )
             ->join(
@@ -81,27 +84,45 @@ class SourceItem
                 'sku'
             )
             ->where('website_id = ?', 0);
+        return $select;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function insertFromSelect(\Magento\Framework\DB\Select $select)
+    {
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
+        $adapter = $this->destination->getAdapter();
         $adapter->insertFromSelect(
-            $selectForInsert,
-            $this->getSourceItemTable(),
-            $this->getSourceItemTableFields(),
+            $select,
+            $this->getDestinationTableName(),
+            array_diff($this->getDestinationTableFields(), ['source_item_id']),
             Mysql::INSERT_ON_DUPLICATE
         );
     }
 
     /**
-     * @return string
+     * @inheritdoc
      */
-    public function getSourceItemTable()
+    public function getDestinationTableName()
     {
         return $this->destination->addDocumentPrefix($this->sourceItemTable);
     }
 
     /**
-     * @return array
+     * @inheritdoc
      */
-    public function getSourceItemTableFields()
+    public function getDestinationTableFields()
     {
         return $this->sourceItemTableFields;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getSourceTableName()
+    {
+        return $this->destination->addDocumentPrefix($this->legacyStockItemTable);
     }
 }

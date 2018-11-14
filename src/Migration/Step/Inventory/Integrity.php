@@ -12,7 +12,6 @@ use Migration\Logger\Logger;
 use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
 use Migration\Config;
-use Magento\Framework\Module\ModuleList;
 
 /**
  * Class Integrity
@@ -30,9 +29,14 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     private $sourceItem;
 
     /**
-     * @var ModuleList
+     * @var Model\ShipmentSource
      */
-    private $moduleList;
+    private $shipmentSource;
+
+    /**
+     * @var Model\InventoryModule
+     */
+    private $inventoryModule;
 
     /**
      * @param Destination $destination
@@ -42,7 +46,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param ProgressBar\LogLevelProcessor $progress
      * @param Model\StockSalesChannel $stockSalesChannel
      * @param Model\SourceItem $sourceItem
-     * @param ModuleList $moduleList
+     * @param Model\ShipmentSource $shipmentSource
+     * @param Model\InventoryModule $inventoryModule
      * @param MapFactory $mapFactory
      * @param string $mapConfigOption
      */
@@ -54,13 +59,15 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ProgressBar\LogLevelProcessor $progress,
         Model\StockSalesChannel $stockSalesChannel,
         Model\SourceItem $sourceItem,
-        ModuleList $moduleList,
+        Model\ShipmentSource $shipmentSource,
+        Model\InventoryModule $inventoryModule,
         MapFactory $mapFactory,
         $mapConfigOption = 'map_file'
     ) {
-        $this->moduleList = $moduleList;
         $this->sourceItem = $sourceItem;
         $this->stockSalesChannel = $stockSalesChannel;
+        $this->shipmentSource = $shipmentSource;
+        $this->inventoryModule = $inventoryModule;
         parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
     }
 
@@ -69,43 +76,31 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        if (!$this->isInventoryModuleEnabled()) {
+        if (!$this->inventoryModule->isInventoryModuleEnabled()) {
             return true;
         }
-        $this->progress->start(1);
-        $this->progress->advance();
-        $sourceItemTable = $this->sourceItem->getSourceItemTable();
-        if (!$this->destination->getDocument($sourceItemTable)) {
-            $this->missingDocuments[MapInterface::TYPE_DEST][$sourceItemTable] = true;
-        } else {
-            $structureExistingSourceItemTable = array_keys(
-                $this->destination
-                    ->getDocument($sourceItemTable)
-                    ->getStructure()
-                    ->getFields()
-            );
-            $this->checkStructure(
-                $sourceItemTable,
-                $this->sourceItem->getSourceItemTableFields(),
-                $structureExistingSourceItemTable
-            );
-        }
-
-        $stockSalesChannelTable = $this->stockSalesChannel->getStockSalesChannelTable();
-        if (!$this->destination->getDocument($stockSalesChannelTable)) {
-            $this->missingDocuments[MapInterface::TYPE_DEST][$stockSalesChannelTable] = true;
-        } else {
-            $structureExistingStockSalesChannelTable = array_keys(
-                $this->destination
-                    ->getDocument($stockSalesChannelTable)
-                    ->getStructure()
-                    ->getFields()
-            );
-            $this->checkStructure(
-                $stockSalesChannelTable,
-                $this->stockSalesChannel->getStockSalesChannelTableFields(),
-                $structureExistingStockSalesChannelTable
-            );
+        $inventoryModels = [$this->sourceItem, $this->stockSalesChannel, $this->shipmentSource];
+        $this->progress->start(count($inventoryModels));
+        /** @var Model\TableInterface $inventoryModel */
+        foreach ($inventoryModels as $inventoryModel) {
+            $tableName = $inventoryModel->getDestinationTableName();
+            $tableFields = $inventoryModel->getDestinationTableFields();
+            if (!$this->destination->getDocument($tableName)) {
+                $this->missingDocuments[MapInterface::TYPE_DEST][$tableName] = true;
+            } else {
+                $structureExistingTable = array_keys(
+                    $this->destination
+                        ->getDocument($tableName)
+                        ->getStructure()
+                        ->getFields()
+                );
+                $this->checkStructure(
+                    $tableName,
+                    $tableFields,
+                    $structureExistingTable
+                );
+            }
+            $this->progress->advance();
         }
         $this->progress->finish();
         return $this->checkForErrors();
@@ -122,6 +117,10 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         $fieldsDiff = array_diff($source, $destination);
         if ($fieldsDiff) {
             $this->missingDocumentFields[MapInterface::TYPE_DEST][$documentName] = $fieldsDiff;
+        }
+        $fieldsDiff = array_diff($destination, $source);
+        if ($fieldsDiff) {
+            $this->missingDocumentFields[MapInterface::TYPE_SOURCE][$documentName] = $fieldsDiff;
         }
     }
 
@@ -141,16 +140,5 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     protected function getIterationsCount()
     {
         return 0;
-    }
-
-    /**
-     * Check if Inventory module is enabled
-     *
-     * @param string $moduleName
-     * @return bool
-     */
-    private function isInventoryModuleEnabled()
-    {
-        return in_array('Magento_Inventory', $this->moduleList->getNames());
     }
 }

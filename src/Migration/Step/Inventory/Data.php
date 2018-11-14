@@ -7,7 +7,6 @@ namespace Migration\Step\Inventory;
 
 use Migration\App\ProgressBar;
 use Migration\App\Step\StageInterface;
-use Magento\Framework\Module\ModuleList;
 
 /**
  * Class Data
@@ -32,26 +31,34 @@ class Data implements StageInterface
     private $sourceItem;
 
     /**
-     * @var ModuleList
+     * @var Model\ShipmentSource
      */
-    private $moduleList;
+    private $shipmentSource;
+
+    /**
+     * @var Model\InventoryModule
+     */
+    private $inventoryModule;
 
     /**
      * @param Model\StockSalesChannel $stockSalesChannel
      * @param Model\SourceItem $sourceItem
+     * @param Model\InventoryModule $inventoryModule
+     * @param Model\ShipmentSource $shipmentSource
      * @param ProgressBar\LogLevelProcessor $progress
-     * @param ModuleList $moduleList
      */
     public function __construct(
         Model\StockSalesChannel $stockSalesChannel,
         Model\SourceItem $sourceItem,
-        ProgressBar\LogLevelProcessor $progress,
-        ModuleList $moduleList
+        Model\InventoryModule $inventoryModule,
+        Model\ShipmentSource $shipmentSource,
+        ProgressBar\LogLevelProcessor $progress
     ) {
         $this->sourceItem = $sourceItem;
         $this->stockSalesChannel = $stockSalesChannel;
+        $this->shipmentSource = $shipmentSource;
         $this->progress = $progress;
-        $this->moduleList = $moduleList;
+        $this->inventoryModule = $inventoryModule;
     }
 
     /**
@@ -59,26 +66,17 @@ class Data implements StageInterface
      */
     public function perform()
     {
-        if (!$this->isInventoryModuleEnabled()) {
+        if (!$this->inventoryModule->isInventoryModuleEnabled()) {
             return true;
         }
-        $this->progress->start(2);
-        $this->progress->advance();
-        $this->sourceItem->fill();
-        $this->progress->advance();
-        $this->stockSalesChannel->fill();
+        $inventoryModels = [$this->sourceItem, $this->stockSalesChannel, $this->shipmentSource];
+        $this->progress->start(count($inventoryModels));
+        /** @var Model\InventoryModelInterface $inventoryModel */
+        foreach ($inventoryModels as $inventoryModel) {
+            $inventoryModel->insertFromSelect($inventoryModel->prepareSelect());
+            $this->progress->advance();
+        }
         $this->progress->finish();
         return true;
-    }
-
-    /**
-     * Check if Inventory module is enabled
-     *
-     * @param string $moduleName
-     * @return bool
-     */
-    private function isInventoryModuleEnabled()
-    {
-        return in_array('Magento_Inventory', $this->moduleList->getNames());
     }
 }

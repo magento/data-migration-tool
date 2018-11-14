@@ -9,9 +9,9 @@ use Migration\ResourceModel\Destination;
 use Magento\Framework\DB\Adapter\Pdo\Mysql;
 
 /**
- * Class StockSalesChannel
+ * Class ShipmentSource
  */
-class StockSalesChannel implements TableInterface, InventoryModelInterface
+class ShipmentSource implements TableInterface, InventoryModelInterface
 {
     /**
      * Destination resource
@@ -21,45 +21,54 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
     private $destination;
 
     /**
-     * @var string
+     * @var InventorySource
      */
-    private $storeWebsiteTable = 'store_website';
+    private $inventorySource;
 
     /**
      * @var string
      */
-    private $stockSalesChannelTable = 'inventory_stock_sales_channel';
+    private $salesShipmentTable = 'sales_shipment';
+
+    /**
+     * @var string
+     */
+    private $shipmentSourceTable = 'inventory_shipment_source';
 
     /**
      * @var array
      */
-    private $stockSalesChannelTableFields = [
-        'type',
-        'code',
-        'stock_id'
+    private $shipmentSourceTableFields = [
+        'shipment_id',
+        'source_code'
     ];
 
     /**
      * @param Destination $destination
+     * @param InventorySource $inventorySource
      */
     public function __construct(
-        Destination $destination
+        Destination $destination,
+        InventorySource $inventorySource
     ) {
         $this->destination = $destination;
+        $this->inventorySource = $inventorySource;
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function prepareSelect()
     {
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->destination->getAdapter()->getSelect()
             ->from(
-                $this->getSourceTableName(),
-                ['type' => new \Zend_Db_Expr('"website"'), 'code', 'stock_id' => new \Zend_Db_Expr('"1"')]
-            )
-            ->where('code != ?', 'admin');
+                [$this->getSourceTableName()],
+                [
+                    'shipment_id' => 'entity_id',
+                    'source_code' => new \Zend_Db_Expr("'" . $this->inventorySource->getDefaultSourceCode() . "'"),
+                ]
+            );
         return $select;
     }
 
@@ -83,7 +92,7 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
      */
     public function getDestinationTableName()
     {
-        return $this->destination->addDocumentPrefix($this->stockSalesChannelTable);
+        return $this->destination->addDocumentPrefix($this->shipmentSourceTable);
     }
 
     /**
@@ -91,7 +100,7 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
      */
     public function getDestinationTableFields()
     {
-        return $this->stockSalesChannelTableFields;
+        return $this->shipmentSourceTableFields;
     }
 
     /**
@@ -99,6 +108,6 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
      */
     public function getSourceTableName()
     {
-        return $this->destination->addDocumentPrefix($this->storeWebsiteTable);
+        return $this->destination->addDocumentPrefix($this->salesShipmentTable);
     }
 }
