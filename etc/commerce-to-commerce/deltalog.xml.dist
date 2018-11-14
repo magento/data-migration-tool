@@ -111,4 +111,8 @@
     <group name="delta_sales_sequence">
         <document key="entity_store_id">eav_entity_store</document>
     </group>
+    <group name="delta_inventory">
+        <document key="item_id">cataloginventory_stock_item</document>
+        <document key="entity_id">sales_flat_shipment</document>
+    </group>
 </groups>
