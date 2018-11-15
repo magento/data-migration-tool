@@ -2272,6 +2272,15 @@
                 <document>queue_message_status</document>
             </ignore>
             <ignore>
+                <document>msp_tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_trusted</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_user_config</document>
+            </ignore>
+            <ignore>
                 <document>support_backup</document>
             </ignore>
             <ignore>

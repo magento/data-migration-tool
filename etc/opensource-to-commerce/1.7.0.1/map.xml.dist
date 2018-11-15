@@ -1928,15 +1928,6 @@
                 <document>reporting_counts</document>
             </ignore>
             <ignore>
-                <document>queue</document>
-            </ignore>
-            <ignore>
-                <document>queue_message</document>
-            </ignore>
-            <ignore>
-                <document>queue_message_status</document>
-            </ignore>
-            <ignore>
                 <document>admin_passwords</document>
             </ignore>
             <ignore>
@@ -2010,9 +2001,6 @@
             </ignore>
             <ignore>
                 <document>password_reset_request_event</document>
-            </ignore>
-            <ignore>
-                <document>queue_lock</document>
             </ignore>
             <ignore>
                 <document>quote_preview</document>
@@ -2277,6 +2265,15 @@
             </ignore>
             <ignore>
                 <document>queue_message_status</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_trusted</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_user_config</document>
             </ignore>
         </document_rules>
         <field_rules>

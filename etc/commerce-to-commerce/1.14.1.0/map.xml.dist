@@ -2280,6 +2280,15 @@
                 <document>queue_message_status</document>
             </ignore>
             <ignore>
+                <document>msp_tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_trusted</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_user_config</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_entity_media_gallery_value_to_entity</document>
             </ignore>
             <ignore>

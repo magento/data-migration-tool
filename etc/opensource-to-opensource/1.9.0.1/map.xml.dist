@@ -1737,6 +1737,15 @@
             <ignore>
                 <document>queue_message_status</document>
             </ignore>
+            <ignore>
+                <document>msp_tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_trusted</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_user_config</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
