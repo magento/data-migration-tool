@@ -1528,6 +1528,15 @@
                 <document>temando_quote_collection_point</document>
             </ignore>
             <ignore>
+                <document>temando_order_pickup_location</document>
+            </ignore>
+            <ignore>
+                <document>temando_pickup_location_search</document>
+            </ignore>
+            <ignore>
+                <document>temando_quote_pickup_location</document>
+            </ignore>
+            <ignore>
                 <document>amazon_customer</document>
             </ignore>
             <ignore>
