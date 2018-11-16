@@ -414,9 +414,6 @@
                 <document>catalogsearch_result</document>
             </ignore>
             <ignore>
-                <document>catalogsearch_recommendations</document>
-            </ignore>
-            <ignore>
                 <document>log_visitor</document>
             </ignore>
             <ignore>
@@ -1936,6 +1933,9 @@
             </ignore>
             <ignore>
                 <document>catalogsearch_fulltext_scope*</document>
+            </ignore>
+            <ignore>
+                <document>catalogsearch_recommendations</document>
             </ignore>
             <ignore>
                 <document>captcha_log</document>
