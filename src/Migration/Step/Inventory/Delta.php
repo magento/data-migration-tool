@@ -106,6 +106,7 @@ class Delta extends AbstractDelta
         while (!empty($items = $this->source->getChangedRecords($documentName, $idKey, $page++, true))) {
             foreach ($items as $item) {
                 $ids[] = $item[$fieldId];
+                echo('.');
             }
             $select = $inventoryModel->prepareSelect()->where($fieldId . ' IN(?)', $ids);
             $inventoryModel->insertFromSelect($select);
