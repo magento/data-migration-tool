@@ -1,3 +1,17 @@
+2.2.7
+=============
+* Added support for versions:
+
+   * Magento Open Source: 1.9.4.0, 2.2.7
+   * Magento Commerce: 1.14.4.0, 2.2.7
+
+* Fixed bugs:
+
+   * [Issue #595](https://github.com/magento/data-migration-tool/issues/595): Fields from third-party extensions cause error during migration with `-auto` option
+   * [Issue #596](https://github.com/magento/data-migration-tool/issues/596): Error during migration when parent product id is not found in `catalog_product_bundle_option` table
+   * [Issue #609](https://github.com/magento/data-migration-tool/issues/609): `Array to string conversion` exception when running Deltas of Sales Order Grid
+   * [Issue #201](https://github.com/magento/data-migration-tool/issues/201): Error during migration when there are several attribute sets in Magento 2  
+
 2.2.6
 =============
 * Added support for versions:
