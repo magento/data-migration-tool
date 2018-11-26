@@ -103,4 +103,4 @@ To update `composer.json`:
 5.  Wait while dependencies are installed.
 
 ## More details
-See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
+See the <a href="http://devdocs.magento.com/guides/v2.3/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
