@@ -28,9 +28,7 @@ class ConvertModel extends AbstractHandler
     }
 
     /**
-     * @param Record $recordToHandle
-     * @param Record $oppositeRecord
-     * @return mixed
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

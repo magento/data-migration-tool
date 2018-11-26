@@ -93,9 +93,7 @@ class Data extends DatabaseStage
     }
 
     /**
-     * Run step
-     *
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {

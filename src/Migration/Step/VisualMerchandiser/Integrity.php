@@ -14,6 +14,9 @@ use Migration\App\ProgressBar;
 use Migration\ResourceModel;
 use Migration\Config;
 
+/**
+ * Class Integrity
+ */
 class Integrity extends \Migration\App\Step\AbstractIntegrity
 {
     /**
@@ -48,7 +51,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -68,7 +71,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getIterationsCount()
     {

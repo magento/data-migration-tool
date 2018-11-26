@@ -39,6 +39,8 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
+     * Get select sales order grid archive
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -49,6 +51,8 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
+     * Get select sales invoice grid archive
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -59,6 +63,8 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
+     * Get select sales shipment grid archive
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -69,6 +75,8 @@ class Data extends \Migration\Step\OrderGrids\Data
     }
 
     /**
+     * Get select sales creditmemo grid archive
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select

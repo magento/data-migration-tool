@@ -10,6 +10,9 @@ use Migration\App\Step\StageInterface;
 use Migration\ResourceModel\Source;
 use Migration\Logger\Logger;
 
+/**
+ * Class SetupDeltaLog
+ */
 class SetupDeltaLog implements StageInterface
 {
     /**
@@ -56,7 +59,7 @@ class SetupDeltaLog implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -87,6 +90,8 @@ class SetupDeltaLog implements StageInterface
     }
 
     /**
+     * Get groups reader
+     *
      * @return Groups
      */
     private function getGroupsReader()

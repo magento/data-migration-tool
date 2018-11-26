@@ -96,6 +96,8 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get attribute ids
+     *
      * @return array
      */
     protected function getAttributeIds()
@@ -119,6 +121,8 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get suffix
+     *
      * @return string
      */
     protected function getSuffix()

@@ -71,7 +71,7 @@ class ConvertWithConditions extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -97,7 +97,7 @@ class ConvertWithConditions extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(Record $record)
     {
@@ -108,6 +108,8 @@ class ConvertWithConditions extends AbstractHandler
     }
 
     /**
+     * Should process field
+     *
      * @param string $valueOfConditionalField
      * @return bool
      */

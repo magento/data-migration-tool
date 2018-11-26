@@ -67,6 +67,8 @@ class AttributesDataToSkip
      *      ]
      * ]
      * </code>
+     *
+     * @param mixed $sourceDocumentName
      * @return array
      * @throws \Migration\Exception
      */

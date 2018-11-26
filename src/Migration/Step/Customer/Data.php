@@ -100,7 +100,6 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
-     * @param Helper $helper
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -134,7 +133,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -159,10 +158,9 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     }
 
     /**
-     * Migrate given document to the destination
-     * with possibility of excluding some of the records
+     * Migrate given document to the destination with possibility of excluding some of the records
      *
-     * @param $sourceDocName
+     * @param mixed $sourceDocName
      * @param array|null $attributesToSkip
      */
     private function transformDocumentRecords(

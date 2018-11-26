@@ -13,6 +13,8 @@ use \Migration\ResourceModel\Document;
 class DocumentIdField
 {
     /**
+     * Get filed
+     *
      * @param Document $document
      * @return string|null
      */

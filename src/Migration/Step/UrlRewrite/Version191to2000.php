@@ -230,7 +230,7 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -320,6 +320,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
+     * Do record serialization
+     *
      * @param Record $record
      * @return bool
      */
@@ -329,6 +331,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
+     * Get record entity type
+     *
      * @param Record $record
      * @return mixed
      */
@@ -340,6 +344,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
+     * Select cms page rewrites
+     *
      * @return \Magento\Framework\Db\Select
      */
     protected function selectCmsPageRewrites()
@@ -372,6 +378,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
+     * Save cms page rewrites
+     *
      * @return void
      */
     protected function saveCmsPageRewrites()
@@ -382,6 +390,8 @@ class Version191to2000 extends \Migration\Step\DatabaseStage implements Rollback
     }
 
     /**
+     * Count cms page rewrites
+     *
      * @return int
      */
     protected function countCmsPageRewrites()

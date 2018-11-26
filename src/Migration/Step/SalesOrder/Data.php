@@ -94,6 +94,7 @@ class Data implements StageInterface
 
     /**
      * Entry point. Run migration of SalesOrder structure.
+     *
      * @return bool
      */
     public function perform()
@@ -170,6 +171,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Migrate additional order data
+     *
      * @param array $data
      * @param ResourceModel\Document $sourceDocument
      * @param Record\Collection $destEavCollection
@@ -192,6 +195,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Prepare eav entity data
+     *
      * @param string $eavAttribute
      * @param array $recordData
      * @return array|null
@@ -214,6 +219,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get attribute data
+     *
      * @param string $eavAttributeCode
      * @return array|null
      */
@@ -234,6 +241,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get attribute value
+     *
      * @param array $recordData
      * @param string $attributeName
      * @return array|null
@@ -248,6 +257,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get dest eav document
+     *
      * @return int
      */
     protected function getDestEavDocument()

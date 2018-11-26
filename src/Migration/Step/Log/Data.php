@@ -100,7 +100,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -145,6 +145,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get records
+     *
      * @param string $sourceDocumentName
      * @param \Magento\Framework\DB\Select $select
      * @param int $pageNumber
@@ -161,6 +163,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get log data select
+     *
      * @return \Magento\Framework\DB\Select
      */
     public function getLogDataSelect()
@@ -187,6 +191,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Clear log
+     *
      * @param array $documents
      * @return void
      */

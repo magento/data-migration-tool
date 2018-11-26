@@ -110,6 +110,8 @@ class MysqlBuilder
     }
 
     /**
+     * Get select factory
+     *
      * @return SelectFactory
      */
     private function getSelectFactory()

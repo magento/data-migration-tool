@@ -97,6 +97,8 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get attribute ids
+     *
      * @return array
      */
     protected function getAttributeIds()

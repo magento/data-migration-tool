@@ -44,6 +44,8 @@ class InventorySource
     }
 
     /**
+     * Get default source code
+     *
      * @return string
      */
     public function getDefaultSourceCode()

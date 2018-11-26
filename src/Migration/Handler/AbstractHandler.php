@@ -22,7 +22,7 @@ abstract class AbstractHandler implements HandlerInterface
     protected $field;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function setField($field)
     {
@@ -31,7 +31,7 @@ abstract class AbstractHandler implements HandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(Record $record)
     {

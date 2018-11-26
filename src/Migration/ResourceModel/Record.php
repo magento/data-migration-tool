@@ -41,6 +41,8 @@ class Record
     }
 
     /**
+     * Get structure
+     *
      * @return Structure
      */
     public function getStructure()
@@ -49,6 +51,8 @@ class Record
     }
 
     /**
+     * Set structure
+     *
      * @param Structure $structure
      * @return void
      */
@@ -58,6 +62,8 @@ class Record
     }
 
     /**
+     * Set document
+     *
      * @param Document $document
      * @return void
      */
@@ -67,6 +73,8 @@ class Record
     }
 
     /**
+     * Get document
+     *
      * @return Document
      */
     public function getDocument()
@@ -75,6 +83,8 @@ class Record
     }
 
     /**
+     * Validate structure
+     *
      * @param Structure $structure
      * @return bool
      */
@@ -185,6 +195,8 @@ class Record
     }
 
     /**
+     * Get fields
+     *
      * @return array
      * @throws Exception
      */

@@ -33,6 +33,8 @@ class Collection extends \Migration\ResourceModel\AbstractCollection
     }
 
     /**
+     * Set structure
+     *
      * @return \Migration\ResourceModel\Structure
      */
     public function getStructure()

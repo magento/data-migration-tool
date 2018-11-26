@@ -20,6 +20,7 @@ interface InventoryModelInterface
     /**
      * Insert from select
      *
+     * @param \Magento\Framework\DB\Select $select
      * @return array
      */
     public function insertFromSelect(\Magento\Framework\DB\Select $select);

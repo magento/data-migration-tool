@@ -7,9 +7,14 @@ namespace Migration\Handler;
 
 use Migration\ResourceModel\Record;
 
+/**
+ * Interface HandlerInterface
+ */
 interface HandlerInterface
 {
     /**
+     * Handle source or destination records
+     *
      * @param Record $recordToHandle
      * @param Record $oppositeRecord
      * @return mixed

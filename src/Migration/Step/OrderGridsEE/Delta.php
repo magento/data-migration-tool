@@ -10,6 +10,9 @@ use Migration\Reader\GroupsFactory;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
 
+/**
+ * Class Delta
+ */
 class Delta extends \Migration\Step\OrderGrids\Delta
 {
     /**
@@ -37,7 +40,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {

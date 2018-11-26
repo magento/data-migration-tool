@@ -14,6 +14,8 @@ interface MapInterface
     const TYPE_DEST = 'destination';
 
     /**
+     * Is field ignored
+     *
      * @param string $document
      * @param string $field
      * @param string $type
@@ -22,6 +24,8 @@ interface MapInterface
     public function isFieldIgnored($document, $field, $type);
 
     /**
+     * Is field data type ignored
+     *
      * @param string $document
      * @param string $field
      * @param string $type
@@ -30,6 +34,8 @@ interface MapInterface
     public function isFieldDataTypeIgnored($document, $field, $type);
 
     /**
+     * Is document ignored
+     *
      * @param string $document
      * @param string $type
      * @return mixed
@@ -37,6 +43,8 @@ interface MapInterface
     public function isDocumentIgnored($document, $type);
 
     /**
+     * Is document mapped
+     *
      * @param string $document
      * @param string $type
      * @return mixed
@@ -44,6 +52,8 @@ interface MapInterface
     public function isDocumentMapped($document, $type);
 
     /**
+     * Is field mapped
+     *
      * @param string $document
      * @param string $field
      * @param string $type
@@ -52,6 +62,8 @@ interface MapInterface
     public function isFieldMapped($document, $field, $type);
 
     /**
+     * Get document map
+     *
      * @param string $document
      * @param string $type
      * @return mixed
@@ -59,6 +71,8 @@ interface MapInterface
     public function getDocumentMap($document, $type);
 
     /**
+     * Get field map
+     *
      * @param string $document
      * @param string $field
      * @param string $type
@@ -67,6 +81,8 @@ interface MapInterface
     public function getFieldMap($document, $field, $type);
 
     /**
+     * Get handler configs
+     *
      * @param string $document
      * @param string $field
      * @param string $type

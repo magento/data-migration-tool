@@ -68,7 +68,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -92,6 +92,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
 
     /**
      * Returns number of iterations for integrity check
+     *
      * @return mixed
      */
     protected function getIterationsCount()

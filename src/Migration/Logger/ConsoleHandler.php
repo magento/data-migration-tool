@@ -33,7 +33,7 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(array $record)
     {

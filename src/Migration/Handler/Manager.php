@@ -33,6 +33,8 @@ class Manager
     }
 
     /**
+     * Init handler
+     *
      * @param string $field
      * @param array $handlerConfig
      * @param string|null $handlerKey

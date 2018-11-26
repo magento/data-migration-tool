@@ -48,7 +48,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {

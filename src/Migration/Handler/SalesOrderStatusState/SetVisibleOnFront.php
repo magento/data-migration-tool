@@ -29,7 +29,7 @@ class SetVisibleOnFront extends AbstractHandler implements HandlerInterface
     protected $invisibleStates = ['pending_payment'];
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

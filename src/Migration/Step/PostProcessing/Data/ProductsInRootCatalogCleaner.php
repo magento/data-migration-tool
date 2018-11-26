@@ -10,6 +10,7 @@ use Migration\Step\PostProcessing\Model\ProductsInRootCatalog as ProductsInRootC
 
 /**
  * Class cleans products assigned to tree root category
+ *
  * Such assignments are not acceptable by design and should be cleaned
  */
 class ProductsInRootCatalogCleaner

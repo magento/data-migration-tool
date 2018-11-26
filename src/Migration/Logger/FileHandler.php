@@ -45,7 +45,7 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(array $record)
     {
@@ -62,6 +62,8 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
     }
 
     /**
+     * Get file path
+     *
      * @param string $logFile
      * @return string
      */

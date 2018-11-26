@@ -18,7 +18,7 @@ class StoreGroupCode extends AbstractHandler
     private $storeGroupNameField = 'name';
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

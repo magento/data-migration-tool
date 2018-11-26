@@ -35,7 +35,7 @@ class BundleParentProduct extends AbstractHandler
     private $source;
 
     /**
-     * Source $source
+     * @param Source $source
      * @param string $parentField
      * @param string $documentWithProductId
      * @param string $fieldWithProductId
@@ -49,7 +49,7 @@ class BundleParentProduct extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -63,7 +63,7 @@ class BundleParentProduct extends AbstractHandler
     /**
      * Find product
      *
-     * @param $parentRowId
+     * @param int $parentRowId
      * @return mixed
      */
     private function getProductId($parentRowId)

@@ -8,6 +8,9 @@ namespace Migration\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class MigrateDeltaCommand
+ */
 class MigrateDeltaCommand extends AbstractMigrateCommand
 {
     /**
@@ -44,7 +47,7 @@ class MigrateDeltaCommand extends AbstractMigrateCommand
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

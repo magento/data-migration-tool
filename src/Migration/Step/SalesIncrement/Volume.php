@@ -10,6 +10,9 @@ use Migration\Logger\Logger;
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
+/**
+ * Class Volume
+ */
 class Volume extends AbstractVolume
 {
     /**
@@ -49,7 +52,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {

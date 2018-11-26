@@ -78,6 +78,8 @@ class EavLeftoverData
     }
 
     /**
+     * Get documents to check
+     *
      * @return array
      */
     public function getDocumentsToCheck()

@@ -48,6 +48,7 @@ class InitialData
 
     /**
      * Load EAV data before migration
+     *
      * @return void
      */
     public function init()
@@ -56,6 +57,8 @@ class InitialData
     }
 
     /**
+     * Init dest attributes
+     *
      * @param string $eavEntity
      * @return void
      */
@@ -67,6 +70,8 @@ class InitialData
     }
 
     /**
+     * Get dest eav attributes count
+     *
      * @param string $eavEntity
      * @return int
      */

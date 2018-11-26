@@ -31,7 +31,7 @@ class Source extends AbstractResource
     protected $documentPrefix;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getDocumentPrefix()
     {
@@ -90,6 +90,8 @@ class Source extends AbstractResource
     }
 
     /**
+     * Set last loaded record
+     *
      * @param string $documentName
      * @param array $record
      * @return void
@@ -105,6 +107,8 @@ class Source extends AbstractResource
     }
 
     /**
+     * Get identity field
+     *
      * @param string $documentName
      * @return mixed
      */
@@ -182,6 +186,8 @@ class Source extends AbstractResource
     }
 
     /**
+     * Get delta log name
+     *
      * @param string $documentName
      * @return string
      */

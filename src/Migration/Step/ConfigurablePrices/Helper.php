@@ -41,6 +41,8 @@ class Helper
     }
 
     /**
+     * Get source fields
+     *
      * @return array
      */
     public function getSourceFields()
@@ -54,6 +56,8 @@ class Helper
     }
 
     /**
+     * Get destination fields
+     *
      * @return array
      */
     public function getDestinationFields()
@@ -70,6 +74,8 @@ class Helper
     }
 
     /**
+     * Get document list
+     *
      * @return array
      */
     public function getDocumentList()
@@ -81,6 +87,8 @@ class Helper
     }
 
     /**
+     * Init
+     *
      * @return void
      */
     public function init()
@@ -93,6 +101,8 @@ class Helper
     }
 
     /**
+     * Get destination records count
+     *
      * @return array
      */
     public function getDestinationRecordsCount()

@@ -51,6 +51,8 @@ class AttributesToStatic
     }
 
     /**
+     * Update
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @return void
      */

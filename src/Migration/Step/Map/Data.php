@@ -123,7 +123,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -184,6 +184,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get record transformer
+     *
      * @param Document $sourceDocument
      * @param Document $destDocument
      * @return \Migration\RecordTransformer
@@ -206,6 +208,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Can just copy
+     *
      * @param Document $sourceDocument
      * @param Document $destDocument
      * @return bool
@@ -218,6 +222,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Have equal structure
+     *
      * @param Document $sourceDocument
      * @param Document $destDocument
      * @return string bool
@@ -232,6 +238,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Is copied directly
+     *
      * @param Document $sourceDocument
      * @param Document $destinationDocument
      * @return bool
@@ -265,6 +273,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Has handlers
+     *
      * @param Document $document
      * @param string $type
      * @return bool

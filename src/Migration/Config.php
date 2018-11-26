@@ -86,6 +86,7 @@ class Config
 
     /**
      * Get Migration Tool Configuration Dir
+     *
      * @return string
      */
     protected function getConfigDirectoryPath()
@@ -195,6 +196,8 @@ class Config
     }
 
     /**
+     * Validate resource type
+     *
      * @param string $type
      * @throws Exception
      * @return void

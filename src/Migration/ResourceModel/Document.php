@@ -41,6 +41,8 @@ class Document
     }
 
     /**
+     * Get records
+     *
      * @return Record\Collection
      */
     public function getRecords()

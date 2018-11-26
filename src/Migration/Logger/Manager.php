@@ -73,6 +73,8 @@ class Manager
     }
 
     /**
+     * Process
+     *
      * @param string $logLevel
      * @return $this
      * @throws \Migration\Exception
@@ -93,6 +95,8 @@ class Manager
     }
 
     /**
+     * Get log level
+     *
      * @return null|string
      */
     public function getLogLevel()

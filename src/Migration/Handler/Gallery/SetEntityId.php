@@ -44,7 +44,7 @@ class SetEntityId extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -54,6 +54,8 @@ class SetEntityId extends AbstractHandler
     }
 
     /**
+     * Get entity id
+     *
      * @param int $valueId
      * @return int
      */

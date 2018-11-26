@@ -52,7 +52,7 @@ class SetValueAttributeCondition extends AbstractHandler implements HandlerInter
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

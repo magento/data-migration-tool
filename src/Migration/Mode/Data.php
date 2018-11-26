@@ -53,7 +53,7 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function run()
     {
@@ -77,6 +77,8 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run integrity
+     *
      * @param StepList $steps
      * @throws Exception
      * @return void
@@ -98,6 +100,7 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
 
     /**
      * Setup triggers
+     *
      * @throws Exception
      * @return void
      */
@@ -109,6 +112,8 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run data
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception
@@ -123,6 +128,8 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run volume
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception
@@ -141,6 +148,8 @@ class Data extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Rollback
+     *
      * @param RollbackInterface $stage
      * @param string $stepName
      * @return void

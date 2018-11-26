@@ -8,11 +8,13 @@ namespace Migration\Step\OrderGrids;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
-use Migration\Reader\MapFactory;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ */
 class Delta implements StageInterface
 {
     /**
@@ -75,7 +77,7 @@ class Delta implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {

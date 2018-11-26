@@ -9,6 +9,9 @@ use Migration\Logger\Logger;
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 
+/**
+ * Class Volume
+ */
 class Volume extends \Migration\Step\OrderGrids\Volume
 {
     /**

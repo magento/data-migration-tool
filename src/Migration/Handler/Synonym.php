@@ -46,7 +46,7 @@ class Synonym extends AbstractHandler implements HandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -63,6 +63,8 @@ class Synonym extends AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get website id
+     *
      * @param int|string $storeId
      * @return array
      */

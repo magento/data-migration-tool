@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ProgressBarFactory
 {
     /**
+     * Create
+     *
      * @param OutputInterface $output
      * @return ProgressBar
      */

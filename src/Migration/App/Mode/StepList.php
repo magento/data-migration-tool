@@ -46,6 +46,8 @@ class StepList
     }
 
     /**
+     * Create instances
+     *
      * @return void
      */
     protected function createInstances()
@@ -58,6 +60,8 @@ class StepList
     }
 
     /**
+     * Get steps
+     *
      * @return array
      */
     public function getSteps()

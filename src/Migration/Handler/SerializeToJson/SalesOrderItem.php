@@ -48,9 +48,7 @@ class SalesOrderItem extends AbstractHandler
     }
 
     /**
-     * @param Record $recordToHandle
-     * @param Record $oppositeRecord
-     * @return void
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

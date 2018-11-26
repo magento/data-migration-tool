@@ -100,7 +100,9 @@ class Suffix
     }
 
     /**
-     * @param $suffix
+     * Ensure suffix begins with dot
+     *
+     * @param mixed $suffix
      * @return string
      */
     private function ensureSuffixBeginsWithDot($suffix)

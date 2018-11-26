@@ -70,7 +70,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {

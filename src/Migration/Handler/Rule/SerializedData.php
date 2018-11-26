@@ -28,7 +28,7 @@ class SerializedData extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -40,6 +40,8 @@ class SerializedData extends AbstractHandler
     }
 
     /**
+     * Replace values
+     *
      * @param array $data
      * @return array
      */

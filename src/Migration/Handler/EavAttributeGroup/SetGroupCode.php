@@ -49,7 +49,7 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

@@ -78,7 +78,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -98,6 +98,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check map entities
+     *
      * @param string $sourceDocName
      * @param string $destinationName
      * @return void
@@ -117,6 +119,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check eav entities
+     *
      * @return void
      */
     protected function checkEavEntities()

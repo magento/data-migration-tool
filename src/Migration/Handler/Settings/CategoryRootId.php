@@ -16,7 +16,7 @@ class CategoryRootId extends AbstractHandler
     const SOURCE_DEFAULT_CATEGORY_ID = 2;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

@@ -13,7 +13,7 @@ use Migration\ResourceModel\Record;
 class ConvertIp extends AbstractHandler implements HandlerInterface
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

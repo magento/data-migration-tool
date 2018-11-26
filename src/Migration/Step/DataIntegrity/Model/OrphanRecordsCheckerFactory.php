@@ -38,6 +38,8 @@ class OrphanRecordsCheckerFactory
     }
 
     /**
+     * Create
+     *
      * @param Adapter $adapter
      * @param array $keyData data array with description of table foreign key, like one returned by
      * @see \Magento\Framework\DB\Adapter\Pdo\Mysql::getForeignKeys

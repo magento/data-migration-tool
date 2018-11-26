@@ -47,7 +47,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -59,6 +59,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     private function getIterationsCount()

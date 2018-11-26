@@ -84,7 +84,7 @@ class Data implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -104,6 +104,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get increment prefix
+     *
      * @param int $storeId
      * @return string
      */
@@ -123,6 +125,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Create sequence table
+     *
      * @param array $entityType
      * @param int $storeId
      * @return void
@@ -156,6 +160,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Add data meta table
+     *
      * @param array $entityType
      * @param int $storeId
      * @return int
@@ -174,6 +180,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Add data profile table
+     *
      * @param int $storeId
      * @param int $metaId
      * @return void

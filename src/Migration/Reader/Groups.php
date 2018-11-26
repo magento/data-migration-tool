@@ -67,6 +67,7 @@ class Groups
 
     /**
      * Get Migration Tool Configuration Dir
+     *
      * @return string
      */
     protected function getRootDir()
@@ -75,6 +76,8 @@ class Groups
     }
 
     /**
+     * Get Group
+     *
      * @param string $name
      * @return array
      */

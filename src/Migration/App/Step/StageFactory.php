@@ -33,6 +33,8 @@ class StageFactory
     }
 
     /**
+     * Create
+     *
      * @param string $stageClass
      * @param array $arguments
      * @return StageInterface

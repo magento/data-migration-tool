@@ -71,7 +71,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -93,6 +93,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Check fields
+     *
      * @param array $fieldsData
      * @param string $sourceType
      * @return void
@@ -111,6 +113,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Get resource model
+     *
      * @param string $sourceType
      * @return ResourceModel\Destination|ResourceModel\Source
      */

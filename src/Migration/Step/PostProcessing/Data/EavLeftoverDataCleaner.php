@@ -82,6 +82,8 @@ class EavLeftoverDataCleaner
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     public function getIterationsCount()

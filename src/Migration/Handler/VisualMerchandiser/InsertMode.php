@@ -8,10 +8,13 @@ namespace Migration\Handler\VisualMerchandiser;
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
+/**
+ * Class InsertMode
+ */
 class InsertMode extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

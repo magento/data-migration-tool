@@ -8,6 +8,9 @@ namespace Migration\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class MigrateSettingsCommand
+ */
 class MigrateSettingsCommand extends AbstractMigrateCommand
 {
     /**
@@ -44,7 +47,7 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

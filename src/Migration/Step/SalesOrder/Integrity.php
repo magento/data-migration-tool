@@ -47,7 +47,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -60,6 +60,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Check eav entities
+     *
      * @return void
      */
     protected function checkEavEntities()
@@ -75,6 +77,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Get eav entities
+     *
      * @param array $attributes
      * @return array
      */
@@ -97,6 +101,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     protected function getIterationsCount()

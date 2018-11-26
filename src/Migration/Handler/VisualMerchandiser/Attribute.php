@@ -8,12 +8,15 @@ namespace Migration\Handler\VisualMerchandiser;
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
+/**
+ * Class Attribute
+ */
 class Attribute extends AbstractHandler
 {
     const DESTINATION_DEFAULT_SKU_ATTRIBUTE = "SKU";
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

@@ -12,6 +12,9 @@ use Migration\Reader\MapInterface;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel;
 
+/**
+ * Class AbstractDelta
+ */
 abstract class AbstractDelta implements StageInterface
 {
     /**
@@ -97,6 +100,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Perform
+     *
      * @return bool
      * @throws \Migration\Exception
      */
@@ -145,6 +150,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Process deleted records
+     *
      * @param string $documentName
      * @param string $idKey
      * @param string $destinationName
@@ -167,6 +174,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Process changed records
+     *
      * @param string $documentName
      * @param string $idKey
      * @return void
@@ -215,6 +224,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Transform data
+     *
      * @param array $data
      * @param ResourceModel\Document $sourceDocument
      * @param ResourceModel\Document $destDocument
@@ -235,6 +246,8 @@ abstract class AbstractDelta implements StageInterface
     }
 
     /**
+     * Get record transformer
+     *
      * @param ResourceModel\Document $sourceDocument
      * @param ResourceModel\Document $destinationDocument
      * @return \Migration\RecordTransformer

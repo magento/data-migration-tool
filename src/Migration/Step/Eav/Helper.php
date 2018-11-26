@@ -73,6 +73,8 @@ class Helper
     }
 
     /**
+     * Get source records count
+     *
      * @param string $sourceDocumentName
      * @return int
      */
@@ -82,6 +84,8 @@ class Helper
     }
 
     /**
+     * Get destination records count
+     *
      * @param string $sourceDocumentName
      * @return int
      */
@@ -93,6 +97,8 @@ class Helper
     }
 
     /**
+     * Get destination records
+     *
      * @param string $sourceDocName
      * @param array $keyFields
      * @return array
@@ -118,6 +124,8 @@ class Helper
     }
 
     /**
+     * Get source records
+     *
      * @param string $sourceDocName
      * @param array $keyFields
      * @return array
@@ -142,6 +150,8 @@ class Helper
     }
 
     /**
+     * Get record transformer
+     *
      * @param Document $sourceDocument
      * @param Document $destinationDocument
      * @return RecordTransformer
@@ -157,6 +167,7 @@ class Helper
 
     /**
      * Delete backed up documents
+     *
      * @return void
      */
     public function deleteBackups()
@@ -170,6 +181,8 @@ class Helper
     }
 
     /**
+     * Get added groups
+     *
      * @return \Migration\ResourceModel\Record[]
      */
     public function getAddedGroups()
@@ -178,6 +191,8 @@ class Helper
     }
 
     /**
+     * Set added groups
+     *
      * @param array $addedGroups
      * @return void
      */
@@ -187,6 +202,8 @@ class Helper
     }
 
     /**
+     * Get design attribute and groups data
+     *
      * @return array
      * @SuppressWarnings(PHPMD.CyclomaticComplexity)
      */
@@ -279,6 +296,8 @@ class Helper
     }
 
     /**
+     * Get entity types code to id
+     *
      * @return array
      */
     private function getEntityTypesCodeToId()

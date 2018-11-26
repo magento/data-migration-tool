@@ -82,7 +82,7 @@ class Delta extends AbstractDelta
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function processChangedRecords($documentName, $idKey)
     {

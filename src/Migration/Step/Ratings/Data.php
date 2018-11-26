@@ -44,7 +44,7 @@ class Data implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {

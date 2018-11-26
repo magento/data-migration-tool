@@ -34,6 +34,8 @@ class Progress
     }
 
     /**
+     * Save result
+     *
      * @param mixed $object
      * @param string $stage
      * @param bool $result
@@ -49,6 +51,8 @@ class Progress
     }
 
     /**
+     * Is completed
+     *
      * @param mixed $object
      * @param string $stage
      * @return bool
@@ -61,6 +65,8 @@ class Progress
     }
 
     /**
+     * Save processed entities
+     *
      * @param mixed $object
      * @param string $stage
      * @param array $processedEntities
@@ -75,6 +81,8 @@ class Progress
     }
 
     /**
+     * Add processed entity
+     *
      * @param mixed $object
      * @param string $stage
      * @param string $entity
@@ -92,6 +100,8 @@ class Progress
     }
 
     /**
+     * Reset processed entities
+     *
      * @param mixed $object
      * @param string $stage
      * @return void
@@ -102,6 +112,8 @@ class Progress
     }
 
     /**
+     * Get processed entities
+     *
      * @param mixed $object
      * @param string $stage
      * @return array
@@ -117,6 +129,8 @@ class Progress
     }
 
     /**
+     * Reset
+     *
      * @param mixed|null $object
      * @return void
      */
@@ -135,6 +149,8 @@ class Progress
     }
 
     /**
+     * Get name
+     *
      * @param mixed $object
      * @return null|string
      */

@@ -216,6 +216,8 @@ abstract class AbstractResource
     }
 
     /**
+     * Get bytes
+     *
      * @param string $iniMemoryLimit
      * @return int|string
      */

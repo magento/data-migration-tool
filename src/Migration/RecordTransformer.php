@@ -63,6 +63,8 @@ class RecordTransformer
     }
 
     /**
+     * Transform
+     *
      * @param Record $from
      * @param Record $to
      * @return void
@@ -75,6 +77,8 @@ class RecordTransformer
     }
 
     /**
+     * Init
+     *
      * @return $this
      */
     public function init()
@@ -85,6 +89,8 @@ class RecordTransformer
     }
 
     /**
+     * Init handler manager
+     *
      * @param string $type
      * @return Handler\Manager
      */
@@ -106,6 +112,8 @@ class RecordTransformer
     }
 
     /**
+     * Apply handlers
+     *
      * @param Handler\Manager $handlerManager
      * @param Record $recordToHandle
      * @param Record $oppositeRecord
@@ -120,6 +128,8 @@ class RecordTransformer
     }
 
     /**
+     * Copy
+     *
      * @param Record $from
      * @param Record $to
      * @return void

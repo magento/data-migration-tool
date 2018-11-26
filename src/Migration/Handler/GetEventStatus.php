@@ -20,7 +20,7 @@ class GetEventStatus extends AbstractHandler implements HandlerInterface
     const EVENT_CLOSED = 2;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

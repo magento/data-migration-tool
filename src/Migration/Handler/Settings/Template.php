@@ -14,7 +14,7 @@ use Migration\Handler\AbstractHandler;
 class Template extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

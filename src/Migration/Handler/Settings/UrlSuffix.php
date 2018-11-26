@@ -14,7 +14,7 @@ use Migration\Handler\AbstractHandler;
 class UrlSuffix extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

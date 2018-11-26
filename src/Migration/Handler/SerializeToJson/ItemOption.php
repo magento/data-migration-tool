@@ -19,9 +19,7 @@ class ItemOption extends AbstractHandler
     const ITEM_OPTION_FORMAT = '/option_\d+/';
 
     /**
-     * @param Record $recordToHandle
-     * @param Record $oppositeRecord
-     * @return void
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -37,7 +35,7 @@ class ItemOption extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(Record $record)
     {
@@ -48,6 +46,8 @@ class ItemOption extends AbstractHandler
     }
 
     /**
+     * Should process field
+     *
      * @param string $itemOptionValue
      * @return bool
      */

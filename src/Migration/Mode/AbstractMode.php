@@ -61,6 +61,8 @@ abstract class AbstractMode
     }
 
     /**
+     * Run stage
+     *
      * @param StageInterface $object
      * @param string $step
      * @param string $stage

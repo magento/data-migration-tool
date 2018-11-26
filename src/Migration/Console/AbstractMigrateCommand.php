@@ -15,6 +15,9 @@ use Migration\Config;
 use Migration\App\Progress;
 use Migration\Exception;
 
+/**
+ * Class AbstractMigrateCommand
+ */
 class AbstractMigrateCommand extends Command
 {
     /**#@+
@@ -100,6 +103,8 @@ class AbstractMigrateCommand extends Command
     }
 
     /**
+     * Initialize
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws Exception

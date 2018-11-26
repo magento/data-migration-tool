@@ -14,6 +14,12 @@ use Migration\ResourceModel\Destination;
 use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ *
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ * @SuppressWarnings(PHPMD.ExcessiveParameterList)
+ */
 class Delta extends AbstractDelta
 {
     /**

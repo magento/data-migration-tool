@@ -42,7 +42,7 @@ class CommandList implements \Magento\Framework\Console\CommandListInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function getCommands()
     {

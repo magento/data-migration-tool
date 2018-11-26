@@ -73,6 +73,8 @@ class AttributeGroupNames
     }
 
     /**
+     * Check for errors
+     *
      * @param array $attributeGroupsOfCatalogProduct
      * @param array $attributeSetsOfCatalogProduct
      * @return array

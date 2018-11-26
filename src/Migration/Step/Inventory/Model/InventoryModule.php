@@ -20,7 +20,9 @@ class InventoryModule
     /**
      * @param ModuleList $moduleList
      */
-    public function __construct(ModuleList $moduleList) {
+    public function __construct(
+        ModuleList $moduleList
+    ) {
         $this->moduleList = $moduleList;
     }
 

@@ -50,7 +50,7 @@ class Integrity extends AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -69,7 +69,7 @@ class Integrity extends AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getIterationsCount()
     {

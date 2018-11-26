@@ -58,7 +58,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -100,6 +100,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Check structure
+     *
      * @param string $documentName
      * @param array $source
      * @param array $destination
@@ -118,7 +120,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function checkForErrors()
     {
@@ -128,7 +130,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getIterationsCount()
     {

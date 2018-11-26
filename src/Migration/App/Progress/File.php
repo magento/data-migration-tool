@@ -47,6 +47,7 @@ class File
 
     /**
      * Load progress from serialized file
+     *
      * @return bool|array
      */
     public function getData()
@@ -78,6 +79,8 @@ class File
     }
 
     /**
+     * Get lock file
+     *
      * @return string
      */
     protected function getLockFile()
@@ -91,6 +94,8 @@ class File
     }
 
     /**
+     * Clear lock file
+     *
      * @return $this
      */
     public function clearLockFile()
@@ -100,7 +105,9 @@ class File
     }
 
     /**
-     * @param $fileContents
+     * Serialize to json
+     *
+     * @param string $fileContents
      * @return mixed
      */
     private function serializeToJson($fileContents)

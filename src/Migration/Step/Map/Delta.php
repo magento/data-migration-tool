@@ -13,6 +13,9 @@ use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ */
 class Delta extends AbstractDelta
 {
     /**
@@ -39,7 +42,7 @@ class Delta extends AbstractDelta
      * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
      * @param Data $data
-     * @param Helper
+     * @param Helper $helper
      */
     public function __construct(
         Source $source,
@@ -66,6 +69,8 @@ class Delta extends AbstractDelta
     }
 
     /**
+     * Get record transformer
+     *
      * @param ResourceModel\Document $sourceDocument
      * @param ResourceModel\Document $destinationDocument
      * @return \Migration\RecordTransformer

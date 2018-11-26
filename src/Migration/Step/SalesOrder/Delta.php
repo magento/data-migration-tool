@@ -15,6 +15,9 @@ use Migration\ResourceModel\Destination;
 use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ */
 class Delta extends AbstractDelta
 {
     /**
@@ -73,6 +76,8 @@ class Delta extends AbstractDelta
     }
 
     /**
+     * Process changed records
+     *
      * @param string $documentName
      * @param string $idKey
      * @return void

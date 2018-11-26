@@ -69,7 +69,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -100,6 +100,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check cleared
+     *
      * @param array $documents
      * @return bool
      */

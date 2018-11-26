@@ -29,7 +29,7 @@ class Logger extends \Monolog\Logger
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function addRecord($level, $message, array $context = [])
     {

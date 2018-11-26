@@ -2,4 +2,3 @@
 # Glob patterns are supported
 #
 vendor/magento/data-migration-tool/src
-vendor/magento/data-migration-tool/tests

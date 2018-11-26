@@ -7,6 +7,9 @@ namespace Migration\Step\Map;
 
 use Migration\Reader\GroupsFactory;
 
+/**
+ * Class Helper
+ */
 class Helper
 {
     /**
@@ -33,6 +36,8 @@ class Helper
     }
 
     /**
+     * Get fields update on duplicate
+     *
      * @param string $documentName
      * @return array|bool
      */

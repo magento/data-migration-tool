@@ -180,6 +180,7 @@ class Data implements StageInterface, RollbackInterface
 
     /**
      * Entry point. Run migration of EAV structure.
+     *
      * @return bool
      */
     public function perform()
@@ -825,6 +826,8 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
+     * Save records
+     *
      * @param Document $document
      * @param Record\Collection $recordsToSave
      * @return void
@@ -927,6 +930,8 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     public function getIterationsCount()
@@ -936,6 +941,7 @@ class Data implements StageInterface, RollbackInterface
 
     /**
      * Rollback backed up documents
+     *
      * @return void
      */
     public function rollback()

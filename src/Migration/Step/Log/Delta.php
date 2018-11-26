@@ -12,6 +12,9 @@ use Migration\Reader\MapFactory;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ */
 class Delta extends AbstractDelta
 {
     /**

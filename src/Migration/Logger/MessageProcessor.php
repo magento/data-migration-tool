@@ -21,6 +21,8 @@ class MessageProcessor
     ];
 
     /**
+     * Set extra
+     *
      * @param array $record
      * @return array
      */

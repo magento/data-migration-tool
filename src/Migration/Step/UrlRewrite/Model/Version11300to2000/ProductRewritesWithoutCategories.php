@@ -13,6 +13,7 @@ use \Migration\Step\UrlRewrite\Model\TemporaryTable;
 
 /**
  * Class ProductRewritesWithoutCategories is for product url rewrites without nested categories
+ *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
 class ProductRewritesWithoutCategories
@@ -49,8 +50,7 @@ class ProductRewritesWithoutCategories
     }
 
     /**
-     * Return query for retrieving product url rewrites
-     * when a product is saved for default scope
+     * Return query for retrieving product url rewrites when a product is saved for default scope
      *
      * @return string
      */
@@ -106,8 +106,7 @@ class ProductRewritesWithoutCategories
     }
 
     /**
-     * Return query for retrieving product url rewrites
-     * when a product is saved for particular store view
+     * Return query for retrieving product url rewrites when a product is saved for particular store view
      *
      * @return string
      */

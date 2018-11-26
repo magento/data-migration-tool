@@ -84,6 +84,8 @@ class ClassMap
     }
 
     /**
+     * Convert class name
+     *
      * @param string $className
      * @return mixed
      */
@@ -96,6 +98,8 @@ class ClassMap
     }
 
     /**
+     * Get map
+     *
      * @return array|mixed
      * @throws Exception
      */

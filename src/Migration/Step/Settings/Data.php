@@ -104,7 +104,7 @@ class Data implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -152,6 +152,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Apply handler
+     *
      * @param Document $document
      * @param array $sourceData
      * @param array $destinationData
@@ -174,6 +176,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get handler
+     *
      * @param string $path
      * @return bool|Handler\HandlerInterface|null
      * @throws \Migration\Exception

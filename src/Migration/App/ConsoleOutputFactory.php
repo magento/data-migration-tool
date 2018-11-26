@@ -14,8 +14,10 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 class ConsoleOutputFactory
 {
     /**
+     * Create
+     *
      * @param int $verbosity
-     * @param null $decorated
+     * @param bool $decorated
      * @param OutputFormatterInterface|null $formatter
      * @return ConsoleOutput
      */

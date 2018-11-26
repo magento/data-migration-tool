@@ -42,6 +42,8 @@ class AttributeGroupNameToCodeMap
     protected $attributeGroupNamePrefix = 'Migration_';
 
     /**
+     * Get group codemap
+     *
      * @param string $groupName
      * @param string $entityType
      * @return array
@@ -66,6 +68,8 @@ class AttributeGroupNameToCodeMap
     }
 
     /**
+     * Get map
+     *
      * @param string $entityType
      * @return array
      */

@@ -51,6 +51,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Set foreign key checks
+     *
      * @param int $value
      * @return void
      */
@@ -142,6 +144,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Insert multiple
+     *
      * @param string $documentName
      * @param array $records
      * @return bool
@@ -272,6 +276,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Get table ddl copy
+     *
      * @param string $table
      * @param string $newTableName
      * @return Table
@@ -282,6 +288,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Create table by ddl
+     *
      * @param Table $tableDdl
      * @return void
      */
@@ -423,6 +431,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Build statement
+     *
      * @param string $event
      * @param string $idKey
      * @param string $triggerTableName
@@ -436,6 +446,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Is trigger exist
+     *
      * @param string $triggerKey
      * @return bool
      */
@@ -482,6 +494,8 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     }
 
     /**
+     * Convert statement
+     *
      * @param string $row
      * @return mixed
      */

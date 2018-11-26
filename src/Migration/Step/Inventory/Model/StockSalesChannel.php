@@ -49,7 +49,7 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function prepareSelect()
     {

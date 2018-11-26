@@ -83,6 +83,8 @@ class Helper extends \Migration\Step\OrderGrids\Helper
     }
 
     /**
+     * Get update data
+     *
      * @return array
      */
     public function getUpdateData()

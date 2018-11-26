@@ -105,7 +105,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
