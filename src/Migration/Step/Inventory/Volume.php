@@ -74,6 +74,9 @@ class Volume extends AbstractVolume
      */
     public function perform()
     {
+        if (!$this->inventoryModule->isInventoryModuleEnabled()) {
+            return true;
+        }
         $inventoryModels = [$this->sourceItem, $this->shipmentSource];
         $this->progress->start(count($inventoryModels));
         /** @var Model\TableInterface $inventoryModel */
