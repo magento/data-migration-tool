@@ -65,15 +65,22 @@ class SetupDeltaLog implements StageInterface
     {
         $countDeltaDocuments = 0;
         $countDeltaDocumentsCreated = 0;
-        $deltaLogs = $this->getGroupsReader()->getGroups();
-        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
-        foreach ($deltaLogs as $deltaDocuments) {
+        $deltaLogs = [];
+        $deltaLogsGroups = $this->getGroupsReader()->getGroups();
+        $this->progress->start(count($deltaLogsGroups, 1) - count($deltaLogsGroups));
+        /**
+         * Eliminate duplicates
+         */
+        foreach ($deltaLogsGroups as $deltaDocuments) {
             foreach ($deltaDocuments as $documentName => $idKey) {
-                $this->progress->advance();
-                $countDeltaDocuments++;
-                if ($this->source->getDocument($documentName)) {
-                    $countDeltaDocumentsCreated += (int) $this->source->createDelta($documentName, $idKey);
-                }
+                $deltaLogs[$documentName] = $idKey;
+            }
+        }
+        foreach ($deltaLogs as $documentName => $idKey) {
+            $this->progress->advance();
+            $countDeltaDocuments++;
+            if ($this->source->getDocument($documentName)) {
+                $countDeltaDocumentsCreated += (int) $this->source->createDelta($documentName, $idKey);
             }
         }
         $this->progress->finish();
