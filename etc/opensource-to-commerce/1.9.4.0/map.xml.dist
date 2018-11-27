@@ -1915,15 +1915,6 @@
                 <document>reporting_counts</document>
             </ignore>
             <ignore>
-                <document>queue</document>
-            </ignore>
-            <ignore>
-                <document>queue_message</document>
-            </ignore>
-            <ignore>
-                <document>queue_message_status</document>
-            </ignore>
-            <ignore>
                 <document>admin_passwords</document>
             </ignore>
             <ignore>
@@ -1999,9 +1990,6 @@
                 <document>password_reset_request_event</document>
             </ignore>
             <ignore>
-                <document>queue_lock</document>
-            </ignore>
-            <ignore>
                 <document>quote_preview</document>
             </ignore>
             <ignore>
@@ -2060,6 +2048,15 @@
             </ignore>
             <ignore>
                 <document>temando_quote_collection_point</document>
+            </ignore>
+            <ignore>
+                <document>temando_order_pickup_location</document>
+            </ignore>
+            <ignore>
+                <document>temando_pickup_location_search</document>
+            </ignore>
+            <ignore>
+                <document>temando_quote_pickup_location</document>
             </ignore>
             <ignore>
                 <document>temando_rma_shipment</document>
@@ -2204,6 +2201,66 @@
             </ignore>
             <ignore>
                 <document>sharedcatalog_category_permissions</document>
+            </ignore>
+            <ignore>
+                <document>patch_list</document>
+            </ignore>
+            <ignore>
+                <document>inventory_low_stock_notification_configuration</document>
+            </ignore>
+            <ignore>
+                <document>inventory_reservation</document>
+            </ignore>
+            <ignore>
+                <document>inventory_shipment_source</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_carrier_link</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_item</document>
+            </ignore>
+            <ignore>
+                <document>inventory_source_stock_link</document>
+            </ignore>
+            <ignore>
+                <document>inventory_stock</document>
+            </ignore>
+            <ignore>
+                <document>inventory_stock_*</document>
+            </ignore>
+            <ignore>
+                <document>magento_acknowledged_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_bulk</document>
+            </ignore>
+            <ignore>
+                <document>magento_operation</document>
+            </ignore>
+            <ignore>
+                <document>queue</document>
+            </ignore>
+            <ignore>
+                <document>queue_lock</document>
+            </ignore>
+            <ignore>
+                <document>queue_message</document>
+            </ignore>
+            <ignore>
+                <document>queue_message_status</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_trusted</document>
+            </ignore>
+            <ignore>
+                <document>msp_tfa_user_config</document>
             </ignore>
         </document_rules>
         <field_rules>

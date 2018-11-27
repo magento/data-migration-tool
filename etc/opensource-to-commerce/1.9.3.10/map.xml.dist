@@ -1894,9 +1894,6 @@
                 <document>catalogsearch_fulltext_scope*</document>
             </ignore>
             <ignore>
-                <document>catalogsearch_recommendations</document>
-            </ignore>
-            <ignore>
                 <document>log_visitor_info</document>
             </ignore>
             <ignore>
