@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -56,9 +56,8 @@ class BundleParentProduct extends AbstractHandler
         $this->validate($recordToHandle);
         $parentRowId  = $recordToHandle->getValue($this->parentField);
         $productId = $this->getProductId($parentRowId);
-        if ($productId) {
-            $recordToHandle->setValue($this->field, $productId);
-        }
+        $productId = $productId ?: 0;
+        $recordToHandle->setValue($this->field, $productId);
     }
 
     /**

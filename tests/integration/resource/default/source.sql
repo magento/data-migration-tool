@@ -1,5 +1,5 @@
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -37,6 +37,31 @@ LOCK TABLES `common_table` WRITE;
 /*!40000 ALTER TABLE `common_table` DISABLE KEYS */;
 INSERT INTO `common_table` VALUES (1,2,3),(2,3,4),(3,4,5),(4,5,6),(5,5,5),(6,6,7),(7,7,7);
 /*!40000 ALTER TABLE `common_table` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `common_table_extra_field`
+--
+
+DROP TABLE IF EXISTS `common_table_extra_field`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `common_table_extra_field` (
+  `key` int(11) NOT NULL AUTO_INCREMENT,
+  `common_field` int(11) DEFAULT NULL,
+  `source_field_extra` int(11) DEFAULT NULL,
+  PRIMARY KEY (`key`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `common_table_extra_field`
+--
+
+LOCK TABLES `common_table_extra_field` WRITE;
+/*!40000 ALTER TABLE `common_table_extra_field` DISABLE KEYS */;
+INSERT INTO `common_table_extra_field` VALUES (1,2,3),(2,3,4),(3,4,5),(4,5,6),(5,5,5),(6,6,7),(7,7,7);
+/*!40000 ALTER TABLE `common_table_extra_field` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -639,7 +639,10 @@ class Data implements StageInterface, RollbackInterface
         foreach ($recordsToSave as $record) {
             /** @var Record $record */
             if (in_array($record->getValue('attribute_set_id'), $data['catalogProductSetIdsMigrated']) &&
-                $record->getValue('attribute_id') == $data['customDesignAttributeId']
+                in_array($record->getValue('attribute_id'), [
+                    $data['customDesignAttributeId'],
+                    $data['customLayoutAttributeId']
+                ])
             ) {
                 continue;
             }
