@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -11,6 +11,9 @@ use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;
 use Migration\ResourceModel\Record;
 
+/**
+ * Class Helper
+ */
 class Helper
 {
     const DEFAULT_STORE_ID = 0;
@@ -101,6 +104,8 @@ class Helper
     }
 
     /**
+     * Get document list
+     *
      * @return array
      */
     public function getDocumentList()
@@ -111,6 +116,8 @@ class Helper
     }
 
     /**
+     * Update attribute data
+     *
      * @param array $recordData
      * @return void
      */
@@ -139,6 +146,7 @@ class Helper
 
     /**
      * Saves the records
+     *
      * @return void
      */
     public function saveRecords()
@@ -147,6 +155,8 @@ class Helper
     }
 
     /**
+     * Init eav entity
+     *
      * @param string $attributeType
      * @param string $document
      * @param string $key
@@ -175,6 +185,8 @@ class Helper
     }
 
     /**
+     * Init eav entity collection
+     *
      * @param string $name
      * @return void
      * @throws \Migration\Exception
@@ -195,6 +207,8 @@ class Helper
     }
 
     /**
+     * Init eav attributes
+     *
      * @param string $attributeType
      * @return void
      */
@@ -232,6 +246,8 @@ class Helper
     }
 
     /**
+     * Update eav attributes
+     *
      * @throws \Zend_Db_Adapter_Exception
      * @return void
      */

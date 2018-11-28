@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -55,6 +55,8 @@ class Destination extends AbstractResource
     }
 
     /**
+     * Clear document
+     *
      * @param string $documentName
      * @return void
      */
@@ -64,7 +66,7 @@ class Destination extends AbstractResource
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function getDocumentPrefix()
     {
@@ -75,6 +77,8 @@ class Destination extends AbstractResource
     }
 
     /**
+     * Backup document
+     *
      * @param string $documentName
      * @return void
      */
@@ -84,6 +88,8 @@ class Destination extends AbstractResource
     }
 
     /**
+     * Rollback document
+     *
      * @param string $documentName
      * @return void
      */
@@ -93,6 +99,8 @@ class Destination extends AbstractResource
     }
 
     /**
+     * Delete document backup
+     *
      * @param string $documentName
      * @return void
      */
@@ -102,6 +110,8 @@ class Destination extends AbstractResource
     }
 
     /**
+     * Update changed records
+     *
      * @param string $documentName
      * @param \Migration\ResourceModel\Record\Collection $records
      * @param array|bool $updateOnDuplicate

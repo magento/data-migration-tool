@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -73,6 +73,8 @@ class Manager
     }
 
     /**
+     * Process
+     *
      * @param string $logLevel
      * @return $this
      * @throws \Migration\Exception
@@ -93,6 +95,8 @@ class Manager
     }
 
     /**
+     * Get log level
+     *
      * @return null|string
      */
     public function getLogLevel()

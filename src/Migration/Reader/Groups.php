@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Reader;
@@ -67,6 +67,7 @@ class Groups
 
     /**
      * Get Migration Tool Configuration Dir
+     *
      * @return string
      */
     protected function getRootDir()
@@ -75,6 +76,8 @@ class Groups
     }
 
     /**
+     * Get Group
+     *
      * @param string $name
      * @return array
      */

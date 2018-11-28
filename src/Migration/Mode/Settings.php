@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Mode;
@@ -43,7 +43,7 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function run()
     {
@@ -66,6 +66,8 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run integrity
+     *
      * @param StepList $steps
      * @throws Exception
      * @return void
@@ -86,6 +88,8 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run data
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception
@@ -99,6 +103,8 @@ class Settings extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run volume
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\ResourceModel;
@@ -123,12 +123,16 @@ interface AdapterInterface
     public function updateChangedRecords($document, $data, $updateOnDuplicate = false);
 
     /**
+     * Backup document
+     *
      * @param string $documentName
      * @return void
      */
     public function backupDocument($documentName);
 
     /**
+     * Rollback document
+     *
      * @param string $documentName
      * @return void
      */
@@ -153,6 +157,8 @@ interface AdapterInterface
     public function createDelta($documentName, $deltaLogName, $idKey);
 
     /**
+     * IInsert from select
+     *
      * @param \Magento\Framework\DB\Select $select
      * @param string $table
      * @param array $fields

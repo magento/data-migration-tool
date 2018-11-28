@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\UrlRewrite;
@@ -246,7 +246,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -310,6 +310,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Get product category record
+     *
      * @param Document $destProductCategory
      * @param array $row
      * @return \Migration\ResourceModel\Record|null
@@ -328,6 +330,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Get rewrites select
+     *
      * @return \Magento\Framework\DB\Select
      */
     protected function getRewritesSelect()
@@ -343,6 +347,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Migrate rewrites
+     *
      * @param \Migration\ResourceModel\Record\Collection $source
      * @param \Migration\ResourceModel\Record\Collection $destination
      * @return void
@@ -441,6 +447,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Copy eav data
+     *
      * @param string $sourceName
      * @param string $destinationName
      * @param string $type
@@ -486,7 +494,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function integrity()
     {
@@ -526,6 +534,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Process duplicates list
+     *
      * @return bool
      */
     private function processDuplicatesList()
@@ -559,7 +569,7 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function volume()
     {
@@ -588,6 +598,8 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     }
 
     /**
+     * Get duplicates list
+     *
      * @return array
      */
     protected function getDuplicatesList()

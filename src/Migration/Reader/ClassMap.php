@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Reader;
@@ -84,6 +84,8 @@ class ClassMap
     }
 
     /**
+     * Convert class name
+     *
      * @param string $className
      * @return mixed
      */
@@ -96,6 +98,8 @@ class ClassMap
     }
 
     /**
+     * Get map
+     *
      * @return array|mixed
      * @throws Exception
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\ConfigurablePrices;
@@ -71,7 +71,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -93,6 +93,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Check fields
+     *
      * @param array $fieldsData
      * @param string $sourceType
      * @return void
@@ -111,6 +113,8 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     }
 
     /**
+     * Get resource model
+     *
      * @param string $sourceType
      * @return ResourceModel\Destination|ResourceModel\Source
      */

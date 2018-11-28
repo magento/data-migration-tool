@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Rule;
@@ -46,9 +46,7 @@ class ConditionSql extends AbstractHandler
     }
 
     /**
-     * @param Record $recordToHandle
-     * @param Record $oppositeRecord
-     * @return mixed
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

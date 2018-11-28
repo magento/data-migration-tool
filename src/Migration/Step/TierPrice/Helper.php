@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 
@@ -43,6 +43,8 @@ class Helper
     }
 
     /**
+     * Get source documents
+     *
      * @return array
      */
     public function getSourceDocuments()
@@ -52,6 +54,8 @@ class Helper
     }
 
     /**
+     * Get destination documents
+     *
      * @return array
      */
     public function getDestinationDocuments()
@@ -61,6 +65,8 @@ class Helper
     }
 
     /**
+     * Get mapped document name
+     *
      * @param string $documentName
      * @param string $type
      * @return mixed
@@ -72,6 +78,8 @@ class Helper
     }
 
     /**
+     * Get documents map
+     *
      * @return array
      */
     protected function getDocumentsMap()

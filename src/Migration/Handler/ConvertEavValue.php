@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -97,6 +97,8 @@ class ConvertEavValue extends AbstractHandler implements HandlerInterface
     }
 
     /**
+     * Get attribute ids
+     *
      * @return array
      */
     protected function getAttributeIds()

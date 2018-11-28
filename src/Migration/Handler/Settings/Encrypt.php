@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Settings;
@@ -40,9 +40,9 @@ class Encrypt extends AbstractHandler
     /**
      * Encrypt constructor.
      *
-     * @param \Magento\Framework\Encryption\Encryptor    $encryptor
+     * @param \Magento\Framework\Encryption\Encryptor $encryptor
      * @param \Magento\Framework\Encryption\CryptFactory $cryptFactory
-     * @param \Migration\Config                          $configReader
+     * @param \Migration\Config $configReader
      */
     public function __construct(
         \Magento\Framework\Encryption\Encryptor $encryptor,
@@ -50,14 +50,14 @@ class Encrypt extends AbstractHandler
         \Migration\Config $configReader
     ) {
         $this->cryptFactory  = $cryptFactory;
-        $this->encryptor     = $encryptor;
-        $this->configReader  = $configReader;
+        $this->encryptor = $encryptor;
+        $this->configReader = $configReader;
 
-        $this->cryptKey      = $this->configReader->getOption(self::CRYPT_KEY);
+        $this->cryptKey = $this->configReader->getOption(self::CRYPT_KEY);
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -97,7 +97,7 @@ class Encrypt extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(Record $record)
     {

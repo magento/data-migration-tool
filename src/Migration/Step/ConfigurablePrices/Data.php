@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\ConfigurablePrices;
@@ -89,7 +89,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -124,6 +124,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     protected function getIterationsCount()
@@ -135,6 +137,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get records
+     *
      * @param string $sourceDocumentName
      * @param \Magento\Framework\DB\Select $select
      * @param int $pageNumber
@@ -150,6 +154,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get configurable price
+     *
      * @return \Magento\Framework\DB\Select
      */
     protected function getConfigurablePrice()
@@ -205,6 +211,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get price attribute id
+     *
      * @return string
      */
     protected function getPriceAttributeId()

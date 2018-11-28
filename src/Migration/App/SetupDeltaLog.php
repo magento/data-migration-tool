@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App;
@@ -10,6 +10,9 @@ use Migration\App\Step\StageInterface;
 use Migration\ResourceModel\Source;
 use Migration\Logger\Logger;
 
+/**
+ * Class SetupDeltaLog
+ */
 class SetupDeltaLog implements StageInterface
 {
     /**
@@ -56,21 +59,28 @@ class SetupDeltaLog implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
         $countDeltaDocuments = 0;
         $countDeltaDocumentsCreated = 0;
-        $deltaLogs = $this->getGroupsReader()->getGroups();
-        $this->progress->start(count($deltaLogs, 1) - count($deltaLogs));
-        foreach ($deltaLogs as $deltaDocuments) {
+        $deltaLogs = [];
+        $deltaLogsGroups = $this->getGroupsReader()->getGroups();
+        $this->progress->start(count($deltaLogsGroups, 1) - count($deltaLogsGroups));
+        /**
+         * Eliminate duplicates
+         */
+        foreach ($deltaLogsGroups as $deltaDocuments) {
             foreach ($deltaDocuments as $documentName => $idKey) {
-                $this->progress->advance();
-                $countDeltaDocuments++;
-                if ($this->source->getDocument($documentName)) {
-                    $countDeltaDocumentsCreated += (int) $this->source->createDelta($documentName, $idKey);
-                }
+                $deltaLogs[$documentName] = $idKey;
+            }
+        }
+        foreach ($deltaLogs as $documentName => $idKey) {
+            $this->progress->advance();
+            $countDeltaDocuments++;
+            if ($this->source->getDocument($documentName)) {
+                $countDeltaDocumentsCreated += (int) $this->source->createDelta($documentName, $idKey);
             }
         }
         $this->progress->finish();
@@ -87,6 +97,8 @@ class SetupDeltaLog implements StageInterface
     }
 
     /**
+     * Get groups reader
+     *
      * @return Groups
      */
     private function getGroupsReader()

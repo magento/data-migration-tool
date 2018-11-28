@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Rule;
@@ -56,9 +56,7 @@ class NormalizationIds extends AbstractHandler
     }
 
     /**
-     * @param Record $recordToHandle
-     * @param Record $oppositeRecord
-     * @return void
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

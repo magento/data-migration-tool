@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -35,6 +35,12 @@ class SerializeToJson extends AbstractHandler
      */
     private $documentIdFiled;
 
+    /**
+     * @param Logger $logger
+     * @param DocumentIdField $documentIdField
+     * @param bool $migrateBrokenData
+     * @param bool $suppressWarning
+     */
     public function __construct(
         Logger $logger,
         DocumentIdField $documentIdField,
@@ -56,7 +62,7 @@ class SerializeToJson extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Logger;
@@ -11,12 +11,12 @@ namespace Migration\Logger;
 class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Monolog\Formatter\FormatterInterface
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected $format;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function format(array $record)
     {
@@ -25,6 +25,8 @@ class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Mono
     }
 
     /**
+     * Get level format
+     *
      * @param string $levelName
      * @return string
      */

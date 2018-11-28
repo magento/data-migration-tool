@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 -->
@@ -211,6 +211,9 @@
             </ignore>
             <ignore>
                 <field>catalog_eav_attribute.is_filterable_in_grid</field>
+            </ignore>
+            <ignore>
+                <field>catalog_eav_attribute.is_pagebuilder_enable</field>
             </ignore>
             <ignore>
                 <field>customer_eav_attribute.is_used_in_grid</field>

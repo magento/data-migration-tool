@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration;
@@ -63,6 +63,8 @@ class RecordTransformer
     }
 
     /**
+     * Transform
+     *
      * @param Record $from
      * @param Record $to
      * @return void
@@ -75,6 +77,8 @@ class RecordTransformer
     }
 
     /**
+     * Init
+     *
      * @return $this
      */
     public function init()
@@ -85,6 +89,8 @@ class RecordTransformer
     }
 
     /**
+     * Init handler manager
+     *
      * @param string $type
      * @return Handler\Manager
      */
@@ -106,6 +112,8 @@ class RecordTransformer
     }
 
     /**
+     * Apply handlers
+     *
      * @param Handler\Manager $handlerManager
      * @param Record $recordToHandle
      * @param Record $oppositeRecord
@@ -120,6 +128,8 @@ class RecordTransformer
     }
 
     /**
+     * Copy
+     *
      * @param Record $from
      * @param Record $to
      * @return void
@@ -128,13 +138,16 @@ class RecordTransformer
     {
         $sourceDocumentName = $this->sourceDocument->getName();
         $sourceFields = $from->getFields();
+        $sourceFieldsExtra = array_diff($sourceFields, $to->getFields());
         $data = [];
         foreach ($sourceFields as $key => $field) {
             if ($this->mapReader->isFieldIgnored($sourceDocumentName, $field, MapInterface::TYPE_SOURCE)) {
-                unset($sourceFields[$key]);
                 continue;
             }
             $fieldMap = $this->mapReader->getFieldMap($sourceDocumentName, $field, MapInterface::TYPE_SOURCE);
+            if ($fieldMap == $field && in_array($field, $sourceFieldsExtra)) {
+                continue;
+            }
             $data[$fieldMap] = $from->getValue($field);
         }
         foreach ($data as $key => $value) {

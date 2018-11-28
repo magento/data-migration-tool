@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\OrderGridsEE;
@@ -10,6 +10,9 @@ use Migration\Reader\GroupsFactory;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
 
+/**
+ * Class Delta
+ */
 class Delta extends \Migration\Step\OrderGrids\Delta
 {
     /**
@@ -37,7 +40,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -63,14 +66,19 @@ class Delta extends \Migration\Step\OrderGrids\Delta
 
             $destinationDocument = $documentMap[$sourceDocName];
             do {
+                $ids = [];
+                foreach ($items as $value) {
+                    echo('.');
+                    $ids[] = $value[$idKey];
+                }
                 $this->destination->deleteRecords(
                     $this->destination->addDocumentPrefix($destinationDocument),
                     $idKey,
-                    $items
+                    $ids
                 );
                 $documentNameDelta = $this->source->getDeltaLogName($sourceDocName);
                 $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-                $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
+                $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
             } while (!empty($items = $this->source->getChangedRecords($sourceDocName, $idKey, $page++)));
         }
         return true;

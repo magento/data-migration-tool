@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -113,6 +113,7 @@ class InitialData
 
     /**
      * Load attribute sets data before migration
+     *
      * @return void
      */
     protected function initAttributeSets()
@@ -137,6 +138,8 @@ class InitialData
     }
 
     /**
+     * Get entity types
+     *
      * @codeCoverageIgnore
      * @param string $type
      * @return array
@@ -147,6 +150,8 @@ class InitialData
     }
 
     /**
+     * Get attributes
+     *
      * @codeCoverageIgnoreStart
      * @param string $type
      * @return mixed
@@ -157,6 +162,8 @@ class InitialData
     }
 
     /**
+     * Get attribute sets
+     *
      * @param string $type
      * @return array
      */
@@ -166,6 +173,8 @@ class InitialData
     }
 
     /**
+     * Get attribute groups
+     *
      * @param string $type
      * @return array
      */

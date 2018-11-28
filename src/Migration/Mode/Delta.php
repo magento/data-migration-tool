@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Mode;
@@ -72,7 +72,7 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function run()
     {
@@ -116,6 +116,8 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run delta
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception
@@ -129,6 +131,8 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Run volume
+     *
      * @param array $step
      * @param string $stepName
      * @throws Exception
@@ -142,6 +146,8 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
     }
 
     /**
+     * Get groups reader
+     *
      * @return Groups
      */
     private function getGroupsReader()

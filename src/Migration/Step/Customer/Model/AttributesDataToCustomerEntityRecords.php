@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Customer\Model;
@@ -124,9 +124,9 @@ class AttributesDataToCustomerEntityRecords
      * Fetch attribute values of customers form the data tables
      * (e.g. customer_entity_int, customer_entity_varchar, customer_address_entity_text ...)
      *
-     * @param $sourceDocName
-     * @param $destinationRecords
-     * @param $attributeIdsByType
+     * @param mixed $sourceDocName
+     * @param mixed $destinationRecords
+     * @param mixed $attributeIdsByType
      * @return array
      */
     private function fetchAttributesData($sourceDocName, $destinationRecords, $attributeIdsByType)

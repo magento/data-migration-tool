@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -180,6 +180,7 @@ class Data implements StageInterface, RollbackInterface
 
     /**
      * Entry point. Run migration of EAV structure.
+     *
      * @return bool
      */
     public function perform()
@@ -639,7 +640,10 @@ class Data implements StageInterface, RollbackInterface
         foreach ($recordsToSave as $record) {
             /** @var Record $record */
             if (in_array($record->getValue('attribute_set_id'), $data['catalogProductSetIdsMigrated']) &&
-                $record->getValue('attribute_id') == $data['customDesignAttributeId']
+                in_array($record->getValue('attribute_id'), [
+                    $data['customDesignAttributeId'],
+                    $data['customLayoutAttributeId']
+                ])
             ) {
                 continue;
             }
@@ -822,6 +826,8 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
+     * Save records
+     *
      * @param Document $document
      * @param Record\Collection $recordsToSave
      * @return void
@@ -924,6 +930,8 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     public function getIterationsCount()
@@ -933,6 +941,7 @@ class Data implements StageInterface, RollbackInterface
 
     /**
      * Rollback backed up documents
+     *
      * @return void
      */
     public function rollback()

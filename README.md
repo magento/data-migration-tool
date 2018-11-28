@@ -49,7 +49,7 @@ Before you start your migration, you must do all of the following:
 ## Install the Data Migration Tool
 This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
 
-**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.1.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
+**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.3.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
 
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
@@ -61,7 +61,7 @@ To install the migration tool from GitHub, use the following steps:
         composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
         composer require magento/data-migration-tool:<version>
 
-    where `<version>` is release version (e.g. 2.1.0)
+    where `<version>` is release version (e.g. 2.3.0)
 
 3.  Wait while dependencies are updated.
 
@@ -94,13 +94,13 @@ To update `composer.json`:
 
     Exact version example:
 
-        composer require magento/data-migration-tool:2.1.0
+        composer require magento/data-migration-tool:2.3.0
 
     Next significant release example:
 
-        composer require magento/data-migration-tool:~2.0
+        composer require magento/data-migration-tool:~2.3
 
 5.  Wait while dependencies are installed.
 
 ## More details
-See the <a href="http://devdocs.magento.com/guides/v1.0/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
+See the <a href="http://devdocs.magento.com/guides/v2.3/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App\Step;
@@ -13,8 +13,9 @@ use Migration\ResourceModel;
 use Migration\Config;
 
 /**
- * @SuppressWarnings(PHPMD.NumberOfChildren)
  * Class AbstractIntegrity
+ *
+ * @SuppressWarnings(PHPMD.NumberOfChildren)
  */
 abstract class AbstractIntegrity implements StageInterface
 {
@@ -169,6 +170,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Get mapped document name
+     *
      * @param string $documentName
      * @param string $type
      * @return mixed
@@ -179,6 +182,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Filter ignored documents
+     *
      * @param array $documents
      * @param string $type
      * @return array
@@ -195,6 +200,8 @@ abstract class AbstractIntegrity implements StageInterface
     }
 
     /**
+     * Verify fields
+     *
      * @param ResourceModel\Document $sourceDocument
      * @param ResourceModel\Document $destinationDocument
      * @param string $type

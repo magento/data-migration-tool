@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Eav;
@@ -105,7 +105,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -121,6 +121,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Validate attributes
+     *
      * @return void
      */
     protected function validateAttributes()
@@ -132,8 +134,10 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Validate destination eav table
+     *
      * @param string $tableName
-     * @param array  $conditions
+     * @param array $conditions
      * @return void
      */
     protected function validateDestinationEavTable($tableName, array $conditions = [])
@@ -168,6 +172,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Validate custom conditions
+     *
      * @param array $attribute
      * @param array $conditions
      * @return void
@@ -182,6 +188,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check attributes mismatch
+     *
      * @param array $attribute
      * @return void
      */
@@ -201,6 +209,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Validate attribute sets and groups
+     *
      * @return void
      */
     protected function validateAttributeSetsAndGroups()
@@ -222,6 +232,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Get primary key name
+     *
      * @param string $documentName
      * @return mixed
      */

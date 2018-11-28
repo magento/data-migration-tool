@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\UrlRewrite\Model\Version11300to2000;
@@ -13,6 +13,7 @@ use \Migration\Step\UrlRewrite\Model\TemporaryTable;
 
 /**
  * Class ProductRewritesIncludedIntoCategories is for product url rewrites included into categories
+ *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
 class ProductRewritesIncludedIntoCategories
@@ -49,8 +50,7 @@ class ProductRewritesIncludedIntoCategories
     }
 
     /**
-     * Return query for retrieving product url rewrites
-     * when a product is saved for default scope
+     * Return query for retrieving product url rewrites when a product is saved for default scope
      *
      * @return string
      */
@@ -122,8 +122,7 @@ class ProductRewritesIncludedIntoCategories
     }
 
     /**
-     * Return query for retrieving product url rewrites
-     * when a product is saved for particular store view
+     * Return query for retrieving product url rewrites when a product is saved for particular store view
      *
      * @return string
      */

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Console;
@@ -15,6 +15,9 @@ use Migration\Config;
 use Migration\App\Progress;
 use Migration\Exception;
 
+/**
+ * Class AbstractMigrateCommand
+ */
 class AbstractMigrateCommand extends Command
 {
     /**#@+
@@ -100,6 +103,8 @@ class AbstractMigrateCommand extends Command
     }
 
     /**
+     * Initialize
+     *
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws Exception

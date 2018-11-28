@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\TierPrice;
@@ -57,7 +57,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {
@@ -81,8 +81,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * Return number of records with unique key taken into account
-     * Duplicated records will be omitted
+     * Return number of records with unique key taken into account. Duplicated records will be omitted
      *
      * @param array $sourceDocuments
      * @return int

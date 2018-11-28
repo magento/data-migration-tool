@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\Gallery;
@@ -44,7 +44,7 @@ class SetEntityId extends AbstractHandler
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -54,6 +54,8 @@ class SetEntityId extends AbstractHandler
     }
 
     /**
+     * Get entity id
+     *
      * @param int $valueId
      * @return int
      */

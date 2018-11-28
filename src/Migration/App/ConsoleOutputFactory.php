@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App;
@@ -14,8 +14,10 @@ use Symfony\Component\Console\Formatter\OutputFormatterInterface;
 class ConsoleOutputFactory
 {
     /**
+     * Create
+     *
      * @param int $verbosity
-     * @param null $decorated
+     * @param bool $decorated
      * @param OutputFormatterInterface|null $formatter
      * @return ConsoleOutput
      */

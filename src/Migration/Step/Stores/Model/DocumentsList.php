@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\Stores\Model;
@@ -11,6 +11,8 @@ namespace Migration\Step\Stores\Model;
 class DocumentsList
 {
     /**
+     * Get source documents
+     *
      * @return array
      */
     public function getSourceDocuments()
@@ -20,6 +22,8 @@ class DocumentsList
     }
 
     /**
+     * Get destination documents
+     *
      * @return array
      */
     public function getDestinationDocuments()
@@ -29,6 +33,8 @@ class DocumentsList
     }
 
     /**
+     * Get documents map
+     *
      * @return array
      */
     public function getDocumentsMap()

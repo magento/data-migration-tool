@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Console;
@@ -8,6 +8,9 @@ namespace Migration\Console;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class MigrateDataCommand
+ */
 class MigrateDataCommand extends AbstractMigrateCommand
 {
     /**
@@ -44,7 +47,7 @@ class MigrateDataCommand extends AbstractMigrateCommand
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {

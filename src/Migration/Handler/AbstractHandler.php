@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler;
@@ -22,7 +22,7 @@ abstract class AbstractHandler implements HandlerInterface
     protected $field;
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function setField($field)
     {
@@ -31,7 +31,7 @@ abstract class AbstractHandler implements HandlerInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function validate(Record $record)
     {

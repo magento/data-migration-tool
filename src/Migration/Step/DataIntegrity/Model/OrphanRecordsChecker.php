@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\DataIntegrity\Model;
@@ -72,6 +72,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get key name
+     *
      * @return string
      */
     public function getKeyName()
@@ -80,6 +82,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get parent table
+     *
      * @return string
      */
     public function getParentTable()
@@ -88,6 +92,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get parent table field
+     *
      * @return string
      */
     public function getParentTableField()
@@ -96,6 +102,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get child table
+     *
      * @return string
      */
     public function getChildTable()
@@ -104,6 +112,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get child table field
+     *
      * @return string
      */
     public function getChildTableField()
@@ -112,6 +122,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Has orphan records
+     *
      * @return bool
      */
     public function hasOrphanRecords()
@@ -120,6 +132,8 @@ class OrphanRecordsChecker
     }
 
     /**
+     * Get orphan records ids
+     *
      * @return int[]
      */
     public function getOrphanRecordsIds()

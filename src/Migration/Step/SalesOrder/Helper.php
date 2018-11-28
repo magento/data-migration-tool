@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\SalesOrder;
@@ -27,6 +27,8 @@ class Helper
     }
 
     /**
+     * Get source attributes
+     *
      * @param string $eavAttribute
      * @return mixed
      */
@@ -37,6 +39,8 @@ class Helper
     }
 
     /**
+     * Get eav attribute select
+     *
      * @param string $eavAttribute
      * @return \Magento\Framework\DB\Select
      */
@@ -54,6 +58,8 @@ class Helper
     }
 
     /**
+     * Get eav attributes
+     *
      * @return array
      */
     public function getEavAttributes()
@@ -65,6 +71,8 @@ class Helper
     }
 
     /**
+     * Get document list
+     *
      * @return array
      */
     public function getDocumentList()
@@ -73,6 +81,8 @@ class Helper
     }
 
     /**
+     * Get dest eav document
+     *
      * @return string
      */
     public function getDestEavDocument()

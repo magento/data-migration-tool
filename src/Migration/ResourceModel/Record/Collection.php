@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\ResourceModel\Record;
@@ -33,6 +33,8 @@ class Collection extends \Migration\ResourceModel\AbstractCollection
     }
 
     /**
+     * Set structure
+     *
      * @return \Migration\ResourceModel\Structure
      */
     public function getStructure()

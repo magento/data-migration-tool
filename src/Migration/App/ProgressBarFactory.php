@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App;
@@ -14,6 +14,8 @@ use Symfony\Component\Console\Output\OutputInterface;
 class ProgressBarFactory
 {
     /**
+     * Create
+     *
      * @param OutputInterface $output
      * @return ProgressBar
      */

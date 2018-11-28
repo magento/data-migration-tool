@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\VisualMerchandiser;
@@ -8,10 +8,13 @@ namespace Migration\Handler\VisualMerchandiser;
 use Migration\ResourceModel\Record;
 use Migration\Handler\AbstractHandler;
 
+/**
+ * Class InsertMode
+ */
 class InsertMode extends AbstractHandler
 {
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {

@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\OrderGrids;
@@ -8,11 +8,13 @@ namespace Migration\Step\OrderGrids;
 use Migration\App\Step\StageInterface;
 use Migration\Logger\Logger;
 use Migration\Reader\GroupsFactory;
-use Migration\Reader\MapFactory;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel;
 
+/**
+ * Class Delta
+ */
 class Delta implements StageInterface
 {
     /**
@@ -75,7 +77,7 @@ class Delta implements StageInterface
     }
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function perform()
     {

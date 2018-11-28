@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration;
@@ -86,6 +86,7 @@ class Config
 
     /**
      * Get Migration Tool Configuration Dir
+     *
      * @return string
      */
     protected function getConfigDirectoryPath()
@@ -195,6 +196,8 @@ class Config
     }
 
     /**
+     * Validate resource type
+     *
      * @param string $type
      * @throws Exception
      * @return void

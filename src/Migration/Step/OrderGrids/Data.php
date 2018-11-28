@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\OrderGrids;
@@ -96,7 +96,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -171,6 +171,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     protected function getIterationsCount()
@@ -179,6 +181,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get select sales order grid
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -205,6 +209,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get select sales invoice grid
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -235,6 +241,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get select sales shipment grid
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -265,6 +273,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get select sales creditmemo grid
+     *
      * @param array $columns
      * @param \Zend_Db_Expr|array $entityIds
      * @return \Magento\Framework\DB\Select
@@ -295,6 +305,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get document list
+     *
      * @return array
      */
     protected function getDocumentList()
@@ -303,6 +315,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get entity ids
+     *
      * @param string $sourceGridDocumentName
      * @param int $pageNumber
      * @return array
@@ -323,6 +337,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get entity ids select
+     *
      * @param string $sourceGridDocumentName
      * @return \Magento\Framework\DB\Select
      */

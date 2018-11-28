@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Handler\VisualMerchandiser;
@@ -8,13 +8,16 @@ namespace Migration\Handler\VisualMerchandiser;
 use Migration\Handler\AbstractHandler;
 use Migration\ResourceModel\Record;
 
+/**
+ * Class SmartAttribute
+ */
 class SmartAttribute extends AbstractHandler
 {
     const ATTRIBUTE_CODE_NAME = 'attribute_codes';
     const ATTRIBUTE_VALUE_NAME = 'smart_attributes';
 
     /**
-     * {@inheritdoc}
+     * @inheritdoc
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
@@ -39,6 +42,8 @@ class SmartAttribute extends AbstractHandler
     }
 
     /**
+     * Parse operator
+     *
      * @param string $attribute
      * @return array
      */

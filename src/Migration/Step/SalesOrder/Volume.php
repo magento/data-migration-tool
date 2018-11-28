@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\SalesOrder;
@@ -78,7 +78,7 @@ class Volume extends AbstractVolume
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -98,6 +98,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check map entities
+     *
      * @param string $sourceDocName
      * @param string $destinationName
      * @return void
@@ -117,6 +119,8 @@ class Volume extends AbstractVolume
     }
 
     /**
+     * Check eav entities
+     *
      * @return void
      */
     protected function checkEavEntities()

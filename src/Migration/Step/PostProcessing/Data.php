@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\PostProcessing;
@@ -47,7 +47,7 @@ class Data implements StageInterface
     }
 
     /**
-     * @return bool
+     * @inheritdoc
      */
     public function perform()
     {
@@ -59,6 +59,8 @@ class Data implements StageInterface
     }
 
     /**
+     * Get iterations count
+     *
      * @return int
      */
     private function getIterationsCount()

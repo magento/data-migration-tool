@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\App\ProgressBar;
@@ -77,6 +77,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Get progress bar
+     *
      * @return ProgressBar
      */
     protected function getProgressBar()
@@ -89,6 +91,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Get output instance
+     *
      * @return OutputInterface
      */
     protected function getOutputInstance()
@@ -102,6 +106,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Start
+     *
      * @param int $max
      * @param bool $forceLogLevel
      * @return void
@@ -117,6 +123,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Advance
+     *
      * @param bool $forceLogLevel
      * @return void
      */
@@ -128,6 +136,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Finish
+     *
      * @param bool $forceLogLevel
      * @return void
      */
@@ -139,6 +149,8 @@ class LogLevelProcessor
     }
 
     /**
+     * Can run
+     *
      * @param mixed $forceLogLevel
      * @return bool
      */

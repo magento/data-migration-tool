@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Step\SalesIncrement;
@@ -105,6 +105,8 @@ class Helper
     }
 
     /**
+     * Get max increment for entity type
+     *
      * @param int $entityTypeId
      * @return bool|int
      */
@@ -127,6 +129,8 @@ class Helper
     }
 
     /**
+     * Get store ids
+     *
      * @return array
      */
     public function getStoreIds()
@@ -138,6 +142,8 @@ class Helper
     }
 
     /**
+     * Get entity type tables map
+     *
      * @return array
      */
     public function getEntityTypeTablesMap()
@@ -152,6 +158,8 @@ class Helper
     }
 
     /**
+     * Get entity type data
+     *
      * @param string $key
      * @param string $value
      * @return array
@@ -167,6 +175,8 @@ class Helper
     }
 
     /**
+     * Get sequence meta table
+     *
      * @param bool $structure
      * @return string|array
      */
@@ -176,6 +186,8 @@ class Helper
     }
 
     /**
+     * Get sequence profile table
+     *
      * @param bool $structure
      * @return string|array
      */
@@ -185,6 +197,8 @@ class Helper
     }
 
     /**
+     * Get table name
+     *
      * @param string $table
      * @param bool $storeId
      * @return string
@@ -197,6 +211,8 @@ class Helper
     }
 
     /**
+     * Get entity type id by code
+     *
      * @param array $entityTypeCodes
      * @return array
      */

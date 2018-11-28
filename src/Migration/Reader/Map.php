@@ -1,6 +1,6 @@
 <?php
 /**
- * Copyright © 2013-2017 Magento, Inc. All rights reserved.
+ * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
 namespace Migration\Reader;
@@ -98,6 +98,7 @@ class Map implements MapInterface
 
     /**
      * Get Migration Tool Configuration Dir
+     *
      * @return string
      */
     protected function getRootDir()
@@ -162,6 +163,8 @@ class Map implements MapInterface
     }
 
     /**
+     * Get wildcards
+     *
      * @param string $type
      * @return mixed
      */
@@ -311,6 +314,8 @@ class Map implements MapInterface
     }
 
     /**
+     * Validate type
+     *
      * @param string $type
      * @return bool
      * @throws Exception
@@ -324,6 +329,8 @@ class Map implements MapInterface
     }
 
     /**
+     * Get Opposite Type
+     *
      * @param string $type
      * @return string
      */
@@ -336,6 +343,8 @@ class Map implements MapInterface
     }
 
     /**
+     * Validate Field Map
+     *
      * @param string $value
      * @param string $type
      * @return bool
