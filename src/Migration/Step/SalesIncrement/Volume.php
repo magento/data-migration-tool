@@ -70,8 +70,10 @@ class Volume extends AbstractVolume
                 $lastInsertId = $adapter->fetchOne($select);
                 if ($incrementMaxNumber != $lastInsertId) {
                     $this->errors[] = sprintf(
-                        'Mismatch in last increment id of %s entity',
-                        $entityType['entity_type_code']
+                        'Mismatch in last increment id of %s entity: Source: %s Destination: %s',
+                        $entityType['entity_type_code'],
+                        $incrementMaxNumber,
+                        $lastInsertId
                     );
                     continue 2;
                 }
