@@ -37,10 +37,27 @@ class ConvertConfigurableAttribute extends AbstractHandler
         $this->validate($recordToHandle);
         $sourceModel = $recordToHandle->getValue($this->field);
         $oppositeRecordValue = $oppositeRecord->getValue($this->field);
-        if (empty($sourceModel) && !empty($oppositeRecordValue)) {
+        if (!empty($sourceModel) && !empty($oppositeRecordValue)) {
+            $recordToHandle->setValue($this->field, $this->merge($sourceModel, $oppositeRecordValue));
+        } elseif (empty($sourceModel) && !empty($oppositeRecordValue)) {
             $recordToHandle->setValue($this->field, $oppositeRecord->getValue($this->field));
         } elseif (empty($sourceModel) || $recordToHandle->getValue('is_configurable')) {
             $recordToHandle->setValue($this->field, null);
         }
+    }
+
+    /**
+     * Merges the apply_to field of recordToHandle and oppositeRecord
+     *
+     * @param string $sourceModel
+     * @param string $oppositeRecordValue
+     * @return string
+     */
+    private function merge($sourceModel, $oppositeRecordValue)
+    {
+        return implode(
+            ',',
+            explode(',', $sourceModel) + explode(',', $oppositeRecordValue)
+        );
     }
 }
