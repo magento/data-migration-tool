@@ -62,7 +62,10 @@ class Volume extends AbstractVolume
         $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
         foreach ($this->helper->getEntityTypeTablesMap() as $entityType) {
             foreach ($this->helper->getStoreIds() as $storeId) {
-                $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType($entityType['entity_type_id']);
+                $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType(
+                    $entityType['entity_type_id'],
+                    $storeId
+                );
                 $select = $adapter->select()
                     ->from($this->helper->getTableName($entityType['entity_type_table'], $storeId))
                     ->order("{$entityType['column']} DESC")

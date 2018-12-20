@@ -17,27 +17,27 @@ class Helper
     /**
      * @var Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var string
      */
-    protected $eavEntityStore = 'eav_entity_store';
+    private $eavEntityStoreTable = 'eav_entity_store';
 
     /**
      * @var string
      */
-    protected $storeTable = 'core_store';
+    private $storeTable = 'core_store';
 
     /**
      * @var array
      */
-    protected $sequenceMetaTable = [
+    private $sequenceMetaTable = [
         'name' => 'sales_sequence_meta',
         'structure' => [
             'meta_id',
@@ -50,7 +50,7 @@ class Helper
     /**
      * @var array
      */
-    protected $sequenceProfileTable = [
+    private $sequenceProfileTable = [
         'name' => 'sales_sequence_profile',
         'structure' => [
             'profile_id',
@@ -68,7 +68,7 @@ class Helper
     /**
      * @var array
      */
-    protected $entityTypeTablesMap = [
+    private $entityTypeTablesMap = [
         [
             'entity_type_code' => 'order',
             'entity_type_table' => 'sequence_order',
@@ -108,16 +108,18 @@ class Helper
      * Get max increment for entity type
      *
      * @param int $entityTypeId
+     * @param int $storeId
      * @return bool|int
      */
-    public function getMaxIncrementForEntityType($entityTypeId)
+    public function getMaxIncrementForEntityType($entityTypeId, $storeId)
     {
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $query = $adapter->getSelect()->from(
-            $this->source->addDocumentPrefix($this->eavEntityStore),
+            $this->source->addDocumentPrefix($this->eavEntityStoreTable),
             ['increment_prefix', 'increment_last_id']
-        )->where('entity_type_id = ?', $entityTypeId);
+        )->where('entity_type_id = ?', $entityTypeId
+        )->where('store_id IN (?)', $this->getStoreIdsOfStoreGroup($storeId));
         $data = $query->getAdapter()->fetchAll($query);
         if (!$data) {
             return false;
@@ -125,7 +127,29 @@ class Helper
         $cutPrefixFunction = function (array $data) {
             return (int) substr($data['increment_last_id'], strlen($data['increment_prefix']));
         };
-        return max(array_map($cutPrefixFunction, $data));
+        $maxIncrement = max(array_map($cutPrefixFunction, $data));
+        return $maxIncrement;
+    }
+
+    /**
+     * Return store ids of store group
+     *
+     * @param $storeId
+     * @return array
+     */
+    public function getStoreIdsOfStoreGroup($storeId)
+    {
+        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $select = $adapter->getSelect()->from(
+            ['cs' => $this->source->addDocumentPrefix($this->storeTable)],
+            ['store_id']
+        )->join(
+            ['css' => $this->source->addDocumentPrefix($this->storeTable)],
+            'css.group_id = cs.group_id',
+            []
+        )->where('css.store_id = ?', $storeId);
+        return $select->getAdapter()->fetchCol($select);
     }
 
     /**
@@ -216,7 +240,7 @@ class Helper
      * @param array $entityTypeCodes
      * @return array
      */
-    protected function getEntityTypeIdByCode($entityTypeCodes)
+    private function getEntityTypeIdByCode($entityTypeCodes)
     {
         /** @var Mysql $adapter */
         $adapter = $this->destination->getAdapter();
