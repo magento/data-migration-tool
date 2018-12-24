@@ -68,9 +68,8 @@
             </transform>
             <transform>
                 <field>catalog_eav_attribute.apply_to</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
+                <handler class="\Migration\Handler\EavAttribute\ApplyTo" />
             </transform>
-
             <transform>
                 <field>customer_eav_attribute.input_filter</field>
                 <handler class="\Migration\Handler\GetDestinationValue" />
@@ -139,7 +138,6 @@
                 <field>eav_entity_type.entity_attribute_collection</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
             </transform>
-
             <transform>
                 <field>eav_attribute_set.sort_order</field>
                 <handler class="\Migration\Handler\SetValue">
@@ -152,7 +150,6 @@
                     <param name="prefix" value="Migration_" />
                 </handler>
             </transform>
-
             <transform>
                 <field>eav_attribute_group.attribute_group_name</field>
                 <handler class="\Migration\Handler\AddPrefix">

@@ -135,7 +135,7 @@
             </transform>
             <transform>
                 <field>catalog_eav_attribute.apply_to</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute"/>
+                <handler class="\Migration\Handler\EavAttribute\ApplyTo"/>
             </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>

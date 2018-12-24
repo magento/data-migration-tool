@@ -168,7 +168,7 @@
             </transform>
             <transform>
                 <field>catalog_eav_attribute.apply_to</field>
-                <handler class="\Migration\Handler\EavAttribute\ConvertConfigurableAttribute" />
+                <handler class="\Migration\Handler\EavAttribute\ApplyTo" />
             </transform>
             <transform>
                 <field>magento_rma_item_eav_attribute.validate_rules</field>
