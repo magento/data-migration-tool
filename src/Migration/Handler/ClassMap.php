@@ -33,7 +33,7 @@ class ClassMap extends AbstractHandler implements HandlerInterface
     {
         $this->validate($recordToHandle);
         $className = $recordToHandle->getValue($this->field);
-        $className = $this->classMap->convertClassName($className);
+        $className = $this->classMap->convertClassName($className) ?: null;
         $recordToHandle->setValue($this->field, $className);
     }
 }

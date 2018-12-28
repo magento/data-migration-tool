@@ -34,13 +34,14 @@ class ConvertModel extends AbstractHandler
     {
         $this->validate($recordToHandle);
         $sourceModel = $recordToHandle->getValue($this->field);
-        $oppositeRecordValue = $oppositeRecord->getValue($this->field);
-        if (empty($sourceModel) && !empty($oppositeRecordValue)) {
-            $recordToHandle->setValue($this->field, $oppositeRecord->getValue($this->field));
-        } elseif (empty($sourceModel)) {
+        $destinationModel = $oppositeRecord->getValue($this->field);
+        $sourceModelConverted = $this->classMap->convertClassName($sourceModel);
+        if (empty($sourceModel) && !empty($destinationModel)) {
+            $recordToHandle->setValue($this->field, $destinationModel);
+        } elseif (empty($sourceModel) || empty($sourceModelConverted)) {
             $recordToHandle->setValue($this->field, null);
         } else {
-            $recordToHandle->setValue($this->field, $this->classMap->convertClassName($sourceModel));
+            $recordToHandle->setValue($this->field, $sourceModelConverted);
         }
     }
 }
