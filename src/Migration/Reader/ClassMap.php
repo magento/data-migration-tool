@@ -87,14 +87,28 @@ class ClassMap
      * Convert class name
      *
      * @param string $className
-     * @return mixed
+     * @return null|string
      */
     public function convertClassName($className)
     {
         if (is_string($className) && array_key_exists($className, $this->getMap())) {
             return $this->getMap()[$className];
         }
-        return $className;
+        return '';
+    }
+
+    /**
+     * Has map
+     *
+     * @param $className
+     * @return bool
+     */
+    public function hasMap($className)
+    {
+        if (is_string($className) && array_key_exists($className, $this->getMap())) {
+            return true;
+        }
+        return false;
     }
 
     /**

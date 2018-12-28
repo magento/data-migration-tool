@@ -56,7 +56,9 @@ class IgnoredAttributes
             }
         }
         foreach ($sourceRecords as $attrNum => $sourceAttribute) {
-            if (in_array($sourceAttribute['attribute_id'], $attributesIgnoreIds)) {
+            if (isset($sourceAttribute['attribute_id'])
+                && in_array($sourceAttribute['attribute_id'], $attributesIgnoreIds)
+            ) {
                 unset($sourceRecords[$attrNum]);
             }
         }
