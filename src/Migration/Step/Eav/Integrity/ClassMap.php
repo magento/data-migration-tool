@@ -6,7 +6,7 @@
 namespace Migration\Step\Eav\Integrity;
 
 use Migration\Step\Eav\Helper;
-use Migration\ResourceModel\Destination;
+use Migration\ResourceModel\Source;
 use Migration\Step\Eav\Model\IgnoredAttributes;
 use Migration\Reader\ClassMap as ClassMapReader;
 
@@ -26,9 +26,9 @@ class ClassMap
     private $tableKeys;
 
     /**
-     * @var Destination
+     * @var Source
      */
-    private $destination;
+    private $source;
 
     /**
      * @var ClassMapReader
@@ -67,18 +67,18 @@ class ClassMap
 
     /**
      * @param Helper $helper
-     * @param Destination $destination
+     * @param Source $source
      * @param ClassMapReader $classMapReader
      * @param IgnoredAttributes $ignoredAttributes
      */
     public function __construct(
         Helper $helper,
-        Destination $destination,
+        Source $source,
         ClassMapReader $classMapReader,
         IgnoredAttributes $ignoredAttributes
     ) {
         $this->helper = $helper;
-        $this->destination = $destination;
+        $this->source = $source;
         $this->classMapReader = $classMapReader;
         $this->ignoredAttributes = $ignoredAttributes;
     }
@@ -101,14 +101,12 @@ class ClassMap
                     if (empty($className)) {
                         continue;
                     }
-                    if (!$this->classMapReader->hasMap($className)
-                        || !class_exists($this->classMapReader->convertClassName($className))
-                    ) {
+                    if (!$this->classMapReader->hasMap($className)) {
                         $classMapFailed[] = [
                             'document' => $tableName,
                             'field' => $field,
                             'error' => sprintf(
-                                'Class %s does not exist or not mapped. Record %s=%s',
+                                'Class %s is not mapped in record %s=%s',
                                 $attribute[$field],
                                 $primaryKeyName,
                                 $attribute[$primaryKeyName]
@@ -133,8 +131,8 @@ class ClassMap
             return $this->tableKeys[$documentName];
         }
         $this->tableKeys[$documentName] = null;
-        $destinationFields = $this->destination->getDocument($documentName)->getStructure()->getFields();
-        foreach ($destinationFields as $params) {
+        $sourceFields = $this->source->getDocument($documentName)->getStructure()->getFields();
+        foreach ($sourceFields as $params) {
             if ($params['PRIMARY']) {
                 $this->tableKeys[$documentName] = $params['COLUMN_NAME'];
                 break;
