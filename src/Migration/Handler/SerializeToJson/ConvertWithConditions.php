@@ -79,8 +79,12 @@ class ConvertWithConditions extends AbstractHandler
         $value = $recordToHandle->getValue($this->field);
         if (null !== $value) {
             if ($this->shouldProcessField($recordToHandle->getData()[$this->conditionalField])) {
-                $unserializeData = $this->ignoreBrokenData ? @unserialize($value) : unserialize($value);
-                if (false === $unserializeData) {
+                try {
+                    $unserializedData = unserialize($value);
+                } catch (\Exception $exception) {
+                    if (!$this->ignoreBrokenData) {
+                        throw new \Exception($exception);
+                    }
                     $this->logger->warning(sprintf(
                         'Could not unserialize data of %s.%s with record id %s',
                         $recordToHandle->getDocument()->getName(),
@@ -88,9 +92,10 @@ class ConvertWithConditions extends AbstractHandler
                         $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
                     ));
                     $this->logger->warning("\n");
-                } else {
-                    $value = json_encode($unserializeData);
+                    $recordToHandle->setValue($this->field, null);
+                    return;
                 }
+                $value = json_encode($unserializedData);
             }
         }
         $recordToHandle->setValue($this->field, $value);
