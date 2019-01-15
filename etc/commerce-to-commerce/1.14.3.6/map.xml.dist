@@ -1441,6 +1441,10 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
+                <field>sales_flat_quote_payment.cc_number_enc</field>
+                <handler class="\Migration\Handler\Encrypt" />
+            </transform>
+            <transform>
                 <field>enterprise_reward_history.additional_data</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
@@ -1451,6 +1455,10 @@
             <transform>
                 <field>sales_flat_order_payment.additional_information</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
+            </transform>
+            <transform>
+                <field>sales_flat_order_payment.cc_number_enc</field>
+                <handler class="\Migration\Handler\Encrypt" />
             </transform>
             <transform>
                 <field>sales_flat_shipment.packages</field>
@@ -1590,20 +1598,12 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
-                <field>sales_flat_quote_payment.additional_information</field>
-                <handler class="\Migration\Handler\SerializeToJson" />
-            </transform>
-            <transform>
                 <field>enterprise_reward_history.additional_data</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_order_item.product_options</field>
                 <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem" />
-            </transform>
-            <transform>
-                <field>sales_flat_order_payment.additional_information</field>
-                <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
                 <field>sales_flat_shipment.packages</field>

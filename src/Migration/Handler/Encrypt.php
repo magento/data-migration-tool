@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Handler\Settings;
+namespace Migration\Handler;
 
 use Magento\Framework\App\ObjectManager;
 use Migration\ResourceModel\Record;
@@ -61,13 +61,12 @@ class Encrypt extends AbstractHandler
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
-        $value  = $recordToHandle->getValue('value');
-
+        $field = $this->field ?: 'value';
+        $value  = $recordToHandle->getValue($field);
         if (!$value) {
             return;
         }
         $this->validate($recordToHandle);
-
         $parts          = explode(':', $value, 4);
         $partsCount     = count($parts);
         if ($partsCount == 4) {
@@ -88,12 +87,9 @@ class Encrypt extends AbstractHandler
             'mode'       => $mode,
             'initVector' => $initVector,
         ]);
-
         $decryptedValue = trim($crypt->decrypt(base64_decode((string)$encryptedValue)));
-
         $encodedValue = $this->encryptor->encrypt($decryptedValue);
-
-        $recordToHandle->setValue('value', $encodedValue);
+        $recordToHandle->setValue($field, $encodedValue);
     }
 
     /**
