@@ -2666,6 +2666,9 @@
             <ignore>
                 <document>inventory_stock_*</document>
             </ignore>
+            <ignore>
+                <document>inventory_geoname</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>

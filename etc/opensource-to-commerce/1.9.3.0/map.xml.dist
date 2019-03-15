@@ -2304,6 +2304,9 @@
                 <document>inventory_stock_*</document>
             </ignore>
             <ignore>
+                <document>inventory_geoname</document>
+            </ignore>
+            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>
