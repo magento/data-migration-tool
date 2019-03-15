@@ -2560,6 +2560,24 @@
                 <document>vertex_order_invoice_status</document>
             </ignore>
             <ignore>
+                <document>vertex_sales_creditmemo_item_invoice_text_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_creditmemo_item_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_creditmemo_item_vertex_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_invoice_text_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_vertex_tax_code</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>
