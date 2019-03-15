@@ -213,7 +213,7 @@
                 <field>catalog_eav_attribute.is_filterable_in_grid</field>
             </ignore>
             <ignore>
-                <field>catalog_eav_attribute.is_pagebuilder_enable</field>
+                <field>catalog_eav_attribute.is_pagebuilder_enabled</field>
             </ignore>
             <ignore>
                 <field>customer_eav_attribute.is_used_in_grid</field>
