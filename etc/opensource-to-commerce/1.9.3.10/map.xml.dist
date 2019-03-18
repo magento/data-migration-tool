@@ -2425,6 +2425,20 @@
                     <param name="fieldWithProductId" value="parent_product_id" />
                 </handler>
             </transform>
+            <transform>
+                <field>product_alert_price.store_id</field>
+                <handler class="\Migration\Handler\ProductAlertStoreId" />
+            </transform>
+            <transform>
+                <field>product_alert_stock.store_id</field>
+                <handler class="\Migration\Handler\ProductAlertStoreId" />
+            </transform>
+            <ignore>
+                <field>product_alert_price.store_id</field>
+            </ignore>
+            <ignore>
+                <field>product_alert_stock.store_id</field>
+            </ignore>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>
