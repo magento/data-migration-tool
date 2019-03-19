@@ -1905,6 +1905,9 @@
                 <field>sales_flat_quote.base_customer_balance_virtual_amount</field>
             </ignore>
             <ignore>
+                <field>sales_flat_quote.visitor_id</field>
+            </ignore>
+            <ignore>
                 <field>catalogsearch_query.synonym_for</field>
             </ignore>
             <ignore>

@@ -1328,6 +1328,9 @@
                 <field>sales_bestsellers_aggregated_yearly.product_type_id</field>
             </ignore>
             <ignore>
+                <field>sales_flat_quote.visitor_id</field>
+            </ignore>
+            <ignore>
                 <datatype>sales_flat_quote_payment.cc_exp_month</datatype>
             </ignore>
             <ignore>
