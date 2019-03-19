@@ -1967,6 +1967,13 @@
                 <field>product_alert_stock.store_id</field>
                 <handler class="\Migration\Handler\ProductAlertStoreId" />
             </transform>
+            <transform>
+                <field>quote_address_item.store_id</field>
+                <handler class="\Migration\Handler\QuoteMultiAddressStoreId" />
+            </transform>
+            <ignore>
+                <field>quote_address_item.store_id</field>
+            </ignore>
             <ignore>
                 <field>product_alert_price.store_id</field>
             </ignore>
