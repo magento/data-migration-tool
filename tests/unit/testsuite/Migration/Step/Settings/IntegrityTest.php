@@ -77,7 +77,7 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
         );
         $this->logger = $this->createPartialMock(
             \Migration\Logger\Logger::class,
-            ['error']
+            ['error', 'notice']
         );
         $this->progress = $this->createPartialMock(
             \Migration\App\ProgressBar\LogLevelProcessor::class,
@@ -122,6 +122,12 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
             ->with(
                 'Integrity check failed due to "core_config_data" document does not exist in the source resource'
             );
+        $this->logger
+            ->expects($this->once())
+            ->method('notice')
+            ->with(
+                'Please check if table names uses prefix, add it to your config.xml file'
+            );
         $this->integrity = new Integrity(
             $this->destination,
             $this->source,
@@ -149,6 +155,12 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
             ->method('error')
             ->with(
                 'Integrity check failed due to "core_config_data" document does not exist in the destination resource'
+            );
+        $this->logger
+            ->expects($this->once())
+            ->method('notice')
+            ->with(
+                'Please check if table names uses prefix, add it to your config.xml file'
             );
         $this->integrity = new Integrity(
             $this->destination,

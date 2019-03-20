@@ -62,7 +62,7 @@ class ApplyTo extends AbstractHandler
     /**
      * Check if the attribute is user defined
      *
-     * @param $attributeId
+     * @param int $attributeId
      * @return bool
      */
     protected function checkIfUserDefined($attributeId)

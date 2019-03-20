@@ -100,7 +100,7 @@ class ClassMap
     /**
      * Has map
      *
-     * @param $className
+     * @param string $className
      * @return bool
      */
     public function hasMap($className)

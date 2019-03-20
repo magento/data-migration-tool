@@ -64,7 +64,6 @@ class ClassMap
         ]
     ];
 
-
     /**
      * @param Helper $helper
      * @param Source $source

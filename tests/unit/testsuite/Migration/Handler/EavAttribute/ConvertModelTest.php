@@ -81,9 +81,9 @@ class ConvertModelTest extends \PHPUnit\Framework\TestCase
         $oppositeRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)->disableOriginalConstructor()
             ->setMethods(['getValue'])
             ->getMock();
-        $oppositeRecord->expects($this->exactly(2))->method('getValue')->will($this->returnValue('Some\Class\Name'));
+        $oppositeRecord->expects($this->once())->method('getValue')->will($this->returnValue('Some\Class\Name'));
 
-        $this->classMap->expects($this->never())->method('convertClassName');
+        $this->classMap->expects($this->once())->method('convertClassName');
 
         $recordToHandle->expects($this->once())->method('getFields')->will($this->returnValue([$this->fieldName]));
         $recordToHandle->expects($this->once())->method('getValue')->with($this->fieldName)

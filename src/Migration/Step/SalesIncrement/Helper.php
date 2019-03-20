@@ -118,8 +118,13 @@ class Helper
         $query = $adapter->getSelect()->from(
             $this->source->addDocumentPrefix($this->eavEntityStoreTable),
             ['increment_prefix', 'increment_last_id']
-        )->where('entity_type_id = ?', $entityTypeId
-        )->where('store_id IN (?)', $this->getStoreIdsOfStoreGroup($storeId));
+        )->where(
+            'entity_type_id = ?',
+            $entityTypeId
+        )->where(
+            'store_id IN (?)',
+            $this->getStoreIdsOfStoreGroup($storeId)
+        );
         $data = $query->getAdapter()->fetchAll($query);
         if (!$data) {
             return false;
@@ -134,7 +139,7 @@ class Helper
     /**
      * Return store ids of store group
      *
-     * @param $storeId
+     * @param int $storeId
      * @return array
      */
     public function getStoreIdsOfStoreGroup($storeId)
