@@ -1,3 +1,21 @@
+2.3.1
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.3.1, 1.9.4.1 
+   * Magento Commerce: 2.3.1, 1.14.4.1
+
+* Fixed bugs:
+
+   * Encrypt sensitive data with libsodium
+   * [Issue #607](https://github.com/magento/data-migration-tool/issues/607): SalesIncrement Step showed unclear error message
+   * [Issue #615](https://github.com/magento/data-migration-tool/issues/615): Next generated increment id was based on the highest increment number from all stores after migration
+   * [Issue #574](https://github.com/magento/data-migration-tool/issues/574): Required price field appeared on migrated Grouped products
+   * [Issue #235](https://github.com/magento/data-migration-tool/issues/235): EAV step did not revert tables of M2 in case of error
+   * [Issue #461](https://github.com/magento/data-migration-tool/issues/461): Virtual classes in Magento 2 caused error on migrating EAV data
+   * [Issue #632](https://github.com/magento/data-migration-tool/issues/632): Error when serialized value had false type
+   * [Issue #651](https://github.com/magento/data-migration-tool/issues/651): The Data Migration Tool did not notify user when Magento DB uses prefix in tables name
+
 2.3.0
 =============
 * Added support for versions:
