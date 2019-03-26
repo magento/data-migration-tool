@@ -32,9 +32,8 @@ class ClassMap extends AbstractHandler implements HandlerInterface
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        $classOldFashion = $recordToHandle->getValue($this->field);
-        $classNewStyle = $this->classMap->convertClassName($classOldFashion);
-        $class = $classNewStyle ?: $classOldFashion;
-        $recordToHandle->setValue($this->field, $class);
+        $className = $recordToHandle->getValue($this->field);
+        $className = $this->classMap->convertClassName($className) ?: null;
+        $recordToHandle->setValue($this->field, $className);
     }
 }

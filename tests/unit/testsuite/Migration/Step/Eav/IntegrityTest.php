@@ -58,6 +58,11 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
     protected $attributeFrontendInput;
 
     /**
+     * @var \Migration\Step\Eav\Integrity\ClassMap|\PHPUnit_Framework_MockObject_MockObject
+     */
+    protected $classMapIntegrity;
+
+    /**
      * @return void
      */
     public function setUp()
@@ -94,6 +99,14 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
         $this->attributeFrontendInput->expects($this->once())
             ->method('checkAttributeFrontendInput')
             ->willReturn([]);
+        $this->classMapIntegrity =
+            $this->getMockBuilder(\Migration\Step\Eav\Integrity\ClassMap::class)
+            ->setMethods(['checkClassMapping'])
+            ->disableOriginalConstructor()
+            ->getMock();
+        $this->classMapIntegrity->expects($this->once())
+            ->method('checkClassMapping')
+            ->willReturn([]);
 
         /** @var \Migration\Reader\MapFactory|\PHPUnit_Framework_MockObject_MockObject $mapFactory */
         $mapFactory = $this->createMock(\Migration\Reader\MapFactory::class);
@@ -123,7 +136,8 @@ class IntegrityTest extends \PHPUnit\Framework\TestCase
             $mapFactory,
             $groupsFactory,
             $this->attributeGroupNames,
-            $this->attributeFrontendInput
+            $this->attributeFrontendInput,
+            $this->classMapIntegrity
         );
     }
 

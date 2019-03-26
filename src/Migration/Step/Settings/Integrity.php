@@ -82,6 +82,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
                     self::CONFIG_TABLE_NAME_SOURCE
                 )
             );
+            $this->logger->notice('Please check if table names uses prefix, add it to your config.xml file');
             return false;
         }
         $documents = $this->destination->getDocumentList();
@@ -92,6 +93,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
                     self::CONFIG_TABLE_NAME_DESTINATION
                 )
             );
+            $this->logger->notice('Please check if table names uses prefix, add it to your config.xml file');
             return false;
         }
         $this->progress->finish();

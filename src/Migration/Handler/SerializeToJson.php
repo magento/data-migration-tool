@@ -69,19 +69,25 @@ class SerializeToJson extends AbstractHandler
         $this->validate($recordToHandle);
         $value = $recordToHandle->getValue($this->field);
         if (null !== $value) {
-            $unserializeData = $this->migrateBrokenData ? @unserialize($value) : unserialize($value);
-            if (false === $unserializeData && !$this->suppressWarning) {
-                $this->logger->warning(sprintf(
-                    'Could not unserialize data of %s.%s with record id %s',
-                    $recordToHandle->getDocument()->getName(),
-                    $this->field,
-                    $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
-                ));
-                $this->logger->warning("\n");
+            try {
+                $unserializeData = unserialize($value);
+            } catch (\Exception $exception) {
+                if (!$this->migrateBrokenData) {
+                    throw new \Exception($exception);
+                }
+                if (!$this->suppressWarning) {
+                    $this->logger->warning(sprintf(
+                        'Could not unserialize data of %s.%s with record id %s',
+                        $recordToHandle->getDocument()->getName(),
+                        $this->field,
+                        $recordToHandle->getValue($this->documentIdFiled->getFiled($recordToHandle->getDocument()))
+                    ));
+                    $this->logger->warning("\n");
+                }
+                $recordToHandle->setValue($this->field, null);
+                return;
             }
-            if (false !== $unserializeData) {
-                $value = json_encode($unserializeData);
-            }
+            $value = json_encode($unserializeData);
         }
         $recordToHandle->setValue($this->field, $value);
     }

@@ -52,10 +52,7 @@ class ClassMapTest extends \PHPUnit\Framework\TestCase
      */
     public function testConvertClassNameNotInMap()
     {
-        $this->assertEquals(
-            'catalog/product_widget_link_1',
-            $this->classMap->convertClassName('catalog/product_widget_link_1')
-        );
+        $this->assertFalse($this->classMap->hasMap('catalog/product_widget_link_1'));
     }
 
     /**

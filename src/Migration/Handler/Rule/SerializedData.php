@@ -51,7 +51,8 @@ class SerializedData extends AbstractHandler
             if (is_array($value)) {
                 $value = $this->replaceValues($value);
             } elseif (is_string($value)) {
-                $value = $this->classMap->convertClassName($value);
+                $valueConverted = $this->classMap->convertClassName($value);
+                $value  = ($valueConverted != '') ? $valueConverted : $value;
             }
         }
 

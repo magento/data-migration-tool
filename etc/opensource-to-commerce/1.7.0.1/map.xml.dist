@@ -1016,12 +1016,20 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
+                <field>sales_flat_quote_payment.cc_number_enc</field>
+                <handler class="\Migration\Handler\Encrypt" />
+            </transform>
+            <transform>
                 <field>sales_flat_order_item.product_options</field>
                 <handler class="\Migration\Handler\SerializeToJson\SalesOrderItem" />
             </transform>
             <transform>
                 <field>sales_flat_order_payment.additional_information</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
+            </transform>
+            <transform>
+                <field>sales_flat_order_payment.cc_number_enc</field>
+                <handler class="\Migration\Handler\Encrypt" />
             </transform>
             <transform>
                 <field>sales_flat_shipment.packages</field>
@@ -2111,6 +2119,24 @@
                 <document>vertex_order_invoice_status</document>
             </ignore>
             <ignore>
+                <document>vertex_sales_creditmemo_item_invoice_text_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_creditmemo_item_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_creditmemo_item_vertex_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_invoice_text_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_sales_order_item_vertex_tax_code</document>
+            </ignore>
+            <ignore>
                 <document>sequence_catalog_category</document>
             </ignore>
             <ignore>
@@ -2244,6 +2270,9 @@
             </ignore>
             <ignore>
                 <document>inventory_stock_*</document>
+            </ignore>
+            <ignore>
+                <document>inventory_geoname</document>
             </ignore>
             <ignore>
                 <document>magento_acknowledged_bulk</document>
@@ -2416,6 +2445,27 @@
                     <param name="fieldWithProductId" value="parent_product_id" />
                 </handler>
             </transform>
+            <transform>
+                <field>product_alert_price.store_id</field>
+                <handler class="\Migration\Handler\ProductAlertStoreId" />
+            </transform>
+            <transform>
+                <field>product_alert_stock.store_id</field>
+                <handler class="\Migration\Handler\ProductAlertStoreId" />
+            </transform>
+            <transform>
+                <field>quote_address_item.store_id</field>
+                <handler class="\Migration\Handler\QuoteMultiAddressStoreId" />
+            </transform>
+            <ignore>
+                <field>quote_address_item.store_id</field>
+            </ignore>
+            <ignore>
+                <field>product_alert_price.store_id</field>
+            </ignore>
+            <ignore>
+                <field>product_alert_stock.store_id</field>
+            </ignore>
             <ignore>
                 <field>catalog_product_entity_media_gallery_value.entity_id</field>
             </ignore>

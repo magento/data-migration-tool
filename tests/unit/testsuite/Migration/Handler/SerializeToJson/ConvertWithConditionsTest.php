@@ -119,7 +119,7 @@ class ConvertWithConditionsTest extends \PHPUnit\Framework\TestCase
                 '/(parameters)|(info_buyRequest)|(bundle_option_ids)|(bundle_selection_attributes)/',
                 true,
                 'brokenString',
-                'brokenString'
+                null
             ],
         ];
     }

@@ -167,9 +167,6 @@ class VolumeTest extends \PHPUnit\Framework\TestCase
             ->willReturn($eavAttributes);
         $this->logger->expects($this->never())->method('addRecord');
 
-        $documentsMap = $this->getDocumentsMap();
-        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
-
         $this->assertTrue($this->volume->perform());
     }
 
@@ -231,45 +228,6 @@ class VolumeTest extends \PHPUnit\Framework\TestCase
         $this->helper->expects($this->never())->method('deleteBackups');
         $this->logger->expects($this->atLeastOnce())->method('addRecord');
 
-        $documentsMap = $this->getDocumentsMap();
-        $this->destination->expects($this->any())->method('getDocument')->willReturnMap($documentsMap);
-
         $this->assertFalse($this->volume->perform());
-    }
-
-    /**
-     * @return array
-     */
-    protected function getDocumentsMap()
-    {
-        $structureFields = [
-            'eav_attribute' => [
-                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-            ],
-            'catalog_eav_attribute' => [
-                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-            ],
-            'customer_eav_attribute' => [
-                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-            ],
-            'eav_entity_type' => [
-                'attribute_id' => ['COLUMN_NAME' => 'attribute_id', 'PRIMARY' => true],
-                'field' => ['COLUMN_NAME' => 'field', 'PRIMARY' => false],
-            ],
-        ];
-        $documentsMap = [];
-        foreach ($structureFields as $documentName => $structure) {
-            $structure = new \Migration\ResourceModel\Structure($structureFields[$documentName]);
-            $destDocument = $this->createPartialMock(
-                \Migration\ResourceModel\Document::class,
-                ['getStructure']
-            );
-            $destDocument->expects($this->once())->method('getStructure')->willReturn($structure);
-            $documentsMap[] = [$documentName, $destDocument];
-        }
-        return $documentsMap;
     }
 }
