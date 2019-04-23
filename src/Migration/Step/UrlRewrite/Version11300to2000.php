@@ -294,7 +294,6 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
             $this->migrateRewrites($records, $destinationRecords);
             $this->destination->saveRecords($destinationDocument->getName(), $destinationRecords);
             $this->destination->saveRecords($destProductCategory->getName(), $destProductCategoryRecords);
-            $this->source->setLastLoadedRecord($sourceDocument->getName(), end($data));
         }
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
         $this->copyEavData('catalog_product_entity_url_key', 'catalog_product_entity_varchar', 'product');
