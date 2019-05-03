@@ -1422,6 +1422,18 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
+                <field>sales_flat_order_payment.method</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[paypal_direct:payflowpro;paypal_standard:paypal_express]" />
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_payment.method</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[paypal_direct:payflowpro;paypal_standard:paypal_express]" />
+                </handler>
+            </transform>
+            <transform>
                 <field>sales_flat_order_payment.cc_number_enc</field>
                 <handler class="\Migration\Handler\Encrypt" />
             </transform>
