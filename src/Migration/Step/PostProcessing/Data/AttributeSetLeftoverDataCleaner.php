@@ -9,12 +9,12 @@ use Migration\ResourceModel;
 use Migration\App\ProgressBar;
 use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
-use \Migration\Step\PostProcessing\Model\EavLeftoverData as EavLeftoverDataModel;
+use \Migration\Step\PostProcessing\Model\AttributeSetLeftoverData as AttributeSetLeftoverDataModel;
 
 /**
- * Class EavLeftoverDataCleaner
+ * Class AttributeSetLeftoverDataCleaner
  */
-class EavLeftoverDataCleaner
+class AttributeSetLeftoverDataCleaner
 {
     /**
      * @var ResourceModel\Destination
@@ -32,42 +32,43 @@ class EavLeftoverDataCleaner
     private $progress;
 
     /**
-     * @var EavLeftoverDataModel
+     * @var AttributeSetLeftoverDataModel
      */
-    private $eavLeftoverDataModel;
+    private $attributeSetLeftoverDataModel;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Destination $destination
      * @param Progress $progress
-     * @param EavLeftoverDataModel $eavLeftoverDataModel
+     * @param AttributeSetLeftoverDataModel $attributeSetLeftoverDataModel
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
         ResourceModel\Destination $destination,
         Progress $progress,
-        EavLeftoverDataModel $eavLeftoverDataModel
+        AttributeSetLeftoverDataModel $attributeSetLeftoverDataModel
     ) {
         $this->destination = $destination;
         $this->progressBar = $progressBar;
         $this->progress = $progress;
-        $this->eavLeftoverDataModel = $eavLeftoverDataModel;
+        $this->attributeSetLeftoverDataModel = $attributeSetLeftoverDataModel;
     }
 
     /**
-     * Deletes records from tables which refer to non existing attributes
-     *
-     * @return void
+     * Records which are still in product entity tables
+     * but product attribute no longer exist in attribute set
      */
     public function clean()
     {
-        $attributeIds = $this->eavLeftoverDataModel->getLeftoverAttributeIds();
-        if (!$attributeIds) {
+        $entityValueIds = $this->attributeSetLeftoverDataModel->getLeftoverIds();
+        if (!$entityValueIds) {
             return ;
         }
-        foreach ($this->eavLeftoverDataModel->getDocuments() as $document) {
+        foreach ($this->attributeSetLeftoverDataModel->getDocuments() as $document) {
             $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
-            $this->destination->deleteRecords($document, 'attribute_id', $attributeIds);
+            if (isset($entityValueIds[$document]) && $entityValueIds[$document]) {
+                $this->destination->deleteRecords($document, 'value_id', $entityValueIds[$document]);
+            }
         }
     }
 
@@ -78,6 +79,6 @@ class EavLeftoverDataCleaner
      */
     public function getDocuments()
     {
-        return $this->eavLeftoverDataModel->getDocuments(false);
+        return $this->attributeSetLeftoverDataModel->getDocuments();
     }
 }

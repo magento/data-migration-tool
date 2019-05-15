@@ -64,4 +64,12 @@
         <document>magento_rma_item_entity_varchar</document>
         <document>magento_rma_item_form_attribute</document>
     </group>
+    <group name="documents_attribute_set_leftover_values">
+        <document>catalog_product_entity_datetime</document>
+        <document>catalog_product_entity_decimal</document>
+        <document>catalog_product_entity_gallery</document>
+        <document>catalog_product_entity_int</document>
+        <document>catalog_product_entity_text</document>
+        <document>catalog_product_entity_varchar</document>
+    </group>
 </groups>

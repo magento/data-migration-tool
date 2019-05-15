@@ -9,7 +9,9 @@ use Migration\App\Step\StageInterface;
 use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner;
+use Migration\Step\PostProcessing\Data\AttributeSetLeftoverDataCleaner;
 use Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner;
+use Migration\Step\PostProcessing\Data\DeletedRecordsCounter;
 
 /**
  * Class Data
@@ -27,23 +29,50 @@ class Data implements StageInterface
     private $eavLeftoverDataCleaner;
 
     /**
+     * @var AttributeSetLeftoverDataCleaner
+     */
+    private $attributeSetLeftoverDataCleaner;
+
+    /**
      * @var ProductsInRootCatalogCleaner
      */
     private $productsInRootCatalogCleaner;
 
     /**
+     * @var DeletedRecordsCounter
+     */
+    private $deletedRecordsCounter;
+
+    /**
+     * @var array
+     */
+    private $documents = [];
+
+    /**
+     * Data constructor.
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param EavLeftoverDataCleaner $eavLeftoverDataCleaner
+     * @param AttributeSetLeftoverDataCleaner $attributeSetLeftoverDataCleaner
      * @param ProductsInRootCatalogCleaner $productsInRootCatalogCleaner
+     * @param DeletedRecordsCounter $deletedRecordsCounter
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
         EavLeftoverDataCleaner $eavLeftoverDataCleaner,
-        ProductsInRootCatalogCleaner $productsInRootCatalogCleaner
+        AttributeSetLeftoverDataCleaner $attributeSetLeftoverDataCleaner,
+        ProductsInRootCatalogCleaner $productsInRootCatalogCleaner,
+        DeletedRecordsCounter $deletedRecordsCounter
     ) {
         $this->progressBar = $progressBar;
         $this->eavLeftoverDataCleaner = $eavLeftoverDataCleaner;
+        $this->attributeSetLeftoverDataCleaner = $attributeSetLeftoverDataCleaner;
         $this->productsInRootCatalogCleaner = $productsInRootCatalogCleaner;
+        $this->deletedRecordsCounter = $deletedRecordsCounter;
+        $append = function ($document) {
+            $this->documents[] = $document;
+        };
+        array_map($append, $this->eavLeftoverDataCleaner->getDocuments());
+        array_map($append, $this->attributeSetLeftoverDataCleaner->getDocuments());
     }
 
     /**
@@ -52,8 +81,11 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progressBar->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
+        $this->deletedRecordsCounter->count($this->documents);
         $this->eavLeftoverDataCleaner->clean();
+        $this->attributeSetLeftoverDataCleaner->clean();
         $this->productsInRootCatalogCleaner->clean();
+        $this->deletedRecordsCounter->saveDeleted($this->documents);
         $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
@@ -65,6 +97,6 @@ class Data implements StageInterface
      */
     private function getIterationsCount()
     {
-        return $this->eavLeftoverDataCleaner->getIterationsCount();
+        return count($this->documents);
     }
 }

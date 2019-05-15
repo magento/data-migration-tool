@@ -54,4 +54,14 @@ class ProductsInRootCatalogCleaner
             $productIds
         );
     }
+
+    /**
+     * Get documents
+     *
+     * @return array
+     */
+    public function getDocuments()
+    {
+        return [$this->productsInRootCatalogModel->getCatalogCategoryProductDocument()];
+    }
 }
