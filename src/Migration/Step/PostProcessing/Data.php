@@ -73,6 +73,7 @@ class Data implements StageInterface
         };
         array_map($append, $this->eavLeftoverDataCleaner->getDocuments());
         array_map($append, $this->attributeSetLeftoverDataCleaner->getDocuments());
+        array_map($append, $this->productsInRootCatalogCleaner->getDocuments());
     }
 
     /**
