@@ -52,6 +52,48 @@
         <document key="tax_item_id">sales_order_tax_item</document>
         <document key="entity_id">sales_flat_order</document>
         <document key="transaction_id">sales_payment_transaction</document>
+        <document key="entity_id">catalog_category_entity</document>
+        <document key="value_id">catalog_category_entity_datetime</document>
+        <document key="value_id">catalog_category_entity_decimal</document>
+        <document key="value_id">catalog_category_entity_int</document>
+        <document key="value_id">catalog_category_entity_text</document>
+        <document key="value_id">catalog_category_entity_varchar</document>
+        <document key="category_id,product_id">catalog_category_product</document>
+        <document key="entity_id">catalog_product_entity</document>
+        <document key="value_id">catalog_product_entity_datetime</document>
+        <document key="value_id">catalog_product_entity_decimal</document>
+        <document key="value_id">catalog_product_entity_int</document>
+        <document key="value_id">catalog_product_entity_media_gallery</document>
+        <document key="value_id">catalog_product_entity_media_gallery_value</document>
+        <document key="value_id">catalog_product_entity_text</document>
+        <document key="value_id">catalog_product_entity_varchar</document>
+        <document key="option_id">catalog_product_option</document>
+        <document key="option_price_id">catalog_product_option_price</document>
+        <document key="option_title_id">catalog_product_option_title</document>
+        <document key="option_type_price_id">catalog_product_option_type_price</document>
+        <document key="option_type_title_id">catalog_product_option_type_title</document>
+        <document key="option_type_id">catalog_product_option_type_value</document>
+        <document key="parent_id,child_id">catalog_product_relation</document>
+        <document key="link_id">catalog_product_link</document>
+        <document key="product_link_attribute_id">catalog_product_link_attribute</document>
+        <document key="value_id">catalog_product_link_attribute_int</document>
+        <document key="value_id">catalog_product_link_attribute_decimal</document>
+        <document key="value_id">catalog_product_link_attribute_varchar</document>
+        <document key="product_id,website_id">catalog_product_website</document>
+        <document key="option_id">catalog_product_bundle_option</document>
+        <document key="value_id">catalog_product_bundle_option_value</document>
+        <document key="selection_id">catalog_product_bundle_selection</document>
+        <document key="selection_id,website_id">catalog_product_bundle_selection_price</document>
+        <document key="link_id">downloadable_link</document>
+        <document key="price_id">downloadable_link_price</document>
+        <document key="title_id">downloadable_link_title</document>
+        <document key="sample_id">downloadable_sample</document>
+        <document key="title_id">downloadable_sample_title</document>
+        <document key="rule_product_id">catalogrule_product</document>
+        <document key="rule_product_price_id">catalogrule_product_price</document>
+        <document key="value_id">enterprise_giftcard_amount</document>
+        <document key="rule_id">enterprise_targetrule</document>
+        <document key="rule_id,product_id,store_id">enterprise_targetrule_product</document>
     </group>
     <group name="delta_log">
         <document key="visitor_id">log_visitor</document>
@@ -76,5 +118,17 @@
     <group name="delta_inventory">
         <document key="item_id">cataloginventory_stock_item</document>
         <document key="entity_id">sales_flat_shipment</document>
+    </group>
+    <group name="delta_tier_price">
+        <document key="value_id">catalog_product_entity_group_price</document>
+        <document key="value_id">catalog_product_entity_tier_price</document>
+    </group>
+    <group name="delta_url_rewrite">
+        <document key="url_rewrite_id">enterprise_url_rewrite</document>
+    </group>
+    <group name="delta_configurable_price">
+        <document key="link_id">catalog_product_super_link</document>
+        <document key="product_super_attribute_id">catalog_product_super_attribute</document>
+        <document key="value_id">catalog_product_super_attribute_label</document>
     </group>
 </groups>
