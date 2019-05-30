@@ -149,17 +149,17 @@ class Source extends AbstractResource
      * Get changed records for document
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param array $idKeys
      * @param int $pageNumber
      * @param bool|false $getProcessed
      * @return array
      */
-    public function getChangedRecords($documentName, $idKey, $pageNumber = 0, $getProcessed = false)
+    public function getChangedRecords($documentName, $idKeys, $pageNumber = 0, $getProcessed = false)
     {
         return $this->getAdapter()->loadChangedRecords(
             $this->addDocumentPrefix($documentName),
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
-            $idKey,
+            $idKeys,
             $pageNumber,
             $this->getPageSize($documentName),
             $getProcessed
@@ -170,15 +170,15 @@ class Source extends AbstractResource
      * Get deleted records for document
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param array $idKeys
      * @param bool|false $getProcessed
      * @return array
      */
-    public function getDeletedRecords($documentName, $idKey, $getProcessed = false)
+    public function getDeletedRecords($documentName, $idKeys, $getProcessed = false)
     {
         return $this->getAdapter()->loadDeletedRecords(
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
-            $idKey,
+            $idKeys,
             0,
             $this->getPageSize($documentName),
             $getProcessed

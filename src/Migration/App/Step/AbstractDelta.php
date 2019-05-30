@@ -108,7 +108,8 @@ abstract class AbstractDelta implements StageInterface
     public function perform()
     {
         $sourceDocuments = array_flip($this->source->getDocumentList());
-        foreach ($this->deltaDocuments as $documentName => $idKey) {
+        foreach ($this->deltaDocuments as $documentName => $idKeys) {
+            $idKeys = explode(',', $idKeys);
             if (!$this->source->getDocument($documentName)) {
                 continue;
             }
@@ -116,19 +117,17 @@ abstract class AbstractDelta implements StageInterface
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
-
             $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
-
             if ($this->source->getRecordsCount($deltaLogName) == 0) {
                 continue;
             }
             $this->logger->debug(sprintf('%s has changes', $documentName));
 
-            $this->processDeletedRecords($documentName, $idKey, $destinationName);
-            $this->processChangedRecords($documentName, $idKey);
+            $this->processDeletedRecords($documentName, $idKeys, $destinationName);
+            $this->processChangedRecords($documentName, $idKeys);
         }
         return true;
     }
@@ -137,38 +136,50 @@ abstract class AbstractDelta implements StageInterface
      * Mark processed records for deletion
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param array $idKeys
      * @param [] $ids
      * @return void
      */
-    protected function markRecordsProcessed($documentName, $idKey, $ids)
+    protected function markRecordsProcessed($documentName, $idKeys, $items)
     {
-        $ids = implode("','", $ids);
         /** @var ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
-        $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` in ('$ids')");
+        if (count($idKeys) == 1) {
+            $idKey = array_shift($idKeys);
+            $items = array_column($items, $idKey);
+            $items = implode("','", $items);
+            $adapter->updateDocument($documentName, ['processed' => 1], "`$idKey` IN ('$items')");
+        } else if (count($idKeys) > 1 && is_array($items)) {
+            foreach ($items as $item) {
+                $andFields = [];
+                foreach ($idKeys as $idKey) {
+                    $andFields[] = "$idKey = $item[$idKey]";
+                }
+                $adapter->updateDocument($documentName, ['processed' => 1], implode(' AND ', $andFields));
+            }
+        }
     }
 
     /**
      * Process deleted records
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param array $idKeys
      * @param string $destinationName
      * @return void
      */
-    protected function processDeletedRecords($documentName, $idKey, $destinationName)
+    protected function processDeletedRecords($documentName, $idKeys, $destinationName)
     {
         $this->destination->getAdapter()->setForeignKeyChecks(1);
-        while (!empty($items = $this->source->getDeletedRecords($documentName, $idKey))) {
+        while (!empty($items = $this->source->getDeletedRecords($documentName, $idKeys))) {
             $this->destination->deleteRecords(
                 $this->destination->addDocumentPrefix($destinationName),
-                $idKey,
+                $idKeys,
                 $items
             );
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->markRecordsProcessed($documentNameDelta, $idKey, $items);
+            $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
         }
         $this->destination->getAdapter()->setForeignKeyChecks(0);
     }
@@ -177,12 +188,12 @@ abstract class AbstractDelta implements StageInterface
      * Process changed records
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param array $idKeys
      * @return void
      */
-    protected function processChangedRecords($documentName, $idKey)
+    protected function processChangedRecords($documentName, $idKeys)
     {
-        $items = $this->source->getChangedRecords($documentName, $idKey);
+        $items = $this->source->getChangedRecords($documentName, $idKeys);
         if (empty($items)) {
             return;
         }
@@ -191,20 +202,13 @@ abstract class AbstractDelta implements StageInterface
             echo PHP_EOL;
         }
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
-
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
-
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
         do {
             $destinationRecords = $destDocument->getRecords();
-
-            $ids = [];
-
             foreach ($items as $data) {
                 echo('.');
-                $ids[] = $data[$idKey];
-
                 $this->transformData(
                     $data,
                     $sourceDocument,
@@ -219,8 +223,8 @@ abstract class AbstractDelta implements StageInterface
             $this->destination->updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
-        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
+            $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
+        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys)));
     }
 
     /**

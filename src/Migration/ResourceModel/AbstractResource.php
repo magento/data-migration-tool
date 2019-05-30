@@ -259,13 +259,13 @@ abstract class AbstractResource
      * Delete multiple records from document
      *
      * @param string $documentName
-     * @param string $idKey
+     * @param string|array $idKeys
      * @param [] $ids
      * @return void
      */
-    public function deleteRecords($documentName, $idKey, $ids)
+    public function deleteRecords($documentName, $idKeys, $ids)
     {
-        $this->getAdapter()->deleteRecords($documentName, $idKey, $ids);
+        $this->getAdapter()->deleteRecords($documentName, $idKeys, $ids);
     }
 
     /**
