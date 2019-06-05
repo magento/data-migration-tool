@@ -169,7 +169,7 @@ class Data implements StageInterface
         );
         $priceExpr = new \Zend_Db_Expr(
             'IF(sup_ap.is_percent = 1, TRUNCATE(mt.value + (mt.value * sup_ap.pricing_value/100), 4), ' .
-            ' mt.value + sup_ap.pricing_value)'
+            ' mt.value + SUM(sup_ap.pricing_value))'
         );
         $fields = [
             'value' => $priceExpr,
@@ -186,7 +186,7 @@ class Data implements StageInterface
             ->joinInner(
                 ['sup_ap' => $this->source->addDocumentPrefix('catalog_product_super_attribute_pricing')],
                 'sup_ap.product_super_attribute_id = sup_a.product_super_attribute_id',
-                ['store_id' => 'website_id']
+                []
             )
             ->joinInner(
                 ['supl' => $this->source->addDocumentPrefix('catalog_product_super_link')],
@@ -206,6 +206,7 @@ class Data implements StageInterface
             )
             ->where('mt.entity_id in (?)', $entitiesExpr)
             ->where('mt.attribute_id = ?', $priceAttributeId)
+            ->group([$entityIdName, 'cs.store_id']);
         ;
         return $select;
     }
