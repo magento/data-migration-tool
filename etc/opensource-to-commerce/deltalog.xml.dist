@@ -94,6 +94,9 @@
         <document key="value_id">enterprise_giftcard_amount</document>
         <document key="rule_id">enterprise_targetrule</document>
         <document key="rule_id,product_id,store_id">enterprise_targetrule_product</document>
+        <document key="link_id">catalog_product_super_link</document>
+        <document key="product_super_attribute_id">catalog_product_super_attribute</document>
+        <document key="value_id">catalog_product_super_attribute_label</document>
     </group>
     <group name="delta_log">
         <document key="visitor_id">log_visitor</document>
@@ -127,8 +130,6 @@
         <document key="url_rewrite_id">enterprise_url_rewrite</document>
     </group>
     <group name="delta_configurable_price">
-        <document key="link_id">catalog_product_super_link</document>
-        <document key="product_super_attribute_id">catalog_product_super_attribute</document>
-        <document key="value_id">catalog_product_super_attribute_label</document>
+        <document key="value_id">catalog_product_super_attribute_pricing</document>
     </group>
 </groups>

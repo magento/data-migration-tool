@@ -91,6 +91,9 @@
         <document key="title_id">downloadable_sample_title</document>
         <document key="rule_product_id">catalogrule_product</document>
         <document key="rule_product_price_id">catalogrule_product_price</document>
+        <document key="link_id">catalog_product_super_link</document>
+        <document key="product_super_attribute_id">catalog_product_super_attribute</document>
+        <document key="value_id">catalog_product_super_attribute_label</document>
     </group>
     <group name="delta_log">
         <document key="visitor_id">log_visitor</document>
@@ -124,8 +127,6 @@
         <document key="url_rewrite_id">core_url_rewrite</document>
     </group>
     <group name="delta_configurable_price">
-        <document key="link_id">catalog_product_super_link</document>
-        <document key="product_super_attribute_id">catalog_product_super_attribute</document>
-        <document key="value_id">catalog_product_super_attribute_label</document>
+        <document key="value_id">catalog_product_super_attribute_pricing</document>
     </group>
 </groups>
