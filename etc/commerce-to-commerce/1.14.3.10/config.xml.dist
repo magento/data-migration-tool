@@ -116,6 +116,10 @@
             <delta>Migration\Step\SalesOrder\Delta</delta>
             <volume>Migration\Step\SalesOrder\Volume</volume>
         </step>
+        <step title="ConfigurablePrices step">
+            <data>Migration\Step\ConfigurablePrices\Delta</data>
+            <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGridsEE\Delta</delta>
             <volume>Migration\Step\OrderGridsEE\Volume</volume>

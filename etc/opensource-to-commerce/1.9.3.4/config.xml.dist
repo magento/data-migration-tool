@@ -93,6 +93,10 @@
             <delta>Migration\Step\Log\Delta</delta>
             <volume>Migration\Step\Log\Volume</volume>
         </step>
+        <step title="ConfigurablePrices step">
+            <data>Migration\Step\ConfigurablePrices\Delta</data>
+            <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGrids\Delta</delta>
             <volume>Migration\Step\OrderGrids\Volume</volume>
