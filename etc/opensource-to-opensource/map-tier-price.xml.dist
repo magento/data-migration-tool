@@ -17,6 +17,18 @@
             <ignore>
                 <datatype>catalog_product_entity_group_price.customer_group_id</datatype>
             </ignore>
+            <transform>
+                <field>catalog_product_entity_group_price.value_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="NULL" />
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity_tier_price.value_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="NULL" />
+                </handler>
+            </transform>
         </field_rules>
     </source>
     <destination>

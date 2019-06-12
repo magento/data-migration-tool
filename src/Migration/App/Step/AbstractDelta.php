@@ -117,7 +117,7 @@ abstract class AbstractDelta implements StageInterface
             if (!isset($sourceDocuments[$deltaLogName])) {
                 throw new \Migration\Exception(sprintf('Deltalog for %s is not installed', $documentName));
             }
-            $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
+            $destinationName = $this->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
             if (!$destinationName) {
                 continue;
             }
@@ -201,7 +201,7 @@ abstract class AbstractDelta implements StageInterface
             $this->eolOnce = true;
             echo PHP_EOL;
         }
-        $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
+        $destinationName = $this->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
@@ -267,5 +267,17 @@ abstract class AbstractDelta implements StageInterface
         );
         $recordTransformer->init();
         return $recordTransformer;
+    }
+
+    /**
+     * Get document map
+     *
+     * @param string $document
+     * @param string $type
+     * @return mixed
+     */
+    protected function getDocumentMap($document, $type)
+    {
+        return $this->mapReader->getDocumentMap($document, $type);
     }
 }

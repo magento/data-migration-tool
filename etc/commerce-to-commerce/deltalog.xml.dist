@@ -161,8 +161,8 @@
         <document key="entity_id">sales_flat_shipment</document>
     </group>
     <group name="delta_tier_price">
-        <document key="value_id">catalog_product_entity_group_price</document>
-        <document key="value_id">catalog_product_entity_tier_price</document>
+        <document key="entity_id,all_groups,customer_group_id,website_id">catalog_product_entity_group_price</document>
+        <document key="entity_id,all_groups,customer_group_id,qty,website_id">catalog_product_entity_tier_price</document>
     </group>
     <group name="delta_url_rewrite">
         <document key="url_rewrite_id">enterprise_url_rewrite</document>
