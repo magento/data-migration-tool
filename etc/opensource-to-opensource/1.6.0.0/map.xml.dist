@@ -1170,6 +1170,12 @@
                 <field>sales_flat_invoice.total_paid</field>
             </ignore>
             <ignore>
+                <field>sales_flat_invoice.validated_country_code</field>
+            </ignore>
+            <ignore>
+                <field>sales_flat_invoice.validated_vat_number</field>
+            </ignore>
+            <ignore>
                 <field>sales_flat_invoice_item.shipment_id</field>
             </ignore>
             <ignore>
