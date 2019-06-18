@@ -3308,6 +3308,12 @@
                 <field>salesrule_coupon.generated_by_dotmailer</field>
             </ignore>
             <ignore>
+                <field>quote_address.validated_country_code</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.validated_vat_number</field>
+            </ignore>
+            <ignore>
                 <field>cms_block.row_id</field>
             </ignore>
             <ignore>
