@@ -479,9 +479,6 @@
             <ignore>
                 <document>core_website</document>
             </ignore>
-            <ignore>
-                <document>queue_poison_pill</document>
-            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
@@ -1182,12 +1179,6 @@
                 <field>sales_flat_invoice.total_paid</field>
             </ignore>
             <ignore>
-                <field>sales_flat_invoice.validated_country_code</field>
-            </ignore>
-            <ignore>
-                <field>sales_flat_invoice.validated_vat_number</field>
-            </ignore>
-            <ignore>
                 <field>sales_flat_invoice_item.shipment_id</field>
             </ignore>
             <ignore>
@@ -1868,6 +1859,9 @@
             </ignore>
             <ignore>
                 <document>msp_tfa_user_config</document>
+            </ignore>
+            <ignore>
+                <document>queue_poison_pill</document>
             </ignore>
         </document_rules>
         <field_rules>
