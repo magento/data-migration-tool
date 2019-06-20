@@ -55,8 +55,7 @@ class AttributeSetLeftoverDataCleaner
     }
 
     /**
-     * Records which are still in product entity tables
-     * but product attribute no longer exist in attribute set
+     * Records which are still in product entity tables but product attribute no longer exist in attribute set
      */
     public function clean()
     {
