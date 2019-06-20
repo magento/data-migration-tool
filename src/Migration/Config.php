@@ -13,8 +13,10 @@ use \Magento\Framework\App\Arguments\ValidationState;
 class Config
 {
     const CONFIGURATION_FILE = 'config.xml';
+    const SETTINGS_FILE = 'settings.xml';
 
     const CONFIGURATION_SCHEMA = 'config.xsd';
+    const SETTINGS_SCHEMA = 'settings.xsd';
 
     const RESOURCE_TYPE_SOURCE = 'source';
 
@@ -73,10 +75,24 @@ class Config
         $xml = file_get_contents($configFile);
         $document = new \Magento\Framework\Config\Dom($xml, $this->validationState);
 
-        if (!$document->validate($this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA)) {
-            throw new Exception('XML file is invalid.');
+        $errors = [];
+        switch (basename($configFile)) {
+            case self::SETTINGS_FILE:
+                $schemaFile = $this->getConfigDirectoryPath() . self::SETTINGS_SCHEMA;
+                break;
+            case self::CONFIGURATION_FILE:
+            default:
+                $schemaFile = $this->getConfigDirectoryPath() . self::CONFIGURATION_SCHEMA;
+                break;
         }
-
+        try {
+            $isValid = $document->validate($schemaFile, $errors);
+            if (!$isValid) {
+                throw new Exception('XML file is invalid at ' . $configFile . '<br>' . PHP_EOL . json_encode($errors));
+            }
+        } catch (\Exception $exception) {
+            throw $exception;
+        }
         $this->config = new \DOMXPath($document->getDom());
         foreach ($this->config->query('//options/*') as $item) {
             $this->options[$item->nodeName] = $item->nodeValue;
