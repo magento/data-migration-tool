@@ -1,3 +1,18 @@
+2.3.2
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.3.2, 1.9.4.2 
+   * Magento Commerce: 2.3.2, 1.14.4.2
+
+* Fixed bugs:
+
+   * M1 Super Product Attribute to M2 Configuration setting wrong Price
+   * [Issue #682](https://github.com/magento/data-migration-tool/issues/682): Incorrect url rewrite record pagination
+   * [Issue #685](https://github.com/magento/data-migration-tool/issues/685): Payment method is not available error after migration
+   * [Issue #598](https://github.com/magento/data-migration-tool/issues/598): Error in system.log about migrated attribute which is not included into attribute group
+   * [Issue #677](https://github.com/magento/data-migration-tool/issues/677): Data migration fails due to invalid regex in widget placeholder handler 
+
 2.3.1
 =============
 * Added support for versions:
