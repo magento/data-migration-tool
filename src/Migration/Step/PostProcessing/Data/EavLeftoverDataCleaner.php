@@ -32,9 +32,9 @@ class EavLeftoverDataCleaner
     private $progress;
 
     /**
-     * @var array
+     * @var EavLeftoverDataModel
      */
-    private $deletedDocumentRowsCount;
+    private $eavLeftoverDataModel;
 
     /**
      * @param ProgressBar\LogLevelProcessor $progressBar
@@ -65,29 +65,19 @@ class EavLeftoverDataCleaner
         if (!$attributeIds) {
             return ;
         }
-        foreach ($this->eavLeftoverDataModel->getDocumentsToCheck() as $document) {
+        foreach ($this->eavLeftoverDataModel->getDocuments() as $document) {
             $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
-            $rowsCountBefore = $this->destination->getRecordsCount($document);
             $this->destination->deleteRecords($document, 'attribute_id', $attributeIds);
-            $deletedCount = $rowsCountBefore - $this->destination->getRecordsCount($document);
-            if (!empty($deletedCount)) {
-                $this->deletedDocumentRowsCount[$document] = $deletedCount;
-            }
         }
-        $this->progress->saveProcessedEntities(
-            'PostProcessing',
-            'deletedDocumentRowsCount',
-            $this->deletedDocumentRowsCount
-        );
     }
 
     /**
-     * Get iterations count
+     * Get documents
      *
-     * @return int
+     * @return array
      */
-    public function getIterationsCount()
+    public function getDocuments()
     {
-        return count($this->eavLeftoverDataModel->getDocumentsToCheck());
+        return $this->eavLeftoverDataModel->getDocuments(false);
     }
 }

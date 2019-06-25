@@ -47,11 +47,11 @@ class EavLeftoverDataCleanerTest extends \PHPUnit\Framework\TestCase
         );
         $this->progress = $this->createPartialMock(
             \Migration\App\Progress::class,
-            ['saveProcessedEntities']
+            []
         );
         $this->eavLeftoverDataModel = $this->createPartialMock(
             \Migration\Step\PostProcessing\Model\EavLeftoverData::class,
-            ['getDocumentsToCheck', 'getLeftoverAttributeIds']
+            ['getDocuments', 'getLeftoverAttributeIds']
         );
     }
 
@@ -75,7 +75,7 @@ class EavLeftoverDataCleanerTest extends \PHPUnit\Framework\TestCase
             ->willReturn($leftoverAttributeIds);
         $this->eavLeftoverDataModel
             ->expects($this->once())
-            ->method('getDocumentsToCheck')
+            ->method('getDocuments')
             ->willReturn($documentsToCheck);
         $this->progressBar
             ->expects($this->exactly(2))
@@ -83,24 +83,12 @@ class EavLeftoverDataCleanerTest extends \PHPUnit\Framework\TestCase
             ->with('info');
         $this->destination
             ->expects($this->at(0))
-            ->method('getRecordsCount')
-            ->with('doc1')
-            ->willReturn(5);
+            ->method('deleteRecords')
+            ->with('doc1', 'attribute_id', $leftoverAttributeIds);
         $this->destination
             ->expects($this->at(1))
             ->method('deleteRecords')
-            ->with('doc1', 'attribute_id', $leftoverAttributeIds);
-        $this->destination->expects($this->at(2))->method('getRecordsCount')->with('doc1')->willReturn(3);
-        $this->destination->expects($this->at(3))->method('getRecordsCount')->with('doc2')->willReturn(4);
-        $this->destination
-            ->expects($this->at(4))
-            ->method('deleteRecords')
             ->with('doc2', 'attribute_id', $leftoverAttributeIds);
-        $this->destination->expects($this->at(5))->method('getRecordsCount')->with('doc2')->willReturn(1);
-        $this->progress
-            ->expects($this->once())
-            ->method('saveProcessedEntities')
-            ->with('PostProcessing', 'deletedDocumentRowsCount', $deletedDocumentRowsCount);
         $this->eavLeftoverDataCleaner->clean();
     }
 
@@ -120,30 +108,9 @@ class EavLeftoverDataCleanerTest extends \PHPUnit\Framework\TestCase
             ->expects($this->once())
             ->method('getLeftoverAttributeIds')
             ->willReturn($leftoverAttributeIds);
-        $this->eavLeftoverDataModel->expects($this->never())->method('getDocumentsToCheck');
+        $this->eavLeftoverDataModel->expects($this->never())->method('getDocuments');
         $this->progressBar->expects($this->never())->method('advance')->with('info');
-        $this->destination->expects($this->never())->method('getRecordsCount');
         $this->destination->expects($this->never())->method('deleteRecords');
-        $this->progress->expects($this->never())->method('saveProcessedEntities');
         $this->eavLeftoverDataCleaner->clean();
-    }
-
-    /**
-     * @return void
-     */
-    public function testGetIterationsCount()
-    {
-        $documentsToCheck = ['doc1', 'doc2'];
-        $this->eavLeftoverDataCleaner = new EavLeftoverDataCleaner(
-            $this->progressBar,
-            $this->destination,
-            $this->progress,
-            $this->eavLeftoverDataModel
-        );
-        $this->eavLeftoverDataModel
-            ->expects($this->once())
-            ->method('getDocumentsToCheck')
-            ->willReturn($documentsToCheck);
-        $this->assertEquals(2, $this->eavLeftoverDataCleaner->getIterationsCount());
     }
 }

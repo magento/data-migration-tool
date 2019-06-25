@@ -1442,6 +1442,18 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
+                <field>sales_flat_order_payment.method</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[paypal_direct:payflowpro;paypal_standard:paypal_express]" />
+                </handler>
+            </transform>
+            <transform>
+                <field>sales_flat_quote_payment.method</field>
+                <handler class="\Migration\Handler\Convert">
+                    <param name="map" value="[paypal_direct:payflowpro;paypal_standard:paypal_express]" />
+                </handler>
+            </transform>
+            <transform>
                 <field>sales_flat_order_payment.cc_number_enc</field>
                 <handler class="\Migration\Handler\Encrypt" />
             </transform>
@@ -2340,6 +2352,9 @@
                 <document>msp_tfa_user_config</document>
             </ignore>
             <ignore>
+                <document>queue_poison_pill</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_entity_media_gallery_value_to_entity</document>
             </ignore>
             <ignore>
@@ -3038,6 +3053,12 @@
             </ignore>
             <ignore>
                 <field>salesrule_coupon.generated_by_dotmailer</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.validated_country_code</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.validated_vat_number</field>
             </ignore>
             <ignore>
                 <field>cms_block.row_id</field>

@@ -68,7 +68,7 @@ class Placeholder extends AbstractHandler implements HandlerInterface
         // cut off name of a module from template path
         $content = preg_replace('/({{widget|{{block)(.*template=")(.*\/)(.*".*}})/mU', '$1$2$4', $content);
         // remove all unknown widgets
-        $content = preg_replace('/{{widget type="[\w-_]+\/[\w-_]+".+}}/mU', '', $content);
+        $content = preg_replace('/{{widget type="[\w\-_]+\/[\w\-_]+".+}}/mU', '', $content);
         return $content;
     }
 }
