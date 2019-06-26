@@ -249,7 +249,11 @@ class Version191to2000Test extends \PHPUnit\Framework\TestCase
         $this->source->expects($this->at(3))
             ->method('getRecords')
             ->with($this->equalTo(\Migration\Step\UrlRewrite\Version191to2000::SOURCE), $this->equalTo(0))
-            ->willReturn(['RecordData1']);
+            ->willReturn([['RecordData1']]);
+
+        $this->source->expects($this->any())
+            ->method('setLastLoadedRecord')
+            ->with(\Migration\Step\UrlRewrite\Version191to2000::SOURCE, ['RecordData1']);
 
         $sourceRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)
             ->disableOriginalConstructor()
@@ -257,7 +261,7 @@ class Version191to2000Test extends \PHPUnit\Framework\TestCase
 
         $this->recordFactory->expects($this->at(0))
             ->method('create')
-            ->with($this->equalTo(['document' => $sourceDocument, 'data' => 'RecordData1']))
+            ->with($this->equalTo(['document' => $sourceDocument, 'data' => ['RecordData1']]))
             ->willReturn($sourceRecord);
 
         $destinationRecord = $this->getMockBuilder(\Migration\ResourceModel\Record::class)

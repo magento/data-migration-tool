@@ -43,7 +43,7 @@ class DeletedRecordsCounter
     /**
      * Count records in given documents
      *
-     * @param $documents
+     * @param array $documents
      */
     public function count($documents)
     {
@@ -55,10 +55,9 @@ class DeletedRecordsCounter
     }
 
     /**
-     * Compare current amount of records in given documents
-     * and save number of deleted records
+     * Compare current amount of records in given documents and save number of deleted records
      *
-     * @param $documents
+     * @param array $documents
      */
     public function saveDeleted($documents)
     {

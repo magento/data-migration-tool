@@ -2316,6 +2316,9 @@
             <ignore>
                 <document>msp_tfa_user_config</document>
             </ignore>
+            <ignore>
+                <document>queue_poison_pill</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -3271,6 +3274,12 @@
             </ignore>
             <ignore>
                 <field>salesrule_coupon.generated_by_dotmailer</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.validated_country_code</field>
+            </ignore>
+            <ignore>
+                <field>quote_address.validated_vat_number</field>
             </ignore>
             <ignore>
                 <field>cms_block.row_id</field>

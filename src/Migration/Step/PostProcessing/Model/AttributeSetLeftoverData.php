@@ -45,8 +45,10 @@ class AttributeSetLeftoverData
     }
 
     /**
-     * Returns ids of records which are still in product entity tables
-     * but product attribute no longer exist in attribute set
+     * Get leftover ids
+     *
+     * Returns ids of records which are still in product entity tables but product
+     * attribute no longer exist in attribute set.
      *
      * @return array
      */
