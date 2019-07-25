@@ -52,7 +52,7 @@ class ProductRewritesWithoutCategories
     /**
      * Return query for retrieving product url rewrites when a product is saved for default scope
      *
-     * @return string
+     * @return array
      */
     public function getQueryProductsSavedForDefaultScope()
     {
@@ -102,13 +102,13 @@ class ProductRewritesWithoutCategories
         $query = $select
             ->where('`ecpr`.`store_id` = 0')
             ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
-        return $query;
+        return [$query];
     }
 
     /**
      * Return query for retrieving product url rewrites when a product is saved for particular store view
      *
-     * @return string
+     * @return array
      */
     public function getQueryProductsSavedForParticularStoreView()
     {
@@ -146,7 +146,7 @@ class ProductRewritesWithoutCategories
         $query = $select
             ->where('`ecpr`.`store_id` > 0')
             ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
-        return $query;
+        return [$query];
     }
 
     /**
