@@ -721,8 +721,10 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function collectProductRewrites(\Migration\ResourceModel\Adapter\Mysql $adapter)
     {
-        $queryExecute = function ($query) use ($adapter) {
-            $adapter->getSelect()->getAdapter()->query($query);
+        $queryExecute = function ($queries) use ($adapter) {
+            foreach ($queries as $query) {
+                $adapter->getSelect()->getAdapter()->query($query);
+            }
         };
         $queryExecute($this->productRewritesWithoutCategories->getQueryProductsSavedForDefaultScope());
         $queryExecute($this->productRewritesWithoutCategories->getQueryProductsSavedForParticularStoreView());
