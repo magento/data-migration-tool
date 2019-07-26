@@ -220,11 +220,23 @@ abstract class AbstractDelta implements StageInterface
             $fieldsUpdateOnDuplicate = (!empty($this->documentsDuplicateOnUpdate[$destinationName]))
                 ? $this->documentsDuplicateOnUpdate[$destinationName]
                 : false;
-            $this->destination->updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
+            $this->updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
             $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
         } while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys)));
+    }
+
+    /**
+     * Update changed records
+     *
+     * @param $destinationName
+     * @param $destinationRecords
+     * @param $fieldsUpdateOnDuplicate
+     */
+    protected function updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate)
+    {
+        $this->destination->updateChangedRecords($destinationName, $destinationRecords, $fieldsUpdateOnDuplicate);
     }
 
     /**
