@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../class-map.xsd">
+<classmap xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/class-map.xsd">
     <rename>
         <from>catalogrule/rule_condition_combine</from>
         <to>Magento\CatalogRule\Model\Rule\Condition\Combine</to>
