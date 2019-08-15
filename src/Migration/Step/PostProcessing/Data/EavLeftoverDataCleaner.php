@@ -7,7 +7,6 @@ namespace Migration\Step\PostProcessing\Data;
 
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
-use Migration\App\Progress;
 use Migration\Logger\Manager as LogManager;
 use \Migration\Step\PostProcessing\Model\EavLeftoverData as EavLeftoverDataModel;
 
@@ -27,11 +26,6 @@ class EavLeftoverDataCleaner
     private $progressBar;
 
     /**
-     * @var Progress
-     */
-    private $progress;
-
-    /**
      * @var EavLeftoverDataModel
      */
     private $eavLeftoverDataModel;
@@ -39,18 +33,15 @@ class EavLeftoverDataCleaner
     /**
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Destination $destination
-     * @param Progress $progress
      * @param EavLeftoverDataModel $eavLeftoverDataModel
      */
     public function __construct(
         ProgressBar\LogLevelProcessor $progressBar,
         ResourceModel\Destination $destination,
-        Progress $progress,
         EavLeftoverDataModel $eavLeftoverDataModel
     ) {
         $this->destination = $destination;
         $this->progressBar = $progressBar;
-        $this->progress = $progress;
         $this->eavLeftoverDataModel = $eavLeftoverDataModel;
     }
 

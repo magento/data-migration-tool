@@ -5,6 +5,8 @@
  */
 namespace Migration\Step\PostProcessing\Data;
 
+use Migration\App\ProgressBar;
+use Migration\Logger\Manager as LogManager;
 use Migration\ResourceModel;
 use Migration\Step\PostProcessing\Model\ProductsInRootCatalog as ProductsInRootCatalogModel;
 
@@ -26,13 +28,21 @@ class ProductsInRootCatalogCleaner
     private $productsInRootCatalogModel;
 
     /**
+     * @var ProgressBar\LogLevelProcessor
+     */
+    private $progressBar;
+
+    /**
+     * @param ProgressBar\LogLevelProcessor $progressBar
      * @param ResourceModel\Destination $destination
      * @param ProductsInRootCatalogModel $productsInRootCatalogModel
      */
     public function __construct(
+        ProgressBar\LogLevelProcessor $progressBar,
         ResourceModel\Destination $destination,
         ProductsInRootCatalogModel $productsInRootCatalogModel
     ) {
+        $this->progressBar = $progressBar;
         $this->destination = $destination;
         $this->productsInRootCatalogModel = $productsInRootCatalogModel;
     }
@@ -48,6 +58,7 @@ class ProductsInRootCatalogCleaner
         if (!$productIds) {
             return ;
         }
+        $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
         $this->destination->deleteRecords(
             $this->productsInRootCatalogModel->getCatalogCategoryProductDocument(),
             'entity_id',

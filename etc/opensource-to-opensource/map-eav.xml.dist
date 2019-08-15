@@ -19,6 +19,10 @@
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
             </transform>
             <transform>
+                <field>eav_attribute.backend_type</field>
+                <handler class="\Migration\Handler\EavAttribute\BackendTypeForMultiselect" />
+            </transform>
+            <transform>
                 <field>eav_attribute.backend_table</field>
                 <handler class="\Migration\Handler\GetDestinationValue">
                     <param name="setNullIfEmpty" value="true" />

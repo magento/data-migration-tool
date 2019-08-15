@@ -11,6 +11,7 @@ use Migration\Logger\Manager as LogManager;
 use Migration\Step\PostProcessing\Data\EavLeftoverDataCleaner;
 use Migration\Step\PostProcessing\Data\AttributeSetLeftoverDataCleaner;
 use Migration\Step\PostProcessing\Data\ProductsInRootCatalogCleaner;
+use Migration\Step\PostProcessing\Data\EntityTypeTextToVarcharMover;
 use Migration\Step\PostProcessing\Data\DeletedRecordsCounter;
 
 /**
@@ -39,6 +40,11 @@ class Data implements StageInterface
     private $productsInRootCatalogCleaner;
 
     /**
+     * @var EntityTypeTextToVarcharMover
+     */
+    private $entityTypeTextToVarcharMover;
+
+    /**
      * @var DeletedRecordsCounter
      */
     private $deletedRecordsCounter;
@@ -54,6 +60,7 @@ class Data implements StageInterface
      * @param EavLeftoverDataCleaner $eavLeftoverDataCleaner
      * @param AttributeSetLeftoverDataCleaner $attributeSetLeftoverDataCleaner
      * @param ProductsInRootCatalogCleaner $productsInRootCatalogCleaner
+     * @param EntityTypeTextToVarcharMover $entityTypeTextToVarcharMover
      * @param DeletedRecordsCounter $deletedRecordsCounter
      */
     public function __construct(
@@ -61,12 +68,14 @@ class Data implements StageInterface
         EavLeftoverDataCleaner $eavLeftoverDataCleaner,
         AttributeSetLeftoverDataCleaner $attributeSetLeftoverDataCleaner,
         ProductsInRootCatalogCleaner $productsInRootCatalogCleaner,
+        EntityTypeTextToVarcharMover $entityTypeTextToVarcharMover,
         DeletedRecordsCounter $deletedRecordsCounter
     ) {
         $this->progressBar = $progressBar;
         $this->eavLeftoverDataCleaner = $eavLeftoverDataCleaner;
         $this->attributeSetLeftoverDataCleaner = $attributeSetLeftoverDataCleaner;
         $this->productsInRootCatalogCleaner = $productsInRootCatalogCleaner;
+        $this->entityTypeTextToVarcharMover = $entityTypeTextToVarcharMover;
         $this->deletedRecordsCounter = $deletedRecordsCounter;
         $append = function ($document) {
             $this->documents[] = $document;
@@ -74,6 +83,7 @@ class Data implements StageInterface
         array_map($append, $this->eavLeftoverDataCleaner->getDocuments());
         array_map($append, $this->attributeSetLeftoverDataCleaner->getDocuments());
         array_map($append, $this->productsInRootCatalogCleaner->getDocuments());
+        array_map($append, $this->entityTypeTextToVarcharMover->getDocuments());
     }
 
     /**
@@ -86,7 +96,8 @@ class Data implements StageInterface
         $this->eavLeftoverDataCleaner->clean();
         $this->attributeSetLeftoverDataCleaner->clean();
         $this->productsInRootCatalogCleaner->clean();
-        $this->deletedRecordsCounter->saveDeleted($this->documents);
+        $this->entityTypeTextToVarcharMover->move();
+        $this->deletedRecordsCounter->saveChanged($this->documents);
         $this->progressBar->finish(LogManager::LOG_LEVEL_INFO);
         return true;
     }
