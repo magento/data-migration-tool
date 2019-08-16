@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../groups.xsd">
+<groups xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/groups.xsd">
     <group name="delta_map">
         <document key="catalog_compare_item_id">catalog_compare_item</document>
         <document key="item_id">cataloginventory_stock_item</document>

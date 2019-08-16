@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../map.xsd">
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+     xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/map.xsd">
     <source>
         <document_rules />
         <field_rules>
@@ -16,6 +17,10 @@
             <transform>
                 <field>eav_attribute.backend_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
+            </transform>
+            <transform>
+                <field>eav_attribute.backend_type</field>
+                <handler class="\Migration\Handler\EavAttribute\BackendTypeForMultiselect" />
             </transform>
             <transform>
                 <field>eav_attribute.backend_table</field>

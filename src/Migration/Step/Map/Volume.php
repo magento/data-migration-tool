@@ -55,7 +55,7 @@ class Volume extends AbstractVolume
     /**
      * @var array
      */
-    protected $deletedDocumentRowsCount;
+    protected $changedDocumentRowsCount;
 
     /**
      * @param Logger $logger
@@ -123,16 +123,16 @@ class Volume extends AbstractVolume
      */
     public function getDestinationRecordsCount($destinationName)
     {
-        if (null === $this->deletedDocumentRowsCount) {
-            $this->deletedDocumentRowsCount = $this->progress->getProcessedEntities(
+        if (null === $this->changedDocumentRowsCount) {
+            $this->changedDocumentRowsCount = $this->progress->getProcessedEntities(
                 'PostProcessing',
-                'deletedDocumentRowsCount'
+                'changedDocumentRowsCount'
             );
         }
 
         $destinationCount = $this->destination->getRecordsCount($destinationName);
-        if (!empty($this->deletedDocumentRowsCount[$destinationName])) {
-            $destinationCount -= $this->deletedDocumentRowsCount[$destinationName];
+        if (!empty($this->changedDocumentRowsCount[$destinationName])) {
+            $destinationCount += $this->changedDocumentRowsCount[$destinationName];
         }
         return $destinationCount;
     }
