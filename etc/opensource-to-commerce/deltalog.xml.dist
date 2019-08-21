@@ -128,7 +128,7 @@
         <document key="entity_id,all_groups,customer_group_id,qty,website_id">catalog_product_entity_tier_price</document>
     </group>
     <group name="delta_url_rewrite">
-        <document key="url_rewrite_id">enterprise_url_rewrite</document>
+        <document key="url_rewrite_id">core_url_rewrite</document>
     </group>
     <group name="delta_configurable_price">
         <document key="value_id">catalog_product_super_attribute_pricing</document>

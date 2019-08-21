@@ -8,8 +8,8 @@ namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
 use Magento\Framework\Db\Select as Select;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
-use \Migration\Step\UrlRewrite\Model\Suffix;
-use \Migration\Step\UrlRewrite\Model\TemporaryTable;
+use Migration\Step\UrlRewrite\Model\Suffix;
+use Migration\Step\UrlRewrite\Model\TemporaryTableName;
 
 /**
  * Class ProductRewritesIncludedIntoCategories is for product url rewrites included into categories
@@ -19,9 +19,9 @@ use \Migration\Step\UrlRewrite\Model\TemporaryTable;
 class ProductRewritesIncludedIntoCategories
 {
     /**
-     * @var TemporaryTable
+     * @var TemporaryTableName
      */
-    private $temporaryTable;
+    private $temporaryTableName;
 
     /**
      * @var Source
@@ -61,29 +61,31 @@ class ProductRewritesIncludedIntoCategories
     /**
      * @param Source $source
      * @param Suffix $suffix
-     * @param TemporaryTable $temporaryTable
+     * @param TemporaryTableName $temporaryTableName
      */
     public function __construct(
         Source $source,
         Suffix $suffix,
-        TemporaryTable $temporaryTable
+        TemporaryTableName $temporaryTableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->suffix = $suffix;
-        $this->temporaryTable = $temporaryTable;
+        $this->temporaryTableName = $temporaryTableName;
     }
 
     /**
      * Return query for retrieving product url rewrites for stores when a product was saved for default scope
      *
+     * @param array $urlRewriteIds
      * @return array
      */
-    public function getQueryProductsSavedForDefaultScope()
+    public function getQueryProductsSavedForDefaultScope(array $urlRewriteIds = [])
     {
         $queries = [];
         $selects = [];
         $config = [
+            'url_rewrite_ids' => $urlRewriteIds,
             'store_id' => 's.store_id',
             'store_main_table' => 's',
             'add_stores_to_select' => true
@@ -97,7 +99,7 @@ class ProductRewritesIncludedIntoCategories
         foreach ($selects as $select) {
             $queries[] = $this->sourceAdapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
                 ->where('result.request_path IS NOT NULL')
-                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
         }
         return $queries;
     }
@@ -105,14 +107,16 @@ class ProductRewritesIncludedIntoCategories
     /**
      * Return query for retrieving product url rewrites when a product is saved for particular store view
      *
+     * @param array $urlRewriteIds
      * @return array
      */
-    public function getQueryProductsSavedForParticularStoreView()
+    public function getQueryProductsSavedForParticularStoreView(array $urlRewriteIds = [])
     {
         $queries = [];
         $selects = [];
-        $config = [];
-        $selects[] = $this->getSelectBase($config)->where('`r`.`store_id` > 0');
+        $config = ['url_rewrite_ids' => $urlRewriteIds];
+        $select = $this->getSelectBase($config)->where('`r`.`store_id` > 0');
+        $selects[] = $select;
         foreach ($this->getSelectsForAnchorCategories($config) as $select) {
             $select->where('`r`.`store_id` > 0');
             $selects[] = $select;
@@ -120,7 +124,7 @@ class ProductRewritesIncludedIntoCategories
         foreach ($selects as $select) {
             $queries[] = $this->sourceAdapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
                 ->where('result.request_path IS NOT NULL')
-                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
         }
         return $queries;
     }
@@ -133,6 +137,7 @@ class ProductRewritesIncludedIntoCategories
      */
     private function getSelectBase(array $config)
     {
+        $urlRewriteIds = $config['url_rewrite_ids'];
         $storeId = $config['store_id'] ?? 'r.store_id';
         $storeMainTable = $config['store_main_table'] ?? 'r';
         $targetPath = $config['target_path'] ??
@@ -156,6 +161,8 @@ class ProductRewritesIncludedIntoCategories
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
+                'url_rewrite_id' =>'r.url_rewrite_id',
+                'redirect_id' => 'IFNULL(NULL, NULL)',
                 'request_path' => $config['request_path'] ?? $subConcatCategories,
                 'target_path' => $targetPath,
                 'is_system' => 'r.is_system',
@@ -165,7 +172,8 @@ class ProductRewritesIncludedIntoCategories
                 'product_id' => "p.entity_id",
                 'category_id' => $config['category_id'] ?? 'c.category_id',
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')"
+                'priority' => "trim('4')",
+                'processed' => "trim('0')"
             ]
         );
         $select->join(
@@ -184,6 +192,9 @@ class ProductRewritesIncludedIntoCategories
             []
         );
         $select->where('`r`.`entity_type` = 3');
+        if (!empty($urlRewriteIds)) {
+            $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
+        }
         return $select;
     }
 

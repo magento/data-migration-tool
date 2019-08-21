@@ -59,9 +59,10 @@ class Source extends AbstractResource
      * @param string $documentName
      * @param int $pageNumber
      * @param int $pageSize
+     * @param \Zend_Db_Expr $condition
      * @return array
      */
-    public function getRecords($documentName, $pageNumber, $pageSize = null)
+    public function getRecords($documentName, $pageNumber, $pageSize = null, \Zend_Db_Expr $condition = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
         $identityField = $this->getIdentityField($documentName);
@@ -83,7 +84,8 @@ class Source extends AbstractResource
             $pageNumber,
             $pageSize,
             $identityField,
-            $identityId
+            $identityId,
+            $condition
         );
 
         return $records;
@@ -171,15 +173,16 @@ class Source extends AbstractResource
      *
      * @param string $documentName
      * @param array $idKeys
+     * @param int $pageNumber
      * @param bool|false $getProcessed
      * @return array
      */
-    public function getDeletedRecords($documentName, $idKeys, $getProcessed = false)
+    public function getDeletedRecords($documentName, $idKeys, $pageNumber = 0, $getProcessed = false)
     {
         return $this->getAdapter()->loadDeletedRecords(
             $this->addDocumentPrefix($this->getDeltaLogName($documentName)),
             $idKeys,
-            0,
+            $pageNumber,
             $this->getPageSize($documentName),
             $getProcessed
         );

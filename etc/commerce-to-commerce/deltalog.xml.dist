@@ -167,6 +167,8 @@
     </group>
     <group name="delta_url_rewrite">
         <document key="url_rewrite_id">enterprise_url_rewrite</document>
+        <document key="redirect_id">enterprise_url_rewrite_redirect</document>
+        <document key="category_id,product_id">catalog_category_product</document>
     </group>
     <group name="delta_configurable_price">
         <document key="value_id">catalog_product_super_attribute_pricing</document>

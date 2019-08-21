@@ -48,9 +48,17 @@ interface AdapterInterface
      * @param int $pageSize
      * @param string $identityField
      * @param int $identityId
+     * @param \Zend_Db_Expr $condition
      * @return array
      */
-    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null);
+    public function loadPage(
+        $documentName,
+        $pageNumber,
+        $pageSize,
+        $identityField = null,
+        $identityId = null,
+        \Zend_Db_Expr $condition = null
+    );
 
     /**
      * Insert records into document

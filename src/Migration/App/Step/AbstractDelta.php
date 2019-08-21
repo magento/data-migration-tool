@@ -125,7 +125,10 @@ abstract class AbstractDelta implements StageInterface
                 continue;
             }
             $this->logger->debug(sprintf('%s has changes', $documentName));
-
+            if (!$this->eolOnce) {
+                $this->eolOnce = true;
+                echo PHP_EOL;
+            }
             $this->processDeletedRecords($documentName, $idKeys, $destinationName);
             $this->processChangedRecords($documentName, $idKeys);
         }
@@ -172,6 +175,7 @@ abstract class AbstractDelta implements StageInterface
     {
         $this->destination->getAdapter()->setForeignKeyChecks(1);
         while (!empty($items = $this->source->getDeletedRecords($documentName, $idKeys))) {
+            echo('.');
             $this->destination->deleteRecords(
                 $this->destination->addDocumentPrefix($destinationName),
                 $idKeys,
@@ -193,19 +197,11 @@ abstract class AbstractDelta implements StageInterface
      */
     protected function processChangedRecords($documentName, $idKeys)
     {
-        $items = $this->source->getChangedRecords($documentName, $idKeys);
-        if (empty($items)) {
-            return;
-        }
-        if (!$this->eolOnce) {
-            $this->eolOnce = true;
-            echo PHP_EOL;
-        }
         $destinationName = $this->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
-        do {
+        while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys))) {
             $destinationRecords = $destDocument->getRecords();
             foreach ($items as $data) {
                 echo('.');
@@ -224,7 +220,7 @@ abstract class AbstractDelta implements StageInterface
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
             $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
-        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys)));
+        };
     }
 
     /**

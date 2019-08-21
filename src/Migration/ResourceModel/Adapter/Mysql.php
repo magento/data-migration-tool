@@ -106,8 +106,14 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
-    {
+    public function loadPage(
+        $documentName,
+        $pageNumber,
+        $pageSize,
+        $identityField = null,
+        $identityId = null,
+        \Zend_Db_Expr $condition = null
+    ) {
         $select = $this->getSelect();
         $select->from($documentName, '*');
         if ($identityField && $identityId !== null) {
@@ -116,6 +122,9 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
             $select->order("$identityField ASC");
         } else {
             $select->limit($pageSize, $pageNumber * $pageSize);
+        }
+        if ($condition) {
+            $select->where($condition);
         }
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
