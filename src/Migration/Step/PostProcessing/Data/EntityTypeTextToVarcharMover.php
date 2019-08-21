@@ -121,10 +121,13 @@ class EntityTypeTextToVarcharMover
             $fields,
             \Magento\Framework\Db\Adapter\AdapterInterface::INSERT_ON_DUPLICATE
         );
-        $adapter->getSelect()->getAdapter()->delete(
-            $this->productTextTypeTable,
-            sprintf('attribute_id in (%s)', implode(',', $multiselectIds))
-        );
+        if ($multiselectIds) {
+            $this->destination->deleteRecords(
+                $this->productTextTypeTable,
+                'attribute_id',
+                $multiselectIds
+            );
+        }
     }
 
     /**
