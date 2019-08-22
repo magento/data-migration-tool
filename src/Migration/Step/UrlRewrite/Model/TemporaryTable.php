@@ -12,11 +12,11 @@ use Migration\ResourceModel\Document;
 use Migration\Step\UrlRewrite\Helper;
 use Migration\ResourceModel\Record\Collection;
 use Migration\Step\UrlRewrite\Version11410to2000;
-use Migration\Step\UrlRewrite\Model\Version11410to2000\ProductRewritesWithoutCategories;
-use Migration\Step\UrlRewrite\Model\Version11410to2000\ProductRewritesIncludedIntoCategories;
-use Migration\Step\UrlRewrite\Model\Version11410to2000\CategoryRewrites;
-use Migration\Step\UrlRewrite\Model\Version11410to2000\CmsPageRewrites;
-use Migration\Step\UrlRewrite\Model\Version11410to2000\RedirectsRewrites;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWithoutCategoriesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesIncludedIntoCategoriesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CategoryRewritesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CmsPageRewritesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesInterface;
 
 /**
  * Class TemporaryTable creates a table where all url rewrites will be collected
@@ -101,27 +101,27 @@ class TemporaryTable
     protected $helper;
 
     /**
-     * @var ProductRewritesIncludedIntoCategories
+     * @var ProductRewritesIncludedIntoCategoriesInterface
      */
     private $productRewritesIncludedIntoCategories;
 
     /**
-     * @var ProductRewritesWithoutCategories
+     * @var ProductRewritesWithoutCategoriesInterface
      */
     private $productRewritesWithoutCategories;
 
     /**
-     * @var CategoryRewrites
+     * @var CategoryRewritesInterface
      */
     private $categoryRewrites;
 
     /**
-     * @var RedirectsRewrites
+     * @var RedirectsRewritesInterface
      */
     private $redirectsRewrites;
 
     /**
-     * @var CmsPageRewrites
+     * @var CmsPageRewritesInterface
      */
     private $cmsPageRewrites;
 
@@ -148,11 +148,6 @@ class TemporaryTable
         \Migration\ResourceModel\RecordFactory $recordFactory,
         Helper $helper,
         TemporaryTableName $temporaryTableName,
-        ProductRewritesWithoutCategories $productRewritesWithoutCategories,
-        ProductRewritesIncludedIntoCategories $productRewritesIncludedIntoCategories,
-        CategoryRewrites $categoryRewrites,
-        CmsPageRewrites $cmsPageRewrites,
-        RedirectsRewrites $redirectsRewrites,
         Suffix $suffix
     ) {
         $this->progress = $progress;
@@ -162,11 +157,6 @@ class TemporaryTable
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
         $this->helper = $helper;
-        $this->productRewritesWithoutCategories = $productRewritesWithoutCategories;
-        $this->productRewritesIncludedIntoCategories = $productRewritesIncludedIntoCategories;
-        $this->categoryRewrites = $categoryRewrites;
-        $this->cmsPageRewrites = $cmsPageRewrites;
-        $this->redirectsRewrites = $redirectsRewrites;
         $this->suffix = $suffix;
         $this->configReader = $config;
         $this->sourceAdapter = $this->source->getAdapter();
@@ -557,15 +547,30 @@ class TemporaryTable
     /**
      * Initialize temporary table and insert UrlRewrite data
      *
+     * @param ProductRewritesWithoutCategoriesInterface $productRewritesWithoutCategories
+     * @param ProductRewritesIncludedIntoCategoriesInterface $productRewritesIncludedIntoCategories
+     * @param CategoryRewritesInterface $categoryRewrites
+     * @param CmsPageRewritesInterface $cmsPageRewrites
+     * @param RedirectsRewritesInterface $redirectsRewrites
      * @codeCoverageIgnore
      * @SuppressWarnings(PHPMD.ExcessiveMethodLength)
      * @return void
      */
-    public function initTemporaryTable()
-    {
+    public function initTemporaryTable(
+        ProductRewritesWithoutCategoriesInterface $productRewritesWithoutCategories,
+        ProductRewritesIncludedIntoCategoriesInterface $productRewritesIncludedIntoCategories,
+        CategoryRewritesInterface $categoryRewrites,
+        CmsPageRewritesInterface $cmsPageRewrites,
+        RedirectsRewritesInterface $redirectsRewrites
+    ){
         if (self::$dataInitialized) {
             return;
         }
+        $this->productRewritesWithoutCategories = $productRewritesWithoutCategories;
+        $this->productRewritesIncludedIntoCategories = $productRewritesIncludedIntoCategories;
+        $this->categoryRewrites = $categoryRewrites;
+        $this->cmsPageRewrites = $cmsPageRewrites;
+        $this->redirectsRewrites = $redirectsRewrites;
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
         $this->create();

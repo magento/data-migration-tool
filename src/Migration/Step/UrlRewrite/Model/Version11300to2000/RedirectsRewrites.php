@@ -3,18 +3,17 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
+namespace Migration\Step\UrlRewrite\Model\Version11300to2000;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
-use Migration\Step\UrlRewrite\Model\Suffix;
 use Migration\Step\UrlRewrite\Model\TemporaryTableName;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CategoryRewritesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesInterface;
 
 /**
- * Class CategoryRewrites
+ * Class RedirectsRewrites
  */
-class CategoryRewrites implements CategoryRewritesInterface
+class RedirectsRewrites implements RedirectsRewritesInterface
 {
     /**
      * @var TemporaryTableName
@@ -32,28 +31,21 @@ class CategoryRewrites implements CategoryRewritesInterface
     private $sourceAdapter;
 
     /**
-     * @var string
-     */
-    private $suffix;
-
-    /**
      * @param Source $source
-     * @param Suffix $suffix
      * @param TemporaryTableName $temporaryTableName
      */
     public function __construct(
         Source $source,
-        Suffix $suffix,
         TemporaryTableName $temporaryTableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
-        $this->suffix = $suffix;
         $this->temporaryTableName = $temporaryTableName;
     }
 
+
     /**
-     * Fulfill temporary table with category url rewrites
+     * Fulfill temporary table with redirects
      *
      * @param array $urlRewriteIds
      * @return void
@@ -67,29 +59,60 @@ class CategoryRewrites implements CategoryRewritesInterface
                 'id' => 'IFNULL(NULL, NULL)',
                 'url_rewrite_id' =>'r.url_rewrite_id',
                 'redirect_id' => 'IFNULL(NULL, NULL)',
-                'request_path' => sprintf("CONCAT(`r`.`request_path`, %s)", $this->suffix->getSuffix('category', 'r')),
+                'request_path' => 'r.request_path',
                 'target_path' => 'r.target_path',
                 'is_system' => 'r.is_system',
-                'store_id' => 'r.store_id',
-                'entity_type' => "trim('category')",
-                'redirect_type' => "trim('0')",
+                'store_id' => "s.store_id",
+                'entity_type' => "trim('custom')",
+                'redirect_type' => "(SELECT CASE eurr.options WHEN 'RP' THEN 301 WHEN 'R' THEN 302 ELSE 0 END)",
                 'product_id' => "trim('0')",
-                'category_id' => "c.entity_id",
+                'category_id' => "trim('0')",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('3')",
+                'priority' => "trim('2')",
                 'processed' => "trim('0')"
             ]
         );
         $select->join(
-            ['c' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-            'r.value_id = c.value_id',
+            ['eurrr' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect_rewrite')],
+            'eurrr.url_rewrite_id = r.url_rewrite_id',
+            []
+        );
+        $select->join(
+            ['eurr' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
+            'eurrr.redirect_id = eurr.redirect_id',
+            []
+        );
+        $select->join(
+            ['s' => $this->source->addDocumentPrefix('core_store')],
+            's.store_id > 0',
             []
         );
         if (!empty($urlRewriteIds)) {
             $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
         }
-        $query = $select->where('`r`.`entity_type` = 2')
+        $query = $select
             ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
         $select->getAdapter()->query($query);
+    }
+
+    /**
+     * Fulfill temporary table with redirects
+     *
+     * @param array $redirectIds
+     * @return void
+     */
+    public function collectRedirects(array $redirectIds = [])
+    {
+        return;
+    }
+
+    /**
+     * Remove duplicated url redirects
+     *
+     * @return array
+     */
+    public function removeDuplicatedUrlRedirects()
+    {
+        return[];
     }
 }

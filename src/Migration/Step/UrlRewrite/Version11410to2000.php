@@ -283,7 +283,13 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
     {
         $this->destination->clearDocument(self::DESTINATION);
         $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
-        $this->temporaryTable->initTemporaryTable();
+        $this->temporaryTable->initTemporaryTable(
+            $this->productRewritesWithoutCategories,
+            $this->productRewritesIncludedIntoCategories,
+            $this->categoryRewrites,
+            $this->cmsPageRewrites,
+            $this->redirectsRewrites
+        );
         $this->temporaryTable->migrateRewrites();
         return true;
     }
@@ -324,7 +330,13 @@ class Version11410to2000 extends DatabaseStage implements StageInterface, Rollba
             }
         }
         $this->progress->finish();
-        $this->temporaryTable->initTemporaryTable();
+        $this->temporaryTable->initTemporaryTable(
+            $this->productRewritesWithoutCategories,
+            $this->productRewritesIncludedIntoCategories,
+            $this->categoryRewrites,
+            $this->cmsPageRewrites,
+            $this->redirectsRewrites
+        );
         return !$errors && !$this->processDuplicatesList();
     }
 

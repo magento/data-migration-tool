@@ -10,13 +10,14 @@ use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\Suffix;
 use Migration\Step\UrlRewrite\Model\TemporaryTableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesIncludedIntoCategoriesInterface;
 
 /**
  * Class ProductRewritesIncludedIntoCategories is for product url rewrites included into categories
  *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
-class ProductRewritesIncludedIntoCategories
+class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIntoCategoriesInterface
 {
     /**
      * @var TemporaryTableName
@@ -281,28 +282,28 @@ class ProductRewritesIncludedIntoCategories
         }
         $select = $this->sourceAdapter->getSelect();
         $select->from(
-                ['ccei' => $this->source->addDocumentPrefix('catalog_category_entity_int')],
-                []
-            )->join(
-                ['cce' => $this->source->addDocumentPrefix('catalog_category_entity')],
-                'ccei.entity_id = cce.entity_id',
-                ['entity_id', 'path']
-            )->join(
-                ['eet' => $this->source->addDocumentPrefix('eav_entity_type')],
-                'eet.entity_type_id = ccei.entity_type_id',
-                []
-            )->join(
-                ['cceuk' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
-                'cceuk.entity_id = ccei.entity_id and cceuk.store_id = 0',
-                []
-            )->join(
-                ['eur' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-                'eur.value_id = cceuk.value_id and eur.entity_type = 2',
-                ['request_path']
-            )->where('ccei.attribute_id = ?', $this->getAnchorAttributeId()
-            )->where('ccei.value = 1'
-            )->where('eet.entity_type_code = ?', $this->categoryEntityTypeCode
-            )->group('eur.value_id');
+            ['ccei' => $this->source->addDocumentPrefix('catalog_category_entity_int')],
+            []
+        )->join(
+            ['cce' => $this->source->addDocumentPrefix('catalog_category_entity')],
+            'ccei.entity_id = cce.entity_id',
+            ['entity_id', 'path']
+        )->join(
+            ['eet' => $this->source->addDocumentPrefix('eav_entity_type')],
+            'eet.entity_type_id = ccei.entity_type_id',
+            []
+        )->join(
+            ['cceuk' => $this->source->addDocumentPrefix('catalog_category_entity_url_key')],
+            'cceuk.entity_id = ccei.entity_id and cceuk.store_id = 0',
+            []
+        )->join(
+            ['eur' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            'eur.value_id = cceuk.value_id and eur.entity_type = 2',
+            ['request_path']
+        )->where('ccei.attribute_id = ?', $this->getAnchorAttributeId()
+        )->where('ccei.value = 1'
+        )->where('eet.entity_type_code = ?', $this->categoryEntityTypeCode
+        )->group('eur.value_id');
 
         $anchorCategories = $select->getAdapter()->fetchAll($select);
         if (!$anchorCategories) {

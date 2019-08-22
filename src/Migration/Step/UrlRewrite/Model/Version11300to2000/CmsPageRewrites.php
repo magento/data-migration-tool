@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
+namespace Migration\Step\UrlRewrite\Model\Version11300to2000;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;

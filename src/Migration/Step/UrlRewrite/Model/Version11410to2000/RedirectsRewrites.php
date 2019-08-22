@@ -8,11 +8,12 @@ namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\TemporaryTableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesInterface;
 
 /**
  * Class RedirectsRewrites
  */
-class RedirectsRewrites
+class RedirectsRewrites implements RedirectsRewritesInterface
 {
     /**
      * @var TemporaryTableName

@@ -10,13 +10,14 @@ use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\Suffix;
 use Migration\Step\UrlRewrite\Model\TemporaryTableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWithoutCategoriesInterface;
 
 /**
  * Class ProductRewritesWithoutCategories is for product url rewrites without nested categories
  *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
-class ProductRewritesWithoutCategories
+class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategoriesInterface
 {
     /**
      * @var TemporaryTableName
