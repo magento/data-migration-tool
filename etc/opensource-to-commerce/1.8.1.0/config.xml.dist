@@ -102,6 +102,10 @@
             <delta>Migration\Step\TierPrice\Delta</delta>
             <volume>Migration\Step\TierPrice\Volume</volume>
         </step>
+        <step title="Url Rewrite Step">
+            <delta>Migration\Step\UrlRewrite\Version191to2000Delta</delta>
+            <volume>Migration\Step\UrlRewrite\Version191to2000</volume>
+        </step>
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGrids\Delta</delta>
             <volume>Migration\Step\OrderGrids\Volume</volume>
