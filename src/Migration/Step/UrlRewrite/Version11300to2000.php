@@ -15,6 +15,8 @@ use Migration\Step\UrlRewrite\Model\Version11300to2000\ProductRewritesIncludedIn
 use Migration\Step\UrlRewrite\Model\Version11300to2000\CategoryRewrites;
 use Migration\Step\UrlRewrite\Model\Version11300to2000\CmsPageRewrites;
 use Migration\Step\UrlRewrite\Model\Version11300to2000\RedirectsRewrites;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TemporaryTable;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
 
 /**
  * Class Version11300to2000
@@ -22,11 +24,13 @@ use Migration\Step\UrlRewrite\Model\Version11300to2000\RedirectsRewrites;
  */
 class Version11300to2000 extends DatabaseStage implements StageInterface, RollbackInterface
 {
-    const DESTINATION = 'url_rewrite';
-    const DESTINATION_PRODUCT_CATEGORY = 'catalog_url_rewrite_product_category';
+    /**
+     * @var TableName
+     */
+    protected $tableName;
 
     /**
-     * @var Model\TemporaryTable
+     * @var TemporaryTable
      */
     protected $temporaryTable;
 
@@ -216,7 +220,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      * @param CmsPageRewrites $cmsPageRewrites
      * @param RedirectsRewrites $redirectsRewrites
      * @param Model\Suffix $suffix
-     * @param Model\TemporaryTable $temporaryTable
+     * @param TemporaryTable $temporaryTable
+     * @param TableName $tableName
      * @param string $stage
      * @throws \Migration\Exception
      */
@@ -235,7 +240,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         CmsPageRewrites $cmsPageRewrites,
         RedirectsRewrites $redirectsRewrites,
         Model\Suffix $suffix,
-        Model\TemporaryTable $temporaryTable,
+        TemporaryTable $temporaryTable,
+        TableName $tableName,
         $stage
     ) {
         $this->progress = $progress;
@@ -245,6 +251,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
         $this->recordCollectionFactory = $recordCollectionFactory;
         $this->recordFactory = $recordFactory;
         $this->temporaryTable = $temporaryTable;
+        $this->tableName = $tableName;
         $this->stage = $stage;
         $this->helper = $helper;
         $this->productRewritesWithoutCategories = $productRewritesWithoutCategories;
@@ -276,8 +283,8 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     protected function data()
     {
-        $this->destination->clearDocument(self::DESTINATION);
-        $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
+        $this->destination->clearDocument($this->tableName->getDestinationTableName());
+        $this->destination->clearDocument($this->tableName->getDestinationProductCategoryTableName());
         $this->temporaryTable->initTemporaryTable(
             $this->productRewritesWithoutCategories,
             $this->productRewritesIncludedIntoCategories,
@@ -394,7 +401,7 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
      */
     public function rollback()
     {
-        $this->destination->clearDocument(self::DESTINATION);
-        $this->destination->clearDocument(self::DESTINATION_PRODUCT_CATEGORY);
+        $this->destination->clearDocument($this->tableName->getDestinationTableName());
+        $this->destination->clearDocument($this->tableName->getDestinationProductCategoryTableName());
     }
 }

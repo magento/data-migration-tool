@@ -3,17 +3,23 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\UrlRewrite\Model\VersionCommerceInterface;
+namespace Migration\Step\UrlRewrite\Model\VersionCommerce;
+
+use Magento\Framework\Db\Select as DbSelect;
+use Migration\ResourceModel\Source;
+use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
+use \Migration\Step\UrlRewrite\Model\Suffix;
+use \Migration\Step\UrlRewrite\Model\TemporaryTable;
 
 /**
- * Interface ProductRewritesIncludedIntoCategories is for product url rewrites included into categories
+ * Interface ProductRewritesWithoutCategories is for product url rewrites without nested categories
  *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
-interface ProductRewritesIncludedIntoCategoriesInterface
+interface ProductRewritesWithoutCategoriesInterface
 {
     /**
-     * Return query for retrieving product url rewrites for stores when a product was saved for default scope
+     * Return query for retrieving product url rewrites when a product is saved for default scope
      *
      * @param array $urlRewriteIds
      * @return array

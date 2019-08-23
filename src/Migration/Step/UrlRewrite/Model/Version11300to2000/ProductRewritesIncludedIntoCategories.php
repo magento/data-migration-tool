@@ -9,8 +9,8 @@ use Magento\Framework\Db\Select as Select;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\Suffix;
-use Migration\Step\UrlRewrite\Model\TemporaryTable;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesIncludedIntoCategoriesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\ProductRewritesIncludedIntoCategoriesInterface;
 
 /**
  * Class ProductRewritesIncludedIntoCategories is for product url rewrites included into categories
@@ -20,9 +20,9 @@ use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesIncl
 class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIntoCategoriesInterface
 {
     /**
-     * @var TemporaryTable
+     * @var TableName
      */
-    private $temporaryTable;
+    private $tableName;
 
     /**
      * @var Source
@@ -62,17 +62,17 @@ class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIn
     /**
      * @param Source $source
      * @param Suffix $suffix
-     * @param TemporaryTable $temporaryTable
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
         Suffix $suffix,
-        TemporaryTable $temporaryTable
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->suffix = $suffix;
-        $this->temporaryTable = $temporaryTable;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -100,7 +100,7 @@ class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIn
         foreach ($selects as $select) {
             $queries[] = $this->sourceAdapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
                 ->where('result.request_path IS NOT NULL')
-                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+                ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         }
         return $queries;
     }
@@ -129,7 +129,7 @@ class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIn
         foreach ($selects as $select) {
             $queries[] = $this->sourceAdapter->getSelect()->from(['result' => new \Zend_Db_Expr("($select)")])
                 ->where('result.request_path IS NOT NULL')
-                ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+                ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         }
         return $queries;
     }

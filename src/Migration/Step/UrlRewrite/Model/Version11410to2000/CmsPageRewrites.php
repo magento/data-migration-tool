@@ -7,8 +7,8 @@ namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
-use Migration\Step\UrlRewrite\Model\TemporaryTableName;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CmsPageRewritesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\CmsPageRewritesInterface;
 
 /**
  * Class CmsPageRewrites
@@ -26,9 +26,9 @@ class CmsPageRewrites implements CmsPageRewritesInterface
     protected $cmsPageStoreTableName = 'cms_page_store';
 
     /**
-     * @var TemporaryTableName
+     * @var TableName
      */
-    private $temporaryTableName;
+    private $tableName;
 
     /**
      * @var Source
@@ -42,15 +42,15 @@ class CmsPageRewrites implements CmsPageRewritesInterface
 
     /**
      * @param Source $source
-     * @param TemporaryTableName $temporaryTableName
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
-        TemporaryTableName $temporaryTableName
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
-        $this->temporaryTableName = $temporaryTableName;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -84,7 +84,7 @@ class CmsPageRewrites implements CmsPageRewritesInterface
             'cps.page_id = cp.page_id',
             []
         )->group(['request_path', 'cps.store_id']);
-        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         $select->getAdapter()->query($query);
     }
 }

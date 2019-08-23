@@ -7,8 +7,8 @@ namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
-use Migration\Step\UrlRewrite\Model\TemporaryTableName;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\RedirectsRewritesInterface;
 
 /**
  * Class RedirectsRewrites
@@ -16,9 +16,9 @@ use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesIn
 class RedirectsRewrites implements RedirectsRewritesInterface
 {
     /**
-     * @var TemporaryTableName
+     * @var TableName
      */
-    private $temporaryTableName;
+    private $tableName;
 
     /**
      * @var Source
@@ -32,15 +32,15 @@ class RedirectsRewrites implements RedirectsRewritesInterface
 
     /**
      * @param Source $source
-     * @param TemporaryTableName $temporaryTableName
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
-        TemporaryTableName $temporaryTableName
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
-        $this->temporaryTableName = $temporaryTableName;
+        $this->tableName = $tableName;
     }
 
 
@@ -77,7 +77,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
             $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
         }
         $query = $select->where('`r`.`entity_type` = 1')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         $select->getAdapter()->query($query);
     }
 
@@ -130,7 +130,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
         if (!empty($redirectIds)) {
             $select->where('r.redirect_id in (?)', $redirectIds);
         }
-        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
+        $query = $select->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         $adapter->query($query);
     }
 
@@ -144,7 +144,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
         $select = $this->sourceAdapter->getSelect();
         /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
         $adapter = $select->getAdapter();
-        $select->from(['t' => $this->source->addDocumentPrefix($this->temporaryTableName->getName())],['id']);
+        $select->from(['t' => $this->source->addDocumentPrefix($this->tableName->getTemporaryTableName())],['id']);
         $select->join(
             ['eurr' => $this->source->addDocumentPrefix('enterprise_url_rewrite_redirect')],
             'eurr.identifier = t.request_path and eurr.store_id = t.store_id',
@@ -152,7 +152,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
         );
         if ($duplicatedRecords = $adapter->fetchCol($select)) {
             $this->source->deleteRecords(
-                $this->source->addDocumentPrefix($this->temporaryTableName->getName()),
+                $this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()),
                 'id',
                 $duplicatedRecords
             );

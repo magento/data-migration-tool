@@ -9,8 +9,8 @@ use Magento\Framework\Db\Select as DbSelect;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\Suffix;
-use Migration\Step\UrlRewrite\Model\TemporaryTable;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWithoutCategoriesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\ProductRewritesWithoutCategoriesInterface;
 
 /**
  * Class ProductRewritesWithoutCategories is for product url rewrites without nested categories
@@ -20,9 +20,9 @@ use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWith
 class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategoriesInterface
 {
     /**
-     * @var TemporaryTable
+     * @var TableName
      */
-    private $temporaryTable;
+    private $tableName;
 
     /**
      * @var Source
@@ -35,19 +35,24 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
     private $sourceAdapter;
 
     /**
+     * @var Suffix
+     */
+    private $suffix;
+
+    /**
      * @param Source $source
      * @param Suffix $suffix
-     * @param TemporaryTable $temporaryTable
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
         Suffix $suffix,
-        TemporaryTable $temporaryTable
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->suffix = $suffix;
-        $this->temporaryTable = $temporaryTable;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -109,7 +114,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
         }
         $query = $select
             ->where('`ecpr`.`store_id` = 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         return [$query];
     }
 
@@ -160,7 +165,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
         }
         $query = $select
             ->where('`ecpr`.`store_id` > 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         return [$query];
     }
 

@@ -9,8 +9,8 @@ use Magento\Framework\Db\Select as DbSelect;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
 use Migration\Step\UrlRewrite\Model\Suffix;
-use Migration\Step\UrlRewrite\Model\TemporaryTableName;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWithoutCategoriesInterface;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\ProductRewritesWithoutCategoriesInterface;
 
 /**
  * Class ProductRewritesWithoutCategories is for product url rewrites without nested categories
@@ -20,9 +20,9 @@ use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWith
 class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategoriesInterface
 {
     /**
-     * @var TemporaryTableName
+     * @var TableName
      */
-    private $temporaryTableName;
+    private $tableName;
 
     /**
      * @var Source
@@ -37,17 +37,17 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
     /**
      * @param Source $source
      * @param Suffix $suffix
-     * @param TemporaryTableName $temporaryTableName
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
         Suffix $suffix,
-        TemporaryTableName $temporaryTableName
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->suffix = $suffix;
-        $this->temporaryTableName = $temporaryTableName;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -104,7 +104,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
         }
         $query = $select->where('`r`.`entity_type` = 3')
             ->where('`r`.`store_id` = 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         return [$query];
     }
 
@@ -150,7 +150,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
         }
         $query = $select->where('`r`.`entity_type` = 3')
             ->where('`r`.`store_id` > 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTableName->getName()));
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
         return [$query];
     }
 

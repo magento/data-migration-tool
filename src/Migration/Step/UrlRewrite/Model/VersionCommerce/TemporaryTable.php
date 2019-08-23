@@ -3,7 +3,7 @@
  * Copyright © Magento, Inc. All rights reserved.
  * See COPYING.txt for license details.
  */
-namespace Migration\Step\UrlRewrite\Model;
+namespace Migration\Step\UrlRewrite\Model\VersionCommerce;
 
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
@@ -11,12 +11,7 @@ use Migration\Reader\MapInterface;
 use Migration\ResourceModel\Document;
 use Migration\Step\UrlRewrite\Helper;
 use Migration\ResourceModel\Record\Collection;
-use Migration\Step\UrlRewrite\Version11410to2000;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesWithoutCategoriesInterface;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\ProductRewritesIncludedIntoCategoriesInterface;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CategoryRewritesInterface;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\CmsPageRewritesInterface;
-use Migration\Step\UrlRewrite\Model\VersionCommerceInterface\RedirectsRewritesInterface;
+use Migration\Step\UrlRewrite\Model\Suffix;
 
 /**
  * Class TemporaryTable creates a table where all url rewrites will be collected
@@ -29,9 +24,9 @@ class TemporaryTable
     private $sourceAdapter;
 
     /**
-     * @var string
+     * @var TableName
      */
-    private $temporaryTableName = '';
+    private $tableName;
 
     /**
      * @var array
@@ -136,7 +131,16 @@ class TemporaryTable
     private $resultMessages = [];
 
     /**
+     * @param \Migration\App\ProgressBar\LogLevelProcessor $progress
+     * @param \Migration\Logger\Logger $logger
+     * @param \Migration\Config $config
      * @param Source $source
+     * @param \Migration\ResourceModel\Destination $destination
+     * @param \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory
+     * @param \Migration\ResourceModel\RecordFactory $recordFactory
+     * @param Helper $helper
+     * @param TableName $tableName
+     * @param Suffix $suffix
      */
     public function __construct(
         \Migration\App\ProgressBar\LogLevelProcessor $progress,
@@ -147,7 +151,7 @@ class TemporaryTable
         \Migration\ResourceModel\Record\CollectionFactory $recordCollectionFactory,
         \Migration\ResourceModel\RecordFactory $recordFactory,
         Helper $helper,
-        TemporaryTableName $temporaryTableName,
+        TableName $tableName,
         Suffix $suffix
     ) {
         $this->progress = $progress;
@@ -160,7 +164,7 @@ class TemporaryTable
         $this->suffix = $suffix;
         $this->configReader = $config;
         $this->sourceAdapter = $this->source->getAdapter();
-        $this->temporaryTableName = $temporaryTableName;
+        $this->tableName = $tableName;
     }
 
     /**
@@ -170,7 +174,7 @@ class TemporaryTable
      */
     public function getName()
     {
-        return $this->temporaryTableName->getName();
+        return $this->tableName->getTemporaryTableName();
     }
 
     /**
@@ -268,8 +272,12 @@ class TemporaryTable
     {
         $this->progress->start($this->getIterationsCount());
         $sourceDocument = $this->source->getDocument($this->getName());
-        $destinationDocument = $this->destination->getDocument(Version11410to2000::DESTINATION);
-        $destProductCategory = $this->destination->getDocument(Version11410to2000::DESTINATION_PRODUCT_CATEGORY);
+        $destinationDocument = $this->destination->getDocument(
+            $this->tableName->getDestinationTableName()
+        );
+        $destProductCategory = $this->destination->getDocument(
+            $this->tableName->getDestinationProductCategoryTableName()
+        );
         $duplicates = $this->getDuplicatesList();
         if (!empty($duplicates) && !empty($this->configReader->getOption('auto_resolve_urlrewrite_duplicates'))
             && empty($this->duplicateIndex)

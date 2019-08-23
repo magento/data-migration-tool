@@ -12,7 +12,8 @@ use Migration\Reader\MapFactory;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel;
-use Migration\Step\UrlRewrite\Model\TemporaryTable;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TemporaryTable;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
 use Migration\Step\UrlRewrite\Model\Version191to2000\Transformer;
 use Migration\Step\UrlRewrite\Model\Version11300to2000\ProductRewritesWithoutCategories;
 use Migration\Step\UrlRewrite\Model\Version11300to2000\ProductRewritesIncludedIntoCategories;
@@ -66,9 +67,14 @@ class Version11300to2000Delta extends AbstractDelta
     private $cmsPageRewrites;
 
     /**
+     * @var TableName
+     */
+    protected $tableName;
+
+    /**
      * @var TemporaryTable
      */
-    private $temporaryTable;
+    protected $temporaryTable;
 
     /**
      * @var
@@ -83,7 +89,8 @@ class Version11300to2000Delta extends AbstractDelta
      * @param Destination $destination
      * @param ResourceModel\RecordFactory $recordFactory
      * @param \Migration\RecordTransformerFactory $recordTransformerFactory
-     * @param Transformer $transformer
+     * @param TemporaryTable $temporaryTable
+     * @param TableName $tableName
      * @param TemporaryTable $temporaryTable
      * @param ProductRewritesWithoutCategories $productRewritesWithoutCategories
      * @param ProductRewritesIncludedIntoCategories $productRewritesIncludedIntoCategories
@@ -101,6 +108,7 @@ class Version11300to2000Delta extends AbstractDelta
         \Migration\RecordTransformerFactory $recordTransformerFactory,
         Transformer $transformer,
         TemporaryTable $temporaryTable,
+        TableName $tableName,
         ProductRewritesWithoutCategories $productRewritesWithoutCategories,
         ProductRewritesIncludedIntoCategories $productRewritesIncludedIntoCategories,
         CategoryRewrites $categoryRewrites,
@@ -109,6 +117,7 @@ class Version11300to2000Delta extends AbstractDelta
     ) {
         $this->transformer = $transformer;
         $this->temporaryTable = $temporaryTable;
+        $this->tableName = $tableName;
         $this->productRewritesWithoutCategories = $productRewritesWithoutCategories;
         $this->productRewritesIncludedIntoCategories = $productRewritesIncludedIntoCategories;
         $this->categoryRewrites = $categoryRewrites;
@@ -132,7 +141,14 @@ class Version11300to2000Delta extends AbstractDelta
     {
         parent::perform();
         if ($this->urlRewritesChangedFlag) {
-            $this->saveCmsPageRewrites();
+            $this->removeUrlRewrites();
+            $this->temporaryTable->initTemporaryTable(
+                $this->productRewritesWithoutCategories,
+                $this->productRewritesIncludedIntoCategories,
+                $this->categoryRewrites,
+                $this->cmsPageRewrites,
+                $this->redirectsRewrites
+            );
             $this->temporaryTable->migrateRewrites();
         }
         return true;
@@ -151,25 +167,7 @@ class Version11300to2000Delta extends AbstractDelta
      */
     public function processDeletedRecords($documentName, $idKeys, $destinationName)
     {
-        $removedIds = [];
-        $page = 0;
-        $getProcessed = $documentName == 'catalog_category_product' ? true : false;
-        $this->destination->getAdapter()->setForeignKeyChecks(1);
-        while (!empty($items = $this->source->getDeletedRecords($documentName, $idKeys, $page++, $getProcessed))) {
-            echo('.');
-            $urlRewriteIds = $this->getUrlRewriteIds($documentName, $items);
-            $urlRedirectIds = $this->getUrlRedirectIds($documentName, $items);
-            $removedIds = array_merge(
-                $removedIds,
-                $this->removeChangedUrlRewrites($urlRewriteIds),
-                $this->removeChangedUrlRedirects($urlRedirectIds)
-            );
-            $this->removeChangedUrlRewritesDestination($removedIds);
-            $documentNameDelta = $this->source->getDeltaLogName($documentName);
-            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
-        }
-        $this->destination->getAdapter()->setForeignKeyChecks(0);
+        $this->urlRewritesChangedFlag = true;
     }
 
     /**
@@ -177,186 +175,27 @@ class Version11300to2000Delta extends AbstractDelta
      */
     public function processChangedRecords($documentName, $idKeys)
     {
-        $removedIds = [];
-        $page = 0;
-        $getProcessed = $documentName == 'catalog_category_product' ? true : false;
-        while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys, $page++, $getProcessed))) {
-            echo('.');
-            $urlRewriteIds = $this->getUrlRewriteIds($documentName, $items);
-            $urlRedirectIds = $this->getUrlRedirectIds($documentName, $items);
-            $removedIds = array_merge(
-                $removedIds,
-                $this->removeChangedUrlRewrites($urlRewriteIds),
-                $this->removeChangedUrlRedirects($urlRedirectIds)
-            );
-            if($urlRewriteIds) {
-                $this->collectProductRewrites($urlRewriteIds);
-                $this->categoryRewrites->collectRewrites($urlRewriteIds);
-                $this->redirectsRewrites->collectRewrites($urlRewriteIds);
-
-            }
-            $this->removeChangedUrlRewritesDestination($removedIds);
-            $documentNameDelta = $this->source->getDeltaLogName($documentName);
-            $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
-            $this->urlRewritesChangedFlag = true;
-        };
+        $this->urlRewritesChangedFlag = true;
     }
 
     /**
-     * Fulfill temporary table with product url rewrites
-     *
-     * @param array $urlRewriteIds
+     * Remove url rewrites
      */
-    protected function collectProductRewrites(array $urlRewriteIds = [])
+    private function removeUrlRewrites()
     {
-        /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
-        $adapter = $this->source->getAdapter()->getSelect()->getAdapter();
-        $queryExecute = function ($queries) use ($adapter) {
-            foreach ($queries as $query) {
-                $adapter->query($query);
-            }
-        };
-        $queryExecute(
-            $this->productRewritesWithoutCategories->getQueryProductsSavedForDefaultScope($urlRewriteIds)
+        /** @var \Magento\Framework\DB\Select $select */
+        $select = $this->source->getAdapter()->getSelect();
+        $select->from(['r' => $this->source->addDocumentPrefix($this->temporaryTable->getName())], ['id']);
+        $urlRewriteIdsToRemove = $select->getAdapter()->fetchCol($select);
+        $this->destination->deleteRecords(
+            $this->destination->addDocumentPrefix($this->tableName->getDestinationTableName()),
+            'url_rewrite_id',
+            $urlRewriteIdsToRemove
         );
-        $queryExecute(
-            $this->productRewritesWithoutCategories->getQueryProductsSavedForParticularStoreView($urlRewriteIds)
+        $this->destination->deleteRecords(
+            $this->destination->addDocumentPrefix($this->tableName->getDestinationProductCategoryTableName()),
+            'url_rewrite_id',
+            $urlRewriteIdsToRemove
         );
-        $queryExecute(
-            $this->productRewritesIncludedIntoCategories->getQueryProductsSavedForDefaultScope($urlRewriteIds)
-        );
-        $queryExecute(
-            $this->productRewritesIncludedIntoCategories->getQueryProductsSavedForParticularStoreView($urlRewriteIds)
-        );
-    }
-
-    /**
-     * Save Cms Page Rewrites
-     */
-    private function saveCmsPageRewrites()
-    {
-        /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
-        $adapter = $this->source->getAdapter()->getSelect()->getAdapter();
-        $adapter->delete(
-            $this->source->addDocumentPrefix($this->temporaryTable->getName()),
-            "entity_type = 'cms-page'"
-        );
-        /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
-        $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
-        $adapter->delete(
-            $this->destination->addDocumentPrefix(Version11410to2000::DESTINATION),
-            "entity_type = 'cms-page'"
-        );
-        $this->cmsPageRewrites->collectRewrites();
-    }
-
-    /**
-     * Remove changed url rewrites in temporary table
-     *
-     * @param array $urlRewriteIds
-     * @return array
-     */
-    private function removeChangedUrlRewrites(array $urlRewriteIds)
-    {
-        $urlRewriteIdsToRemove = [];
-        if ($urlRewriteIds) {
-            /** @var \Magento\Framework\DB\Select $select */
-            $select = $this->source->getAdapter()->getSelect();
-            $select->from(['r' => $this->source->addDocumentPrefix($this->temporaryTable->getName())], ['id']);
-            $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
-            $urlRewriteIdsToRemove = $select->getAdapter()->fetchCol($select);
-            $this->source->deleteRecords(
-                $this->source->addDocumentPrefix($this->temporaryTable->getName()),
-                'id',
-                $urlRewriteIdsToRemove
-            );
-        }
-        return $urlRewriteIdsToRemove;
-    }
-
-    /**
-     * Remove changed url rewrites in destination table
-     *
-     * @param array $urlRewriteIds
-     */
-    private function removeChangedUrlRewritesDestination(array $urlRewriteIds)
-    {
-        if ($urlRewriteIds) {
-            $this->destination->deleteRecords(
-                $this->destination->addDocumentPrefix(Version11410to2000::DESTINATION),
-                'url_rewrite_id',
-                $urlRewriteIds
-            );
-        }
-    }
-
-    /**
-     * Remove changed url redirects in temporary table
-     *
-     * @param array $redirectIds
-     * @return array
-     */
-    private function removeChangedUrlRedirects(array $redirectIds)
-    {
-        $redirectIdsToRemove = [];
-        if ($redirectIds) {
-            /** @var \Magento\Framework\DB\Select $select */
-            $select = $this->source->getAdapter()->getSelect();
-            $select->from(['r' => $this->source->addDocumentPrefix($this->temporaryTable->getName())], ['id']);
-            $select->where('r.redirect_id in (?)', $redirectIds);
-            $redirectIdsToRemove = $select->getAdapter()->fetchCol($select);
-            $this->source->deleteRecords(
-                $this->source->addDocumentPrefix($this->temporaryTable->getName()),
-                'id',
-                $redirectIdsToRemove
-            );
-        }
-        return $redirectIdsToRemove;
-    }
-
-    /**
-     * Get url rewrite ids
-     *
-     * @param $document
-     * @param $items
-     * @return array
-     */
-    private function getUrlRewriteIds($document, $items)
-    {
-        if ($document == 'enterprise_url_rewrite') {
-            $urlRewriteIds = array_column($items, 'url_rewrite_id');
-            return $urlRewriteIds;
-        } elseif ($document == 'catalog_category_product') {
-            $productIds = array_column($items, 'product_id');
-            /** @var \Magento\Framework\DB\Select $select */
-            $select = $this->source->getAdapter()->getSelect();
-            $select->from(['cpeuk' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')], []);
-            $select->join(
-                ['eur' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
-                'eur.value_id = cpeuk.value_id',
-                ['url_rewrite_id']
-            );
-            $select->where('cpeuk.entity_id in (?)', $productIds);
-            $urlRewriteIds = $select->getAdapter()->fetchCol($select);
-            return $urlRewriteIds;
-        }
-        return [];
-    }
-
-    /**
-     * Get url redirect ids
-     *
-     * @param $document
-     * @param $items
-     * @return array
-     */
-    private function getUrlRedirectIds($document, $items)
-    {
-        if ($document == 'enterprise_url_rewrite_redirect') {
-            $urlRedirectIds = array_column($items, 'redirect_id');
-            return $urlRedirectIds;
-        }
-        return [];
     }
 }
