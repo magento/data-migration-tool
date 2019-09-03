@@ -113,7 +113,7 @@ class EntityTypeTextToVarcharMover
                 ['cpet' => $this->destination->addDocumentPrefix($this->productTextTypeTable)],
                 $fields
             )->where(
-                'cpet.attribute_id = (?)', $multiselectIds
+                'cpet.attribute_id in (?)', $multiselectIds
             );
         $this->destination->getAdapter()->insertFromSelect(
             $select,
