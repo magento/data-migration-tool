@@ -67,8 +67,7 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
-
+        $this->progress->start(0);
         $attributesError = false;
         try {
             $this->attributesDataToSkip->getSkippedAttributes();
@@ -76,17 +75,13 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $this->logger->error($e->getMessage());
             $attributesError = true;
         }
-
         $dstDocuments = [];
         $srcDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         foreach ($srcDocuments as $sourceDocumentName) {
             $dstDocuments[] = $this->map->getDocumentMap($sourceDocumentName, MapInterface::TYPE_SOURCE);
-            $this->progress->advance();
         }
-
         $this->check($srcDocuments, MapInterface::TYPE_SOURCE);
         $this->check($dstDocuments, MapInterface::TYPE_DEST);
-
         $this->progress->finish();
 
         return $this->checkForErrors() && $attributesError === false;

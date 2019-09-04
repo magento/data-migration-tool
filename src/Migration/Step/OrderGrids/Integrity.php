@@ -69,9 +69,9 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      */
     public function perform()
     {
-        $this->progress->start($this->getIterationsCount());
+        $errors = false;
+        $this->progress->start(0);
         foreach ($this->helper->getDocumentList() as $documentName) {
-            $this->progress->advance();
             $documentColumns = $this->helper->getDocumentColumns($documentName);
             $destinationDocumentStructure = array_keys($this->destination->getStructure($documentName)->getFields());
             foreach (array_diff($documentColumns, $destinationDocumentStructure) as $columnDiff) {
@@ -81,9 +81,12 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
                     $columnDiff
                 );
                 $this->logger->error($message);
+                $errors = true;
             }
         }
-        $this->progress->finish();
+        if (!$errors) {
+            $this->progress->finish();
+        }
         return $this->checkForErrors();
     }
 

@@ -302,13 +302,10 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
     protected function integrity()
     {
         $errors = false;
-        $this->progress->start(
-            count($this->structure[MapInterface::TYPE_SOURCE]) + count($this->structure[MapInterface::TYPE_DEST])
-        );
+        $this->progress->start(0);
         foreach ($this->structure as $resourceName => $documentList) {
             $resource = $resourceName == MapInterface::TYPE_SOURCE ? $this->source : $this->destination;
             foreach ($documentList as $documentName => $documentFields) {
-                $this->progress->advance();
                 $document = $resource->getDocument($documentName);
                 if ($document === false) {
                     $message = sprintf('%s table does not exist: %s', ucfirst($resourceName), $documentName);
@@ -331,7 +328,9 @@ class Version11300to2000 extends DatabaseStage implements StageInterface, Rollba
                 }
             }
         }
-        $this->progress->finish();
+        if (!$errors) {
+            $this->progress->finish();
+        }
         $this->temporaryTable->initTemporaryTable(
             $this->productRewritesWithoutCategories,
             $this->productRewritesIncludedIntoCategories,
