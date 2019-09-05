@@ -188,7 +188,7 @@ class Data implements StageInterface, RollbackInterface
         $this->progress->start($this->getIterationsCount());
         $this->migrateEntityTypes();
         $this->migrateAttributeSetsAndGroups();
-        $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address']);
+        $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address', 'catalog_category']);
         $this->migrateAttributes();
         $this->migrateAttributesExtended();
         $this->migrateEntityAttributes();
