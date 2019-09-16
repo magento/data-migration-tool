@@ -82,7 +82,7 @@ class Map implements MapInterface
 
         $configFile = file_exists($mapFile) ? $mapFile : $this->getRootDir() . $mapFile;
         if (!is_file($configFile)) {
-            throw new Exception('Invalid map filename: ' . $configFile);
+            throw new Exception('Invalid map filename: ' . $mapFile);
         }
 
         $xml = file_get_contents($configFile);
