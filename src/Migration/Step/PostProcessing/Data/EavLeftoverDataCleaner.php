@@ -58,7 +58,11 @@ class EavLeftoverDataCleaner
         }
         foreach ($this->eavLeftoverDataModel->getDocuments() as $document) {
             $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
-            $this->destination->deleteRecords($document, 'attribute_id', $attributeIds);
+            $this->destination->deleteRecords(
+                $this->destination->addDocumentPrefix($document),
+                'attribute_id',
+                $attributeIds
+            );
         }
     }
 

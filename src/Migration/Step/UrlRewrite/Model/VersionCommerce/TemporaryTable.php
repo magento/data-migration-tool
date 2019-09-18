@@ -327,7 +327,10 @@ class TemporaryTable
     {
         /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
         $adapter = $this->source->getAdapter()->getSelect()->getAdapter();
-        $adapter->update($this->getName(), ['processed' => '1'], ['id in (?)' => $ids]);
+        $adapter->update(
+            $this->source->addDocumentPrefix($this->getName()),
+            ['processed' => '1'], ['id in (?)' => $ids]
+        );
     }
 
     /**

@@ -123,7 +123,7 @@ class EntityTypeTextToVarcharMover
         );
         if ($multiselectIds) {
             $this->destination->deleteRecords(
-                $this->productTextTypeTable,
+                $this->destination->addDocumentPrefix($this->productTextTypeTable),
                 'attribute_id',
                 $multiselectIds
             );
