@@ -6,8 +6,8 @@
 namespace Migration\Step\ConfigurablePrices;
 
 use Migration\ResourceModel\Destination;
-use Migration\ResourceModel\Source;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class Helper
@@ -17,42 +17,35 @@ class Helper
     /**
      * @var Destination
      */
-    private $destination;
-
-    /**
-     * @var Source
-     */
-    private $source;
+    protected $destination;
 
     /**
      * @var array
      */
-    private $destinationRecordsCount = 0;
+    protected $destinationRecordsCount = 0;
 
     /**
      * @var string
      */
-    private $editionMigrate = '';
+    protected $editionMigrate = '';
 
     /**
-     * @var \Migration\ResourceModel\AdapterInterface
+     * @var ModuleListInterface
      */
-    private $sourceAdapter;
+    protected $moduleList;
 
     /**
      * @param Destination $destination
-     * @param Source $source
      * @param Config $config
      */
     public function __construct(
         Destination $destination,
-        Source $source,
-        Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
-        $this->source = $source;
-        $this->sourceAdapter = $this->source->getAdapter();
         $this->destination = $destination;
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -77,9 +70,11 @@ class Helper
      */
     public function getDestinationFields()
     {
-        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            ? 'entity_id'
-            : 'row_id';
+        $entityIdName = $this->editionMigrate !== Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            && $this->moduleList->has('Magento_CatalogStaging') === true
+            ? 'row_id'
+            : 'entity_id';
+
         return [
             'store_id' => 'catalog_product_entity_decimal',
             'value' => 'catalog_product_entity_decimal',
@@ -123,77 +118,5 @@ class Helper
     public function getDestinationRecordsCount()
     {
         return $this->destinationRecordsCount;
-    }
-
-
-    /**
-     * Get configurable price
-     *
-     * @param array $entityIds
-     * @return \Magento\Framework\DB\Select
-     */
-    public function getConfigurablePrice(array $entityIds = [])
-    {
-        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            ? 'entity_id'
-            : 'row_id';
-        $priceAttributeId = $this->getPriceAttributeId();
-        $entityIds = $entityIds ?: new \Zend_Db_Expr(
-            'select product_id from ' . $this->source->addDocumentPrefix('catalog_product_super_attribute')
-        );
-        $priceExpr = new \Zend_Db_Expr(
-            'IF(sup_ap.is_percent = 1, TRUNCATE(mt.value + (mt.value * sup_ap.pricing_value/100), 4), ' .
-            ' mt.value + SUM(sup_ap.pricing_value))'
-        );
-        $fields = [
-            'value' => $priceExpr,
-            'attribute_id' => new \Zend_Db_Expr($priceAttributeId)
-        ];
-        /** @var \Magento\Framework\DB\Select $select */
-        $select = $this->sourceAdapter->getSelect();
-        $select->from(['mt' => $this->source->addDocumentPrefix('catalog_product_entity_decimal')], $fields)
-            ->joinLeft(
-                ['sup_a' => $this->source->addDocumentPrefix('catalog_product_super_attribute')],
-                'mt.entity_id = product_id',
-                []
-            )
-            ->joinInner(
-                ['sup_ap' => $this->source->addDocumentPrefix('catalog_product_super_attribute_pricing')],
-                'sup_ap.product_super_attribute_id = sup_a.product_super_attribute_id',
-                []
-            )
-            ->joinInner(
-                ['supl' => $this->source->addDocumentPrefix('catalog_product_super_link')],
-                'mt.entity_id = supl.parent_id',
-                [$entityIdName => 'product_id']
-            )
-            ->joinInner(
-                ['pint' => $this->source->addDocumentPrefix('catalog_product_entity_int')],
-                'pint.entity_id = supl.product_id and pint.attribute_id = sup_a.attribute_id ' .
-                ' and pint.value = sup_ap.value_index',
-                []
-            )
-            ->joinInner(
-                ['cs' => $this->source->addDocumentPrefix('core_store')],
-                'cs.website_id = sup_ap.website_id',
-                ['store_id']
-            )
-            ->where('mt.entity_id in (?)', $entityIds)
-            ->where('mt.attribute_id = ?', $priceAttributeId)
-            ->group([$entityIdName, 'cs.store_id']);
-        ;
-        return $select;
-    }
-
-    /**
-     * Get price attribute id
-     *
-     * @return string
-     */
-    protected function getPriceAttributeId()
-    {
-        $select = $this->sourceAdapter->getSelect();
-        $select->from($this->source->addDocumentPrefix('eav_attribute'))->where('attribute_code = ?', 'price');
-        return $select->getAdapter()->fetchOne($select);
     }
 }
