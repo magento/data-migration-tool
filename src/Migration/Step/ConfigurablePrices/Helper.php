@@ -49,6 +49,7 @@ class Helper
      * @param Destination $destination
      * @param Source $source
      * @param Config $config
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         Destination $destination,
