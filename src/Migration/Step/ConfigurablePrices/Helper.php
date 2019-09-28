@@ -8,6 +8,7 @@ namespace Migration\Step\ConfigurablePrices;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class Helper
@@ -35,6 +36,11 @@ class Helper
     private $editionMigrate = '';
 
     /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
+
+    /**
      * @var \Migration\ResourceModel\AdapterInterface
      */
     private $sourceAdapter;
@@ -47,12 +53,14 @@ class Helper
     public function __construct(
         Destination $destination,
         Source $source,
-        Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->destination = $destination;
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -77,9 +85,10 @@ class Helper
      */
     public function getDestinationFields()
     {
-        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            ? 'entity_id'
-            : 'row_id';
+        $entityIdName = $this->editionMigrate !== Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            && $this->moduleList->has('Magento_CatalogStaging') === true
+            ? 'row_id'
+            : 'entity_id';
         return [
             'store_id' => 'catalog_product_entity_decimal',
             'value' => 'catalog_product_entity_decimal',
@@ -134,9 +143,10 @@ class Helper
      */
     public function getConfigurablePrice(array $entityIds = [])
     {
-        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            ? 'entity_id'
-            : 'row_id';
+        $entityIdName = $this->editionMigrate !== Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            && $this->moduleList->has('Magento_CatalogStaging') === true
+            ? 'row_id'
+            : 'entity_id';
         $priceAttributeId = $this->getPriceAttributeId();
         $entityIds = $entityIds ?: new \Zend_Db_Expr(
             'select product_id from ' . $this->source->addDocumentPrefix('catalog_product_super_attribute')
