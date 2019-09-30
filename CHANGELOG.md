@@ -1,3 +1,25 @@
+2.3.3
+=============
+* Improvements in Delta migration. Now it can migrate new or changed in admin panel products and categories
+* Added ability for Data Migration Tool to load map files outside its own directory   
+* Added support for versions:
+
+   * Magento Open Source: 2.3.3, 1.9.4.3
+   * Magento Commerce: 2.3.3, 1.14.4.3
+
+* Fixed bugs:
+
+   * Url rewrites duplicates resoled incorrect with several websites   
+   * Generation of URN in PhpStorm does not work for Data Migration Tool
+   * Error during migration from text type table to varchar type table when no custom multiselect attribute data exist
+   * Target Rules throws error on Delta migration
+   * Error message was hidden by progress bar during migration in UrlRewrites step 
+   * [Issue #646](https://github.com/magento/data-migration-tool/issues/646): Migrated products with multiselect attribute do not show in layered navigation
+   * [Issue #659](https://github.com/magento/data-migration-tool/issues/659): Error duplicate entry appears then core_store_group.name has duplicates
+   * [Issue #664](https://github.com/magento/data-migration-tool/issues/664): Custom category attributes disappear on category save after migration
+   * [Issue #708](https://github.com/magento/data-migration-tool/issues/708): Missing Table Prefix in PostProcessing Step 
+   * [Issue #715](https://github.com/magento/data-migration-tool/issues/715): StockSalesChannel does not remove original record from installation prior to insertion of new records 
+
 2.3.2
 =============
 * Added support for versions:
