@@ -7,6 +7,7 @@ namespace Migration\Step\UrlRewrite;
 
 use Migration\Reader\MapInterface;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class Helper
@@ -17,6 +18,11 @@ class Helper
      * @var string
      */
     protected $editionMigrate = '';
+
+    /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
 
     /**
      * Config data of staging module
@@ -31,11 +37,14 @@ class Helper
 
     /**
      * @param Config $config
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
-        \Migration\Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -70,6 +79,7 @@ class Helper
         if ($this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
             || $resourceType == MapInterface::TYPE_SOURCE
             || !in_array($tableName, $tablesStaging)
+            || $this->moduleList->has('Magento_CatalogStaging') === false
         ) {
             return $fields;
         }
