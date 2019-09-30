@@ -8,6 +8,7 @@ namespace Migration\Step\PostProcessing\Model;
 use Migration\ResourceModel;
 use Migration\Reader\GroupsFactory;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class EavLeftoverData
@@ -18,6 +19,11 @@ class AttributeSetLeftoverData
      * @var ResourceModel\Destination
      */
     private $destination;
+
+    /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
 
     /**
      * @var \Migration\Reader\Groups
@@ -37,11 +43,13 @@ class AttributeSetLeftoverData
     public function __construct(
         ResourceModel\Destination $destination,
         GroupsFactory $groupsFactory,
-        Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
         $this->destination = $destination;
         $this->readerDocument = $groupsFactory->create('eav_document_groups_file');
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -56,6 +64,7 @@ class AttributeSetLeftoverData
     {
         $documents = [];
         $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
             ? 'entity_id'
             : 'row_id';
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
