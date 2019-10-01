@@ -1785,6 +1785,27 @@
                 <document>inventory_geoname</document>
             </ignore>
             <ignore>
+                <document>admin_analytics_usage_version_log</document>
+            </ignore>
+            <ignore>
+                <document>scconnector_google_feed_cl</document>
+            </ignore>
+            <ignore>
+                <document>scconnector_google_remove_cl</document>
+            </ignore>
+            <ignore>
+                <document>temando_product_attribute_mapping</document>
+            </ignore>
+            <ignore>
+                <document>vertex_custom_option_flex_field</document>
+            </ignore>
+            <ignore>
+                <document>yotpo_rich_snippets</document>
+            </ignore>
+            <ignore>
+                <document>yotpo_sync</document>
+            </ignore>
+            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>
