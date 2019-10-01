@@ -1843,6 +1843,9 @@
                 <datatype>enterprise_catalogevent_event.date_end</datatype>
             </ignore>
             <ignore>
+                <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
             <ignore>

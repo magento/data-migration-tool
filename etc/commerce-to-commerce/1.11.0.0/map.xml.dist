@@ -1885,6 +1885,9 @@
                 <datatype>enterprise_catalogevent_event.date_end</datatype>
             </ignore>
             <ignore>
+                <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
             <ignore>
@@ -3311,6 +3314,12 @@
             </ignore>
             <ignore>
                 <field>catalog_product_bundle_option_value.parent_product_id</field>
+            </ignore>
+            <ignore>
+                <field>core_config_data.updated_at</field>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
