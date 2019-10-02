@@ -80,8 +80,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
                 'product_id' => "p.entity_id",
                 'category_id' => "trim('0')",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')",
-                'processed' => "trim('0')"
+                'priority' => "trim('4')"
             ]
         );
         $select->join(
@@ -136,8 +135,7 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
                 'product_id' => "p.entity_id",
                 'category_id' => "trim('0')",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')",
-                'processed' => "trim('0')"
+                'priority' => "trim('4')"
             ]
         );
         $select->join(

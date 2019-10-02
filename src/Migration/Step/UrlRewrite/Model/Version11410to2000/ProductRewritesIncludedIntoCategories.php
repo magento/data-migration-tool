@@ -173,8 +173,7 @@ class ProductRewritesIncludedIntoCategories implements ProductRewritesIncludedIn
                 'product_id' => "p.entity_id",
                 'category_id' => $config['category_id'] ?? 'c.category_id',
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('4')",
-                'processed' => "trim('0')"
+                'priority' => "trim('4')"
             ]
         );
         $select->join(

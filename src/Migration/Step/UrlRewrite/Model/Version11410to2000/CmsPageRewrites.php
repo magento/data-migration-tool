@@ -76,8 +76,7 @@ class CmsPageRewrites implements CmsPageRewritesInterface
                 'product_id' => "trim('0')",
                 'category_id' => "trim('0')",
                 'cms_page_id' => "cp.page_id",
-                'priority' => "trim('5')",
-                'processed' => "trim('0')"
+                'priority' => "trim('5')"
             ]
         )->joinLeft(
             ['cps' => $this->source->addDocumentPrefix($this->cmsPageStoreTableName)],

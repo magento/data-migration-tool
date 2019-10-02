@@ -69,8 +69,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
                 'product_id' => "trim('0')",
                 'category_id' => "trim('0')",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('2')",
-                'processed' => "trim('0')"
+                'priority' => "trim('2')"
             ]
         );
         if (!empty($urlRewriteIds)) {
@@ -123,8 +122,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
                 'product_id' => "r.product_id",
                 'category_id' => "r.category_id",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('1')",
-                'processed' => "trim('0')"
+                'priority' => "trim('1')"
             ]
         );
         if (!empty($redirectIds)) {

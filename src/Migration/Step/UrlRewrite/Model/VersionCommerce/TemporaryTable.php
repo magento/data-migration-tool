@@ -249,12 +249,6 @@ class TemporaryTable
                 'priority',
                 \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER
             )
-            ->addColumn(
-                'processed',
-                \Magento\Framework\DB\Ddl\Table::TYPE_SMALLINT,
-                null,
-                ['unsigned' => true, 'nullable' => false, 'default' => '0']
-            )
             ->addIndex(
                 'url_rewrite',
                 ['request_path', 'target_path', 'store_id'],
@@ -286,10 +280,8 @@ class TemporaryTable
                 $this->duplicateIndex[strtolower($row['request_path'])][] = $row;
             }
         }
-        $rewritesIds = [];
-        $condition = new \Zend_Db_Expr('processed = 0');
         $pageNumber = 0;
-        while ($data = $this->source->getRecords($sourceDocument->getName(), $pageNumber, null, $condition)) {
+        while ($data = $this->source->getRecords($sourceDocument->getName(), $pageNumber)) {
             $pageNumber++;
             $records = $this->recordCollectionFactory->create();
             $destProductCategoryRecords = $destProductCategory->getRecords();
@@ -300,13 +292,11 @@ class TemporaryTable
                 if ($productCategoryRecord) {
                     $destProductCategoryRecords->addRecord($productCategoryRecord);
                 }
-                $rewritesIds[] = $row['id'];
             }
             $destinationRecords = $destinationDocument->getRecords();
             $this->migrateRewriteCollection($records, $destinationRecords);
             $this->destination->saveRecords($destinationDocument->getName(), $destinationRecords);
             $this->destination->saveRecords($destProductCategory->getName(), $destProductCategoryRecords);
-            $this->markProcessedRewrites($rewritesIds);
             $this->source->setLastLoadedRecord($sourceDocument->getName(), end($data));
         }
         $this->copyEavData('catalog_category_entity_url_key', 'catalog_category_entity_varchar', 'category');
@@ -316,21 +306,6 @@ class TemporaryTable
             $this->logger->addInfo($message);
         }
         return true;
-    }
-
-    /**
-     * Mark processed rewrites
-     *
-     * @param $ids
-     */
-    private function markProcessedRewrites($ids)
-    {
-        /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
-        $adapter = $this->source->getAdapter()->getSelect()->getAdapter();
-        $adapter->update(
-            $this->source->addDocumentPrefix($this->getName()),
-            ['processed' => '1'], ['id in (?)' => $ids]
-        );
     }
 
     /**
@@ -548,7 +523,6 @@ class TemporaryTable
                 't2.request_path = t.request_path AND t2.store_id = t.store_id',
                 []
             )
-            ->where('t.processed = 0')
             ->order(['store_id', 'request_path', 'priority']);
         $resultData = $adapter->loadDataFromSelect($select);
 

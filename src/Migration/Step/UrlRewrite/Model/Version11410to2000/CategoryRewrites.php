@@ -76,8 +76,7 @@ class CategoryRewrites implements CategoryRewritesInterface
                 'product_id' => "trim('0')",
                 'category_id' => "c.entity_id",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('3')",
-                'processed' => "trim('0')"
+                'priority' => "trim('3')"
             ]
         );
         $select->join(

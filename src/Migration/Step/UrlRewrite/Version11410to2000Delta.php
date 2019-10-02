@@ -69,12 +69,12 @@ class Version11410to2000Delta extends AbstractDelta
     /**
      * @var TableName
      */
-    protected $tableName;
+    private $tableName;
 
     /**
      * @var TemporaryTable
      */
-    protected $temporaryTable;
+    private $temporaryTable;
 
     /**
      * @var
@@ -150,6 +150,9 @@ class Version11410to2000Delta extends AbstractDelta
                 $this->redirectsRewrites
             );
             $this->temporaryTable->migrateRewrites();
+            foreach (array_keys($this->deltaDocuments) as $documentName) {
+                $this->markProcessedRewrites($documentName);
+            }
         }
         return true;
     }
@@ -197,5 +200,19 @@ class Version11410to2000Delta extends AbstractDelta
             'url_rewrite_id',
             $urlRewriteIdsToRemove
         );
+    }
+
+    /**
+     * Mark processed rewrites
+     *
+     * @param string $documentName
+     */
+    private function markProcessedRewrites($documentName)
+    {
+        $documentNameDelta = $this->source->getDeltaLogName($documentName);
+        $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
+        /** @var ResourceModel\Adapter\Mysql $adapter */
+        $adapter = $this->source->getAdapter();
+        $adapter->updateDocument($documentNameDelta, ['processed' => 1]);
     }
 }

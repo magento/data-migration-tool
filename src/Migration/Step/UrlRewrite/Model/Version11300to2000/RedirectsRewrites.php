@@ -68,8 +68,7 @@ class RedirectsRewrites implements RedirectsRewritesInterface
                 'product_id' => "trim('0')",
                 'category_id' => "trim('0')",
                 'cms_page_id' => "trim('0')",
-                'priority' => "trim('2')",
-                'processed' => "trim('0')"
+                'priority' => "trim('2')"
             ]
         );
         $select->join(
