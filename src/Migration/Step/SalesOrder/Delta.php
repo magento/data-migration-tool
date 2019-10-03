@@ -76,36 +76,22 @@ class Delta extends AbstractDelta
     }
 
     /**
-     * Process changed records
-     *
-     * @param string $documentName
-     * @param string $idKey
-     * @return void
+     * @inheritdoc
      */
-    protected function processChangedRecords($documentName, $idKey)
+    protected function processChangedRecords($documentName, $idKeys)
     {
         $destinationName = $this->mapReader->getDocumentMap($documentName, MapInterface::TYPE_SOURCE);
-
-        $items = $this->source->getChangedRecords($documentName, $idKey);
-
+        $items = $this->source->getChangedRecords($documentName, $idKeys);
         $sourceDocument = $this->source->getDocument($documentName);
         $destDocument = $this->destination->getDocument($destinationName);
-
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
-
         $eavDocumentName = $this->helper->getDestEavDocument();
         $eavDocumentResource = $this->destination->getDocument($eavDocumentName);
-
         do {
             $destinationRecords = $destDocument->getRecords();
             $destEavCollection = $eavDocumentResource->getRecords();
-
-            $ids = [];
-
             foreach ($items as $data) {
                 echo('.');
-                $ids[] = $data[$idKey];
-
                 $this->transformData(
                     $data,
                     $sourceDocument,
@@ -115,11 +101,9 @@ class Delta extends AbstractDelta
                 );
                 $this->data->migrateAdditionalOrderData($data, $sourceDocument, $destEavCollection);
             }
-
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $this->destination->updateChangedRecords($eavDocumentName, $destEavCollection);
-
-            $this->markRecordsProcessed($this->source->getDeltaLogName($documentName), $idKey, $ids);
-        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
+            $this->markRecordsProcessed($this->source->getDeltaLogName($documentName), $idKeys, $items);
+        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys)));
     }
 }

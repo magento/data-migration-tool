@@ -176,7 +176,7 @@ class Version11410to2000Delta extends AbstractDelta
     /**
      * @inheritdoc
      */
-    public function processChangedRecords($documentName, $idKeys)
+    protected function processChangedRecords($documentName, $idKeys)
     {
         $this->urlRewritesChangedFlag = true;
     }

@@ -52,7 +52,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
             if ($this->source->getRecordsCount($this->source->getDeltaLogName($sourceDocName)) == 0) {
                 continue;
             }
-            $items = $this->source->getChangedRecords($sourceDocName, $idKey, 0, true);
+            $items = $this->source->getChangedRecords($sourceDocName, [$idKey], 0, true);
             if (empty($items)) {
                 continue;
             }
@@ -79,7 +79,7 @@ class Delta extends \Migration\Step\OrderGrids\Delta
                 $documentNameDelta = $this->source->getDeltaLogName($sourceDocName);
                 $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
                 $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
-            } while (!empty($items = $this->source->getChangedRecords($sourceDocName, $idKey, $page++)));
+            } while (!empty($items = $this->source->getChangedRecords($sourceDocName, [$idKey], $page++)));
         }
         return true;
     }
