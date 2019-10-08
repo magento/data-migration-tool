@@ -29,6 +29,7 @@ class Data implements StageInterface
     const CONFIG_FIELD_SCOPE = 'scope';
     const CONFIG_FIELD_PATH = 'path';
     const CONFIG_FIELD_VALUE = 'value';
+    const CONFIG_FIELD_UPDATED_AT = 'updated_at';
 
     /**
      * @var array
@@ -144,6 +145,7 @@ class Data implements StageInterface
         }
         foreach ($destinationRecords as &$destinationRecord) {
             unset($destinationRecord[self::CONFIG_FIELD_CONFIG_ID]);
+            $destinationRecord[self::CONFIG_FIELD_UPDATED_AT] = null;
         }
         $this->destination->clearDocument(self::CONFIG_TABLE_NAME_DESTINATION);
         $this->destination->saveRecords(self::CONFIG_TABLE_NAME_DESTINATION, $destinationRecords);

@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../map.xsd">
+<map xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+     xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/map.xsd">
     <source>
         <document_rules>
             <ignore>
@@ -2046,6 +2047,9 @@
                 <datatype>enterprise_catalogevent_event.date_end</datatype>
             </ignore>
             <ignore>
+                <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
             <ignore>
@@ -2808,6 +2812,27 @@
             <ignore>
                 <document>inventory_geoname</document>
             </ignore>
+            <ignore>
+                <document>admin_analytics_usage_version_log</document>
+            </ignore>
+            <ignore>
+                <document>scconnector_google_feed_cl</document>
+            </ignore>
+            <ignore>
+                <document>scconnector_google_remove_cl</document>
+            </ignore>
+            <ignore>
+                <document>temando_product_attribute_mapping</document>
+            </ignore>
+            <ignore>
+                <document>vertex_custom_option_flex_field</document>
+            </ignore>
+            <ignore>
+                <document>yotpo_rich_snippets</document>
+            </ignore>
+            <ignore>
+                <document>yotpo_sync</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -3198,6 +3223,12 @@
             </ignore>
             <ignore>
                 <field>catalog_product_bundle_option_value.parent_product_id</field>
+            </ignore>
+            <ignore>
+                <field>core_config_data.updated_at</field>
+            </ignore>
+            <ignore>
+                <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>

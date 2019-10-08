@@ -68,6 +68,7 @@ class StockSalesChannel implements TableInterface, InventoryModelInterface
      */
     public function insertFromSelect(\Magento\Framework\DB\Select $select)
     {
+        $this->destination->clearDocument($this->getDestinationTableName());
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->destination->getAdapter();
         $adapter->insertFromSelect(

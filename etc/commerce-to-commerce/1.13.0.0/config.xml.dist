@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../config.xsd">
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/config.xsd">
     <steps mode="settings">
         <step title="Settings Step">
             <integrity>Migration\Step\Settings\Integrity</integrity>
@@ -110,6 +111,18 @@
         <step title="SalesOrder Step">
             <delta>Migration\Step\SalesOrder\Delta</delta>
             <volume>Migration\Step\SalesOrder\Volume</volume>
+        </step>
+        <step title="ConfigurablePrices step">
+            <delta>Migration\Step\ConfigurablePrices\Delta</delta>
+            <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
+        <step title="Tier Price Step">
+            <delta>Migration\Step\TierPrice\Delta</delta>
+            <volume>Migration\Step\TierPrice\Volume</volume>
+        </step>
+        <step title="Url Rewrite Step">
+            <delta>Migration\Step\UrlRewrite\Version11300to2000Delta</delta>
+            <volume>Migration\Step\UrlRewrite\Version11300to2000</volume>
         </step>
         <step title="OrderGrids Step">
             <delta>Migration\Step\OrderGridsEE\Delta</delta>

@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<settings xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/settings.xsd">
+<settings xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+          xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/settings.xsd">
     <key>
         <ignore>
             <path>web/unsecure/base_url</path>

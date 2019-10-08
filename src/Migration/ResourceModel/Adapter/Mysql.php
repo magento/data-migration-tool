@@ -106,8 +106,14 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null)
-    {
+    public function loadPage(
+        $documentName,
+        $pageNumber,
+        $pageSize,
+        $identityField = null,
+        $identityId = null,
+        \Zend_Db_Expr $condition = null
+    ) {
         $select = $this->getSelect();
         $select->from($documentName, '*');
         if ($identityField && $identityId !== null) {
@@ -116,6 +122,9 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
             $select->order("$identityField ASC");
         } else {
             $select->limit($pageSize, $pageNumber * $pageSize);
+        }
+        if ($condition) {
+            $select->where($condition);
         }
         $result = $this->resourceAdapter->fetchAll($select);
         return $result;
@@ -198,10 +207,25 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function deleteRecords($documentName, $idKey, $ids)
+    public function deleteRecords($documentName, $idKeys, $items)
     {
-        $ids = implode("','", $ids);
-        $this->resourceAdapter->delete($documentName, "$idKey IN ('$ids')");
+        if (is_string($idKeys)) {
+            $items = implode("','", $items);
+            $this->resourceAdapter->delete($documentName, "$idKeys IN ('$items')");
+        } else if (count($idKeys) == 1 && is_array($items)) {
+            $idKey = array_shift($idKeys);
+            $items = array_column($items, $idKey);
+            $items = implode("','", $items);
+            $this->resourceAdapter->delete($documentName, "$idKey IN ('$items')");
+        } else if (is_array($idKeys) && is_array($items)) {
+            foreach ($items as $item) {
+                $andFields = [];
+                foreach ($idKeys as $idKey) {
+                    $andFields[] = "$idKey = $item[$idKey]";
+                }
+                $this->resourceAdapter->delete($documentName, implode(' AND ', $andFields));
+            }
+        }
     }
 
     /**
@@ -221,14 +245,18 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     public function loadChangedRecords(
         $documentName,
         $deltaLogName,
-        $idKey,
+        $idKeys,
         $pageNumber,
         $pageSize,
         $getProcessed = false
     ) {
+        $andFields = [];
+        foreach ($idKeys as $idKey) {
+            $andFields[] = "$documentName.$idKey = $deltaLogName.$idKey";
+        }
         $select = $this->getSelect();
         $select->from($deltaLogName, [])
-            ->join($documentName, "$documentName.$idKey = $deltaLogName.$idKey", '*')
+            ->join($documentName, implode(' AND ', $andFields), '*')
             ->where("`operation` in ('INSERT', 'UPDATE')")
             ->limit($pageSize, $pageNumber * $pageSize);
         if (!$getProcessed) {
@@ -241,17 +269,16 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
     /**
      * @inheritdoc
      */
-    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false)
+    public function loadDeletedRecords($deltaLogName, $idKeys, $pageNumber, $pageSize, $getProcessed = false)
     {
         $select = $this->getSelect();
-        $select->from($deltaLogName, [$idKey])
+        $select->from($deltaLogName, $idKeys)
             ->where("`operation` = 'DELETE'")
             ->limit($pageSize, $pageNumber * $pageSize);
         if (!$getProcessed) {
             $select->where("`processed` != 1");
         }
-        $result = $this->resourceAdapter->fetchCol($select);
-        return $result;
+        return $this->resourceAdapter->fetchAll($select);
     }
 
     /**
@@ -372,20 +399,23 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      *
      * @param string $documentName
      * @param string $deltaLogName
-     * @param string $idKey
+     * @param array $idKeys
      * @return boolean
      */
-    public function createDelta($documentName, $deltaLogName, $idKey)
+    public function createDelta($documentName, $deltaLogName, $idKeys)
     {
         $deltaCreated = true;
         if (!$this->resourceAdapter->isTableExists($deltaLogName)) {
-            $triggerTable = $this->resourceAdapter->newTable($deltaLogName)
-                ->addColumn(
+            $triggerTable = $this->resourceAdapter->newTable($deltaLogName);
+            foreach ($idKeys as $idKey) {
+                $triggerTable->addColumn(
                     $idKey,
                     \Magento\Framework\DB\Ddl\Table::TYPE_INTEGER,
                     null,
                     ['nullable' => false, 'primary' => true]
-                )->addColumn(
+                );
+            }
+            $triggerTable->addColumn(
                     'operation',
                     \Magento\Framework\DB\Ddl\Table::TYPE_TEXT
                 )->addColumn(
@@ -403,7 +433,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
             $triggerName = $this->resourceAdapter->getTableName(
                 'trg_' . $documentName . '_after_' . strtolower($event)
             );
-            $statement = $this->buildStatement($event, $idKey, $deltaLogName);
+            $statement = $this->buildStatement($event, $idKeys, $deltaLogName);
             $trigger = $this->triggerFactory->create()
                 ->setTime(Trigger::TIME_AFTER)
                 ->setEvent($event)
@@ -434,14 +464,20 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
      * Build statement
      *
      * @param string $event
-     * @param string $idKey
+     * @param array $idKeys
      * @param string $triggerTableName
      * @return string
      */
-    protected function buildStatement($event, $idKey, $triggerTableName)
+    protected function buildStatement($event, $idKeys, $triggerTableName)
     {
+        $idKeysCol = '';
+        $idKeysValue = '';
         $entityTime = ($event == Trigger::EVENT_DELETE) ? 'OLD' : 'NEW';
-        return "INSERT INTO $triggerTableName (`$idKey`, `operation`) VALUES ($entityTime.$idKey, '$event')"
+        foreach ($idKeys as $idKey) {
+            $idKeysCol .= "`$idKey`,";
+            $idKeysValue .= "$entityTime.$idKey,";
+        }
+        return "INSERT INTO $triggerTableName ($idKeysCol `operation`) VALUES ($idKeysValue '$event')"
             . "ON DUPLICATE KEY UPDATE operation = '$event'";
     }
 

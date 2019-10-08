@@ -5,7 +5,8 @@
  * See COPYING.txt for license details.
  */
 -->
-<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="../../../../../etc/config.xsd">
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/config.xsd">
     <steps/>
     <source>
         <database host="localhost" name="magento1" user="root"/>

@@ -1,7 +1,7 @@
 {
     "name": "magento/data-migration-tool",
     "description": "Migration Tool",
-    "version": "2.3.2",
+    "version": "2.3.3",
     "require": {
         "symfony/console": "~4.1.0",
         "magento/framework": "*",

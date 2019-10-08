@@ -8,20 +8,21 @@ namespace Migration\Step\UrlRewrite\Model\Version11410to2000;
 use Magento\Framework\Db\Select as DbSelect;
 use Migration\ResourceModel\Source;
 use Migration\ResourceModel\Adapter\Mysql as AdapterMysql;
-use \Migration\Step\UrlRewrite\Model\Suffix;
-use \Migration\Step\UrlRewrite\Model\TemporaryTable;
+use Migration\Step\UrlRewrite\Model\Suffix;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\TableName;
+use Migration\Step\UrlRewrite\Model\VersionCommerce\ProductRewritesWithoutCategoriesInterface;
 
 /**
  * Class ProductRewritesWithoutCategories is for product url rewrites without nested categories
  *
  * It can return SQL query ready to insert into temporary table for url rewrites
  */
-class ProductRewritesWithoutCategories
+class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategoriesInterface
 {
     /**
-     * @var TemporaryTable
+     * @var TableName
      */
-    private $temporaryTable;
+    private $tableName;
 
     /**
      * @var Source
@@ -36,25 +37,26 @@ class ProductRewritesWithoutCategories
     /**
      * @param Source $source
      * @param Suffix $suffix
-     * @param TemporaryTable $temporaryTable
+     * @param TableName $tableName
      */
     public function __construct(
         Source $source,
         Suffix $suffix,
-        TemporaryTable $temporaryTable
+        TableName $tableName
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->suffix = $suffix;
-        $this->temporaryTable = $temporaryTable;
+        $this->tableName = $tableName;
     }
 
     /**
      * Return query for retrieving product url rewrites when a product is saved for default scope
      *
-     * @return string
+     * @param array $urlRewriteIds
+     * @return array
      */
-    public function getQueryProductsSavedForDefaultScope()
+    public function getQueryProductsSavedForDefaultScope(array $urlRewriteIds = [])
     {
         $storeSubSelect = $this->getStoreSubSelect();
         $subConcat = $this->sourceAdapter->getSelect()->getAdapter()->getConcatSql([
@@ -67,6 +69,8 @@ class ProductRewritesWithoutCategories
             ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
+                'url_rewrite_id' =>'r.url_rewrite_id',
+                'redirect_id' => 'IFNULL(NULL, NULL)',
                 'request_path' => $subConcat,
                 'target_path' => 'r.target_path',
                 'is_system' => 'r.is_system',
@@ -94,32 +98,38 @@ class ProductRewritesWithoutCategories
             sprintf('cpw.website_id = s.website_id and s.store_id not in (%s)', $storeSubSelect),
             []
         );
+        if (!empty($urlRewriteIds)) {
+            $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
+        }
         $query = $select->where('`r`.`entity_type` = 3')
             ->where('`r`.`store_id` = 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
-        return $query;
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
+        return [$query];
     }
 
     /**
      * Return query for retrieving product url rewrites when a product is saved for particular store view
      *
-     * @return string
+     * @param array $urlRewriteIds
+     * @return array
      */
-    public function getQueryProductsSavedForParticularStoreView()
+    public function getQueryProductsSavedForParticularStoreView(array $urlRewriteIds = [])
     {
         $select = $this->sourceAdapter->getSelect();
         $subConcat = $select->getAdapter()->getConcatSql([
-            '`s`.`request_path`',
-            $this->suffix->getSuffix('product')
+            '`r`.`request_path`',
+            $this->suffix->getSuffix('product', 'r')
         ]);
         $select->from(
-            ['s' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
+            ['r' => $this->source->addDocumentPrefix('enterprise_url_rewrite')],
             [
                 'id' => 'IFNULL(NULL, NULL)',
+                'url_rewrite_id' =>'r.url_rewrite_id',
+                'redirect_id' => 'IFNULL(NULL, NULL)',
                 'request_path' => $subConcat,
-                'target_path' => 's.target_path',
-                'is_system' => 's.is_system',
-                'store_id' => 's.store_id',
+                'target_path' => 'r.target_path',
+                'is_system' => 'r.is_system',
+                'store_id' => 'r.store_id',
                 'entity_type' => "trim('product')",
                 'redirect_type' => "trim('0')",
                 'product_id' => "p.entity_id",
@@ -130,13 +140,16 @@ class ProductRewritesWithoutCategories
         );
         $select->join(
             ['p' => $this->source->addDocumentPrefix('catalog_product_entity_url_key')],
-            's.value_id = p.value_id',
+            'r.value_id = p.value_id',
             []
         );
-        $query = $select->where('`s`.`entity_type` = 3')
-            ->where('`s`.`store_id` > 0')
-            ->insertFromSelect($this->source->addDocumentPrefix($this->temporaryTable->getName()));
-        return $query;
+        if (!empty($urlRewriteIds)) {
+            $select->where('r.url_rewrite_id in (?)', $urlRewriteIds);
+        }
+        $query = $select->where('`r`.`entity_type` = 3')
+            ->where('`r`.`store_id` > 0')
+            ->insertFromSelect($this->source->addDocumentPrefix($this->tableName->getTemporaryTableName()));
+        return [$query];
     }
 
     /**

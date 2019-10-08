@@ -5,7 +5,6 @@
  */
 namespace Migration\Step\UrlRewrite\Model;
 
-use Magento\Framework\Db\Select as DbSelect;
 use Migration\ResourceModel\Source;
 
 /**

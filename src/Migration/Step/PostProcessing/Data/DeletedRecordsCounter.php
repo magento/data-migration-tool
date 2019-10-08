@@ -59,21 +59,21 @@ class DeletedRecordsCounter
      *
      * @param array $documents
      */
-    public function saveDeleted($documents)
+    public function saveChanged($documents)
     {
         $documentsToSave = [];
         $documents = array_unique($documents);
         foreach ($documents as $document) {
             $recordsCount = $this->destination->getRecordsCount($document);
             if (isset($this->documentRecordsCount[$document])
-                && $this->documentRecordsCount[$document] > $recordsCount
+                && $this->documentRecordsCount[$document] != $recordsCount
             ) {
                 $documentsToSave[$document] = $this->documentRecordsCount[$document] - $recordsCount;
             }
         }
         $this->progress->saveProcessedEntities(
             'PostProcessing',
-            'deletedDocumentRowsCount',
+            'changedDocumentRowsCount',
             $documentsToSave
         );
     }

@@ -84,9 +84,9 @@ class Delta extends AbstractDelta
     /**
      * @inheritdoc
      */
-    protected function processChangedRecords($documentName, $idKey)
+    protected function processChangedRecords($documentName, $idKeys)
     {
-        $items = $this->source->getChangedRecords($documentName, $idKey);
+        $items = $this->source->getChangedRecords($documentName, $idKeys);
         if (empty($items)) {
             return;
         }
@@ -102,10 +102,8 @@ class Delta extends AbstractDelta
         $recordTransformer = $this->getRecordTransformer($sourceDocument, $destDocument);
         do {
             $destinationRecords = $destDocument->getRecords();
-            $ids = [];
             foreach ($items as $data) {
                 echo('.');
-                $ids[] = $data[$idKey];
                 if (isset($data['attribute_id']) && in_array($data['attribute_id'], $skippedAttributes)) {
                     continue;
                 }
@@ -124,7 +122,7 @@ class Delta extends AbstractDelta
             $this->destination->updateChangedRecords($destinationName, $destinationRecords);
             $documentNameDelta = $this->source->getDeltaLogName($documentName);
             $documentNameDelta = $this->source->addDocumentPrefix($documentNameDelta);
-            $this->markRecordsProcessed($documentNameDelta, $idKey, $ids);
-        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKey)));
+            $this->markRecordsProcessed($documentNameDelta, $idKeys, $items);
+        } while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys)));
     }
 }

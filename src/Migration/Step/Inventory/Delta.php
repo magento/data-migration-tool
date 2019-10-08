@@ -97,7 +97,7 @@ class Delta extends AbstractDelta
     /**
      * @inheritdoc
      */
-    protected function processChangedRecords($documentName, $idKey)
+    protected function processChangedRecords($documentName, $idKeys)
     {
         if (!$this->inventoryModule->isInventoryModuleEnabled()
             || !in_array($documentName, array_keys($this->deltaTablesMap))
@@ -109,7 +109,7 @@ class Delta extends AbstractDelta
         /** @var Model\InventoryModelInterface $inventoryModel */
         $inventoryModel = $this->deltaTablesMap[$documentName]['model'];
         $fieldId = $this->deltaTablesMap[$documentName]['field'];
-        while (!empty($items = $this->source->getChangedRecords($documentName, $idKey, $page++, true))) {
+        while (!empty($items = $this->source->getChangedRecords($documentName, $idKeys, $page++, true))) {
             foreach ($items as $item) {
                 $ids[] = $item[$fieldId];
                 echo('.');

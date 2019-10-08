@@ -48,9 +48,17 @@ interface AdapterInterface
      * @param int $pageSize
      * @param string $identityField
      * @param int $identityId
+     * @param \Zend_Db_Expr $condition
      * @return array
      */
-    public function loadPage($documentName, $pageNumber, $pageSize, $identityField = null, $identityId = null);
+    public function loadPage(
+        $documentName,
+        $pageNumber,
+        $pageSize,
+        $identityField = null,
+        $identityId = null,
+        \Zend_Db_Expr $condition = null
+    );
 
     /**
      * Insert records into document
@@ -74,18 +82,18 @@ interface AdapterInterface
      * Delete records
      *
      * @param string $documentName
-     * @param string $idKey
-     * @param array $ids
+     * @param string|array $idKeys
+     * @param array $items
      * @return void
      */
-    public function deleteRecords($documentName, $idKey, $ids);
+    public function deleteRecords($documentName, $idKeys, $items);
 
     /**
      * Load page with changed records from the document
      *
      * @param string $documentName
      * @param string $deltaLogName
-     * @param string $idKey
+     * @param array $idKeys
      * @param int $pageNumber
      * @param int $pageSize
      * @param bool|false $getProcessed
@@ -94,7 +102,7 @@ interface AdapterInterface
     public function loadChangedRecords(
         $documentName,
         $deltaLogName,
-        $idKey,
+        $idKeys,
         $pageNumber,
         $pageSize,
         $getProcessed = false
@@ -104,13 +112,13 @@ interface AdapterInterface
      * Load page with changed records from the document
      *
      * @param string $deltaLogName
-     * @param string $idKey
+     * @param array $idKeys
      * @param int $pageNumber
      * @param int $pageSize
      * @param bool|false $getProcessed
      * @return array
      */
-    public function loadDeletedRecords($deltaLogName, $idKey, $pageNumber, $pageSize, $getProcessed = false);
+    public function loadDeletedRecords($deltaLogName, $idKeys, $pageNumber, $pageSize, $getProcessed = false);
 
     /**
      * Updates document records with specified data or insert if this is a new record

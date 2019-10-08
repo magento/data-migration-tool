@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+/**
+ * Copyright © Magento, Inc. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<config xmlns:xs="http://www.w3.org/2001/XMLSchema-instance"
+        xs:noNamespaceSchemaLocation="urn:magento:module:Magento_DataMigrationTool:etc/config.xsd">
+    <steps mode="settings">
+        <step title="Settings Step">
+            <integrity>Migration\Step\Settings\Integrity</integrity>
+            <data>Migration\Step\Settings\Data</data>
+        </step>
+        <step title="Stores Step">
+            <integrity>Migration\Step\Stores\Integrity</integrity>
+            <data>Migration\Step\Stores\Data</data>
+            <volume>Migration\Step\Stores\Volume</volume>
+        </step>
+    </steps>
+    <steps mode="data">
+        <step title="Data Integrity Step">
+            <integrity>Migration\Step\DataIntegrity\Integrity</integrity>
+        </step>
+        <step title="EAV Step">
+            <integrity>Migration\Step\Eav\Integrity</integrity>
+            <data>Migration\Step\Eav\Data</data>
+            <volume>Migration\Step\Eav\Volume</volume>
+        </step>
+        <step title="Customer Attributes Step">
+            <integrity>Migration\Step\Customer\Integrity</integrity>
+            <data>Migration\Step\Customer\Data</data>
+            <volume>Migration\Step\Customer\Volume</volume>
+        </step>
+        <step title="Map Step">
+            <integrity>Migration\Step\Map\Integrity</integrity>
+            <data>Migration\Step\Map\Data</data>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Url Rewrite Step">
+            <integrity>Migration\Step\UrlRewrite\Version191to2000</integrity>
+            <data>Migration\Step\UrlRewrite\Version191to2000</data>
+            <volume>Migration\Step\UrlRewrite\Version191to2000</volume>
+        </step>
+        <step title="Log Step">
+            <integrity>Migration\Step\Log\Integrity</integrity>
+            <data>Migration\Step\Log\Data</data>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="Ratings Step">
+            <integrity>Migration\Step\Ratings\Integrity</integrity>
+            <data>Migration\Step\Ratings\Data</data>
+            <volume>Migration\Step\Ratings\Volume</volume>
+        </step>
+        <step title="ConfigurablePrices step">
+            <integrity>Migration\Step\ConfigurablePrices\Integrity</integrity>
+            <data>Migration\Step\ConfigurablePrices\Data</data>
+            <volume>Migration\Step\ConfigurablePrices\Volume</volume>
+        </step>
+        <step title="OrderGrids Step">
+            <integrity>Migration\Step\OrderGrids\Integrity</integrity>
+            <data>Migration\Step\OrderGrids\Data</data>
+            <volume>Migration\Step\OrderGrids\Volume</volume>
+        </step>
+        <step title="Tier Price Step">
+            <integrity>Migration\Step\TierPrice\Integrity</integrity>
+            <data>Migration\Step\TierPrice\Data</data>
+            <volume>Migration\Step\TierPrice\Volume</volume>
+        </step>
+        <step title="SalesIncrement Step">
+            <integrity>Migration\Step\SalesIncrement\Integrity</integrity>
+            <data>Migration\Step\SalesIncrement\Data</data>
+            <volume>Migration\Step\SalesIncrement\Volume</volume>
+        </step>
+        <step title="Inventory Step">
+            <integrity>Migration\Step\Inventory\Integrity</integrity>
+            <data>Migration\Step\Inventory\Data</data>
+            <volume>Migration\Step\Inventory\Volume</volume>
+        </step>
+        <step title="PostProcessing Step">
+            <data>Migration\Step\PostProcessing\Data</data>
+        </step>
+    </steps>
+    <steps mode="delta">
+        <step title="Customer Attributes Step">
+            <delta>Migration\Step\Customer\Delta</delta>
+            <volume>Migration\Step\Customer\Volume</volume>
+        </step>
+        <step title="Map Step">
+            <delta>Migration\Step\Map\Delta</delta>
+            <volume>Migration\Step\Map\Volume</volume>
+        </step>
+        <step title="Log Step">
+            <delta>Migration\Step\Log\Delta</delta>
+            <volume>Migration\Step\Log\Volume</volume>
+        </step>
+        <step title="OrderGrids Step">
+            <delta>Migration\Step\OrderGrids\Delta</delta>
+            <volume>Migration\Step\OrderGrids\Volume</volume>
+        </step>
+        <step title="SalesIncrement Step">
+            <delta>Migration\Step\SalesIncrement\Delta</delta>
+            <volume>Migration\Step\SalesIncrement\Volume</volume>
+        </step>
+        <step title="Inventory Step">
+            <delta>Migration\Step\Inventory\Delta</delta>
+            <volume>Migration\Step\Inventory\Volume</volume>
+        </step>
+    </steps>
+    <source>
+        <database host="localhost" name="magento1" user="root" />
+    </source>
+    <destination>
+        <database host="localhost" name="magento2" user="root" />
+    </destination>
+    <options>
+        <map_file>etc/opensource-to-commerce/1.9.4.3/map.xml.dist</map_file>
+        <eav_map_file>etc/opensource-to-commerce/map-eav.xml.dist</eav_map_file>
+        <eav_document_groups_file>etc/opensource-to-commerce/eav-document-groups.xml.dist</eav_document_groups_file>
+        <eav_attribute_groups_file>etc/opensource-to-commerce/eav-attribute-groups.xml.dist</eav_attribute_groups_file>
+        <log_map_file>etc/opensource-to-commerce/map-log.xml.dist</log_map_file>
+        <log_document_groups_file>etc/opensource-to-commerce/log-document-groups.xml.dist</log_document_groups_file>
+        <settings_map_file>etc/opensource-to-commerce/settings.xml.dist</settings_map_file>
+        <customer_map_file>etc/opensource-to-commerce/map-customer.xml.dist</customer_map_file>
+        <customer_document_groups_file>etc/opensource-to-commerce/customer-document-groups.xml.dist</customer_document_groups_file>
+        <customer_attribute_groups_file>etc/opensource-to-commerce/customer-attribute-groups.xml.dist</customer_attribute_groups_file>
+        <delta_document_groups_file>etc/opensource-to-commerce/deltalog.xml.dist</delta_document_groups_file>
+        <order_grids_document_groups_file>etc/opensource-to-commerce/order-grids-document-groups.xml.dist</order_grids_document_groups_file>
+        <map_document_groups>etc/opensource-to-commerce/map-document-groups.xml.dist</map_document_groups>
+        <class_map>etc/opensource-to-commerce/class-map.xml.dist</class_map>
+        <tier_price_map_file>etc/opensource-to-commerce/1.9.4.3/map-tier-price.xml.dist</tier_price_map_file>
+        <stores_map_file>etc/opensource-to-commerce/map-stores.xml.dist</stores_map_file>
+        <!--
+        In case bulk_size=0 it will be auto-detected for every document.
+        -->
+        <bulk_size>0</bulk_size>
+        <!--
+        Set direct_document_copy = 1 for better performance.
+        NOTE: 'source' and 'destination' databases MUST be placed on the same MySQL instance
+        and 'destination' user MUST be granted with 'SELECT' permissions on 'source' database
+         -->
+        <direct_document_copy>0</direct_document_copy>
+        <source_prefix />
+        <dest_prefix />
+        <auto_resolve_urlrewrite_duplicates>0</auto_resolve_urlrewrite_duplicates>
+        <log_file>migration.log</log_file>
+        <progress_bar_format>%percent%% [%bar%] Remaining Time: %remaining%</progress_bar_format>
+        <upgrade_customer_password_hash>1</upgrade_customer_password_hash>
+        <edition_migrate>opensource-to-commerce</edition_migrate>
+        <edition_number>1.9.4.3</edition_number>
+        <init_statements_source>SET NAMES utf8;</init_statements_source>
+        <init_statements_destination>SET NAMES utf8;</init_statements_destination>
+        <crypt_key />
+    </options>
+</config>

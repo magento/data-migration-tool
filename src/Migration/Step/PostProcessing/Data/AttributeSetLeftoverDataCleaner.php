@@ -66,7 +66,11 @@ class AttributeSetLeftoverDataCleaner
         foreach ($this->attributeSetLeftoverDataModel->getDocuments() as $document) {
             $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
             if (isset($entityValueIds[$document]) && $entityValueIds[$document]) {
-                $this->destination->deleteRecords($document, 'value_id', $entityValueIds[$document]);
+                $this->destination->deleteRecords(
+                    $this->destination->addDocumentPrefix($document),
+                    'value_id',
+                    $entityValueIds[$document]
+                );
             }
         }
     }
