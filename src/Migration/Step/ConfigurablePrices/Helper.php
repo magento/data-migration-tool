@@ -86,10 +86,10 @@ class Helper
      */
     public function getDestinationFields()
     {
-        $entityIdName = $this->editionMigrate !== Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            && $this->moduleList->has('Magento_CatalogStaging') === true
-            ? 'row_id'
-            : 'entity_id';
+        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
+            ? 'entity_id'
+            : 'row_id';
         return [
             'store_id' => 'catalog_product_entity_decimal',
             'value' => 'catalog_product_entity_decimal',
@@ -144,10 +144,10 @@ class Helper
      */
     public function getConfigurablePrice(array $entityIds = [])
     {
-        $entityIdName = $this->editionMigrate !== Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
-            && $this->moduleList->has('Magento_CatalogStaging') === true
-            ? 'row_id'
-            : 'entity_id';
+        $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
+            ? 'entity_id'
+            : 'row_id';
         $priceAttributeId = $this->getPriceAttributeId();
         $entityIds = $entityIds ?: new \Zend_Db_Expr(
             'select product_id from ' . $this->source->addDocumentPrefix('catalog_product_super_attribute')
