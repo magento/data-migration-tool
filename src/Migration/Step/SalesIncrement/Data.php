@@ -104,27 +104,6 @@ class Data implements StageInterface
     }
 
     /**
-     * Get increment prefix
-     *
-     * @param int $storeId
-     * @return string
-     */
-    protected function getIncrementPrefix($storeId)
-    {
-        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        $select = $adapter->getSelect()->from(
-            ['cs' => $this->source->addDocumentPrefix($this->storeTable)],
-            ['store_id' => 'csg.default_store_id']
-        )->join(
-            ['csg' => $this->source->addDocumentPrefix($this->storeGroupTable)],
-            'csg.group_id = cs.group_id',
-            []
-        )->where('cs.store_id = ?', $storeId);
-        return $select->getAdapter()->fetchOne($select);
-    }
-
-    /**
      * Create sequence table
      *
      * @param array $entityType
@@ -153,7 +132,7 @@ class Data implements StageInterface
                 $columnOptions
             );
         $adapter->createTable($table);
-        $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType($entityType['entity_type_id'], $storeId);
+        $incrementMaxNumber = $this->helper->getIncrementForEntityType($entityType['entity_type_id'], $storeId);
         if ($incrementMaxNumber !== false) {
             $adapter->insert($tableName, [$entityType['column'] => $incrementMaxNumber]);
         }
@@ -188,10 +167,9 @@ class Data implements StageInterface
      */
     protected function addDataProfileTable($storeId, $metaId)
     {
-        $incrementPrefix = $this->getIncrementPrefix($storeId);
         $data = [
             'meta_id' => $metaId,
-            'prefix' => $incrementPrefix ?: ''
+            'prefix' => $storeId
         ];
 
         $data = array_merge($this->defaultValuesProfile, $data);

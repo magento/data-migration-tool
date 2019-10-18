@@ -18,17 +18,22 @@ class Volume extends AbstractVolume
     /**
      * @var ResourceModel\Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var ResourceModel\Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var ProgressBar\LogLevelProcessor
      */
-    protected $progressBar;
+    private $progressBar;
+
+    /**
+     * @var Helper
+     */
+    private $helper;
 
     /**
      * @param Logger $logger
@@ -62,7 +67,7 @@ class Volume extends AbstractVolume
         $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
         foreach ($this->helper->getEntityTypeTablesMap() as $entityType) {
             foreach ($this->helper->getStoreIds() as $storeId) {
-                $incrementMaxNumber = $this->helper->getMaxIncrementForEntityType(
+                $incrementNumber = $this->helper->getIncrementForEntityType(
                     $entityType['entity_type_id'],
                     $storeId
                 );
@@ -71,11 +76,11 @@ class Volume extends AbstractVolume
                     ->order("{$entityType['column']} DESC")
                     ->limit(1);
                 $lastInsertId = $adapter->fetchOne($select);
-                if ($incrementMaxNumber != $lastInsertId) {
+                if ($incrementNumber != $lastInsertId) {
                     $this->errors[] = sprintf(
                         'Mismatch in last increment id of %s entity: Source: %s Destination: %s',
                         $entityType['entity_type_code'],
-                        $incrementMaxNumber,
+                        $incrementNumber,
                         $lastInsertId
                     );
                     continue 2;

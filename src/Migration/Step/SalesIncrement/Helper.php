@@ -105,13 +105,13 @@ class Helper
     }
 
     /**
-     * Get max increment for entity type
+     * Get increment for entity type
      *
      * @param int $entityTypeId
      * @param int $storeId
      * @return bool|int
      */
-    public function getMaxIncrementForEntityType($entityTypeId, $storeId)
+    public function getIncrementForEntityType($entityTypeId, $storeId)
     {
         /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
         $adapter = $this->source->getAdapter();
@@ -122,39 +122,15 @@ class Helper
             'entity_type_id = ?',
             $entityTypeId
         )->where(
-            'store_id IN (?)',
-            $this->getStoreIdsOfStoreGroup($storeId)
+            'store_id = (?)',
+            $storeId
         );
-        $data = $query->getAdapter()->fetchAll($query);
+        $data = $query->getAdapter()->fetchRow($query);
         if (!$data) {
             return false;
         }
-        $cutPrefixFunction = function (array $data) {
-            return (int) substr($data['increment_last_id'], strlen($data['increment_prefix']));
-        };
-        $maxIncrement = max(array_map($cutPrefixFunction, $data));
-        return $maxIncrement;
-    }
-
-    /**
-     * Return store ids of store group
-     *
-     * @param int $storeId
-     * @return array
-     */
-    public function getStoreIdsOfStoreGroup($storeId)
-    {
-        /** @var \Migration\ResourceModel\Adapter\Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        $select = $adapter->getSelect()->from(
-            ['cs' => $this->source->addDocumentPrefix($this->storeTable)],
-            ['store_id']
-        )->join(
-            ['css' => $this->source->addDocumentPrefix($this->storeTable)],
-            'css.group_id = cs.group_id',
-            []
-        )->where('css.store_id = ?', $storeId);
-        return $select->getAdapter()->fetchCol($select);
+        $incrementNumber = (int) substr($data['increment_last_id'], strlen($data['increment_prefix']));
+        return $incrementNumber;
     }
 
     /**
