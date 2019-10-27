@@ -7,8 +7,14 @@
         "magento/framework": "*",
         "monolog/monolog": "^1.17"
     },
+    "require-dev": {
+        "phpunit/phpunit"
+    },
     "autoload": {
-        "psr-4": {"Migration\\": ["src/Migration", "tests/unit/testsuite/Migration"]},
+        "psr-4": {"Migration\\": "src/Migration"},
         "files" : ["src/Migration/cli_commands.php", "registration.php"]
+    },
+    "autoload-dev": {
+        "psr-4": {"Migration\\": "tests/unit/testsuite/Migration"}
     }
 }
