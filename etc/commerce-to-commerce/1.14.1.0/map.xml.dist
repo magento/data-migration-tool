@@ -460,10 +460,10 @@
                 <document>s_*b_*_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_flat_*</document>
+                <document>catalog_product_flat*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_*</document>
+                <document>catalog_category_flat*</document>
             </ignore>
             <ignore>
                 <document>catalog_category_flat_store_*</document>
@@ -2010,10 +2010,10 @@
                 <document>layout_link</document>
             </ignore>
             <ignore>
-                <document>catalog_product_flat_*</document>
+                <document>catalog_product_flat*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_*</document>
+                <document>catalog_category_flat*</document>
             </ignore>
             <ignore>
                 <document>catalogindex_eav</document>
