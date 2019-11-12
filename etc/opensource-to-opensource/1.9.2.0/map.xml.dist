@@ -1001,6 +1001,10 @@
                 <field>admin_user.extra</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
+            <transform>
+                <field>catalog_product_entity_text.value</field>
+                <handler class="\Migration\Handler\CleanMultiselect" />
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>

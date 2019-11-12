@@ -1578,6 +1578,10 @@
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
+                <field>catalog_product_entity_text.value</field>
+                <handler class="\Migration\Handler\CleanMultiselect" />
+            </transform>
+            <transform>
                 <field>enterprise_logging_event.info</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
@@ -1716,10 +1720,6 @@
             </transform>
             <transform>
                 <field>enterprise_customersegment_segment.conditions_serialized</field>
-                <handler class="\Migration\Handler\SerializeToJson" />
-            </transform>
-            <transform>
-                <field>admin_user.extra</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>
             <transform>
