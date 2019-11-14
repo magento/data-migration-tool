@@ -54,7 +54,7 @@ class StepList
     {
         array_walk_recursive($this->data, function (&$item, $key) {
             if (!is_array($item)) {
-                $item = $this->stepFactory->create($item, ['stage' => $key]);
+                $item = $this->stepFactory->create($item, ['stage' => $key, 'mode' => $this->mode]);
             }
         });
     }
