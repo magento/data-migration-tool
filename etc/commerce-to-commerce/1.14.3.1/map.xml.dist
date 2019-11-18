@@ -148,10 +148,10 @@
                 <document>catalog_category_flat_cl</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_*</document>
+                <document>catalog_product_index*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_*</document>
+                <document>catalog_category_product_index*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
@@ -2044,10 +2044,10 @@
                 <document>customer_eav_attribute_website</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_*</document>
+                <document>catalog_product_index*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_*</document>
+                <document>catalog_category_product_index*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_frontend_action</document>
