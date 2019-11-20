@@ -19,6 +19,11 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
     private $settingsMode;
 
     /**
+     * @var string
+     */
+    private $name = 'migrate:settings';
+
+    /**
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
@@ -41,7 +46,7 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
      */
     protected function configure()
     {
-        $this->setName('migrate:settings')
+        $this->setName($this->name)
             ->setDescription('Migrate system configuration');
         parent::configure();
     }

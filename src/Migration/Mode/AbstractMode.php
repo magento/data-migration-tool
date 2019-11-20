@@ -66,15 +66,16 @@ abstract class AbstractMode
      * @param StageInterface $object
      * @param string $step
      * @param string $stage
+     * @param boolean $force
      * @return bool
      */
-    protected function runStage($object, $step, $stage)
+    protected function runStage($object, $step, $stage, $force = false)
     {
         $this->logger->info(
             'started',
             ['step' => $step, 'stage' => $stage, 'mode' => $this->mode]
         );
-        if ($this->progress->isCompleted($object, $stage)) {
+        if ($this->progress->isCompleted($object, $stage) && !$force) {
             return true;
         }
         try {
