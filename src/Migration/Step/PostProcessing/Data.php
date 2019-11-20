@@ -92,7 +92,6 @@ class Data implements StageInterface
     public function perform()
     {
         $this->progressBar->start($this->getIterationsCount(), LogManager::LOG_LEVEL_INFO);
-        $this->deletedRecordsCounter->count($this->documents);
         $this->eavLeftoverDataCleaner->clean();
         $this->attributeSetLeftoverDataCleaner->clean();
         $this->productsInRootCatalogCleaner->clean();
