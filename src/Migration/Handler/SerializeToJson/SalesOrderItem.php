@@ -74,7 +74,10 @@ class SalesOrderItem extends AbstractHandler
 
             if (isset($unserializedData['options'])) {
                 foreach ($unserializedData['options'] as $key => $option) {
-                    if (array_key_exists('option_type', $option) && $option['option_type'] === 'file') {
+                    if (is_array($option)
+                        && array_key_exists('option_type', $option)
+                        && $option['option_type'] === 'file'
+                    ) {
                         $optionValue = $option['option_value'] ? unserialize($option['option_value']) :
                             $option['option_value'];
                         $unserializedData['options'][$key]['option_value'] = json_encode($optionValue);
