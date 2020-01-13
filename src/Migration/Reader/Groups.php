@@ -49,7 +49,7 @@ class Groups
      */
     public function init($groupsFile)
     {
-        $xmlFile = $this->getRootDir() . $groupsFile;
+        $xmlFile = file_exists($groupsFile) ? $groupsFile : $this->getRootDir() . $groupsFile;
         if (!is_file($xmlFile)) {
             throw new Exception('Invalid groups filename: ' . $xmlFile);
         }
