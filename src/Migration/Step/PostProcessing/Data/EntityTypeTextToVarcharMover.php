@@ -138,8 +138,8 @@ class EntityTypeTextToVarcharMover
     public function getDocuments()
     {
         return [
-            $this->destination->addDocumentPrefix($this->productTextTypeTable),
-            $this->destination->addDocumentPrefix($this->productVarcharTypeTable)
+            $this->productTextTypeTable,
+            $this->productVarcharTypeTable
         ];
     }
 }
