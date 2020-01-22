@@ -124,7 +124,10 @@ class Version191to2000Delta extends AbstractDelta
     {
         /** @var \Magento\Framework\DB\Adapter\Pdo\Mysql $adapter */
         $adapter = $this->destination->getAdapter()->getSelect()->getAdapter();
-        $adapter->delete($this->destination->addDocumentPrefix(Version191to2000::DESTINATION), "entity_type = 'cms-page'");
+        $adapter->delete(
+            $this->destination->addDocumentPrefix(Version191to2000::DESTINATION),
+            "entity_type = 'cms-page'"
+        );
         $select = $this->cmsPageRewrites->getSelect();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         $this->destination->saveRecords(
@@ -148,7 +151,7 @@ class Version191to2000Delta extends AbstractDelta
         ) {
             /** @var \Magento\Framework\DB\Select $select */
             $select = $this->destination->getAdapter()->getSelect();
-            $select->from($this->destination->addDocumentPrefix(Version191to2000::DESTINATION_PRODUCT_CATEGORY),'*')
+            $select->from($this->destination->addDocumentPrefix(Version191to2000::DESTINATION_PRODUCT_CATEGORY))
                 ->where('url_rewrite_id = ?', $record->getValue('url_rewrite_id'))
                 ->where('category_id = ?', $record->getValue('category_id'))
                 ->where('product_id = ?', $record->getValue('product_id'));
