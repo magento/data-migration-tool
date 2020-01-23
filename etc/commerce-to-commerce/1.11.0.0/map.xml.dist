@@ -2455,6 +2455,18 @@
                 <document>media_gallery_keyword</document>
             </ignore>
             <ignore>
+                <document>adobe_stock_asset</document>
+            </ignore>
+            <ignore>
+                <document>adobe_stock_category</document>
+            </ignore>
+            <ignore>
+                <document>adobe_stock_creator</document>
+            </ignore>
+            <ignore>
+                <document>adobe_user_profile</document>
+            </ignore>
+            <ignore>
                 <document>customer_grid_flat</document>
             </ignore>
             <ignore>
