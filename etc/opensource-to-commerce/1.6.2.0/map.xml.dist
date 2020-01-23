@@ -2069,6 +2069,15 @@
                 <document>catalog_product_entity_media_gallery_value_video</document>
             </ignore>
             <ignore>
+                <document>media_gallery_asset</document>
+            </ignore>
+            <ignore>
+                <document>media_gallery_asset_keyword</document>
+            </ignore>
+            <ignore>
+                <document>media_gallery_keyword</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_entity_tier_price</document>
             </ignore>
             <ignore>
