@@ -1588,6 +1588,18 @@
                 <handler class="\Migration\Handler\CleanMultiselect" />
             </transform>
             <transform>
+                <field>email_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
+            </transform>
+            <transform>
+                <field>newsletter_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
+            </transform>
+            <transform>
                 <field>enterprise_logging_event.info</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
             </transform>

@@ -994,6 +994,18 @@
                 <field>catalog_product_entity_text.value</field>
                 <handler class="\Migration\Handler\CleanMultiselect" />
             </transform>
+            <transform>
+                <field>email_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
+            </transform>
+            <transform>
+                <field>newsletter_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
+            </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
