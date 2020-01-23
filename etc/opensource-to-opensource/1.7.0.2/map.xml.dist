@@ -2127,6 +2127,15 @@
                 <field>core_config_data.updated_at</field>
             </ignore>
             <ignore>
+                <field>cms_page.layout_update_selected</field>
+            </ignore>
+            <ignore>
+                <field>email_template.is_legacy</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_template.is_legacy</field>
+            </ignore>
+            <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
