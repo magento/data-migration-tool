@@ -1,3 +1,31 @@
+2.3.4
+=============
+* Added ability for Data Migration Tool to load group-xml files outside its own directory   
+* Added support for versions:
+
+   * Magento Open Source: 2.3.4, 1.9.4.4
+   * Magento Commerce: 2.3.4, 1.14.4.4
+
+* Fixed bugs:
+
+   * Error during migration to Magento Commerce when Staging module not installed   
+   * Error documents are not mapped catalog_category_flat when migrating Magento 1 with flat tables
+   * Multiple queries can't be executed error when add several SQL init statements before Magento 1 store migration
+   * If product_url_suffix is null then it slows down migration
+   * Dropdowns Missing On Frontend After Migration
+   * Empty categories after migration
+   * No necessary product index tables are migrated
+   * Mismatch of entities in the document warnings with the tables which are not part of delta migration
+   * Volume check throws Warnings on Delta migration for catalog tables when products with multiselect attribute were changed on Magento 1
+   * Volume checks are not run on Delta without
+   * Error Base table or view not found when using prefix in Magento 2 DB tables
+   * [Issue #727](https://github.com/magento/data-migration-tool/issues/727): Admin URL not working after migration
+   * [Issue #731](https://github.com/magento/data-migration-tool/issues/731): Next order increment Id duplicates for different store view after migratio
+   * [Issue #738](https://github.com/magento/data-migration-tool/issues/738): Load test classes from autoload-dev block
+   * [Issue #746](https://github.com/magento/data-migration-tool/issues/746): Error array_key_exists() expects parameter 2 to be array on Map step
+   * [Issue #760](https://github.com/magento/data-migration-tool/issues/760): More info about record field
+   * [Issue #775](https://github.com/magento/data-migration-tool/issues/775): Delta rewrite URL CE step not using database prefix correctly
+
 2.3.3
 =============
 * Improvements in Delta migration. Now it can migrate new or changed in admin panel products and categories
