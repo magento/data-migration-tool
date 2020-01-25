@@ -214,6 +214,7 @@ class Data implements StageInterface, RollbackInterface
         $this->destination->backupDocument($destinationDocument->getName());
         $destinationRecords = $this->helper->getDestinationRecords($documentName, [$mappingField]);
         $recordsToSave = $destinationDocument->getRecords();
+        $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
         foreach ($this->helper->getSourceRecords($documentName) as $recordData) {
             /** @var Record $sourceRecord */
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
@@ -227,8 +228,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
-            $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                ->transform($sourceRecord, $destinationRecord);
+            $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
         }
         $this->destination->clearDocument($destinationDocument->getName());
@@ -419,8 +419,8 @@ class Data implements StageInterface, RollbackInterface
         $this->destination->backupDocument($destinationDocument->getName());
         $sourceRecords = $this->ignoredAttributes->clearIgnoredAttributes($this->initialData->getAttributes('source'));
         $destinationRecords = $this->initialData->getAttributes('dest');
-
         $recordsToSave = $destinationDocument->getRecords();
+        $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
         foreach ($sourceRecords as $sourceRecordData) {
             /** @var Record $sourceRecord */
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $sourceRecordData]);
@@ -440,9 +440,7 @@ class Data implements StageInterface, RollbackInterface
                 $destinationRecordData = $destinationRecord->getDataDefault();
             }
             $destinationRecord->setData($destinationRecordData);
-
-            $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                ->transform($sourceRecord, $destinationRecord);
+            $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
         }
 
@@ -476,14 +474,14 @@ class Data implements StageInterface, RollbackInterface
         );
         $this->destination->backupDocument($destinationDocument->getName());
         $recordsToSave = $destinationDocument->getRecords();
+        $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
         foreach ($this->helper->getSourceRecords($sourceDocName) as $sourceRecordData) {
             $sourceRecord = $this->factory->create([
                 'document' => $sourceDocument,
                 'data' => $sourceRecordData
             ]);
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-            $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                ->transform($sourceRecord, $destinationRecord);
+            $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
         }
 
@@ -790,6 +788,7 @@ class Data implements StageInterface, RollbackInterface
             $recordsToSave = $destinationDocument->getRecords();
             $sourceRecords = $this->ignoredAttributes
                 ->clearIgnoredAttributes($this->helper->getSourceRecords($documentName));
+            $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
             foreach ($sourceRecords as $recordData) {
                 /** @var Record $sourceRecord */
                 $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
@@ -805,8 +804,7 @@ class Data implements StageInterface, RollbackInterface
                     $destinationRecordData = $destinationRecord->getDataDefault();
                 }
                 $destinationRecord->setData($destinationRecordData);
-                $this->helper->getRecordTransformer($sourceDocument, $destinationDocument)
-                    ->transform($sourceRecord, $destinationRecord);
+                $recordTransformer->transform($sourceRecord, $destinationRecord);
                 $recordsToSave->addRecord($destinationRecord);
             }
             $this->destination->clearDocument($destinationDocument->getName());
