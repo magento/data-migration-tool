@@ -90,8 +90,6 @@
         <document key="title_id">downloadable_link_title</document>
         <document key="sample_id">downloadable_sample</document>
         <document key="title_id">downloadable_sample_title</document>
-        <document key="rule_product_id">catalogrule_product</document>
-        <document key="rule_product_price_id">catalogrule_product_price</document>
         <document key="value_id">enterprise_giftcard_amount</document>
         <document key="rule_id">enterprise_targetrule</document>
         <document key="rule_id,product_id">enterprise_targetrule_product</document>
