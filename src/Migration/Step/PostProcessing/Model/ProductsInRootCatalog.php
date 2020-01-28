@@ -55,7 +55,7 @@ class ProductsInRootCatalog
         $adapter = $this->destination->getAdapter();
         $select = $adapter->getSelect()
             ->from(
-                ['ccp' => $this->getCatalogCategoryProductDocument()],
+                ['ccp' => $this->destination->addDocumentPrefix($this->getCatalogCategoryProductDocument())],
                 ['entity_id']
             )->where(
                 'ccp.category_id = ?',
@@ -72,6 +72,6 @@ class ProductsInRootCatalog
      */
     public function getCatalogCategoryProductDocument()
     {
-        return $this->destination->addDocumentPrefix($this->catalogCategoryProductDocument);
+        return $this->catalogCategoryProductDocument;
     }
 }

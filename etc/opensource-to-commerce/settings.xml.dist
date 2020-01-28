@@ -882,7 +882,13 @@
             <path>admin/url/custom</path>
         </ignore>
         <ignore>
-            <path>admin/url/custom/path</path>
+            <path>admin/url/custom_path</path>
+        </ignore>
+        <ignore>
+            <path>admin/url/use_custom_path</path>
+        </ignore>
+        <ignore>
+            <path>admin/url/use_custom</path>
         </ignore>
         <ignore>
             <path>catalog/search/solr_server_password</path>

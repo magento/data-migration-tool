@@ -104,8 +104,10 @@ class MysqlBuilder
     private function runInitStatements(PdoMysql $instance, $resourceType)
     {
         $initStatements = $this->config->getOption('init_statements_' . $resourceType);
-        if (!empty($initStatements)) {
-            $instance->query($initStatements);
+        foreach (explode(';', $initStatements) as $initStatement) {
+            if (!empty($initStatement)) {
+                $instance->query($initStatement);
+            }
         }
     }
 

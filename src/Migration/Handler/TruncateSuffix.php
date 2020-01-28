@@ -33,7 +33,7 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
     /**
      * @var string
      */
-    protected $suffix;
+    protected $suffix = false;
 
     /**
      * Can start
@@ -83,7 +83,7 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
-        if (!$this->canStart || $this->getSuffix() == '') {
+        if (!$this->canStart || !$this->getSuffix()) {
             return;
         }
         $attributeIds = $this->getAttributeIds();
@@ -127,14 +127,14 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
      */
     protected function getSuffix()
     {
-        if (null === $this->suffix) {
+        if (false === $this->suffix) {
             /** @var Mysql $adapter */
             $adapter = $this->source->getAdapter();
             $query = $adapter->getSelect()->from($this->source->addDocumentPrefix('core_config_data'), ['value'])
                 ->where('path = ?', $this->suffixPath)
                 ->limit(1);
             $result = $query->getAdapter()->fetchOne($query);
-            $this->suffix = $result !== false ? $result : self::DEFAULT_SUFFIX;
+            $this->suffix = $result ?: self::DEFAULT_SUFFIX;
         }
         return $this->suffix;
     }

@@ -8,6 +8,7 @@ namespace Migration\Step\ConfigurablePrices;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class Helper
@@ -35,6 +36,11 @@ class Helper
     private $editionMigrate = '';
 
     /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
+
+    /**
      * @var \Migration\ResourceModel\AdapterInterface
      */
     private $sourceAdapter;
@@ -43,16 +49,19 @@ class Helper
      * @param Destination $destination
      * @param Source $source
      * @param Config $config
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         Destination $destination,
         Source $source,
-        Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
         $this->source = $source;
         $this->sourceAdapter = $this->source->getAdapter();
         $this->destination = $destination;
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -78,6 +87,7 @@ class Helper
     public function getDestinationFields()
     {
         $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
             ? 'entity_id'
             : 'row_id';
         return [
@@ -135,6 +145,7 @@ class Helper
     public function getConfigurablePrice(array $entityIds = [])
     {
         $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
             ? 'entity_id'
             : 'row_id';
         $priceAttributeId = $this->getPriceAttributeId();

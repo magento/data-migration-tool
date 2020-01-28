@@ -9,6 +9,7 @@ use Migration\Handler\AbstractHandler;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Record;
 use Migration\Config;
+use Magento\Framework\Module\ModuleListInterface;
 
 /**
  * Class InsertValueToEntity
@@ -36,15 +37,23 @@ class InsertValueToEntity extends AbstractHandler
     protected $editionMigrate = '';
 
     /**
+     * @var ModuleListInterface
+     */
+    private $moduleList;
+
+    /**
      * @param Destination $destination
      * @param Config $config
+     * @param ModuleListInterface $moduleList
      */
     public function __construct(
         Destination $destination,
-        Config $config
+        Config $config,
+        ModuleListInterface $moduleList
     ) {
         $this->destination = $destination;
         $this->editionMigrate = $config->getOption('edition_migrate');
+        $this->moduleList = $moduleList;
     }
 
     /**
@@ -54,6 +63,7 @@ class InsertValueToEntity extends AbstractHandler
     {
         $this->validate($recordToHandle);
         $entityIdName = $this->editionMigrate == Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE
+            || $this->moduleList->has('Magento_CatalogStaging') === false
             ? $this->entityField
             : 'row_id';
         $record['value_id'] = $recordToHandle->getValue($this->field);

@@ -142,10 +142,10 @@
                 <document>catalog_category_flat_cl</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_*</document>
+                <document>catalog_product_index*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_*</document>
+                <document>catalog_category_product_index*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
@@ -427,10 +427,10 @@
                 <document>s_*b_*_*</document>
             </ignore>
             <ignore>
-                <document>catalog_product_flat_*</document>
+                <document>catalog_product_flat*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_*</document>
+                <document>catalog_category_flat*</document>
             </ignore>
             <ignore>
                 <document>catalog_category_flat_store_*</document>
@@ -809,6 +809,13 @@
                 </handler>
             </transform>
             <transform>
+                <field>catalog_product_entity_varchar.value</field>
+                <handler class="\Migration\Handler\SetValueAttributeCondition">
+                    <param name="attributeCode" value="custom_design" />
+                    <param name="value" value="null" />
+                </handler>
+            </transform>
+            <transform>
                 <field>catalog_category_entity_text.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_layout_update" />
@@ -1002,6 +1009,22 @@
             <transform>
                 <field>admin_user.extra</field>
                 <handler class="\Migration\Handler\SerializeToJson" />
+            </transform>
+            <transform>
+                <field>catalog_product_entity_text.value</field>
+                <handler class="\Migration\Handler\CleanMultiselect" />
+            </transform>
+            <transform>
+                <field>email_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
+            </transform>
+            <transform>
+                <field>newsletter_template.is_legacy</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="1" />
+                </handler>
             </transform>
             <ignore>
                 <field>admin_rule.role_type</field>
@@ -1413,10 +1436,10 @@
                 <document>layout_link</document>
             </ignore>
             <ignore>
-                <document>catalog_product_flat_*</document>
+                <document>catalog_product_flat*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_*</document>
+                <document>catalog_category_flat*</document>
             </ignore>
             <ignore>
                 <document>catalogindex_eav</document>
@@ -1434,10 +1457,10 @@
                 <document>customer_eav_attribute_website</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_*</document>
+                <document>catalog_product_index*</document>
             </ignore>
             <ignore>
-                <document>catalog_category_product_index_*</document>
+                <document>catalog_category_product_index*</document>
             </ignore>
             <ignore>
                 <document>catalog_product_frontend_action</document>
@@ -1729,6 +1752,27 @@
             </ignore>
             <ignore>
                 <document>catalog_product_entity_media_gallery_value_video</document>
+            </ignore>
+            <ignore>
+                <document>media_gallery_asset</document>
+            </ignore>
+            <ignore>
+                <document>media_gallery_asset_keyword</document>
+            </ignore>
+            <ignore>
+                <document>media_gallery_keyword</document>
+            </ignore>
+            <ignore>
+                <document>adobe_stock_asset</document>
+            </ignore>
+            <ignore>
+                <document>adobe_stock_category</document>
+            </ignore>
+            <ignore>
+                <document>adobe_stock_creator</document>
+            </ignore>
+            <ignore>
+                <document>adobe_user_profile</document>
             </ignore>
             <ignore>
                 <document>catalog_product_entity_tier_price</document>
@@ -2118,6 +2162,15 @@
             </ignore>
             <ignore>
                 <field>core_config_data.updated_at</field>
+            </ignore>
+            <ignore>
+                <field>cms_page.layout_update_selected</field>
+            </ignore>
+            <ignore>
+                <field>email_template.is_legacy</field>
+            </ignore>
+            <ignore>
+                <field>newsletter_template.is_legacy</field>
             </ignore>
             <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>

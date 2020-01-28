@@ -7,6 +7,9 @@ namespace Migration\Step\PostProcessing\Data;
 
 use Migration\ResourceModel;
 use Migration\App\Progress;
+use Migration\Reader\GroupsFactory;
+use Migration\Reader\MapFactory;
+use Migration\Reader\MapInterface;
 
 /**
  * Class DeletedRecordsCounter
@@ -19,6 +22,11 @@ class DeletedRecordsCounter
     private $destination;
 
     /**
+     * @var ResourceModel\Source
+     */
+    private $source;
+
+    /**
      * @var array
      */
     private $documentRecordsCount;
@@ -29,28 +37,48 @@ class DeletedRecordsCounter
     private $progress;
 
     /**
+     * @var array
+     */
+    private $deltaDocuments;
+
+    /**
+     * @var string
+     */
+    private $mapConfigOption = 'map_file';
+
+    /**
+     * @var string
+     */
+    private $groupName = 'delta_map';
+
+    /**
+     * @var MapInterface
+     */
+    private $mapReader;
+
+    /**
      * @param ResourceModel\Destination $destination
+     * @param ResourceModel\Source $source
      * @param Progress $progress
+     * @param GroupsFactory $groupsFactory
+     * @param MapFactory $mapFactory
      */
     public function __construct(
         ResourceModel\Destination $destination,
-        Progress $progress
+        ResourceModel\Source $source,
+        Progress $progress,
+        GroupsFactory $groupsFactory,
+        MapFactory $mapFactory
     ) {
+        $this->source = $source;
         $this->destination = $destination;
         $this->progress = $progress;
-    }
-
-    /**
-     * Count records in given documents
-     *
-     * @param array $documents
-     */
-    public function count($documents)
-    {
-        $documents = array_unique($documents);
-        foreach ($documents as $document) {
-            $recordsCount = $this->destination->getRecordsCount($document);
-            $this->documentRecordsCount[$document] = $recordsCount;
+        $this->mapReader = $mapFactory->create($this->mapConfigOption);
+        $deltaDocumentsSource = $groupsFactory->create('delta_document_groups_file')->getGroup($this->groupName);
+        foreach (array_keys($deltaDocumentsSource) as $deltaDocument) {
+            if ($deltaDocumentMap = $this->mapReader->getDocumentMap($deltaDocument, MapInterface::TYPE_SOURCE)) {
+                $this->deltaDocuments[] = $deltaDocumentMap;
+            }
         }
     }
 
@@ -62,13 +90,14 @@ class DeletedRecordsCounter
     public function saveChanged($documents)
     {
         $documentsToSave = [];
-        $documents = array_unique($documents);
+        $documents = array_unique(array_merge($this->deltaDocuments, $documents));
         foreach ($documents as $document) {
-            $recordsCount = $this->destination->getRecordsCount($document);
-            if (isset($this->documentRecordsCount[$document])
-                && $this->documentRecordsCount[$document] != $recordsCount
-            ) {
-                $documentsToSave[$document] = $this->documentRecordsCount[$document] - $recordsCount;
+            $recordsCountSource = $this->source->getRecordsCount(
+                $this->mapReader->getDocumentMap($document, MapInterface::TYPE_DEST)
+            );
+            $recordsCountDestination = $this->destination->getRecordsCount($document);
+            if ($recordsCountSource != $recordsCountDestination) {
+                $documentsToSave[$document] = $recordsCountSource - $recordsCountDestination;
             }
         }
         $this->progress->saveProcessedEntities(

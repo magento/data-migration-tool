@@ -19,6 +19,11 @@ class MigrateDataCommand extends AbstractMigrateCommand
     private $dataMode;
 
     /**
+     * @var string
+     */
+    private $name = 'migrate:data';
+
+    /**
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
@@ -41,7 +46,7 @@ class MigrateDataCommand extends AbstractMigrateCommand
      */
     protected function configure()
     {
-        $this->setName('migrate:data')
+        $this->setName($this->name)
             ->setDescription('Main migration of data');
         parent::configure();
     }

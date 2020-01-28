@@ -124,7 +124,9 @@ class Record
     public function getValueDefault($columnName)
     {
         if ($this->structure && !$this->structure->hasField($columnName)) {
-            throw new Exception("Record structure does not contain field $columnName");
+            throw new Exception(
+                "Record structure does not contain field $columnName on {$this->getDocument()->getName()}"
+            );
         }
         $fields = $this->structure->getFields();
         if ($fields[$columnName]['DEFAULT'] === null && $fields[$columnName]['NULLABLE'] === false) {
@@ -144,7 +146,9 @@ class Record
     public function setValue($columnName, $value)
     {
         if ($this->structure && !$this->structure->hasField($columnName)) {
-            throw new Exception("Record structure does not contain field $columnName");
+            throw new Exception(
+                "Record structure does not contain field $columnName on {$this->getDocument()->getName()}"
+            );
         }
         $this->data[$columnName] = $value;
         return $this;

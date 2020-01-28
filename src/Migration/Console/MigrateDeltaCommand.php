@@ -19,6 +19,11 @@ class MigrateDeltaCommand extends AbstractMigrateCommand
     private $deltaMode;
 
     /**
+     * @var string
+     */
+    private $name = 'migrate:delta';
+
+    /**
      * @param \Migration\Config $config
      * @param \Migration\Logger\Manager $logManager
      * @param \Migration\App\Progress $progress
@@ -41,7 +46,7 @@ class MigrateDeltaCommand extends AbstractMigrateCommand
      */
     protected function configure()
     {
-        $this->setName('migrate:delta')
+        $this->setName($this->name)
             ->setDescription('Migrate the data is added into Magento after the main migration');
         parent::configure();
     }
@@ -52,5 +57,13 @@ class MigrateDeltaCommand extends AbstractMigrateCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->deltaMode->run();
+    }
+
+    /**
+     * @return bool
+     */
+    protected function canReset()
+    {
+        return false;
     }
 }

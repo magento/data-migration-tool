@@ -64,7 +64,7 @@ class EavLeftoverData
                 ['ea' => $this->destination->addDocumentPrefix($this->eavAttributeDocument)],
                 []
             )->joinRight(
-                ['j' => $document],
+                ['j' => $this->destination->addDocumentPrefix($document)],
                 'j.attribute_id = ea.attribute_id',
                 ['attribute_id']
             )->where(
@@ -80,10 +80,9 @@ class EavLeftoverData
     /**
      * Get documents
      *
-     * @param bool $prefix
      * @return array
      */
-    public function getDocuments($prefix = true)
+    public function getDocuments()
     {
         $documents = array_keys($this->readerDocument->getGroup('documents_leftover_values'));
         if ($this->editionMigrate != Config::EDITION_MIGRATE_OPENSOURCE_TO_OPENSOURCE) {
@@ -92,7 +91,6 @@ class EavLeftoverData
                 array_keys($this->readerDocument->getGroup('documents_leftover_values_ee'))
             );
         }
-        $documents = $prefix ? array_map([$this->destination, 'addDocumentPrefix'], $documents) : $documents;
         return $documents;
     }
 }

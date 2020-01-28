@@ -140,7 +140,7 @@ class Delta extends AbstractMode implements \Migration\App\Mode\ModeInterface
      */
     private function runVolume(array $step, $stepName)
     {
-        if (!$this->runStage($step['volume'], $stepName, 'volume check')) {
+        if (!$this->runStage($step['volume'], $stepName, 'volume check', true)) {
             $this->logger->warning('Volume Check failed');
         }
     }

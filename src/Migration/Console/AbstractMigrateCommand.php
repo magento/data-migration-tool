@@ -117,7 +117,7 @@ class AbstractMigrateCommand extends Command
         $this->config->init($config);
 
         $reset = $input->getOption(self::INPUT_KEY_RESET);
-        if ($reset) {
+        if ($reset && $this->canReset()) {
             $output->writeln('Reset the current position of migration to start from the beginning');
             $this->progress->reset();
         }
@@ -132,5 +132,13 @@ class AbstractMigrateCommand extends Command
         } else {
             $this->logManager->process();
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function canReset()
+    {
+        return true;
     }
 }

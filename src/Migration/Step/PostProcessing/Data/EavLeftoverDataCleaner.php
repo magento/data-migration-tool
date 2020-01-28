@@ -73,6 +73,6 @@ class EavLeftoverDataCleaner
      */
     public function getDocuments()
     {
-        return $this->eavLeftoverDataModel->getDocuments(false);
+        return $this->eavLeftoverDataModel->getDocuments();
     }
 }

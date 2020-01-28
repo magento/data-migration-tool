@@ -58,9 +58,12 @@ class ProductsInRootCatalogCleaner
         if (!$productIds) {
             return ;
         }
+        $catalogCategoryProductDocument = $this->destination->addDocumentPrefix(
+            $this->productsInRootCatalogModel->getCatalogCategoryProductDocument()
+        );
         $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
         $this->destination->deleteRecords(
-            $this->productsInRootCatalogModel->getCatalogCategoryProductDocument(),
+            $catalogCategoryProductDocument,
             'entity_id',
             $productIds
         );
