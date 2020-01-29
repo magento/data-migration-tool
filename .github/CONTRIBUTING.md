@@ -23,7 +23,7 @@ The Data Migration Tool development team will review all issues and contribution
 If you are a new GitHub user, we recommend that you create your own [free github account](https://github.com/signup/free). This will allow you to collaborate with the Data Migration Tool development team, fork the the tool project and send pull requests.
 
 1. Search current [listed issues](https://github.com/magento/data-migration-tool/issues) (open or closed) for similar proposals of intended contribution before starting work on a new contribution.
-2. Review the [Contributor License Agreement](https://magento.com/legaldocuments/mca) if this is your first time contributing.
+2. Review and sign the [Contributor License Agreement (CLA)](https://opensource.adobe.com/cla.html) if this is your first time contributing. You only need to sign the CLA once.
 3. Create and test your work.
 4. Fork the Data Migration Tool repository.
 5. Once your contribution is received the Data Migration Tool development team will review the contribution and collaborate with you as needed.
