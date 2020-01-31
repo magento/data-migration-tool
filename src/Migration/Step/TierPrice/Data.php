@@ -107,25 +107,25 @@ class Data implements StageInterface
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
 
+            $destinationName = $this->helper->getMappedDocumentName($sourceDocName, MapInterface::TYPE_SOURCE);
+            $destDocument = $this->destination->getDocument($destinationName);
+            $sourceDocument = $this->source->getDocument($sourceDocName);
+
+            /** @var \Migration\RecordTransformer $recordTransformer */
+            $recordTransformer = $this->recordTransformerFactory->create(
+                [
+                    'sourceDocument' => $sourceDocument,
+                    'destDocument' => $destDocument,
+                    'mapReader' => $this->map
+                ]
+            );
+            $recordTransformer->init();
+
             while (!empty($items = $this->source->getRecords($sourceDocName, $pageNumber))) {
                 $this->progress->advance(LogManager::LOG_LEVEL_INFO);
 
                 $pageNumber++;
-                $destinationName = $this->helper->getMappedDocumentName($sourceDocName, MapInterface::TYPE_SOURCE);
-                $destDocument = $this->destination->getDocument($destinationName);
                 $destinationRecords = $destDocument->getRecords();
-
-                $sourceDocument = $this->source->getDocument($sourceDocName);
-                /** @var \Migration\RecordTransformer $recordTransformer */
-                $recordTransformer = $this->recordTransformerFactory->create(
-                    [
-                        'sourceDocument' => $sourceDocument,
-                        'destDocument' => $destDocument,
-                        'mapReader' => $this->map
-                    ]
-                );
-                $recordTransformer->init();
-
                 foreach ($items as $recordData) {
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
 
