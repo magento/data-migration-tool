@@ -67,7 +67,7 @@ class SetupDeltaLog implements StageInterface
         $countDeltaDocumentsCreated = 0;
         $deltaLogs = [];
         $deltaLogsGroups = $this->getGroupsReader()->getGroups();
-        $this->progress->start(count($deltaLogsGroups, 1) - count($deltaLogsGroups));
+        $this->progress->start(count($deltaLogsGroups, COUNT_RECURSIVE) - count($deltaLogsGroups));
         /**
          * Eliminate duplicates
          */
