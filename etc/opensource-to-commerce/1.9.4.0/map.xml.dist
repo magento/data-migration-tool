@@ -875,21 +875,21 @@
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_design" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_design" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity_text.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_layout_update" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
