@@ -63,14 +63,10 @@ class Sequence extends AbstractHandler implements HandlerInterface
      */
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
-        if (!in_array($this->table, $this->sequenceTablesCleaned)) {
-            $this->destination->clearDocument($this->table);
-            $this->sequenceTablesCleaned[] = $this->table;
-        }
         $this->validate($recordToHandle);
         $id = $recordToHandle->getValue($this->field);
         if ($id && $this->table) {
-            $this->destination->saveRecords($this->table, [['sequence_value' => $id]]);
+            $this->destination->saveRecords($this->table, [['sequence_value' => $id]], true);
         }
         if (!array_diff([$this->createdVersionField, $this->updatedVersionField], $oppositeRecord->getFields())) {
             $oppositeRecord->setValue($this->createdVersionField, $this->minVersion);
