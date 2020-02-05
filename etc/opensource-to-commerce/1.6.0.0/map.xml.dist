@@ -133,9 +133,6 @@
                 <document>catalog_category_anc_products_index_tmp</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_cl</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_index*</document>
             </ignore>
             <ignore>
@@ -143,9 +140,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
                 <document>cataloginventory_stock_status</document>
@@ -434,9 +428,6 @@
             </ignore>
             <ignore>
                 <document>catalog_category_flat*</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_flat_store_*</document>
             </ignore>
             <ignore>
                 <document>googleoptimizer_code</document>
@@ -1676,7 +1667,7 @@
                 <document>sequence_order_*</document>
             </ignore>
             <ignore>
-                <document>sequence_shipment*</document>
+                <document>sequence_shipment_*</document>
             </ignore>
             <ignore>
                 <document>sequence_rma_item_*</document>
@@ -1988,9 +1979,6 @@
                 <document>captcha_log</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_group_price</document>
-            </ignore>
-            <ignore>
                 <document>catalogrule_customer_group</document>
             </ignore>
             <ignore>
@@ -2034,12 +2022,6 @@
             </ignore>
             <ignore>
                 <document>tax_order_aggregated_updated</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_index_price*</document>
             </ignore>
             <ignore>
                 <document>reporting_module_status</document>
@@ -2408,10 +2390,7 @@
                 <document>inventory_source_stock_link</document>
             </ignore>
             <ignore>
-                <document>inventory_stock</document>
-            </ignore>
-            <ignore>
-                <document>inventory_stock_*</document>
+                <document>inventory_stock*</document>
             </ignore>
             <ignore>
                 <document>inventory_geoname</document>
@@ -3587,12 +3566,6 @@
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
             </ignore>
             <ignore>
-                <datatype>catalog_product_index_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
             </ignore>
             <ignore>
@@ -3621,12 +3594,6 @@
             </ignore>
             <ignore>
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
             </ignore>
             <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
