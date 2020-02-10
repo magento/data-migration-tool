@@ -5,8 +5,8 @@
  */
 namespace Migration\Reader;
 
+use Magento\Framework\App\Arguments\ValidationState;
 use Migration\Exception;
-use \Magento\Framework\App\Arguments\ValidationState;
 
 /**
  * Class Map
@@ -141,12 +141,11 @@ class Map implements MapInterface
      */
     public function isDocumentIgnored($document, $type)
     {
-        $this->validateType($type);
         $key = $document . '-' . $type;
         if (isset($this->ignoredDocuments[$key])) {
             return $this->ignoredDocuments[$key];
         }
-
+        $this->validateType($type);
         $map = $this->xml->query(sprintf('//%s/document_rules/ignore/document[text()="%s"]', $type, $document));
         $result = ($map->length > 0);
         if (!$result) {
@@ -211,16 +210,15 @@ class Map implements MapInterface
      */
     public function getDocumentMap($document, $type)
     {
-        $this->validateType($type);
+        $key = $document . '-' . $type;
+        if (isset($this->documentsMap[$key])) {
+            return $this->documentsMap[$key];
+        }
 
         if ($this->isDocumentIgnored($document, $type)) {
             return false;
         }
 
-        $key = $document . '-' . $type;
-        if (isset($this->documentsMap[$key])) {
-            return $this->documentsMap[$key];
-        }
         $result = $document;
         if ($this->isDocumentMapped($document, $type)) {
             $queryResult = $this->xml->query(sprintf('//source/document_rules/rename/*[text()="%s"]', $document));
@@ -246,8 +244,6 @@ class Map implements MapInterface
         if (isset($this->fieldsMap[$key])) {
             return $this->fieldsMap[$key];
         }
-
-        $this->validateType($type);
 
         if ($this->isFieldIgnored($document, $field, $type)) {
             return false;
@@ -317,7 +313,7 @@ class Map implements MapInterface
      * Validate type
      *
      * @param string $type
-     * @return bool
+     * @return void
      * @throws Exception
      */
     protected function validateType($type)
@@ -325,7 +321,6 @@ class Map implements MapInterface
         if (!in_array($type, [MapInterface::TYPE_SOURCE, MapInterface::TYPE_DEST])) {
             throw new Exception('Unknown resource type: ' . $type);
         }
-        return true;
     }
 
     /**
@@ -336,7 +331,6 @@ class Map implements MapInterface
      */
     protected function getOppositeType($type)
     {
-        $this->validateType($type);
         return $type == MapInterface::TYPE_SOURCE
             ? MapInterface::TYPE_DEST
             : MapInterface::TYPE_SOURCE;
