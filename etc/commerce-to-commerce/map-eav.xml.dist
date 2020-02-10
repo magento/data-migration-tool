@@ -96,7 +96,7 @@
                 <field>customer_eav_attribute.input_filter</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="created_at" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
