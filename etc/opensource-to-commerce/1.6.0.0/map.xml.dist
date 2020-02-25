@@ -1162,6 +1162,10 @@
                 <handler class="\Migration\Handler\CleanMultiselect" />
             </transform>
             <transform>
+                <field>catalog_product_entity_varchar.value</field>
+                <handler class="\Migration\Handler\CleanMultiselect" />
+            </transform>
+            <transform>
                 <field>email_template.is_legacy</field>
                 <handler class="\Migration\Handler\SetValue">
                     <param name="value" value="1" />
