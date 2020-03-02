@@ -150,7 +150,7 @@ class Map implements MapInterface
         $result = ($map->length > 0);
         if (!$result) {
             foreach ($this->getWildcards($type) as $documentWildCard) {
-                $regexp = '/^' . str_replace('*', '.+', $documentWildCard->nodeValue) . '/';
+                $regexp = '/^' . str_replace('*', '.*', $documentWildCard->nodeValue) . '/';
                 $result = preg_match($regexp, $document) > 0;
                 if ($result === true) {
                     break;

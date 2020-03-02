@@ -14,9 +14,6 @@
                 <to>dest-document</to>
             </rename>
             <ignore>
-                <document>source-document-ignored</document>
-            </ignore>
-            <ignore>
                 <document>source-document-ignored*</document>
             </ignore>
         </document_rules>
@@ -54,9 +51,6 @@
     </source>
     <destination>
         <document_rules>
-            <ignore>
-                <document>dest-document-ignored</document>
-            </ignore>
             <ignore>
                 <document>dest-document-ignored*</document>
             </ignore>
