@@ -187,11 +187,13 @@ class Data implements StageInterface, RollbackInterface
     {
         $this->progress->start($this->getIterationsCount());
         $this->migrateEntityTypes();
-        $this->migrateAttributeSetsAndGroups();
-        $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address', 'catalog_category']);
+        $this->migrateAttributeSets();
+        $this->createProductAttributeSetStructures();
+//        $this->migrateAttributeSetsAndGroups();
+//        $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address', 'catalog_category']);
         $this->migrateAttributes();
         $this->migrateAttributesExtended();
-        $this->migrateEntityAttributes();
+//        $this->migrateEntityAttributes();
         $this->progress->finish();
         return true;
     }
@@ -317,6 +319,168 @@ class Data implements StageInterface, RollbackInterface
                 $this->createMapAttributeGroupIds();
             }
         }
+    }
+
+    private function migrateAttributeSets()
+    {
+        $documentName = 'eav_attribute_set';
+        $this->progress->advance();
+        $sourceDocument = $this->source->getDocument($documentName);
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
+        );
+        $this->destination->backupDocument($destinationDocument->getName());
+        $sourceRecords = $this->source->getRecords($documentName, 0, $this->source->getRecordsCount($documentName));
+        $recordsToSave = $destinationDocument->getRecords();
+        $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
+        foreach ($sourceRecords as $recordData) {
+            $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
+            $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+            $recordTransformer->transform($sourceRecord, $destinationRecord);
+            $recordsToSave->addRecord($destinationRecord);
+        }
+        $this->destination->clearDocument($destinationDocument->getName());
+        $this->saveRecords($destinationDocument, $recordsToSave);
+        $this->createMapAttributeSetIds();
+    }
+
+    private function createProductAttributeSetStructures()
+    {
+        // update mapped keys
+        $documentName = 'eav_attribute_group';
+        $this->destination->backupDocument($documentName);
+        $this->updateMappedKeys(
+            $documentName,
+            'attribute_set_id',
+            $this->helper->getDestinationRecords($documentName),
+            $this->mapAttributeSetIdsDestOldNew
+        );
+        // add attribute groups from Magento 2 for each attribute set from Magento 1
+        $prototypeProductAttributeGroups = $this->getDefaultProductAttributeGroups();
+        foreach ($this->getProductAttributeSets() as $attributeSet) {
+            foreach ($prototypeProductAttributeGroups as &$prototypeAttributeGroup) {
+                $prototypeAttributeGroup['attribute_set_id'] = $attributeSet['attribute_set_id'];
+            }
+            $this->saveRecords($documentName, $prototypeProductAttributeGroups);
+        }
+        $this->createMapAttributeGroupIds();
+
+        // update mapped keys
+        $entityAttributeDocument = 'eav_entity_attribute';
+        $this->destination->backupDocument($documentName);
+        $this->updateMappedKeys(
+            $entityAttributeDocument,
+            'attribute_set_id',
+            $this->helper->getDestinationRecords($entityAttributeDocument),
+            $this->mapAttributeSetIdsDestOldNew
+        );
+        // add entity attributes from Magento 2 for each attribute set from Magento 1
+        foreach ($this->getProductAttributeSets() as $attributeSet) {
+            $prototypeProductEntityAttributes = $this->getDefaultProductEntityAttributes();
+            foreach ($prototypeProductEntityAttributes as &$prototypeEntityAttribute) {
+                $attributeGroupId = $this->getAttributeGroupIdForAttributeSet(
+                    $prototypeEntityAttribute['attribute_group_id'],
+                    $attributeSet['attribute_set_id']
+                );
+                $prototypeEntityAttribute['attribute_set_id'] = $attributeSet['attribute_set_id'];
+                $prototypeEntityAttribute['attribute_group_id'] = $attributeGroupId;
+            }
+            $this->saveRecords($entityAttributeDocument, $prototypeProductEntityAttributes);
+        }
+    }
+
+    public function updateMappedKeys($destDocument, $column, $records, $mappedIdKeys)
+    {
+        if (array_values($mappedIdKeys) == array_values(array_keys($mappedIdKeys))) {
+            return;
+        }
+        foreach ($records as &$record) {
+            if (empty($mappedIdKeys[$record[$column]])) {
+                throw new \Migration\Exception(
+                    sprintf('No mapped id key %s found for %s.%s ', $record[$column], $destDocument, $column)
+                );
+            }
+            $record[$column] = $mappedIdKeys[$record[$column]];
+        }
+        $this->destination->clearDocument($destDocument);
+        $this->saveRecords($destDocument, $records);
+    }
+
+    public function getProductAttributeSets(bool $defaultOnly = false)
+    {
+        $entityTypeIdCatalogProduct = $this->getEntityTypeIdCatalogProduct();
+        $attributeSetsCatalogProduct = [];
+        foreach ($this->initialData->getAttributeSets('source') as $attributeSet) {
+            if ($attributeSet['entity_type_id'] == $entityTypeIdCatalogProduct) {
+                $attributeSetsCatalogProduct[] = $attributeSet;
+            }
+        }
+        $defaultEavAttributeSetsCatalogProduct = array_shift($attributeSetsCatalogProduct);
+        return $defaultOnly ? $defaultEavAttributeSetsCatalogProduct : $attributeSetsCatalogProduct;
+    }
+
+    public function getEntityTypeIdCatalogProduct()
+    {
+        $entityTypeIdCatalogProduct = null;
+        foreach ($this->initialData->getEntityTypes('source') as $entityType) {
+            if ($entityType['entity_type_code'] == 'catalog_product') {
+                $entityTypeIdCatalogProduct = $entityType['entity_type_id'];
+            }
+        }
+        return $entityTypeIdCatalogProduct;
+    }
+
+    public function getDefaultProductAttributeGroups()
+    {
+        $defaultAttributeSetId = $this->getProductAttributeSets(true)['attribute_set_id'];
+        $attributeGroups = [];
+        foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
+            if ($attributeGroup['attribute_set_id'] == $defaultAttributeSetId) {
+                $attributeGroup['attribute_group_id'] = null;
+                $attributeGroup['attribute_set_id'] = null;
+                $attributeGroups[] = $attributeGroup;
+            }
+        }
+        return $attributeGroups;
+    }
+
+    public function getDefaultProductEntityAttributes()
+    {
+        $defaultAttributeSetId = $this->getProductAttributeSets(true)['attribute_set_id'];
+        $entityAttributes = [];
+        foreach ($this->initialData->getEntityAttributes('dest') as $entityAttribute) {
+            if ($entityAttribute['attribute_set_id'] == $defaultAttributeSetId) {
+                $entityAttribute['entity_attribute_id'] = null;
+                $entityAttribute['attribute_set_id'] = null;
+                $entityAttributes[] = $entityAttribute;
+            }
+        }
+        return $entityAttributes;
+    }
+
+    public function getAttributeGroupIdForAttributeSet($prototypeAttributeGroupId, $attributeSetId)
+    {
+        $attributeGroupId = null;
+        $attributeGroupCode = $this->getAttributeGroupCodeFromId($prototypeAttributeGroupId);
+        foreach ($this->helper->getDestinationRecords('eav_attribute_group') as $attributeGroup) {
+            if ($attributeGroup['attribute_set_id'] == $attributeSetId
+                && $attributeGroup['attribute_group_code'] == $attributeGroupCode
+            ) {
+                $attributeGroupId = $attributeGroup['attribute_group_id'];
+            }
+        }
+        return $attributeGroupId;
+    }
+
+    public function getAttributeGroupCodeFromId($attributeGroupId)
+    {
+        $attributeGroupCode = null;
+        foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
+            if ($attributeGroup['attribute_group_id'] == $attributeGroupId) {
+                $attributeGroupCode = $attributeGroup['attribute_group_code'];
+            }
+        }
+        return $attributeGroupCode;
     }
 
     /**
@@ -826,13 +990,16 @@ class Data implements StageInterface, RollbackInterface
     /**
      * Save records
      *
-     * @param Document $document
-     * @param Record\Collection $recordsToSave
+     * @param Document|string $document
+     * @param Record\Collection|array $recordsToSave
      * @return void
      */
-    protected function saveRecords(Document $document, Record\Collection $recordsToSave)
+    protected function saveRecords($document, $recordsToSave)
     {
-        $this->destination->saveRecords($document->getName(), $recordsToSave);
+        if (is_object($document)) {
+            $document = $document->getName();
+        }
+        $this->destination->saveRecords($document, $recordsToSave);
     }
 
     /**
