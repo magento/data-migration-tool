@@ -85,10 +85,11 @@ class AttributeGroupNames
         $groupNamesToValidate = array_keys($this->groupNameToCodeMap->getMap('catalog_product'));
         foreach ($attributeGroupsOfCatalogProduct as $attributeSetId => $groupNames) {
             if (!empty(array_diff($groupNamesToValidate, $groupNames))) {
-                $error = 'The product attribute set "%s" does not contain all required attribute group names "%s"';
+                $error = 'The product attribute set "%s" (ID: %s) does not contain all required attribute group names "%s"';
                 $error = sprintf(
                     $error,
                     $attributeSetsOfCatalogProduct[$attributeSetId],
+                    $attributeSetId,
                     implode(', ', $groupNamesToValidate)
                 );
                 $errorDetails['document'] = $this->attributeGroupDocument;
