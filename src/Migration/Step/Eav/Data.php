@@ -145,6 +145,19 @@ class Data implements StageInterface, RollbackInterface
         'swatch_image' => 'image-management'
     ];
 
+    private $excludedProductAttributeGroups = [
+        'Recurring Profile'
+    ];
+
+    private const ATTRIBUTE_SETS_ALL = 'all';
+    private const ATTRIBUTE_SETS_DEFAULT = 'default';
+    private const ATTRIBUTE_SETS_NONE_DEFAULT = 'none_default';
+
+    private const ENTITY_TYPE_PRODUCT_CODE = 'catalog_product';
+    private const ENTITY_TYPE_CATEGORY_CODE = 'catalog_category';
+    private const ENTITY_TYPE_CUSTOMER_CODE = 'customer';
+    private const ENTITY_TYPE_CUSTOMER_ADDRESS_CODE = 'customer_address';
+
     /**
      * @param Source $source
      * @param Destination $destination
@@ -189,6 +202,7 @@ class Data implements StageInterface, RollbackInterface
         $this->migrateEntityTypes();
         $this->migrateAttributeSets();
         $this->createProductAttributeSetStructures();
+        $this->migrateCustomProductAttributeGroups();
 //        $this->migrateAttributeSetsAndGroups();
 //        $this->changeOldAttributeSetIdsInEntityTypes(['customer', 'customer_address', 'catalog_category']);
         $this->migrateAttributes();
@@ -357,13 +371,16 @@ class Data implements StageInterface, RollbackInterface
         );
         // add attribute groups from Magento 2 for each attribute set from Magento 1
         $prototypeProductAttributeGroups = $this->getDefaultProductAttributeGroups();
-        foreach ($this->getProductAttributeSets() as $attributeSet) {
+        $productAttributeSets = $this->getAttributeSets(
+            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
+            self::ATTRIBUTE_SETS_NONE_DEFAULT
+        );
+        foreach ($productAttributeSets as $attributeSet) {
             foreach ($prototypeProductAttributeGroups as &$prototypeAttributeGroup) {
                 $prototypeAttributeGroup['attribute_set_id'] = $attributeSet['attribute_set_id'];
             }
             $this->saveRecords($documentName, $prototypeProductAttributeGroups);
         }
-        $this->createMapAttributeGroupIds();
 
         // update mapped keys
         $entityAttributeDocument = 'eav_entity_attribute';
@@ -375,7 +392,7 @@ class Data implements StageInterface, RollbackInterface
             $this->mapAttributeSetIdsDestOldNew
         );
         // add entity attributes from Magento 2 for each attribute set from Magento 1
-        foreach ($this->getProductAttributeSets() as $attributeSet) {
+        foreach ($productAttributeSets as $attributeSet) {
             $prototypeProductEntityAttributes = $this->getDefaultProductEntityAttributes();
             foreach ($prototypeProductEntityAttributes as &$prototypeEntityAttribute) {
                 $attributeGroupId = $this->getAttributeGroupIdForAttributeSet(
@@ -406,36 +423,45 @@ class Data implements StageInterface, RollbackInterface
         $this->saveRecords($destDocument, $records);
     }
 
-    public function getProductAttributeSets(bool $defaultOnly = false)
+    public function getAttributeSets($entityTypeId = null, $mode = self::ATTRIBUTE_SETS_ALL)
     {
-        $entityTypeIdCatalogProduct = $this->getEntityTypeIdCatalogProduct();
-        $attributeSetsCatalogProduct = [];
+        $attributeSets = [];
         foreach ($this->initialData->getAttributeSets('source') as $attributeSet) {
-            if ($attributeSet['entity_type_id'] == $entityTypeIdCatalogProduct) {
-                $attributeSetsCatalogProduct[] = $attributeSet;
+            if ($entityTypeId === null
+                || $entityTypeId == $attributeSet['entity_type_id']
+            ) {
+                $attributeSets[] = $attributeSet;
             }
         }
-        $defaultEavAttributeSetsCatalogProduct = array_shift($attributeSetsCatalogProduct);
-        return $defaultOnly ? $defaultEavAttributeSetsCatalogProduct : $attributeSetsCatalogProduct;
+        if ($mode == self::ATTRIBUTE_SETS_DEFAULT) {
+            return array_shift($attributeSets);
+        } else if ($mode == self::ATTRIBUTE_SETS_NONE_DEFAULT) {
+            array_shift($attributeSets);
+            return $attributeSets;
+        }
+        return $attributeSets;
     }
 
-    public function getEntityTypeIdCatalogProduct()
+    public function getEntityTypeIdByCode($code)
     {
-        $entityTypeIdCatalogProduct = null;
+        $entityTypeId = null;
         foreach ($this->initialData->getEntityTypes('source') as $entityType) {
-            if ($entityType['entity_type_code'] == 'catalog_product') {
-                $entityTypeIdCatalogProduct = $entityType['entity_type_id'];
+            if ($entityType['entity_type_code'] == $code) {
+                $entityTypeId = $entityType['entity_type_id'];
             }
         }
-        return $entityTypeIdCatalogProduct;
+        return $entityTypeId;
     }
 
     public function getDefaultProductAttributeGroups()
     {
-        $defaultAttributeSetId = $this->getProductAttributeSets(true)['attribute_set_id'];
+        $defaultProductAttributeSetId = $this->getAttributeSets(
+            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
+            self::ATTRIBUTE_SETS_DEFAULT
+        )['attribute_set_id'];
         $attributeGroups = [];
         foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
-            if ($attributeGroup['attribute_set_id'] == $defaultAttributeSetId) {
+            if ($attributeGroup['attribute_set_id'] == $defaultProductAttributeSetId) {
                 $attributeGroup['attribute_group_id'] = null;
                 $attributeGroup['attribute_set_id'] = null;
                 $attributeGroups[] = $attributeGroup;
@@ -446,10 +472,13 @@ class Data implements StageInterface, RollbackInterface
 
     public function getDefaultProductEntityAttributes()
     {
-        $defaultAttributeSetId = $this->getProductAttributeSets(true)['attribute_set_id'];
+        $defaultProductAttributeSetId = $this->getAttributeSets(
+            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
+            self::ATTRIBUTE_SETS_DEFAULT
+        )['attribute_set_id'];
         $entityAttributes = [];
         foreach ($this->initialData->getEntityAttributes('dest') as $entityAttribute) {
-            if ($entityAttribute['attribute_set_id'] == $defaultAttributeSetId) {
+            if ($entityAttribute['attribute_set_id'] == $defaultProductAttributeSetId) {
                 $entityAttribute['entity_attribute_id'] = null;
                 $entityAttribute['attribute_set_id'] = null;
                 $entityAttributes[] = $entityAttribute;
@@ -481,6 +510,67 @@ class Data implements StageInterface, RollbackInterface
             }
         }
         return $attributeGroupCode;
+    }
+
+    public function migrateCustomProductAttributeGroups()
+    {
+        $productAttributeSets = $this->getAttributeSets(
+            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
+            self::ATTRIBUTE_SETS_ALL
+        );
+        foreach ($productAttributeSets as $productAttributeSet) {
+            $attributeGroupIds = $this->getCustomProductAttributeGroups(
+                $productAttributeSet['attribute_set_id']
+            );
+            if ($attributeGroupIds) {
+                $this->migrateAttributeGroups($attributeGroupIds);
+            }
+        }
+    }
+
+    public function getCustomProductAttributeGroups($attributeSetId)
+    {
+        $defaultAttributeGroupNames = [];
+        $sourceAttributeGroupNames = [];
+        foreach ($this->getDefaultProductAttributeGroups() as $attributeGroup) {
+            $defaultAttributeGroupNames[] = $attributeGroup['attribute_group_name'];
+        }
+        foreach ($this->helper->getSourceRecords('eav_attribute_group') as $attributeGroup) {
+            if ($attributeGroup['attribute_set_id'] == $attributeSetId
+                && !in_array($attributeGroup['attribute_group_name'], $this->excludedProductAttributeGroups)
+            ) {
+                $sourceAttributeGroupNames[$attributeGroup['attribute_group_id']]
+                    = $attributeGroup['attribute_group_name'];
+            }
+        }
+        return array_keys(array_diff($sourceAttributeGroupNames, $defaultAttributeGroupNames));
+    }
+
+    private function migrateAttributeGroups($attributeGroupIds)
+    {
+        $documentName = 'eav_attribute_group';
+        $this->progress->advance();
+        $sourceDocument = $this->source->getDocument($documentName);
+        $destinationDocument = $this->destination->getDocument(
+            $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
+        );
+        $sourceRecords = $this->source->getRecords(
+            $documentName,
+            0,
+            $this->source->getRecordsCount($documentName),
+            new \Zend_Db_Expr(sprintf('attribute_group_id IN (%s)', explode(',', $attributeGroupIds)))
+        );
+        $recordsToSave = $destinationDocument->getRecords();
+        $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
+        foreach ($sourceRecords as $recordData) {
+            $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
+            $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+            $recordTransformer->transform($sourceRecord, $destinationRecord);
+            $recordsToSave->addRecord($destinationRecord);
+        }
+        $recordsToSave = $this->addAttributeGroups($recordsToSave, $documentName, $this->groupsDataToAdd);
+        $this->saveRecords($destinationDocument, $recordsToSave);
+        $this->createMapAttributeGroupIds();
     }
 
     /**
