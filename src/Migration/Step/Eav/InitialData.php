@@ -108,11 +108,7 @@ class InitialData
         foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {
             $this->attributes['source'][$id] = $record;
         }
-        $destinationRecords = $this->helper->getDestinationRecords(
-            $sourceDocument,
-            ['entity_type_id', 'attribute_code']
-        );
-        foreach ($destinationRecords as $id => $record) {
+        foreach ($this->helper->getDestinationRecords($sourceDocument, ['attribute_id']) as $id => $record) {
             $this->attributes['dest'][$id] = $record;
         }
     }
@@ -149,11 +145,11 @@ class InitialData
         }
         $this->attributeGroups['source'] = $this->helper->getSourceRecords(
             'eav_attribute_group',
-            ['attribute_set_id', 'attribute_group_name']
+            ['attribute_group_id']
         );
         $this->attributeGroups['dest'] = $this->helper->getDestinationRecords(
             'eav_attribute_group',
-            ['attribute_set_id', 'attribute_group_name']
+            ['attribute_group_id']
         );
     }
     
