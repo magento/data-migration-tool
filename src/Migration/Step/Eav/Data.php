@@ -694,7 +694,6 @@ class Data implements StageInterface, RollbackInterface
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $sourceRecordData]);
             /** @var Record $destinationRecord */
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
-
             $mappedKey = null;
             $entityTypeId = $sourceRecord->getValue('entity_type_id');
             if (isset($this->mapEntityTypeIdsSourceDest[$entityTypeId])) {
@@ -703,12 +702,15 @@ class Data implements StageInterface, RollbackInterface
             }
             if ($mappedKey && isset($destinationRecords[$mappedKey])) {
                 $destinationRecordData = $destinationRecords[$mappedKey];
+                $destinationRecordData['attribute_id'] = $sourceRecordData['attribute_id'];
+                $destinationRecordData['entity_type_id'] = $sourceRecordData['entity_type_id'];
+                $destinationRecord->setData($destinationRecordData);
                 unset($destinationRecords[$mappedKey]);
             } else {
                 $destinationRecordData = $destinationRecord->getDataDefault();
+                $destinationRecord->setData($destinationRecordData);
+                $recordTransformer->transform($sourceRecord, $destinationRecord);
             }
-            $destinationRecord->setData($destinationRecordData);
-            $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
         }
 
@@ -1112,9 +1114,9 @@ class Data implements StageInterface, RollbackInterface
             $sourceRecords = $this->ignoredAttributes
                 ->clearIgnoredAttributes($this->helper->getSourceRecords($documentName));
             $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
-            foreach ($sourceRecords as $recordData) {
+            foreach ($sourceRecords as $sourceRecordData) {
                 /** @var Record $sourceRecord */
-                $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
+                $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $sourceRecordData]);
                 /** @var Record $destinationRecord */
                 $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
                 $mappedId = isset($this->mapAttributeIdsSourceDest[$sourceRecord->getValue($mappingField)])
@@ -1122,12 +1124,14 @@ class Data implements StageInterface, RollbackInterface
                     : null;
                 if ($mappedId !== null && isset($destinationRecords[$mappedId])) {
                     $destinationRecordData = $destinationRecords[$mappedId];
+                    $destinationRecordData['attribute_id'] = $sourceRecordData['attribute_id'];
+                    $destinationRecord->setData($destinationRecordData);
                     unset($destinationRecords[$mappedId]);
                 } else {
                     $destinationRecordData = $destinationRecord->getDataDefault();
+                    $destinationRecord->setData($destinationRecordData);
+                    $recordTransformer->transform($sourceRecord, $destinationRecord);
                 }
-                $destinationRecord->setData($destinationRecordData);
-                $recordTransformer->transform($sourceRecord, $destinationRecord);
                 $recordsToSave->addRecord($destinationRecord);
             }
             $this->destination->clearDocument($destinationDocument->getName());
