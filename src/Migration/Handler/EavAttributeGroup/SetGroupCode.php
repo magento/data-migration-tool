@@ -12,6 +12,7 @@ use Migration\Config;
 use Migration\Exception;
 use Migration\Step\DatabaseStage;
 use Migration\Model\Eav\AttributeGroupNameToCodeMap;
+use Magento\Framework\Filter\Translit;
 
 /**
  * Class SetGroupCode
@@ -26,25 +27,25 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
     private $canStart;
 
     /**
-     * @var AttributeGroupNameToCodeMap
-     */
-    private $groupNameToCodeMap;
-
-    /**
      * @var Source
      */
     private $source;
 
     /**
+     * @var Translit
+     */
+    private $translitFilter;
+
+    /**
      * @param Config $config
-     * @param AttributeGroupNameToCodeMap $groupNameToCodeMap
+     * @param Translit $translitFilter
      * @param Source $source
      * @throws Exception
      */
-    public function __construct(Config $config, AttributeGroupNameToCodeMap $groupNameToCodeMap, Source $source)
+    public function __construct(Config $config, Translit $translitFilter, Source $source)
     {
-        $this->groupNameToCodeMap = $groupNameToCodeMap;
         $this->canStart = $config->getSource()['type'] == DatabaseStage::SOURCE_TYPE;
+        $this->translitFilter = $translitFilter;
         $this->source = $source;
     }
 
@@ -57,32 +58,16 @@ class SetGroupCode extends \Migration\Handler\AbstractHandler implements \Migrat
             return;
         }
         $this->validate($recordToHandle);
-        $entityType = $this->determineEntityType($recordToHandle->getValue('attribute_set_id'));
-        $groupCode = $this->groupNameToCodeMap->getGroupCodeMap(
-            $recordToHandle->getValue('attribute_group_name'),
-            $entityType
+        $groupName = $recordToHandle->getValue('attribute_group_name');
+        $groupCode = trim(
+            preg_replace(
+                '/[^a-z0-9]+/',
+                '-',
+                $this->translitFilter->filter(strtolower($groupName))
+            ),
+            '-'
         );
+        $groupCode = empty($groupCode) ? md5($groupCode) : $groupCode;
         $recordToHandle->setValue($this->field, $groupCode);
-    }
-
-    /**
-     * Find entity type by attribute set ID
-     *
-     * @param string $attributeSetId
-     * @return string
-     */
-    private function determineEntityType($attributeSetId)
-    {
-        /** @var Mysql $adapter */
-        $adapter = $this->source->getAdapter();
-        $select = $adapter->getSelect()->from(
-            ['eas' => $this->source->addDocumentPrefix('eav_attribute_set')],
-            []
-        )->join(
-            ['eet' => $this->source->addDocumentPrefix('eav_entity_type')],
-            'eas.entity_type_id = eet.entity_type_id',
-            ['entity_type_code']
-        )->where('eas.attribute_set_id = ?', $attributeSetId);
-        return $select->getAdapter()->fetchOne($select);
     }
 }

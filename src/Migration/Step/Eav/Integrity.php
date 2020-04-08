@@ -27,11 +27,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
     private $groups;
 
     /**
-     * @var AttributeGroupNamesIntegrity
-     */
-    private $attributeGroupNamesIntegrity;
-
-    /**
      * @var AttributeFrontendInputIntegrity
      */
     private $attributeFrontendInputIntegrity;
@@ -49,7 +44,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
      * @param ResourceModel\Destination $destination
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
-     * @param AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity
      * @param AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity
      * @param ClassMapIntegrity $classMapIntegrity
      * @param string $mapConfigOption
@@ -64,13 +58,11 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
         ResourceModel\Destination $destination,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
-        AttributeGroupNamesIntegrity $attributeGroupNamesIntegrity,
         AttributeFrontendInputIntegrity $attributeFrontendInputIntegrity,
         ClassMapIntegrity $classMapIntegrity,
         $mapConfigOption = 'eav_map_file'
     ) {
         $this->groups = $groupsFactory->create('eav_document_groups_file');
-        $this->attributeGroupNamesIntegrity = $attributeGroupNamesIntegrity;
         $this->attributeFrontendInputIntegrity = $attributeFrontendInputIntegrity;
         $this->classMapIntegrity = $classMapIntegrity;
         parent::__construct($progress, $logger, $config, $source, $destination, $mapFactory, $mapConfigOption);
@@ -89,7 +81,6 @@ class Integrity extends \Migration\App\Step\AbstractIntegrity
             $this->check([$destinationDocumentName], MapInterface::TYPE_DEST);
         }
         $this->incompatibleDocumentFieldsData[MapInterface::TYPE_SOURCE] = array_merge(
-            $this->attributeGroupNamesIntegrity->checkAttributeGroupNames(),
             $this->attributeFrontendInputIntegrity->checkAttributeFrontendInput(),
             $this->classMapIntegrity->checkClassMapping()
         );
