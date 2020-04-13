@@ -31,6 +31,19 @@ class SetValue extends AbstractHandler implements HandlerInterface
     public function handle(Record $recordToHandle, Record $oppositeRecord)
     {
         $this->validate($recordToHandle);
-        $recordToHandle->setValue($this->field, $this->value);
+        $valueStored = $recordToHandle->getValue($this->field);
+        $operator = substr($this->value, 0, 1);
+        $value = substr($this->value, 1);
+        switch ($operator) {
+            case '+':
+                $value = $valueStored + $value;
+                break;
+            case '-';
+                $value = $valueStored - $value;
+                break;
+            default:
+                $value = $this->value;
+        }
+        $recordToHandle->setValue($this->field, $value);
     }
 }

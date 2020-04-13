@@ -149,6 +149,12 @@
                     <param name="value" value="100" />
                 </handler>
             </transform>
+            <transform>
+                <field>eav_attribute_group.sort_order</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="+100" />
+                </handler>
+            </transform>
             <ignore>
                 <field>catalog_eav_attribute.is_configurable</field>
             </ignore>

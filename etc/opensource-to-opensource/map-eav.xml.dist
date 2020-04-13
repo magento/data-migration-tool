@@ -148,6 +148,12 @@
                 </handler>
             </transform>
             <transform>
+                <field>eav_attribute_group.sort_order</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="+100" />
+                </handler>
+            </transform>
+            <transform>
                 <field>catalog_eav_attribute.apply_to</field>
                 <handler class="\Migration\Handler\EavAttribute\ApplyTo" />
             </transform>
