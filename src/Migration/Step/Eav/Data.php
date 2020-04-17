@@ -249,16 +249,44 @@ class Data implements StageInterface, RollbackInterface
             $this->map->getDocumentMap($documentName, MapInterface::TYPE_SOURCE)
         );
         $this->destination->backupDocument($destinationDocument->getName());
+        $destinationRecords = $this->helper->getDestinationRecords(
+            $documentName,
+            ['entity_type_id', 'attribute_set_name']
+        );
         $sourceRecords = $this->source->getRecords($documentName, 0, $this->source->getRecordsCount($documentName));
         $recordsToSave = $destinationDocument->getRecords();
         $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
         foreach ($sourceRecords as $recordData) {
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
+            $mappedKey = null;
+            $entityTypeId = $sourceRecord->getValue('entity_type_id');
+            if (isset($this->mapEntityTypeIdsSourceDest[$entityTypeId])) {
+                $mappedId = $this->mapEntityTypeIdsSourceDest[$entityTypeId];
+                $mappedKey = $mappedId . '-' . $sourceRecord->getValue('attribute_set_name');
+            }
+            if ($mappedKey && isset($destinationRecords[$mappedKey])) {
+                unset($destinationRecords[$mappedKey]);
+            }
+            $destinationRecordData = $destinationRecord->getDataDefault();
+            $destinationRecord->setData($destinationRecordData);
             $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
         }
         $this->destination->clearDocument($destinationDocument->getName());
+        $this->saveRecords($destinationDocument, $recordsToSave);
+
+        $recordsToSave = $destinationDocument->getRecords();
+        foreach ($destinationRecords as $recordData) {
+            /** @var Record $destinationRecord */
+            $destinationRecord = $this->factory->create(['document' => $destinationDocument, 'data' => $recordData]);
+            $destinationRecord->setValue('attribute_set_id', null);
+            $destinationRecord->setValue(
+                'entity_type_id',
+                $this->mapEntityTypeIdsDestOldNew[$destinationRecord->getValue('entity_type_id')]
+            );
+            $recordsToSave->addRecord($destinationRecord);
+        }
         $this->saveRecords($destinationDocument, $recordsToSave);
         $this->createMapAttributeSetIds();
     }
