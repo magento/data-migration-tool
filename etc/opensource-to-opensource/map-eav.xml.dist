@@ -23,58 +23,17 @@
                 <handler class="\Migration\Handler\EavAttribute\BackendTypeForMultiselect" />
             </transform>
             <transform>
-                <field>eav_attribute.backend_table</field>
-                <handler class="\Migration\Handler\GetDestinationValue">
-                    <param name="setNullIfEmpty" value="true" />
-                </handler>
-            </transform>
-            <transform>
                 <field>eav_attribute.frontend_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_input</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.is_required</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_class</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_label</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
                 <field>eav_attribute.source_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
             </transform>
-            <transform>
-                <field>eav_attribute.default_value</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.note</field>
-                <handler class="\Migration\Handler\GetDestinationValue">
-                    <param name="setNullIfEmpty" value="true" />
-                </handler>
-            </transform>
 
             <transform>
                 <field>catalog_eav_attribute.frontend_input_renderer</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
-            </transform>
-            <transform>
-                <field>catalog_eav_attribute.is_visible</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-
-            <transform>
-                <field>customer_eav_attribute.input_filter</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
                 <field>customer_eav_attribute.data_model</field>
