@@ -30,6 +30,10 @@
                 <field>eav_attribute.source_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
             </transform>
+            <transform>
+                <field>eav_attribute.default_value</field>
+                <handler class="\Migration\Handler\ConvertTimestampToDate" />
+            </transform>
 
             <transform>
                 <field>catalog_eav_attribute.frontend_input_renderer</field>
