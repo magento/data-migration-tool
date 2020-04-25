@@ -2430,6 +2430,15 @@
                 <document>yotpo_sync</document>
             </ignore>
             <ignore>
+                <document>yotpo_order_status_history</document>
+            </ignore>
+            <ignore>
+                <document>pagebuilder_template</document>
+            </ignore>
+            <ignore>
+                <document>email_coupon_attribute</document>
+            </ignore>
+            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>
