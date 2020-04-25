@@ -201,7 +201,7 @@ class Data
     public function getAttributeGroupIdForAttributeSet($prototypeAttributeGroupId, $attributeSetId)
     {
         $attributeGroupId = null;
-        $attributeGroupCode = $this->getAttributeGroupCodeFromId($prototypeAttributeGroupId);
+        $attributeGroupCode = $this->getDestAttributeGroupCodeFromId($prototypeAttributeGroupId);
         foreach ($this->helper->getDestinationRecords('eav_attribute_group') as $attributeGroup) {
             if ($attributeGroup['attribute_set_id'] == $attributeSetId
                 && $attributeGroup['attribute_group_code'] == $attributeGroupCode
@@ -213,12 +213,12 @@ class Data
     }
 
     /**
-     * Get attribute group code from id
+     * Get destination attribute group code from id
      *
      * @param int $attributeGroupId
      * @return mixed|null
      */
-    public function getAttributeGroupCodeFromId($attributeGroupId)
+    public function getDestAttributeGroupCodeFromId($attributeGroupId)
     {
         $attributeGroupCode = null;
         foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
@@ -227,6 +227,23 @@ class Data
             }
         }
         return $attributeGroupCode;
+    }
+
+    /**
+     * Get source attribute group name from id
+     *
+     * @param int $attributeGroupId
+     * @return mixed|null
+     */
+    public function getSourceAttributeGroupNameFromId($attributeGroupId)
+    {
+        $attributeGroupName = null;
+        foreach ($this->initialData->getAttributeGroups('source') as $attributeGroup) {
+            if ($attributeGroup['attribute_group_id'] == $attributeGroupId) {
+                $attributeGroupName = $attributeGroup['attribute_group_name'];
+            }
+        }
+        return $attributeGroupName;
     }
 
     /**

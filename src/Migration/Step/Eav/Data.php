@@ -488,13 +488,31 @@ class Data implements StageInterface, RollbackInterface
             new \Zend_Db_Expr(sprintf('attribute_id IN (%s)', implode(',', $customAttributeIds)))
         );
         foreach ($customEntityAttributes as $record) {
+            $record['sort_order'] = $this->getCustomAttributeSortOrder($record);
             $record['attribute_group_id'] = $this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']];
-            $record['sort_order'] = 130;
             $record['entity_attribute_id'] = null;
             $destinationRecord = $this->factory->create(['document' => $destinationDocument, 'data' => $record]);
             $recordsToSave->addRecord($destinationRecord);
         }
         $this->saveRecords($destinationDocument, $recordsToSave);
+    }
+
+    /**
+     * Get sort order for custom attribute
+     *
+     * @param array $attribute
+     * @return int
+     */
+    private function getCustomAttributeSortOrder(array $attribute)
+    {
+        $productEntityTypeId = $this->modelData->getEntityTypeIdByCode(ModelData::ENTITY_TYPE_PRODUCT_CODE);
+        $groupName = $this->modelData->getSourceAttributeGroupNameFromId($attribute['attribute_group_id']);
+        if ($attribute['entity_type_id'] == $productEntityTypeId
+            && isset($this->mapProductAttributeGroupNamesSourceDest[$groupName])
+        ) {
+            return $attribute['sort_order'] + 200;
+        }
+        return $attribute['sort_order'];
     }
 
     /**
