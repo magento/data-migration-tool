@@ -85,7 +85,7 @@ class ManagerTest extends \PHPUnit\Framework\TestCase
         $this->objectManager->expects($this->once())->method('create')->will($this->returnValue($handler));
         $handler->expects($this->once())->method('setField')->with($field);
         $this->manager->initHandler($field, $handlerConfig);
-        $this->assertEquals(null, $this->manager->getHandler('non_existant_field'));
+        $this->assertEquals(null, $this->manager->getHandler('non_existent_field'));
     }
 
     /**
