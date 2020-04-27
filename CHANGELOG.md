@@ -1,3 +1,27 @@
+2.3.5
+=============
+* Merge of EAV Structure of Magento 1 with Magento 2   
+* Added support for versions:
+
+   * Magento Open Source: 2.3.5, 1.9.4.5
+   * Magento Commerce: 2.3.5, 1.14.4.5
+
+* Fixed bugs:
+
+   * Error `Base table or view not found` during migration from Open Source to Commerce
+   * Recurring Profile attributes are migrated but Magento 2 does not support Recurring Payments anymore
+   * Error of enterprise-tables not being present in opensource database
+   * Trouble with password hashes
+   * Add missed delta functionality to ConfigurablePrices Step
+   * Keeping sequence product / sequence catalog category updated
+   * Wildcard must represent zero or more character
+   * Reducing the number of validate type calls while reading data from the map.xml file
+   * Cannot migrate settings if settings.xml file is out of Data Migration Tool root directory
+   * Volume check is run for index tables of catalog rule
+   * Initializing the record transformer before the loop
+   * [Issue #541](https://github.com/magento/data-migration-tool/issues/541): Don't migrate the attribute url_path from product entities
+   * [Issue #791](https://github.com/magento/data-migration-tool/issues/791): Error during migration when use prefix for tables
+   
 2.3.4
 =============
 * Added ability for Data Migration Tool to load group-xml files outside its own directory   
