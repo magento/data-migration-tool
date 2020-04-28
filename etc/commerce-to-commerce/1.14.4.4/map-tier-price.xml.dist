@@ -26,6 +26,18 @@
                 <field>catalog_product_entity_group_price.entity_id</field>
                 <to>catalog_product_entity_group_price.row_id</to>
             </move>
+            <transform>
+                <field>catalog_product_entity_group_price.value_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="NULL" />
+                </handler>
+            </transform>
+            <transform>
+                <field>catalog_product_entity_tier_price.value_id</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="NULL" />
+                </handler>
+            </transform>
         </field_rules>
     </source>
     <destination>

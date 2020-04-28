@@ -46,7 +46,7 @@ class SetValueAttributeCondition extends AbstractHandler implements HandlerInter
      */
     public function __construct($attributeCode, $value, Source $source)
     {
-        $this->value = $value;
+        $this->value = (strtoupper($value) === 'NULL') ? null : $value;
         $this->attributeCode = $attributeCode;
         $this->source = $source;
     }
@@ -58,9 +58,6 @@ class SetValueAttributeCondition extends AbstractHandler implements HandlerInter
     {
         $this->validate($recordToHandle);
         if ($this->checkAttributeIdCode($recordToHandle->getValue('attribute_id'), $this->attributeCode)) {
-            if ('null' === $this->value) {
-                $this->value = null;
-            }
             $recordToHandle->setValue($this->field, $this->value);
         }
     }

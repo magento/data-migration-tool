@@ -94,7 +94,7 @@ class Settings
     {
         $mapFile = $this->config->getOption(self::MAP_FILE_OPTION);
         $rootDir = dirname(dirname(dirname(__DIR__))) . DIRECTORY_SEPARATOR;
-        $configFile = $rootDir . $mapFile;
+        $configFile = file_exists($mapFile) ? $mapFile : $rootDir . $mapFile;
         if (!is_file($configFile)) {
             throw new Exception('Invalid map filename: ' . $configFile);
         }

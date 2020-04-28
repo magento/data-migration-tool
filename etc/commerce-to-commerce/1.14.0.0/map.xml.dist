@@ -145,9 +145,6 @@
                 <document>catalog_category_anc_products_index_tmp</document>
             </ignore>
             <ignore>
-                <document>catalog_category_flat_cl</document>
-            </ignore>
-            <ignore>
                 <document>catalog_product_index*</document>
             </ignore>
             <ignore>
@@ -155,9 +152,6 @@
             </ignore>
             <ignore>
                 <document>catalog_product_enabled_index</document>
-            </ignore>
-            <ignore>
-                <document>catalog_product_flat_cl</document>
             </ignore>
             <ignore>
                 <document>cataloginventory_stock_status</document>
@@ -464,9 +458,6 @@
             </ignore>
             <ignore>
                 <document>catalog_category_flat*</document>
-            </ignore>
-            <ignore>
-                <document>catalog_category_flat_store_*</document>
             </ignore>
             <ignore>
                 <document>googleoptimizer_code</document>
@@ -1230,21 +1221,21 @@
                 <field>catalog_category_entity_varchar.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_design" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_design" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
                 <field>catalog_category_entity_text.value</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="custom_layout_update" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
@@ -1534,6 +1525,10 @@
             </transform>
             <transform>
                 <field>catalog_product_entity_text.value</field>
+                <handler class="\Migration\Handler\CleanMultiselect" />
+            </transform>
+            <transform>
+                <field>catalog_product_entity_varchar.value</field>
                 <handler class="\Migration\Handler\CleanMultiselect" />
             </transform>
             <transform>
@@ -1965,9 +1960,6 @@
                 <document>signifyd_case</document>
             </ignore>
             <ignore>
-                <document>catalog_product_index_price*</document>
-            </ignore>
-            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>
@@ -2151,7 +2143,7 @@
                 <document>sequence_order_*</document>
             </ignore>
             <ignore>
-                <document>sequence_shipment*</document>
+                <document>sequence_shipment_*</document>
             </ignore>
             <ignore>
                 <document>sequence_rma_item_*</document>
@@ -2685,10 +2677,7 @@
                 <document>inventory_source_stock_link</document>
             </ignore>
             <ignore>
-                <document>inventory_stock</document>
-            </ignore>
-            <ignore>
-                <document>inventory_stock_*</document>
+                <document>inventory_stock*</document>
             </ignore>
             <ignore>
                 <document>inventory_geoname</document>
@@ -2713,6 +2702,15 @@
             </ignore>
             <ignore>
                 <document>yotpo_sync</document>
+            </ignore>
+            <ignore>
+                <document>yotpo_order_status_history</document>
+            </ignore>
+            <ignore>
+                <document>pagebuilder_template</document>
+            </ignore>
+            <ignore>
+                <document>email_coupon_attribute</document>
             </ignore>
         </document_rules>
         <field_rules>
@@ -3157,12 +3155,6 @@
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
             </ignore>
             <ignore>
-                <datatype>catalog_product_index_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>
             </ignore>
             <ignore>
@@ -3209,12 +3201,6 @@
             </ignore>
             <ignore>
                 <datatype>catalog_product_bundle_price_index.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_price.customer_group_id</datatype>
-            </ignore>
-            <ignore>
-                <datatype>catalog_product_index_tier_price.customer_group_id</datatype>
             </ignore>
             <ignore>
                 <datatype>catalogrule_customer_group.customer_group_id</datatype>

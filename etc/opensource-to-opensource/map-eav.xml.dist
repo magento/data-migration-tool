@@ -23,30 +23,8 @@
                 <handler class="\Migration\Handler\EavAttribute\BackendTypeForMultiselect" />
             </transform>
             <transform>
-                <field>eav_attribute.backend_table</field>
-                <handler class="\Migration\Handler\GetDestinationValue">
-                    <param name="setNullIfEmpty" value="true" />
-                </handler>
-            </transform>
-            <transform>
                 <field>eav_attribute.frontend_model</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_input</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.is_required</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_class</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.frontend_label</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
                 <field>eav_attribute.source_model</field>
@@ -54,27 +32,12 @@
             </transform>
             <transform>
                 <field>eav_attribute.default_value</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-            <transform>
-                <field>eav_attribute.note</field>
-                <handler class="\Migration\Handler\GetDestinationValue">
-                    <param name="setNullIfEmpty" value="true" />
-                </handler>
+                <handler class="\Migration\Handler\ConvertTimestampToDate" />
             </transform>
 
             <transform>
                 <field>catalog_eav_attribute.frontend_input_renderer</field>
                 <handler class="\Migration\Handler\EavAttribute\ConvertModel" />
-            </transform>
-            <transform>
-                <field>catalog_eav_attribute.is_visible</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
-            </transform>
-
-            <transform>
-                <field>customer_eav_attribute.input_filter</field>
-                <handler class="\Migration\Handler\GetDestinationValue" />
             </transform>
             <transform>
                 <field>customer_eav_attribute.data_model</field>
@@ -91,7 +54,7 @@
                 <field>customer_eav_attribute.input_filter</field>
                 <handler class="\Migration\Handler\SetValueAttributeCondition">
                     <param name="attributeCode" value="created_at" />
-                    <param name="value" value="null" />
+                    <param name="value" value="NULL" />
                 </handler>
             </transform>
             <transform>
@@ -148,16 +111,9 @@
                 </handler>
             </transform>
             <transform>
-                <field>eav_attribute_set.attribute_set_name</field>
-                <handler class="\Migration\Handler\AddPrefix">
-                    <param name="prefix" value="Migration_" />
-                </handler>
-            </transform>
-
-            <transform>
-                <field>eav_attribute_group.attribute_group_name</field>
-                <handler class="\Migration\Handler\AddPrefix">
-                    <param name="prefix" value="Migration_" />
+                <field>eav_attribute_group.sort_order</field>
+                <handler class="\Migration\Handler\SetValue">
+                    <param name="value" value="+100" />
                 </handler>
             </transform>
             <transform>

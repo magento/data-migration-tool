@@ -88,7 +88,6 @@ class Volume extends AbstractVolume
     {
         $this->progress->start(2);
         $this->checkAttributesMismatch();
-        $this->validateAttributeSetsAndGroups();
         $this->progress->finish();
         $result = $this->checkForErrors(Logger::ERROR);
         if ($result) {
@@ -116,30 +115,6 @@ class Volume extends AbstractVolume
                     $attribute['attribute_id']
                 );
             }
-        }
-        $this->progress->advance();
-    }
-
-    /**
-     * Validate attribute sets and groups
-     *
-     * @return void
-     */
-    private function validateAttributeSetsAndGroups()
-    {
-        $sourceRecords = $this->helper->getSourceRecordsCount('eav_attribute_set');
-        $initialDestRecords = count($this->initialData->getAttributeSets('dest'));
-        if ($this->helper->getDestinationRecordsCount('eav_attribute_set') != $sourceRecords + $initialDestRecords) {
-            $this->errors[] = 'Mismatch of entities in the document: eav_attribute_set';
-        }
-
-        $sourceRecords = $this->helper->getSourceRecordsCount('eav_attribute_group');
-        $addedRecords = count($this->helper->getAddedGroups());
-        $initialDestRecords = count($this->initialData->getAttributeGroups('dest'));
-        if ($this->helper->getDestinationRecordsCount('eav_attribute_group') !=
-            $sourceRecords + $addedRecords + $initialDestRecords
-        ) {
-            $this->errors[] = 'Mismatch of entities in the document: eav_attribute_group';
         }
         $this->progress->advance();
     }

@@ -10,6 +10,8 @@
     <group name="ignore">
         <attribute type="catalog_product">msrp_enabled</attribute>
         <attribute type="catalog_product">group_price</attribute>
+        <attribute type="catalog_product">is_recurring</attribute>
+        <attribute type="catalog_product">recurring_profile</attribute>
     </group>
     <group name="frontend_input_empty_allowed">
         <attribute type="catalog_product">samples_title</attribute>

@@ -92,9 +92,11 @@ class DeletedRecordsCounter
         $documentsToSave = [];
         $documents = array_unique(array_merge($this->deltaDocuments, $documents));
         foreach ($documents as $document) {
-            $recordsCountSource = $this->source->getRecordsCount(
-                $this->mapReader->getDocumentMap($document, MapInterface::TYPE_DEST)
-            );
+            $documentMap = $this->mapReader->getDocumentMap($document, MapInterface::TYPE_DEST);
+            if (!$documentMap) {
+                continue;
+            }
+            $recordsCountSource = $this->source->getRecordsCount($documentMap);
             $recordsCountDestination = $this->destination->getRecordsCount($document);
             if ($recordsCountSource != $recordsCountDestination) {
                 $documentsToSave[$document] = $recordsCountSource - $recordsCountDestination;

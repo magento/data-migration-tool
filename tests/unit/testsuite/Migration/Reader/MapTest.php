@@ -36,7 +36,10 @@ class MapTest extends \PHPUnit\Framework\TestCase
     public function testHasDocument()
     {
         $this->assertTrue($this->map->isDocumentMapped('source-document', MapInterface::TYPE_SOURCE));
+        $this->assertFalse($this->map->isDocumentMapped('source-document-ignored', MapInterface::TYPE_SOURCE));
+        $this->assertFalse($this->map->isDocumentMapped('source-document-ignored-wildcard', MapInterface::TYPE_SOURCE));
         $this->assertFalse($this->map->isDocumentMapped('dest-document-ignored', MapInterface::TYPE_DEST));
+        $this->assertFalse($this->map->isDocumentMapped('dest-document-ignored-wildcard', MapInterface::TYPE_DEST));
         $this->assertFalse($this->map->isDocumentMapped('non-existent-document', MapInterface::TYPE_SOURCE));
     }
 

@@ -19,42 +19,47 @@ class InitialData
      * [attribute_id => attributeData]
      * @var array
      */
-    protected $attributes;
+    private $attributes;
 
     /**
      * @var array;
      */
-    protected $attributeSets;
+    private $attributeSets;
 
     /**
      * @var array;
      */
-    protected $attributeGroups;
+    private $attributeGroups;
 
     /**
      * @var array;
      */
-    protected $entityTypes;
+    private $entityTypes;
+
+    /**
+     * @var array;
+     */
+    private $entityAttributes;
 
     /**
      * @var Source
      */
-    protected $source;
+    private $source;
 
     /**
      * @var Destination
      */
-    protected $destination;
+    private $destination;
 
     /**
      * @var Map
      */
-    protected $map;
+    private $map;
 
     /**
      * @var Helper
      */
-    protected $helper;
+    private $helper;
 
     /**
      * @param MapFactory $mapFactory
@@ -72,6 +77,7 @@ class InitialData
         $this->initAttributeGroups();
         $this->initAttributes();
         $this->initEntityTypes();
+        $this->initEntityAttribute();
     }
 
     /**
@@ -79,12 +85,13 @@ class InitialData
      *
      * @return void
      */
-    protected function initEntityTypes()
+    private function initEntityTypes()
     {
-        if ($this->entityTypes === null) {
-            $this->entityTypes['source'] = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
-            $this->entityTypes['dest'] = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
+        if ($this->entityTypes) {
+            return;
         }
+        $this->entityTypes['source'] = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
+        $this->entityTypes['dest'] = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
     }
 
     /**
@@ -92,22 +99,17 @@ class InitialData
      *
      * @return void
      */
-    protected function initAttributes()
+    private function initAttributes()
     {
-        if ($this->attributes === null) {
-            $sourceDocument = 'eav_attribute';
-
-            foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {
-                $this->attributes['source'][$id] = $record;
-            }
-
-            $destinationRecords = $this->helper->getDestinationRecords(
-                $sourceDocument,
-                ['entity_type_id', 'attribute_code']
-            );
-            foreach ($destinationRecords as $id => $record) {
-                $this->attributes['dest'][$id] = $record;
-            }
+        if ($this->attributes) {
+            return;
+        }
+        $sourceDocument = 'eav_attribute';
+        foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {
+            $this->attributes['source'][$id] = $record;
+        }
+        foreach ($this->helper->getDestinationRecords($sourceDocument, ['attribute_id']) as $id => $record) {
+            $this->attributes['dest'][$id] = $record;
         }
     }
 
@@ -116,8 +118,15 @@ class InitialData
      *
      * @return void
      */
-    protected function initAttributeSets()
+    private function initAttributeSets()
     {
+        if ($this->attributeSets) {
+            return;
+        }
+        $this->attributeSets['source'] = $this->helper->getSourceRecords(
+            'eav_attribute_set',
+            ['attribute_set_id']
+        );
         $this->attributeSets['dest'] = $this->helper->getDestinationRecords(
             'eav_attribute_set',
             ['attribute_set_id']
@@ -129,11 +138,38 @@ class InitialData
      *
      * @return void
      */
-    protected function initAttributeGroups()
+    private function initAttributeGroups()
     {
+        if ($this->attributeGroups) {
+            return;
+        }
+        $this->attributeGroups['source'] = $this->helper->getSourceRecords(
+            'eav_attribute_group',
+            ['attribute_group_id']
+        );
         $this->attributeGroups['dest'] = $this->helper->getDestinationRecords(
             'eav_attribute_group',
-            ['attribute_set_id', 'attribute_group_name']
+            ['attribute_group_id']
+        );
+    }
+    
+    /**
+     * Load entity attribute data before migration
+     *
+     * @return void
+     */
+    private function initEntityAttribute()
+    {
+        if ($this->entityAttributes) {
+            return;
+        }
+        $this->entityAttributes['source'] = $this->helper->getSourceRecords(
+            'eav_entity_attribute',
+            ['entity_attribute_id']
+        );
+        $this->entityAttributes['dest'] = $this->helper->getDestinationRecords(
+            'eav_entity_attribute',
+            ['entity_attribute_id']
         );
     }
 
@@ -181,5 +217,16 @@ class InitialData
     public function getAttributeGroups($type)
     {
         return $this->attributeGroups[$type];
+    }
+
+    /**
+     * Get Eav entity attributes
+     *
+     * @param string $type
+     * @return array
+     */
+    public function getEntityAttributes($type)
+    {
+        return $this->entityAttributes[$type];
     }
 }
