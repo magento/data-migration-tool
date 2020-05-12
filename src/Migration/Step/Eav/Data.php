@@ -488,6 +488,9 @@ class Data implements StageInterface, RollbackInterface
             new \Zend_Db_Expr(sprintf('attribute_id IN (%s)', implode(',', $customAttributeIds)))
         );
         foreach ($customEntityAttributes as $record) {
+            if (!isset($this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']])) {
+                continue;
+            }
             $record['sort_order'] = $this->getCustomAttributeSortOrder($record);
             $record['attribute_group_id'] = $this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']];
             $record['entity_attribute_id'] = null;
