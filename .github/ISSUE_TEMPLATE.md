@@ -1,4 +1,6 @@
-<!--- Try to find a similar issue among existing -->
+<!--- Reported issues in this project are supported mainly by Magento community -->
+<!--- Please submit a support ticket here https://magento.com/contact-us if you migrate to Magento 2 Commerce -->
+<!--- Try to find a similar issue among existing and please be engaged in discussions -->
 <!--- Before adding new issues, please, check this article https://github.com/magento/magento2/wiki/Issue-reporting-guidelines-->
 
 ### Preconditions

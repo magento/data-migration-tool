@@ -27,6 +27,10 @@ If you migrate from Magento Open Source to Magento Commerce, the following versi
 
 *    1.6.x, 1.7.x, 1.8.x, 1.9.x
 
+### Supporting issues and Pull Request contributions
+Reported issues in this project are supported mainly by Magento community. Please submit a support ticket here https://magento.com/contact-us if you migrate to Magento 2 Commerce.
+Contributions like Pull Requests are welcome and we will process/merge it
+
 ## Prerequisites
 Before you start your migration, you must do all of the following:
 
