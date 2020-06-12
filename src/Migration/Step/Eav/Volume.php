@@ -11,6 +11,7 @@ use Migration\App\ProgressBar;
 use Migration\Reader\GroupsFactory;
 use Migration\ResourceModel\Destination;
 use Migration\Step\Eav\Model\IgnoredAttributes;
+use Migration\Step\Eav\Model\Data as ModelData;
 
 /**
  * Class Volume
@@ -105,7 +106,7 @@ class Volume extends AbstractVolume
     {
         foreach ($this->helper->getDestinationRecords('eav_attribute') as $attribute) {
             $sourceAttributes = $this->ignoredAttributes
-                ->clearIgnoredAttributes($this->initialData->getAttributes('source'));
+                ->clearIgnoredAttributes($this->initialData->getAttributes(ModelData::TYPE_SOURCE));
 
             if (isset($sourceAttributes[$attribute['attribute_id']])
                 && ($sourceAttributes[$attribute['attribute_id']]['attribute_code'] != $attribute['attribute_code'])
