@@ -72,6 +72,11 @@ class Data implements StageInterface, RollbackInterface
     private $mapAttributeGroupIdsSourceDest = [];
 
     /**
+     * @var array;
+     */
+    private $mapNewAttributeSetsToSourceKeys = [];
+
+    /**
      * @var Helper
      */
     private $helper;
@@ -260,18 +265,28 @@ class Data implements StageInterface, RollbackInterface
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
             $mappedKey = null;
+            $mapSourceToDest = false;
             $entityTypeId = $sourceRecord->getValue('entity_type_id');
             if (isset($this->mapEntityTypeIdsSourceDest[$entityTypeId])) {
                 $mappedId = $this->mapEntityTypeIdsSourceDest[$entityTypeId];
-                $mappedKey = $mappedId . '-' . $sourceRecord->getValue('attribute_set_name');
+                $setName = $sourceRecord->getValue('attribute_set_name');
+                $mappedKey = $this->helper->getKeyFromFields($mappedId, $setName);
             }
             if ($mappedKey && isset($destinationRecords[$mappedKey])) {
                 unset($destinationRecords[$mappedKey]);
+                $mapSourceToDest = true;
             }
             $destinationRecordData = $destinationRecord->getDataDefault();
             $destinationRecord->setData($destinationRecordData);
             $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
+            if ($mapSourceToDest) {
+                $destinationKey = $this->helper->getKeyFromFields(
+                    $destinationRecord->getValue('entity_type_id'),
+                    $destinationRecord->getValue('attribute_set_name')
+                );
+                $this->mapNewAttributeSetsToSourceKeys[$mappedKey] = $destinationKey;
+            }
         }
         $this->destination->clearDocument($destinationDocument->getName());
         $this->saveRecords($destinationDocument, $recordsToSave);
@@ -423,7 +438,8 @@ class Data implements StageInterface, RollbackInterface
             $entityTypeId = $sourceRecord->getValue('entity_type_id');
             if (isset($this->mapEntityTypeIdsSourceDest[$entityTypeId])) {
                 $mappedId = $this->mapEntityTypeIdsSourceDest[$entityTypeId];
-                $mappedKey = $mappedId . '-' . $sourceRecord->getValue('attribute_code');
+                $attributeCode = $sourceRecord->getValue('attribute_code');
+                $mappedKey = $this->helper->getKeyFromFields($mappedId, $attributeCode);
             }
             if ($mappedKey && isset($destinationRecords[$mappedKey])) {
                 $destinationRecordData = $destinationRecords[$mappedKey];
@@ -624,7 +640,9 @@ class Data implements StageInterface, RollbackInterface
         );
         foreach ($this->initialData->getAttributeSets('dest') as $attributeSetId => $record) {
             $entityTypeId = $this->mapEntityTypeIdsDestOldNew[$record['entity_type_id']];
-            $newAttributeSet = $this->newAttributeSets[$entityTypeId . '-' . $record['attribute_set_name']];
+            $sourceKey = $this->helper->getKeyFromFields($entityTypeId, $record['attribute_set_name']);
+            $destinationKey = $this->mapNewAttributeSetsToSourceKeys[$sourceKey] ?? null;
+            $newAttributeSet = $this->newAttributeSets[$sourceKey] ?? $this->newAttributeSets[$destinationKey];
             $this->mapAttributeSetIdsDestOldNew[$attributeSetId] = $newAttributeSet['attribute_set_id'];
             $this->defaultAttributeSetIds[$newAttributeSet['entity_type_id']] = $newAttributeSet['attribute_set_id'];
         }
@@ -644,7 +662,10 @@ class Data implements StageInterface, RollbackInterface
         foreach ($this->initialData->getAttributes('dest') as $keyOld => $attributeOld) {
             $entityTypeId = $attributeOld['entity_type_id'];
             $attributeCode = $attributeOld['attribute_code'];
-            $keyMapped = $this->mapEntityTypeIdsDestOldNew[$entityTypeId] . '-' . $attributeCode;
+            $keyMapped = $this->helper->getKeyFromFields(
+                $this->mapEntityTypeIdsDestOldNew[$entityTypeId],
+                $attributeCode
+            );
             $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] =
                 $newAttributes[$keyMapped]['attribute_id'];
         }

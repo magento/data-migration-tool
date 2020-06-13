@@ -279,13 +279,19 @@ class Data
     {
         $defaultAttributes = [];
         foreach ($this->initialData->getAttributes('dest') as $id => $attribute) {
-            $defaultAttributes[$id] = $attribute['attribute_code'] . '-' . $attribute['entity_type_id'];
+            $defaultAttributes[$id] = $this->helper->getKeyFromFields(
+                $attribute['attribute_code'],
+                $attribute['entity_type_id']
+            );
         }
         $sourceAttributes = $this->ignoredAttributes->clearIgnoredAttributes(
             $this->initialData->getAttributes('source')
         );
         foreach ($sourceAttributes as $id => $attribute) {
-            $sourceAttributes[$id] = $attribute['attribute_code'] . '-' . $attribute['entity_type_id'];
+            $sourceAttributes[$id] = $this->helper->getKeyFromFields(
+                $attribute['attribute_code'],
+                $attribute['entity_type_id']
+            );
         }
         return array_keys(array_diff($sourceAttributes, $defaultAttributes));
     }
