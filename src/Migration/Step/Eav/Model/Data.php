@@ -58,6 +58,9 @@ class Data
     const ENTITY_TYPE_CUSTOMER_CODE = 'customer';
     const ENTITY_TYPE_CUSTOMER_ADDRESS_CODE = 'customer_address';
 
+    const TYPE_SOURCE = 'source';
+    const TYPE_DEST = 'destination';
+
     /**
      * @param Source $source
      * @param Destination $destination
@@ -105,19 +108,20 @@ class Data
     }
 
     /**
-     * Get list of attribute sets depending on entity type
+     * Get list of product attribute sets
      *
-     * @param null|int $entityTypeId
      * @param string $mode
+     * @param string $type
      * @return array|mixed
      */
-    public function getAttributeSets($entityTypeId = null, $mode = self::ATTRIBUTE_SETS_ALL)
-    {
+    public function getProductAttributeSets(
+        $mode = self::ATTRIBUTE_SETS_ALL,
+        $type = self::TYPE_SOURCE
+    ) {
+        $productEntityTypeId = $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE, $type);
         $attributeSets = [];
-        foreach ($this->initialData->getAttributeSets('source') as $attributeSet) {
-            if ($entityTypeId === null
-                || $entityTypeId == $attributeSet['entity_type_id']
-            ) {
+        foreach ($this->initialData->getAttributeSets($type) as $attributeSet) {
+            if ($productEntityTypeId == $attributeSet['entity_type_id']) {
                 $attributeSets[$attributeSet['attribute_set_id']] = $attributeSet;
             }
         }
@@ -133,13 +137,14 @@ class Data
     /**
      * Return entity type id by its code
      *
-     * @param $code
+     * @param string $code
+     * @param string $type
      * @return mixed|null
      */
-    public function getEntityTypeIdByCode($code)
+    public function getEntityTypeIdByCode($code, $type = self::TYPE_SOURCE)
     {
         $entityTypeId = null;
-        foreach ($this->initialData->getEntityTypes('source') as $entityType) {
+        foreach ($this->initialData->getEntityTypes($type) as $entityType) {
             if ($entityType['entity_type_code'] == $code) {
                 $entityTypeId = $entityType['entity_type_id'];
             }
@@ -154,12 +159,12 @@ class Data
      */
     public function getDefaultProductAttributeGroups()
     {
-        $defaultProductAttributeSetId = $this->getAttributeSets(
-            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
-            self::ATTRIBUTE_SETS_DEFAULT
+        $defaultProductAttributeSetId = $this->getProductAttributeSets(
+            self::ATTRIBUTE_SETS_DEFAULT,
+            self::TYPE_DEST
         )['attribute_set_id'];
         $attributeGroups = [];
-        foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
+        foreach ($this->initialData->getAttributeGroups(self::TYPE_DEST) as $attributeGroup) {
             if ($attributeGroup['attribute_set_id'] == $defaultProductAttributeSetId) {
                 $attributeGroup['attribute_group_id'] = null;
                 $attributeGroup['attribute_set_id'] = null;
@@ -176,12 +181,12 @@ class Data
      */
     public function getDefaultProductEntityAttributes()
     {
-        $defaultProductAttributeSetId = $this->getAttributeSets(
-            $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE),
-            self::ATTRIBUTE_SETS_DEFAULT
+        $defaultProductAttributeSetId = $this->getProductAttributeSets(
+            self::ATTRIBUTE_SETS_DEFAULT,
+            self::TYPE_DEST
         )['attribute_set_id'];
         $entityAttributes = [];
-        foreach ($this->initialData->getEntityAttributes('dest') as $entityAttribute) {
+        foreach ($this->initialData->getEntityAttributes(self::TYPE_DEST) as $entityAttribute) {
             if ($entityAttribute['attribute_set_id'] == $defaultProductAttributeSetId) {
                 $entityAttribute['entity_attribute_id'] = null;
                 $entityAttribute['attribute_set_id'] = null;
@@ -221,7 +226,7 @@ class Data
     public function getDestAttributeGroupCodeFromId($attributeGroupId)
     {
         $attributeGroupCode = null;
-        foreach ($this->initialData->getAttributeGroups('dest') as $attributeGroup) {
+        foreach ($this->initialData->getAttributeGroups(self::TYPE_DEST) as $attributeGroup) {
             if ($attributeGroup['attribute_group_id'] == $attributeGroupId) {
                 $attributeGroupCode = $attributeGroup['attribute_group_code'];
             }
@@ -238,7 +243,7 @@ class Data
     public function getSourceAttributeGroupNameFromId($attributeGroupId)
     {
         $attributeGroupName = null;
-        foreach ($this->initialData->getAttributeGroups('source') as $attributeGroup) {
+        foreach ($this->initialData->getAttributeGroups(self::TYPE_SOURCE) as $attributeGroup) {
             if ($attributeGroup['attribute_group_id'] == $attributeGroupId) {
                 $attributeGroupName = $attributeGroup['attribute_group_name'];
             }
@@ -278,20 +283,22 @@ class Data
     public function getCustomAttributeIds()
     {
         $defaultAttributes = [];
-        foreach ($this->initialData->getAttributes('dest') as $id => $attribute) {
-            $defaultAttributes[$id] = $this->helper->getKeyFromFields(
-                $attribute['attribute_code'],
-                $attribute['entity_type_id']
-            );
+        $entityTypesSource = $this->initialData->getEntityTypes(self::TYPE_SOURCE);
+        $entityTypesDest = $this->initialData->getEntityTypes(self::TYPE_DEST);
+        foreach ($this->initialData->getAttributes(self::TYPE_DEST) as $id => $attribute) {
+            $defaultAttributes[$id] =
+                $entityTypesDest[$attribute['entity_type_id']]['entity_type_code']
+                . '--'
+                . $attribute['attribute_code'];
         }
         $sourceAttributes = $this->ignoredAttributes->clearIgnoredAttributes(
-            $this->initialData->getAttributes('source')
+            $this->initialData->getAttributes(self::TYPE_SOURCE)
         );
         foreach ($sourceAttributes as $id => $attribute) {
-            $sourceAttributes[$id] = $this->helper->getKeyFromFields(
-                $attribute['attribute_code'],
-                $attribute['entity_type_id']
-            );
+            $sourceAttributes[$id] =
+                $entityTypesSource[$attribute['entity_type_id']]['entity_type_code']
+                . '--'
+                . $attribute['attribute_code'];
         }
         return array_keys(array_diff($sourceAttributes, $defaultAttributes));
     }

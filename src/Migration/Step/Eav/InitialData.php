@@ -9,6 +9,7 @@ use Migration\Reader\MapFactory;
 use Migration\Reader\Map;
 use Migration\ResourceModel\Destination;
 use Migration\ResourceModel\Source;
+use Migration\Step\Eav\Model\Data as ModelData;
 
 /**
  * Class InitialData
@@ -90,8 +91,10 @@ class InitialData
         if ($this->entityTypes) {
             return;
         }
-        $this->entityTypes['source'] = $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
-        $this->entityTypes['dest'] = $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
+        $this->entityTypes[ModelData::TYPE_SOURCE] =
+            $this->helper->getSourceRecords('eav_entity_type', ['entity_type_id']);
+        $this->entityTypes[ModelData::TYPE_DEST] =
+            $this->helper->getDestinationRecords('eav_entity_type', ['entity_type_id']);
     }
 
     /**
@@ -106,10 +109,10 @@ class InitialData
         }
         $sourceDocument = 'eav_attribute';
         foreach ($this->helper->getSourceRecords($sourceDocument, ['attribute_id']) as $id => $record) {
-            $this->attributes['source'][$id] = $record;
+            $this->attributes[ModelData::TYPE_SOURCE][$id] = $record;
         }
         foreach ($this->helper->getDestinationRecords($sourceDocument, ['attribute_id']) as $id => $record) {
-            $this->attributes['dest'][$id] = $record;
+            $this->attributes[ModelData::TYPE_DEST][$id] = $record;
         }
     }
 
@@ -123,11 +126,11 @@ class InitialData
         if ($this->attributeSets) {
             return;
         }
-        $this->attributeSets['source'] = $this->helper->getSourceRecords(
+        $this->attributeSets[ModelData::TYPE_SOURCE] = $this->helper->getSourceRecords(
             'eav_attribute_set',
             ['attribute_set_id']
         );
-        $this->attributeSets['dest'] = $this->helper->getDestinationRecords(
+        $this->attributeSets[ModelData::TYPE_DEST] = $this->helper->getDestinationRecords(
             'eav_attribute_set',
             ['attribute_set_id']
         );
@@ -143,11 +146,11 @@ class InitialData
         if ($this->attributeGroups) {
             return;
         }
-        $this->attributeGroups['source'] = $this->helper->getSourceRecords(
+        $this->attributeGroups[ModelData::TYPE_SOURCE] = $this->helper->getSourceRecords(
             'eav_attribute_group',
             ['attribute_group_id']
         );
-        $this->attributeGroups['dest'] = $this->helper->getDestinationRecords(
+        $this->attributeGroups[ModelData::TYPE_DEST] = $this->helper->getDestinationRecords(
             'eav_attribute_group',
             ['attribute_group_id']
         );
@@ -163,11 +166,11 @@ class InitialData
         if ($this->entityAttributes) {
             return;
         }
-        $this->entityAttributes['source'] = $this->helper->getSourceRecords(
+        $this->entityAttributes[ModelData::TYPE_SOURCE] = $this->helper->getSourceRecords(
             'eav_entity_attribute',
             ['entity_attribute_id']
         );
-        $this->entityAttributes['dest'] = $this->helper->getDestinationRecords(
+        $this->entityAttributes[ModelData::TYPE_DEST] = $this->helper->getDestinationRecords(
             'eav_entity_attribute',
             ['entity_attribute_id']
         );

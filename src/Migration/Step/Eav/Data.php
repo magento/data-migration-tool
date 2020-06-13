@@ -322,8 +322,7 @@ class Data implements StageInterface, RollbackInterface
         );
         // add default attribute groups from Magento 2 for each attribute set from Magento 1
         $prototypeProductAttributeGroups = $this->modelData->getDefaultProductAttributeGroups();
-        $productAttributeSets = $this->modelData->getAttributeSets(
-            $this->modelData->getEntityTypeIdByCode(ModelData::ENTITY_TYPE_PRODUCT_CODE),
+        $productAttributeSets = $this->modelData->getProductAttributeSets(
             ModelData::ATTRIBUTE_SETS_NONE_DEFAULT
         );
         foreach ($productAttributeSets as $attributeSet) {
@@ -362,10 +361,7 @@ class Data implements StageInterface, RollbackInterface
     public function migrateCustomProductAttributeGroups()
     {
         $this->progress->advance();
-        $productAttributeSets = $this->modelData->getAttributeSets(
-            $this->modelData->getEntityTypeIdByCode(ModelData::ENTITY_TYPE_PRODUCT_CODE),
-            ModelData::ATTRIBUTE_SETS_ALL
-        );
+        $productAttributeSets = $this->modelData->getProductAttributeSets();
         foreach ($productAttributeSets as $productAttributeSet) {
             $attributeGroupIds = $this->modelData->getCustomProductAttributeGroups(
                 $productAttributeSet['attribute_set_id']
@@ -422,7 +418,9 @@ class Data implements StageInterface, RollbackInterface
             $this->map->getDocumentMap($sourceDocName, MapInterface::TYPE_SOURCE)
         );
         $this->destination->backupDocument($destinationDocument->getName());
-        $sourceRecords = $this->ignoredAttributes->clearIgnoredAttributes($this->initialData->getAttributes('source'));
+        $sourceRecords = $this->ignoredAttributes->clearIgnoredAttributes(
+            $this->initialData->getAttributes(ModelData::TYPE_SOURCE)
+        );
         $destinationRecords = $this->helper->getDestinationRecords(
             $sourceDocName,
             ['entity_type_id', 'attribute_code']
@@ -614,12 +612,12 @@ class Data implements StageInterface, RollbackInterface
             'eav_entity_type',
             ['entity_type_code']
         );
-        foreach ($this->initialData->getEntityTypes('dest') as $entityTypeIdOld => $recordOld) {
+        foreach ($this->initialData->getEntityTypes(ModelData::TYPE_DEST) as $entityTypeIdOld => $recordOld) {
             $entityTypeMigrated = $entityTypesMigrated[$recordOld['entity_type_code']];
             $this->mapEntityTypeIdsDestOldNew[$entityTypeIdOld] = $entityTypeMigrated['entity_type_id'];
         }
-        foreach ($this->initialData->getEntityTypes('source') as $entityTypeIdSource => $recordSource) {
-            foreach ($this->initialData->getEntityTypes('dest') as $entityTypeIdDest => $recordDest) {
+        foreach ($this->initialData->getEntityTypes(ModelData::TYPE_SOURCE) as $entityTypeIdSource => $recordSource) {
+            foreach ($this->initialData->getEntityTypes(ModelData::TYPE_DEST) as $entityTypeIdDest => $recordDest) {
                 if ($recordSource['entity_type_code'] == $recordDest['entity_type_code']) {
                     $this->mapEntityTypeIdsSourceDest[$entityTypeIdSource] = $entityTypeIdDest;
                 }
@@ -638,7 +636,7 @@ class Data implements StageInterface, RollbackInterface
             'eav_attribute_set',
             ['entity_type_id', 'attribute_set_name']
         );
-        foreach ($this->initialData->getAttributeSets('dest') as $attributeSetId => $record) {
+        foreach ($this->initialData->getAttributeSets(ModelData::TYPE_DEST) as $attributeSetId => $record) {
             $entityTypeId = $this->mapEntityTypeIdsDestOldNew[$record['entity_type_id']];
             $sourceKey = $this->helper->getKeyFromFields($entityTypeId, $record['attribute_set_name']);
             $destinationKey = $this->mapNewAttributeSetsToSourceKeys[$sourceKey] ?? null;
@@ -659,7 +657,7 @@ class Data implements StageInterface, RollbackInterface
             'eav_attribute',
             ['entity_type_id', 'attribute_code']
         );
-        foreach ($this->initialData->getAttributes('dest') as $keyOld => $attributeOld) {
+        foreach ($this->initialData->getAttributes(ModelData::TYPE_DEST) as $keyOld => $attributeOld) {
             $entityTypeId = $attributeOld['entity_type_id'];
             $attributeCode = $attributeOld['attribute_code'];
             $keyMapped = $this->helper->getKeyFromFields(
@@ -669,11 +667,11 @@ class Data implements StageInterface, RollbackInterface
             $this->mapAttributeIdsDestOldNew[$attributeOld['attribute_id']] =
                 $newAttributes[$keyMapped]['attribute_id'];
         }
-        foreach ($this->initialData->getAttributes('source') as $recordSourceId => $recordSource) {
-            foreach ($this->initialData->getAttributes('dest') as $recordDestId => $recordDest) {
-                $sourceEntityTypeCode = $this->initialData->getEntityTypes('source')
+        foreach ($this->initialData->getAttributes(ModelData::TYPE_SOURCE) as $recordSourceId => $recordSource) {
+            foreach ($this->initialData->getAttributes(ModelData::TYPE_DEST) as $recordDestId => $recordDest) {
+                $sourceEntityTypeCode = $this->initialData->getEntityTypes(ModelData::TYPE_SOURCE)
                 [$recordSource['entity_type_id']]['entity_type_code'];
-                $destinationEntityTypeCode = $this->initialData->getEntityTypes('dest')
+                $destinationEntityTypeCode = $this->initialData->getEntityTypes(ModelData::TYPE_DEST)
                 [$recordDest['entity_type_id']]['entity_type_code'];
                 if ($recordSource['attribute_code'] == $recordDest['attribute_code']
                     && $sourceEntityTypeCode == $destinationEntityTypeCode
@@ -697,10 +695,7 @@ class Data implements StageInterface, RollbackInterface
             'eav_attribute_group',
             ['attribute_group_id']
         );
-        $productAttributeSetIds = array_keys($this->modelData->getAttributeSets(
-            $this->modelData->getEntityTypeIdByCode(ModelData::ENTITY_TYPE_PRODUCT_CODE),
-            ModelData::ATTRIBUTE_SETS_ALL
-        ));
+        $productAttributeSetIds = array_keys($this->modelData->getProductAttributeSets());
         foreach ($attributeGroupsSource as $idSource => $recordSource) {
             $sourceAttributeGroupName = $recordSource['attribute_group_name'];
             if (in_array($recordSource['attribute_set_id'], $productAttributeSetIds)) {

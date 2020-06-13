@@ -7,6 +7,7 @@ namespace Migration\Step\Eav\Model;
 
 use Migration\Step\Eav\Helper;
 use Migration\Step\Eav\InitialData;
+use Migration\Step\Eav\Model\Data as ModelData;
 
 /**
  * Class IgnoredAttributes
@@ -44,7 +45,7 @@ class IgnoredAttributes
     public function clearIgnoredAttributes($sourceRecords)
     {
         $attributesIgnoreIds = [];
-        $initialAttributes = $this->initialData->getAttributes('source');
+        $initialAttributes = $this->initialData->getAttributes(ModelData::TYPE_SOURCE);
         $ignoredAttributes = $this->helper->getAttributesGroupCodes('ignore');
         foreach ($ignoredAttributes as $attributeCode => $entityTypeIds) {
             foreach ($initialAttributes as $attribute) {
