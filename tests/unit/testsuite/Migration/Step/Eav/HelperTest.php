@@ -128,6 +128,14 @@ class HelperTest extends \PHPUnit\Framework\TestCase
     /**
      * @return void
      */
+    public function testGetKeyFromFields()
+    {
+        $this->assertEquals('1-Default', $this->helper->getKeyFromFields(1, 'Default'));
+    }
+
+    /**
+     * @return void
+     */
     public function testGetSourceRecordsCount()
     {
         $this->source->expects($this->once())->method('getRecordsCount')->with('some_document')
