@@ -114,7 +114,7 @@ class Helper
                 foreach ($keyFields as $keyField) {
                     $key[] = $row[$keyField];
                 }
-                $data[implode('-', $key)] = $row;
+                $data[$this->getKeyFromFields(...$key)] = $row;
             } else {
                 $data[] = $row;
             }
@@ -140,7 +140,7 @@ class Helper
                 foreach ($keyFields as $keyField) {
                     $key[] = $row[$keyField];
                 }
-                $data[implode('-', $key)] = $row;
+                $data[$this->getKeyFromFields(...$key)] = $row;
             } else {
                 $data[] = $row;
             }
@@ -199,6 +199,21 @@ class Helper
             }
         }
         return $attributeCodes;
+    }
+
+    /**
+     * Returns a string that represents a key in an array returned from `Migration\Step\Eav\Helper::getSourceRecords()`
+     * or `Migration\Step\Eav\Helper::getDestinationRecords()` whenever `$keyFields` is provided
+     *
+     * For example, calling `getSourceRecords()` for `eav_attribute_set` with `entity_type_id` and `attribute_set_name`
+     * as your key fields, would return an array with keys like `1-Default`, `2-Migration_Default`, etc.
+     *
+     * @param mixed[] $fields
+     * @return string
+     */
+    public function getKeyFromFields(...$fields)
+    {
+        return implode('-', $fields);
     }
 
     /**
