@@ -479,6 +479,9 @@ class Data implements StageInterface, RollbackInterface
         );
         $recordsToSave = $destinationDocument->getRecords();
         $customAttributeIds = $this->modelData->getCustomAttributeIds();
+        if (empty($customAttributeIds)) {
+            return;
+        }
         $customEntityAttributes = $this->source->getRecords(
             $sourceDocName,
             0,
