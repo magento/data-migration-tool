@@ -1960,6 +1960,9 @@
                 <document>admin_passwords</document>
             </ignore>
             <ignore>
+                <document>admin_user_expiration</document>
+            </ignore>
+            <ignore>
                 <document>support_backup</document>
             </ignore>
             <ignore>
