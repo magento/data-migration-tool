@@ -2314,6 +2314,12 @@
                 <document>msp_tfa_user_config</document>
             </ignore>
             <ignore>
+                <document>login_as_customer</document>
+            </ignore>
+            <ignore>
+                <document>magento_login_as_customer_log</document>
+            </ignore>
+            <ignore>
                 <document>queue_poison_pill</document>
             </ignore>
             <ignore>
