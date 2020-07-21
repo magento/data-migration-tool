@@ -1987,6 +1987,9 @@
                 <document>media_gallery_keyword</document>
             </ignore>
             <ignore>
+                <document>media_content_asset</document>
+            </ignore>
+            <ignore>
                 <document>adobe_stock_asset</document>
             </ignore>
             <ignore>
