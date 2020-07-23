@@ -1804,6 +1804,12 @@
                 <document>inventory_pickup_location_quote_address</document>
             </ignore>
             <ignore>
+                <document>braintree_credit_prices</document>
+            </ignore>
+            <ignore>
+                <document>braintree_transaction_details</document>
+            </ignore>
+            <ignore>
                 <document>admin_analytics_usage_version_log</document>
             </ignore>
             <ignore>
