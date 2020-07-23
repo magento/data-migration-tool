@@ -2734,6 +2734,15 @@
                 <document>inventory_geoname</document>
             </ignore>
             <ignore>
+                <document>inventory_order_notification</document>
+            </ignore>
+            <ignore>
+                <document>inventory_pickup_location_order</document>
+            </ignore>
+            <ignore>
+                <document>inventory_pickup_location_quote_address</document>
+            </ignore>
+            <ignore>
                 <document>admin_analytics_usage_version_log</document>
             </ignore>
             <ignore>
