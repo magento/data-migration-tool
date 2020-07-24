@@ -1,3 +1,17 @@
+2.4.0
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.4.0
+   * Magento Commerce: 2.4.0
+
+* Fixed bugs:
+
+   * Independent set ssl_ca, ssl_cert, and ssl_key in config.xml
+   * Integrity constraint violation exception on EAV step
+   * Error Duplicate entry 31-Images during migration on EAV Step
+   * Error if no custom entity attributes exist on EAV Step
+
 2.3.5
 =============
 * Merge of EAV Structure of Magento 1 with Magento 2   
