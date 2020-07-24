@@ -1365,6 +1365,9 @@
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
+                <datatype>sales_flat_quote.customer_note</datatype>
+            </ignore>
+            <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
@@ -3406,6 +3409,9 @@
             </ignore>
             <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_quote.customer_note</datatype>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>

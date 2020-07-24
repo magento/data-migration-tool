@@ -1854,6 +1854,9 @@
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
+                <datatype>sales_flat_quote.customer_note</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
             <ignore>
@@ -3150,6 +3153,9 @@
             </ignore>
             <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_flat_quote.customer_note</datatype>
             </ignore>
             <ignore>
                 <datatype>quote_payment.cc_exp_month</datatype>
