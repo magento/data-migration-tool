@@ -2148,7 +2148,7 @@
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
-                <datatype>sales_flat_quote.customer_note</datatype>
+                <datatype>quote.customer_note</datatype>
             </ignore>
             <ignore>
                 <field>admin_user.refresh_token</field>
