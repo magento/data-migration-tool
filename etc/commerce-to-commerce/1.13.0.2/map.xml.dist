@@ -2731,6 +2731,12 @@
                 <document>pagebuilder_template</document>
             </ignore>
             <ignore>
+                <document>tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>tfa_user_config</document>
+            </ignore>
+            <ignore>
                 <document>email_coupon_attribute</document>
             </ignore>
         </document_rules>
