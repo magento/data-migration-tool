@@ -1246,6 +1246,9 @@
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
+                <datatype>sales_flat_quote.customer_note</datatype>
+            </ignore>
+            <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
@@ -1754,6 +1757,9 @@
                 <document>admin_passwords</document>
             </ignore>
             <ignore>
+                <document>admin_user_expiration</document>
+            </ignore>
+            <ignore>
                 <document>catalog_product_entity_media_gallery_value_to_entity</document>
             </ignore>
             <ignore>
@@ -1767,6 +1773,9 @@
             </ignore>
             <ignore>
                 <document>media_gallery_keyword</document>
+            </ignore>
+            <ignore>
+                <document>media_content_asset</document>
             </ignore>
             <ignore>
                 <document>adobe_stock_asset</document>
@@ -1862,6 +1871,21 @@
                 <document>inventory_geoname</document>
             </ignore>
             <ignore>
+                <document>inventory_order_notification</document>
+            </ignore>
+            <ignore>
+                <document>inventory_pickup_location_order</document>
+            </ignore>
+            <ignore>
+                <document>inventory_pickup_location_quote_address</document>
+            </ignore>
+            <ignore>
+                <document>braintree_credit_prices</document>
+            </ignore>
+            <ignore>
+                <document>braintree_transaction_details</document>
+            </ignore>
+            <ignore>
                 <document>admin_analytics_usage_version_log</document>
             </ignore>
             <ignore>
@@ -1887,6 +1911,12 @@
             </ignore>
             <ignore>
                 <document>pagebuilder_template</document>
+            </ignore>
+            <ignore>
+                <document>tfa_country_codes</document>
+            </ignore>
+            <ignore>
+                <document>tfa_user_config</document>
             </ignore>
             <ignore>
                 <document>email_coupon_attribute</document>
@@ -1920,6 +1950,12 @@
             </ignore>
             <ignore>
                 <document>msp_tfa_user_config</document>
+            </ignore>
+            <ignore>
+                <document>login_as_customer</document>
+            </ignore>
+            <ignore>
+                <document>magento_login_as_customer_log</document>
             </ignore>
             <ignore>
                 <document>queue_poison_pill</document>
@@ -2265,6 +2301,9 @@
             </ignore>
             <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>quote.customer_note</datatype>
             </ignore>
             <ignore>
                 <field>admin_user.refresh_token</field>

@@ -4,17 +4,17 @@ We're pleased you're considering moving from the world's #1 eCommerce platformâ€
 Magento 2 migration involves four components: data, extensions and custom code, themes, and customizations.
 
 ### Data
-We've developed the **Magento 2 Data Migration Tool** to help you efficiently move all of your products, customers, and order data, store configurations, promotions and more to Magento 2. See the <a href="https://devdocs.magento.com/guides/v2.3/migration/bk-migration-guide.html" target="_blank">Magento Migration Guide</a> for details.
+We've developed the **Magento 2 Data Migration Tool** to help you efficiently move all of your products, customers, and order data, store configurations, promotions and more to Magento 2. See the <a href="https://devdocs.magento.com/guides/v2.4/migration/bk-migration-guide.html" target="_blank">Magento Migration Guide</a> for details.
 
 ### Extensions and custom code
 We've been working hard with the development community to help you use your Magento 1 extensions in Magento 2. Now we're proud to present the <a href="https://marketplace.magento.com/" target="_blank">Magento Marketplace</a>, where you can download or purchase the latest versions of your favourite extensions.
 
 Also, we have developed the <a href="https://github.com/magento/code-migration" target="_blank">Code Migration Toolkit</a>, which will help to port extensions and your custom code to Magento 2, significantly reducing your porting efforts.
 
-More information on developing extensions for Magento 2 is available in the <a href="http://devdocs.magento.com/guides/v2.3/extension-dev-guide/bk-extension-dev-guide.html" target="_blank">Magento 2 Extension Developer Guide</a>.
+More information on developing extensions for Magento 2 is available in the <a href="http://devdocs.magento.com/guides/v2.4/extension-dev-guide/bk-extension-dev-guide.html" target="_blank">Magento 2 Extension Developer Guide</a>.
 
 ### Themes and Customizations
-Magento 2 uses new approaches and technologies that give merchants an unmatched ability to create innovative shopping experiences and scale to new levels. To take advantage of these advances, developers will need to make changes to their themes and customizations. Documentation is available online for creating Magento 2 <a href="http://devdocs.magento.com/guides/v2.3/frontend-dev-guide/themes/theme-general.html" target="_blank">themes</a>, <a href="http://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/layout-overview.html" target="_blank">layouts</a>, and <a href="http://devdocs.magento.com/guides/v2.3/frontend-dev-guide/layouts/xml-manage.html" target="_blank">customizations</a>.
+Magento 2 uses new approaches and technologies that give merchants an unmatched ability to create innovative shopping experiences and scale to new levels. To take advantage of these advances, developers will need to make changes to their themes and customizations. Documentation is available online for creating Magento 2 <a href="http://devdocs.magento.com/guides/v2.4/frontend-dev-guide/themes/theme-general.html" target="_blank">themes</a>, <a href="http://devdocs.magento.com/guides/v2.4/frontend-dev-guide/layouts/layout-overview.html" target="_blank">layouts</a>, and <a href="http://devdocs.magento.com/guides/v2.4/frontend-dev-guide/layouts/xml-manage.html" target="_blank">customizations</a>.
 
 ### Supported versions
 This edition of tool supports the following versions for migration:
@@ -34,7 +34,7 @@ Contributions like Pull Requests are welcome and we will process/merge it
 ## Prerequisites
 Before you start your migration, you must do all of the following:
 
-*    Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v2.3/install-gde/system-requirements.html">system requirements</a>.
+*    Set up a Magento 2 system that meets our <a href="http://devdocs.magento.com/guides/v2.4/install-gde/system-requirements.html">system requirements</a>.
 
     Set up your system using a topology and design that at least matches your existing Magento 1.x system.
 
@@ -53,19 +53,19 @@ Before you start your migration, you must do all of the following:
 ## Install the Data Migration Tool
 This section discusses how to install the Magento Data Migration Tool. You can install it from either repo.magento.com or from a GitHub repository.
 
-**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.3.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
+**Note**: The versions of both the migration tool and the Magento 2 code must be identical (for example, 2.4.0). To find the version of either package, open `composer.json` and find the value of `"version"`.
 
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
 
-1.  Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v2.3/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
+1.  Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
 2.  Go to Magento 2 root directory.
 3.  Enter the following commands:
 
         composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
         composer require magento/data-migration-tool:<version>
 
-    where `<version>` is release version (e.g. 2.3.0)
+    where `<version>` is release version (e.g. 2.4.0)
 
 3.  Wait while dependencies are updated.
 
@@ -82,7 +82,7 @@ To install the migration tool, you must:
 
 To update `composer.json`:
 
-1.  Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v2.3/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
+1.  Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
 
 2.  Change to your Magento installation directory.
 
@@ -98,13 +98,13 @@ To update `composer.json`:
 
     Exact version example:
 
-        composer require magento/data-migration-tool:2.3.0
+        composer require magento/data-migration-tool:2.4.0
 
     Next significant release example:
 
-        composer require magento/data-migration-tool:~2.3
+        composer require magento/data-migration-tool:~2.4
 
 5.  Wait while dependencies are installed.
 
 ## More details
-See the <a href="http://devdocs.magento.com/guides/v2.3/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
+See the <a href="http://devdocs.magento.com/guides/v2.4/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
