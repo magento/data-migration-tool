@@ -96,12 +96,9 @@ class Data
             return;
         }
         foreach ($records as &$record) {
-            if (empty($mappedIdKeys[$record[$column]])) {
-                throw new \Migration\Exception(
-                    sprintf('Not mapped id key %s found for %s.%s ', $record[$column], $destDocument, $column)
-                );
+            if (!empty($mappedIdKeys[$record[$column]])) {
+                $record[$column] = $mappedIdKeys[$record[$column]];
             }
-            $record[$column] = $mappedIdKeys[$record[$column]];
         }
         $this->destination->clearDocument($destDocument);
         $this->destination->saveRecords($destDocument, $records);
