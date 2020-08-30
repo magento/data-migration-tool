@@ -307,7 +307,9 @@ class Data implements StageInterface, RollbackInterface
         );
         // add default attribute groups from Magento 2 for each attribute set from Magento 1
         $prototypeProductAttributeGroups = $this->modelData->getDefaultProductAttributeGroups();
-        $productAttributeSets = $this->modelData->getProductAttributeSets();
+        $productAttributeSets = $this->modelData->getProductAttributeSets(
+            ModelData::ATTRIBUTE_SETS_NONE_DEFAULT
+        );
         foreach ($productAttributeSets as $attributeSet) {
             foreach ($prototypeProductAttributeGroups as &$prototypeAttributeGroup) {
                 $prototypeAttributeGroup['attribute_set_id'] = $attributeSet['attribute_set_id'];
