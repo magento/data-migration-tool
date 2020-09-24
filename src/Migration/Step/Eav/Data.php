@@ -496,7 +496,43 @@ class Data implements StageInterface, RollbackInterface
         );
         foreach ($customEntityAttributes as $record) {
             if (!isset($this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']])) {
-                continue;
+                // create the group id
+                $this->migrateAttributeGroups([$record['attribute_group_id']]);
+
+                /*$productAttributeSetIds = array_keys($this->modelData->getAttributeSets(
+                    $record['entity_type_id'],
+                    ModelData::ATTRIBUTE_SETS_NONE_DEFAULT
+                ));*/
+
+                $attributeGroupsDestination = $this->helper->getDestinationRecords(
+                    'eav_attribute_group',
+                    ['attribute_group_id']
+                );
+                $attributeGroupsSource = $this->helper->getSourceRecords(
+                    'eav_attribute_group',
+                    ['attribute_group_id']
+                );
+
+                foreach ($attributeGroupsSource as $idSource => $recordSource) {
+                    $sourceAttributeGroupName = $recordSource['attribute_group_name'];
+                    /*if (in_array($recordSource['attribute_set_id'], $productAttributeSetIds)) {
+                        $sourceAttributeGroupName = str_replace(
+                            array_keys($this->mapProductAttributeGroupNamesSourceDest),
+                            $this->mapProductAttributeGroupNamesSourceDest,
+                            $recordSource['attribute_group_name']
+                        );
+                    }*/
+                    $sourceKey = $recordSource['attribute_set_id'] . ' ' . $sourceAttributeGroupName;
+                    foreach ($attributeGroupsDestination as $idDestination => $recordDestination) {
+                        $destinationKey = $recordDestination['attribute_set_id']
+                            . ' '
+                            . $recordDestination['attribute_group_name'];
+                        if ($sourceKey == $destinationKey) {
+                            $this->mapAttributeGroupIdsSourceDest[$recordSource['attribute_group_id']] =
+                                $recordDestination['attribute_group_id'];
+                        }
+                    }
+                }
             }
             $record['sort_order'] = $this->getCustomAttributeSortOrder($record);
             $record['attribute_group_id'] = $this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']];
