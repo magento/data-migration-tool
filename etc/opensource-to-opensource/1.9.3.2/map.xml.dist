@@ -1905,6 +1905,9 @@
                 <document>tfa_user_config</document>
             </ignore>
             <ignore>
+                <document>login_as_customer_assistance_allowed</document>
+            </ignore>
+            <ignore>
                 <document>email_coupon_attribute</document>
             </ignore>
             <ignore>
