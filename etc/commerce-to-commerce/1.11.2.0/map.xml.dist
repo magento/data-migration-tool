@@ -3379,6 +3379,9 @@
                 <field>cms_page.meta_title</field>
             </ignore>
             <ignore>
+                <field>sales_order_address.vertex_vat_country_code</field>
+            </ignore>
+            <ignore>
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>

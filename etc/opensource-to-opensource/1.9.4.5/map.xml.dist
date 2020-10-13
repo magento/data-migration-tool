@@ -2204,6 +2204,9 @@
                 <field>cms_page.meta_title</field>
             </ignore>
             <ignore>
+                <field>sales_order_address.vertex_vat_country_code</field>
+            </ignore>
+            <ignore>
                 <field>catalog_product_bundle_selection_price.parent_product_id</field>
             </ignore>
             <ignore>
