@@ -1,3 +1,14 @@
+2.4.1
+=============
+* Added support for versions:
+
+   * Magento Open Source: 2.4.1
+   * Magento Commerce: 2.4.1
+
+* Fixed bugs:
+
+   * Errors on category edit page and product edit page when Default attribute set was removed in Magento 1
+
 2.4.0
 =============
 * Added support for versions:

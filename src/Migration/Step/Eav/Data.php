@@ -297,12 +297,12 @@ class Data implements StageInterface, RollbackInterface
     private function createProductAttributeSetStructures()
     {
         $this->progress->advance();
-        $documentName = 'eav_attribute_group';
-        $this->destination->backupDocument($documentName);
+        $attributeGroupDocumnt = 'eav_attribute_group';
+        $this->destination->backupDocument($attributeGroupDocumnt);
         $this->modelData->updateMappedKeys(
-            $documentName,
+            $attributeGroupDocumnt,
             'attribute_set_id',
-            $this->helper->getDestinationRecords($documentName),
+            $this->helper->getDestinationRecords($attributeGroupDocumnt),
             $this->mapAttributeSetIdsDestOldNew
         );
         // add default attribute groups from Magento 2 for each attribute set from Magento 1
@@ -314,11 +314,11 @@ class Data implements StageInterface, RollbackInterface
             foreach ($prototypeProductAttributeGroups as &$prototypeAttributeGroup) {
                 $prototypeAttributeGroup['attribute_set_id'] = $attributeSet['attribute_set_id'];
             }
-            $this->saveRecords($documentName, $prototypeProductAttributeGroups);
+            $this->saveRecords($attributeGroupDocumnt, $prototypeProductAttributeGroups);
         }
-        // update mapped keys
+
         $entityAttributeDocument = 'eav_entity_attribute';
-        $this->destination->backupDocument($documentName);
+        $this->destination->backupDocument($entityAttributeDocument);
         $this->modelData->updateMappedKeys(
             $entityAttributeDocument,
             'attribute_set_id',
@@ -338,6 +338,12 @@ class Data implements StageInterface, RollbackInterface
             }
             $this->saveRecords($entityAttributeDocument, $prototypeProductEntityAttributes);
         }
+        $this->modelData->updateMappedKeys(
+            $entityAttributeDocument,
+            'entity_type_id',
+            $this->helper->getDestinationRecords($entityAttributeDocument),
+            $this->mapEntityTypeIdsDestOldNew
+        );
     }
 
     /**

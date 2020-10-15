@@ -96,12 +96,9 @@ class Data
             return;
         }
         foreach ($records as &$record) {
-            if (empty($mappedIdKeys[$record[$column]])) {
-                throw new \Migration\Exception(
-                    sprintf('Not mapped id key %s found for %s.%s ', $record[$column], $destDocument, $column)
-                );
+            if (!empty($mappedIdKeys[$record[$column]])) {
+                $record[$column] = $mappedIdKeys[$record[$column]];
             }
-            $record[$column] = $mappedIdKeys[$record[$column]];
         }
         $this->destination->clearDocument($destDocument);
         $this->destination->saveRecords($destDocument, $records);
@@ -112,7 +109,7 @@ class Data
      *
      * @param string $mode
      * @param string $type
-     * @return array|mixed
+     * @return array
      */
     public function getProductAttributeSets(
         $mode = self::ATTRIBUTE_SETS_ALL,
@@ -121,15 +118,13 @@ class Data
         $productEntityTypeId = $this->getEntityTypeIdByCode(self::ENTITY_TYPE_PRODUCT_CODE, $type);
         $attributeSets = [];
         foreach ($this->initialData->getAttributeSets($type) as $attributeSet) {
-            if ($productEntityTypeId == $attributeSet['entity_type_id']) {
+            if ($productEntityTypeId == $attributeSet['entity_type_id']
+                && (($mode == self::ATTRIBUTE_SETS_DEFAULT && $attributeSet['attribute_set_name'] == 'Default')
+                    || ($mode == self::ATTRIBUTE_SETS_NONE_DEFAULT && $attributeSet['attribute_set_name'] != 'Default')
+                    || ($mode == self::ATTRIBUTE_SETS_ALL))
+            ) {
                 $attributeSets[$attributeSet['attribute_set_id']] = $attributeSet;
             }
-        }
-        if ($mode == self::ATTRIBUTE_SETS_DEFAULT) {
-            return array_shift($attributeSets);
-        } else if ($mode == self::ATTRIBUTE_SETS_NONE_DEFAULT) {
-            array_shift($attributeSets);
-            return $attributeSets;
         }
         return $attributeSets;
     }
@@ -159,10 +154,11 @@ class Data
      */
     public function getDefaultProductAttributeGroups()
     {
-        $defaultProductAttributeSetId = $this->getProductAttributeSets(
+        $defaultProductAttributeSet = $this->getProductAttributeSets(
             self::ATTRIBUTE_SETS_DEFAULT,
             self::TYPE_DEST
-        )['attribute_set_id'];
+        );
+        $defaultProductAttributeSetId = array_shift($defaultProductAttributeSet)['attribute_set_id'];
         $attributeGroups = [];
         foreach ($this->initialData->getAttributeGroups(self::TYPE_DEST) as $attributeGroup) {
             if ($attributeGroup['attribute_set_id'] == $defaultProductAttributeSetId) {
@@ -181,10 +177,11 @@ class Data
      */
     public function getDefaultProductEntityAttributes()
     {
-        $defaultProductAttributeSetId = $this->getProductAttributeSets(
+        $defaultProductAttributeSet = $this->getProductAttributeSets(
             self::ATTRIBUTE_SETS_DEFAULT,
             self::TYPE_DEST
-        )['attribute_set_id'];
+        );
+        $defaultProductAttributeSetId = array_shift($defaultProductAttributeSet)['attribute_set_id'];
         $entityAttributes = [];
         foreach ($this->initialData->getEntityAttributes(self::TYPE_DEST) as $entityAttribute) {
             if ($entityAttribute['attribute_set_id'] == $defaultProductAttributeSetId) {
