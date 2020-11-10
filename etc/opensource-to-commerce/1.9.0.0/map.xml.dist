@@ -2381,6 +2381,15 @@
                 <document>tfa_user_config</document>
             </ignore>
             <ignore>
+                <document>login_as_customer_assistance_allowed</document>
+            </ignore>
+            <ignore>
+                <document>vertex_customer_country</document>
+            </ignore>
+            <ignore>
+                <document>vertex_vat_country_code</document>
+            </ignore>
+            <ignore>
                 <document>email_coupon_attribute</document>
             </ignore>
             <ignore>
@@ -3395,6 +3404,9 @@
             </ignore>
             <ignore>
                 <field>cms_page.meta_title</field>
+            </ignore>
+            <ignore>
+                <field>sales_order_address.vertex_vat_country_code</field>
             </ignore>
             <ignore>
                 <field>catalog_product_bundle_selection_price.parent_product_id</field>
