@@ -177,7 +177,7 @@ class Data implements StageInterface, RollbackInterface
         $this->migrateEntityTypes();
         $this->migrateAttributeSets();
         $this->createProductAttributeSetStructures();
-        $this->migrateCustomProductAttributeGroups();
+        $this->migrateCustomAttributeGroups();
         $this->migrateAttributes();
         $this->migrateAttributesExtended();
         $this->migrateCustomEntityAttributes();
@@ -347,21 +347,21 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Migrate custom product attribute groups
+     * Migrate custom attribute groups
      */
-    public function migrateCustomProductAttributeGroups()
+    public function migrateCustomAttributeGroups()
     {
         $this->progress->advance();
-        $productAttributeSets = $this->modelData->getProductAttributeSets();
-        foreach ($productAttributeSets as $productAttributeSet) {
-            $attributeGroupIds = $this->modelData->getCustomProductAttributeGroups(
-                $productAttributeSet['attribute_set_id']
+        $attributeSets = $this->initialData->getAttributeSets(ModelData::TYPE_SOURCE);
+        foreach ($attributeSets as $attributeSet) {
+            $attributeGroupIds = $this->modelData->getCustomAttributeGroups(
+                $attributeSet['attribute_set_id']
             );
             if ($attributeGroupIds) {
                 $this->migrateAttributeGroups($attributeGroupIds);
             }
         }
-        $this->createMapProductAttributeGroupIds();
+        $this->createMapAttributeGroupIds();
     }
 
     /**
@@ -496,43 +496,7 @@ class Data implements StageInterface, RollbackInterface
         );
         foreach ($customEntityAttributes as $record) {
             if (!isset($this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']])) {
-                // create the group id
-                $this->migrateAttributeGroups([$record['attribute_group_id']]);
-
-                /*$productAttributeSetIds = array_keys($this->modelData->getAttributeSets(
-                    $record['entity_type_id'],
-                    ModelData::ATTRIBUTE_SETS_NONE_DEFAULT
-                ));*/
-
-                $attributeGroupsDestination = $this->helper->getDestinationRecords(
-                    'eav_attribute_group',
-                    ['attribute_group_id']
-                );
-                $attributeGroupsSource = $this->helper->getSourceRecords(
-                    'eav_attribute_group',
-                    ['attribute_group_id']
-                );
-
-                foreach ($attributeGroupsSource as $idSource => $recordSource) {
-                    $sourceAttributeGroupName = $recordSource['attribute_group_name'];
-                    /*if (in_array($recordSource['attribute_set_id'], $productAttributeSetIds)) {
-                        $sourceAttributeGroupName = str_replace(
-                            array_keys($this->mapProductAttributeGroupNamesSourceDest),
-                            $this->mapProductAttributeGroupNamesSourceDest,
-                            $recordSource['attribute_group_name']
-                        );
-                    }*/
-                    $sourceKey = $recordSource['attribute_set_id'] . ' ' . $sourceAttributeGroupName;
-                    foreach ($attributeGroupsDestination as $idDestination => $recordDestination) {
-                        $destinationKey = $recordDestination['attribute_set_id']
-                            . ' '
-                            . $recordDestination['attribute_group_name'];
-                        if ($sourceKey == $destinationKey) {
-                            $this->mapAttributeGroupIdsSourceDest[$recordSource['attribute_group_id']] =
-                                $recordDestination['attribute_group_id'];
-                        }
-                    }
-                }
+                continue;
             }
             $record['sort_order'] = $this->getCustomAttributeSortOrder($record);
             $record['attribute_group_id'] = $this->mapAttributeGroupIdsSourceDest[$record['attribute_group_id']];
@@ -707,9 +671,9 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Create mapping for product attribute group ids
+     * Create mapping for attribute group ids
      */
-    private function createMapProductAttributeGroupIds()
+    private function createMapAttributeGroupIds()
     {
         $attributeGroupsDestination = $this->helper->getDestinationRecords(
             'eav_attribute_group',
