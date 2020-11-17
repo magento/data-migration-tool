@@ -965,6 +965,9 @@
         <ignore>
             <path>web/cookie/*</path>
         </ignore>
+        <ignore>
+            <path>general/locale/timezone</path>
+        </ignore>
         <rename>
             <path>api/config/charset</path>
             <to>webapi/soap/charset</to>
