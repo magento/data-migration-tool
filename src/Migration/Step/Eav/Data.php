@@ -568,6 +568,9 @@ class Data implements StageInterface, RollbackInterface
 
             $recordsToSave = $destinationDocument->getRecords();
             foreach ($destinationRecords as $record) {
+                if (!isset($this->mapAttributeIdsDestOldNew[$record['attribute_id']])) {
+                    continue;
+                }
                 $record['attribute_id'] = $this->mapAttributeIdsDestOldNew[$record['attribute_id']];
                 $destinationRecord = $this->factory->create([
                     'document' => $destinationDocument,
