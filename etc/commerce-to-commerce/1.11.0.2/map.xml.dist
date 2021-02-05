@@ -2570,6 +2570,9 @@
                 <document>email_failed_auth</document>
             </ignore>
             <ignore>
+                <document>email_sms_order_queue</document>
+            </ignore>
+            <ignore>
                 <document>catalog_compare_list</document>
             </ignore>
             <ignore>
