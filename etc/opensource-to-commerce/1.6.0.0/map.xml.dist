@@ -2190,6 +2190,9 @@
                 <document>email_failed_auth</document>
             </ignore>
             <ignore>
+                <document>catalog_compare_list</document>
+            </ignore>
+            <ignore>
                 <document>temando_checkout_address</document>
             </ignore>
             <ignore>
