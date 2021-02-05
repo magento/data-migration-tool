@@ -1692,6 +1692,12 @@
                 <document>vertex_sales_order_item_vertex_tax_code</document>
             </ignore>
             <ignore>
+                <document>vertex_commodity_code_order_item</document>
+            </ignore>
+            <ignore>
+                <document>vertex_commodity_code_product</document>
+            </ignore>
+            <ignore>
                 <document>eav_attribute_option_swatch</document>
             </ignore>
             <ignore>
