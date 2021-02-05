@@ -1233,6 +1233,12 @@
                 <datatype>oauth_consumer.rejected_callback_url</datatype>
             </ignore>
             <ignore>
+                <datatype>catalog_category_entity_text.value</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_text.value</datatype>
+            </ignore>
+            <ignore>
                 <datatype>oauth_token.callback_url</datatype>
             </ignore>
             <ignore>
@@ -2203,6 +2209,12 @@
             </ignore>
             <ignore>
                 <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_category_entity_text.value</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_text.value</datatype>
             </ignore>
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
