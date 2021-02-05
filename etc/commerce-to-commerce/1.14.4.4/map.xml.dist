@@ -3116,6 +3116,9 @@
                 <field>catalog_product_entity_media_gallery_value.record_id</field>
             </ignore>
             <ignore>
+                <field>catalog_compare_item.list_id</field>
+            </ignore>
+            <ignore>
                 <field>admin_user.interface_locale</field>
             </ignore>
             <ignore>
