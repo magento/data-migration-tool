@@ -1,3 +1,15 @@
+2.4.2
+=============
+* Added support for versions:
+
+    * Magento Open Source: 2.4.2
+    * Magento Commerce: 2.4.2
+
+* Fixed bugs:
+
+    * Add support for non-default attribute set groups
+    * Time difference issue
+
 2.4.1
 =============
 * Added support for versions:

@@ -177,7 +177,7 @@ class Data implements StageInterface, RollbackInterface
         $this->migrateEntityTypes();
         $this->migrateAttributeSets();
         $this->createProductAttributeSetStructures();
-        $this->migrateCustomProductAttributeGroups();
+        $this->migrateCustomAttributeGroups();
         $this->migrateAttributes();
         $this->migrateAttributesExtended();
         $this->migrateCustomEntityAttributes();
@@ -347,21 +347,21 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Migrate custom product attribute groups
+     * Migrate custom attribute groups
      */
-    public function migrateCustomProductAttributeGroups()
+    public function migrateCustomAttributeGroups()
     {
         $this->progress->advance();
-        $productAttributeSets = $this->modelData->getProductAttributeSets();
-        foreach ($productAttributeSets as $productAttributeSet) {
-            $attributeGroupIds = $this->modelData->getCustomProductAttributeGroups(
-                $productAttributeSet['attribute_set_id']
+        $attributeSets = $this->initialData->getAttributeSets(ModelData::TYPE_SOURCE);
+        foreach ($attributeSets as $attributeSet) {
+            $attributeGroupIds = $this->modelData->getCustomAttributeGroups(
+                $attributeSet['attribute_set_id']
             );
             if ($attributeGroupIds) {
                 $this->migrateAttributeGroups($attributeGroupIds);
             }
         }
-        $this->createMapProductAttributeGroupIds();
+        $this->createMapAttributeGroupIds();
     }
 
     /**
@@ -568,6 +568,9 @@ class Data implements StageInterface, RollbackInterface
 
             $recordsToSave = $destinationDocument->getRecords();
             foreach ($destinationRecords as $record) {
+                if (!isset($this->mapAttributeIdsDestOldNew[$record['attribute_id']])) {
+                    continue;
+                }
                 $record['attribute_id'] = $this->mapAttributeIdsDestOldNew[$record['attribute_id']];
                 $destinationRecord = $this->factory->create([
                     'document' => $destinationDocument,
@@ -671,9 +674,9 @@ class Data implements StageInterface, RollbackInterface
     }
 
     /**
-     * Create mapping for product attribute group ids
+     * Create mapping for attribute group ids
      */
-    private function createMapProductAttributeGroupIds()
+    private function createMapAttributeGroupIds()
     {
         $attributeGroupsDestination = $this->helper->getDestinationRecords(
             'eav_attribute_group',

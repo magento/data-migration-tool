@@ -2076,6 +2076,12 @@
                 <datatype>oauth_consumer.rejected_callback_url</datatype>
             </ignore>
             <ignore>
+                <datatype>catalog_category_entity_text.value</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_text.value</datatype>
+            </ignore>
+            <ignore>
                 <datatype>enterprise_reminder_rule.from_date</datatype>
             </ignore>
             <ignore>
@@ -2641,6 +2647,12 @@
                 <document>email_failed_auth</document>
             </ignore>
             <ignore>
+                <document>email_sms_order_queue</document>
+            </ignore>
+            <ignore>
+                <document>catalog_compare_list</document>
+            </ignore>
+            <ignore>
                 <document>temando_checkout_address</document>
             </ignore>
             <ignore>
@@ -2723,6 +2735,12 @@
             </ignore>
             <ignore>
                 <document>vertex_sales_order_item_vertex_tax_code</document>
+            </ignore>
+            <ignore>
+                <document>vertex_commodity_code_order_item</document>
+            </ignore>
+            <ignore>
+                <document>vertex_commodity_code_product</document>
             </ignore>
             <ignore>
                 <document>sequence_catalog_category</document>
@@ -3095,6 +3113,9 @@
                 <field>catalog_product_entity_media_gallery_value.record_id</field>
             </ignore>
             <ignore>
+                <field>catalog_compare_item.list_id</field>
+            </ignore>
+            <ignore>
                 <field>admin_user.interface_locale</field>
             </ignore>
             <ignore>
@@ -3360,6 +3381,12 @@
             </ignore>
             <ignore>
                 <datatype>oauth_consumer.rejected_callback_url</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_category_entity_text.value</datatype>
+            </ignore>
+            <ignore>
+                <datatype>catalog_product_entity_text.value</datatype>
             </ignore>
             <ignore>
                 <datatype>oauth_token.callback_url</datatype>
