@@ -1137,9 +1137,6 @@
                 </handler>
             </transform>
             <ignore>
-                <field>magento_customersegment_event.segment_event_id</field>
-            </ignore>
-            <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
             <ignore>
@@ -3316,6 +3313,9 @@
             </ignore>
             <ignore>
                 <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>magento_customersegment_event.segment_event_id</field>
             </ignore>
             <ignore>
                 <field>cataloginventory_stock_item.deferred_stock_update</field>

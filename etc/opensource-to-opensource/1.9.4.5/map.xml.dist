@@ -1022,9 +1022,6 @@
                 </handler>
             </transform>
             <ignore>
-                <field>magento_customersegment_event.segment_event_id</field>
-            </ignore>
-            <ignore>
                 <field>admin_rule.role_type</field>
             </ignore>
             <ignore>
@@ -2226,6 +2223,9 @@
             </ignore>
             <ignore>
                 <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>magento_customersegment_event.segment_event_id</field>
             </ignore>
             <ignore>
                 <field>catalog_category_product.entity_id</field>
