@@ -2602,6 +2602,9 @@
                 <document>klarna_payments_quote</document>
             </ignore>
             <ignore>
+                <document>klarna_logs</document>
+            </ignore>
+            <ignore>
                 <document>vertex_customer_code</document>
             </ignore>
             <ignore>
