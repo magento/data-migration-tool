@@ -1899,6 +1899,9 @@
                 <document>magento_sales_order_grid_archive</document>
             </ignore>
             <ignore>
+                <document>customer_group_excluded_website</document>
+            </ignore>
+            <ignore>
                 <document>store</document>
             </ignore>
             <ignore>

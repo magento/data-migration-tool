@@ -2282,6 +2282,9 @@
                 <document>customer_address_entity_varchar</document>
             </ignore>
             <ignore>
+                <document>customer_group_excluded_website</document>
+            </ignore>
+            <ignore>
                 <document>store</document>
             </ignore>
             <ignore>

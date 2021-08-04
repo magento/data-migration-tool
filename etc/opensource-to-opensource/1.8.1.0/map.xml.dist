@@ -1675,6 +1675,9 @@
                 <document>catalogsearch_recommendations</document>
             </ignore>
             <ignore>
+                <document>customer_group_excluded_website</document>
+            </ignore>
+            <ignore>
                 <document>store</document>
             </ignore>
             <ignore>
