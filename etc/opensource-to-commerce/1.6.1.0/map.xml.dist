@@ -1926,6 +1926,9 @@
                 <document>magento_sales_order_grid_archive</document>
             </ignore>
             <ignore>
+                <document>customer_group_excluded_website</document>
+            </ignore>
+            <ignore>
                 <document>store</document>
             </ignore>
             <ignore>
@@ -2263,6 +2266,9 @@
             </ignore>
             <ignore>
                 <document>klarna_payments_quote</document>
+            </ignore>
+            <ignore>
+                <document>klarna_logs</document>
             </ignore>
             <ignore>
                 <document>vertex_customer_code</document>
@@ -3505,6 +3511,9 @@
             </ignore>
             <ignore>
                 <field>checkout_agreement.mode</field>
+            </ignore>
+            <ignore>
+                <field>magento_customersegment_event.segment_event_id</field>
             </ignore>
             <ignore>
                 <field>cataloginventory_stock_item.deferred_stock_update</field>

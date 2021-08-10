@@ -131,7 +131,7 @@ class Version191to2000Delta extends AbstractDelta
         $select = $this->cmsPageRewrites->getSelect();
         $urlRewrites = $this->source->getAdapter()->loadDataFromSelect($select);
         $this->destination->saveRecords(
-            $this->source->addDocumentPrefix(Version191to2000::DESTINATION),
+            $this->destination->addDocumentPrefix(Version191to2000::DESTINATION),
             $urlRewrites,
             true
         );
