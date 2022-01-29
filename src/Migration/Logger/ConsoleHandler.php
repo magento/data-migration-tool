@@ -35,7 +35,7 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
     /**
      * @inheritdoc
      */
-    public function handle(array $record)
+    public function handle(array $record): bool
     {
         if (!$this->isHandling($record)) {
             return false;
