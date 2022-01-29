@@ -31,7 +31,7 @@ class Logger extends \Monolog\Logger
     /**
      * @inheritdoc
      */
-    public function addRecord($level, $message, array $context = [])
+    public function addRecord(int $level, string $message, array $context = []): bool
     {
         parent::addRecord($level, $message, $context);
         self::$messages[$level][] = $message;
