@@ -385,14 +385,25 @@ class Data implements StageInterface, RollbackInterface
         );
         $recordsToSave = $destinationDocument->getRecords();
         $recordTransformer = $this->helper->getRecordTransformer($sourceDocument, $destinationDocument);
+        $attributeNameMapping = $this->mapProductAttributeGroupNamesSourceDest;
+        $productAttributeSetIds = array_keys($this->modelData->getProductAttributeSets());
         foreach ($sourceRecords as $recordData) {
             $recordData['attribute_group_id'] = null;
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
             $recordTransformer->transform($sourceRecord, $destinationRecord);
             $recordsToSave->addRecord($destinationRecord);
+
+            $sourceAttributeGroupName = $recordData['attribute_group_name'];
+            $destAttributeGroupName = $destinationRecord->getValue('attribute_group_name');
+            if (in_array($recordData['attribute_set_id'], $productAttributeSetIds)
+                && !in_array($sourceAttributeGroupName, $attributeNameMapping)
+                && $sourceAttributeGroupName != $destAttributeGroupName ) {
+                $attributeNameMapping[$sourceAttributeGroupName] = $destAttributeGroupName;
+            }
         }
         $this->saveRecords($destinationDocument, $recordsToSave);
+        $this->mapProductAttributeGroupNamesSourceDest = $attributeNameMapping;
     }
 
     /**
