@@ -392,7 +392,7 @@ class Data implements StageInterface, RollbackInterface
             $sourceRecord = $this->factory->create(['document' => $sourceDocument, 'data' => $recordData]);
             $destinationRecord = $this->factory->create(['document' => $destinationDocument]);
             $recordTransformer->transform($sourceRecord, $destinationRecord);
-            $recordsToSave->addRecord($destinationRecord);
+            
 
             $sourceAttributeGroupName = $recordData['attribute_group_name'];
             $destAttributeGroupName = $destinationRecord->getValue('attribute_group_name');
@@ -400,7 +400,10 @@ class Data implements StageInterface, RollbackInterface
                 && !in_array($sourceAttributeGroupName, $attributeNameMapping)
                 && $sourceAttributeGroupName != $destAttributeGroupName ) {
                 $attributeNameMapping[$sourceAttributeGroupName] = $destAttributeGroupName;
+                $sortOrder = $destinationRecord->getValue('sort_order') + 200;
+                $destinationRecord->setValue('sort_order', $sortOrder);
             }
+            $recordsToSave->addRecord($destinationRecord);
         }
         $this->saveRecords($destinationDocument, $recordsToSave);
         $this->mapProductAttributeGroupNamesSourceDest = $attributeNameMapping;
@@ -645,6 +648,9 @@ class Data implements StageInterface, RollbackInterface
         );
         foreach ($this->initialData->getAttributeSets(ModelData::TYPE_DEST) as $attributeSetId => $record) {
             $entityTypeId = $this->mapEntityTypeIdsDestOldNew[$record['entity_type_id']];
+            if (!isset($this->newAttributeSets[$entityTypeId . '-' . $record['attribute_set_name']])) {
+                continue;
+            }
             $newAttributeSet = $this->newAttributeSets[$entityTypeId . '-' . $record['attribute_set_name']];
             $this->mapAttributeSetIdsDestOldNew[$attributeSetId] = $newAttributeSet['attribute_set_id'];
             $this->defaultAttributeSetIds[$newAttributeSet['entity_type_id']] = $newAttributeSet['attribute_set_id'];
