@@ -2782,6 +2782,9 @@
             <ignore>
                 <document>email_coupon_attribute</document>
             </ignore>
+            <ignore>
+                <document>jwt_auth_revoked</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
