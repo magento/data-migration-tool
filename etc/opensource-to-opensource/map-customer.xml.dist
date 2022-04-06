@@ -101,6 +101,9 @@
                 <field>customer_entity.gender</field>
             </ignore>
             <ignore>
+                <field>customer_entity.session_cutoff</field>
+            </ignore>
+            <ignore>
                 <field>customer_address_entity.city</field>
             </ignore>
             <ignore>
