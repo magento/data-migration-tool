@@ -5,10 +5,16 @@
  */
 namespace Migration\Logger;
 
+use Monolog\Formatter\FormatterInterface;
+use Monolog\Handler\FormattableHandlerInterface;
+use Monolog\Handler\HandlerInterface;
+use Monolog\Handler\AbstractHandler;
+use Psr\Log\LogLevel;
+
 /**
  * Processing logger handler creation for migration application
  */
-class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\Handler\HandlerInterface
+class ConsoleHandler extends AbstractHandler implements HandlerInterface, FormattableHandlerInterface
 {
     const COLOR_RESET   = '0';
     const COLOR_BLACK   = '0;30';
@@ -19,6 +25,11 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
     const COLOR_MAGENTA = '0;35';
     const COLOR_CYAN    = '0;36';
     const COLOR_WHITE   = '0;37';
+
+    /**
+     * @var FormatterInterface
+     */
+    private $formatter;
 
     /**
      * Paint the message to specified color
@@ -42,19 +53,43 @@ class ConsoleHandler extends \Monolog\Handler\AbstractHandler implements \Monolo
         }
         $record['formatted'] = $this->getFormatter()->format($record);
         switch ($record['level']) {
-            case Logger::ERROR:
-            case Logger::CRITICAL:
+            case LogLevel::ERROR:
+            case LogLevel::CRITICAL:
                 echo PHP_EOL . $this->colorize($record['formatted'], self::COLOR_RED);
                 break;
-            case Logger::WARNING:
+            case LogLevel::WARNING:
                 echo PHP_EOL . $this->colorize($record['formatted'], self::COLOR_YELLOW);
                 break;
-            case Logger::NOTICE:
+            case LogLevel::NOTICE:
                 echo PHP_EOL . $this->colorize($record['formatted'], self::COLOR_BLUE);
                 break;
             default:
                 echo PHP_EOL . $record['formatted'];
         }
         return false === $this->bubble;
+    }
+
+    /**
+     * Sets the formatter.
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
+    {
+        $this->formatter = $formatter;
+        return $this;
+    }
+
+    /**
+     * Gets the formatter.
+     *
+     * @return FormatterInterface
+     */
+    public function getFormatter(): FormatterInterface
+    {
+        if (!$this->formatter) {
+            throw new \LogicException('No formatter has been set and this handler does not have a default formatter');
+        }
+        return $this->formatter;
     }
 }

@@ -8,6 +8,8 @@ namespace Migration\Logger;
 use Magento\Framework\Filesystem\Driver\File;
 use Migration\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
+use Monolog\Formatter\FormatterInterface;
+use Monolog\Handler\HandlerInterface;
 
 /**
  * Processing logger handler creation for migration application
@@ -30,6 +32,11 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
      * @var Config
      */
     protected $config;
+
+    /**
+     * @var FormatterInterface
+     */
+    private $formatter;
 
     /**
      * @param File $file
@@ -84,5 +91,29 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
                 . basename($logFile);
         }
         return $logFile;
+    }
+
+    /**
+     * Sets the formatter.
+     *
+     * @param FormatterInterface $formatter
+     */
+    public function setFormatter(FormatterInterface $formatter): HandlerInterface
+    {
+        $this->formatter = $formatter;
+        return $this;
+    }
+
+    /**
+     * Gets the formatter.
+     *
+     * @return FormatterInterface
+     */
+    public function getFormatter(): FormatterInterface
+    {
+        if (!$this->formatter) {
+            throw new \LogicException('No formatter has been set and this handler does not have a default formatter');
+        }
+        return $this->formatter;
     }
 }

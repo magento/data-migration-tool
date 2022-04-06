@@ -6,6 +6,8 @@
 
 namespace Migration\Logger;
 
+use Psr\Log\LogLevel;
+
 /**
  * Processing logger handler creation for migration application
  */
@@ -47,9 +49,9 @@ class Manager
      * @var array
      */
     protected $logLevels = [
-        self::LOG_LEVEL_ERROR => Logger::ERROR,
-        self::LOG_LEVEL_INFO => Logger::INFO,
-        self::LOG_LEVEL_DEBUG => Logger::DEBUG
+        self::LOG_LEVEL_ERROR => LogLevel::ERROR,
+        self::LOG_LEVEL_INFO => LogLevel::INFO,
+        self::LOG_LEVEL_DEBUG => LogLevel::DEBUG
     ];
 
     /**
