@@ -58,16 +58,17 @@ This section discusses how to install the Magento Data Migration Tool. You can i
 ### Install the tool from GitHub
 To install the migration tool from GitHub, use the following steps:
 
-1.  Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
-2.  Go to Magento 2 root directory.
-3.  Enter the following commands:
+1. Log in to your Magento 2 server as a user with privileges to write to the Magento 2 file system or <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apache">switch to the web server user</a>.
+2. Go to Magento 2 root directory.
+3. Enter the following commands:
 
         composer config repositories.data-migration-tool git https://github.com/magento/data-migration-tool
         composer require magento/data-migration-tool:<version>
+        bin/magento module:enable Magento_DataMigrationTool
 
-    where `<version>` is release version (e.g. 2.4.0)
+    where `<version>` is release version (e.g. 2.4.4)
 
-3.  Wait while dependencies are updated.
+5. Wait while dependencies are updated and the tool is enabled.
 
 ### Install the tool from repo.magento.com
 To install the Data Migration Tool, you must update `composer.json` in the Magento root installation directory to provide the location of the migration tool package.
@@ -82,15 +83,15 @@ To install the migration tool, you must:
 
 To update `composer.json`:
 
-1.  Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
+1. Log in to your Magento server as the <a href="http://devdocs.magento.com/guides/v2.4/install-gde/install/prepare-install.html#install-update-depend-apacheweb">web server user</a> or as a user with `root` privileges.
 
-2.  Change to your Magento installation directory.
+2. Change to your Magento installation directory.
 
-3.  Enter the following command to reference Magento packages in `composer.json`:
+3. Enter the following command to reference Magento packages in `composer.json`:
 
         composer config repositories.magento composer https://repo.magento.com
 
-4.  Enter the following command to require the current version of the package:
+4. Enter the following command to require the current version of the package:
 
         composer require magento/data-migration-tool:<version>
 
@@ -98,13 +99,16 @@ To update `composer.json`:
 
     Exact version example:
 
-        composer require magento/data-migration-tool:2.4.0
+        composer require magento/data-migration-tool:2.4.4
 
     Next significant release example:
 
         composer require magento/data-migration-tool:~2.4
 
-5.  Wait while dependencies are installed.
+5. Wait while dependencies are installed.
+6. Enter the following command to enable the tool
+
+        bin/magento module:enable Magento_DataMigrationTool
 
 ## More details
 See the <a href="http://devdocs.magento.com/guides/v2.4/migration/bk-migration-guide.html">Migration Guide</a> for the detailed help with your data migration process.
