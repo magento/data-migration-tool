@@ -1,3 +1,26 @@
+2.4.4
+=============
+* Added support for versions:
+
+    * Magento Open Source: 2.4.4
+    * Magento Commerce: 2.4.4
+
+* Fixed bugs:
+
+    * New monolog version caused composer dependency conflict
+    * Customer login is not working after Migration from Magento 1.x
+
+2.4.3
+=============
+* Added support for versions:
+
+    * Magento Open Source: 2.4.3
+    * Magento Commerce: 2.4.3
+
+* Fixed bugs:
+
+    * Delta fix the wrong table prefix
+
 2.4.2
 =============
 * Added support for versions:
