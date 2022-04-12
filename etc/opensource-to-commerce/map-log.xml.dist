@@ -16,14 +16,15 @@
         </document_rules>
         <field_rules>
             <ignore>
-                <field>log_visitor.first_visit_at</field>
-            </ignore>
-            <ignore>
                 <field>log_visitor.last_url_id</field>
             </ignore>
             <ignore>
                 <field>log_visitor.store_id</field>
             </ignore>
+            <move>
+                <field>log_visitor.first_visit_at</field>
+                <to>customer_visitor.created_at</to>
+            </move>
         </field_rules>
     </source>
     <destination>

@@ -9,6 +9,7 @@ use Magento\Customer\Model\CustomerRegistry;
 use Magento\Customer\Model\ResourceModel\Customer as CustomerResourceModel;
 use Magento\Framework\Encryption\EncryptorInterface as Encryptor;
 use Migration\Model\PasswordVerifier;
+use Migration\Model\PasswordHashResolver;
 use Magento\Customer\Model\Authentication;
 
 /**
@@ -32,6 +33,11 @@ class AuthenticationPlugin
     private $passwordVerifier;
 
     /**
+     * @var PasswordHashResolver
+     */
+    private $passwordHashResolver;
+
+    /**
      * @var Encryptor
      */
     private $encryptor;
@@ -46,16 +52,18 @@ class AuthenticationPlugin
         CustomerRegistry $customerRegistry,
         CustomerResourceModel $customerResourceModel,
         PasswordVerifier $passwordVerifier,
+        PasswordHashResolver $passwordHashResolver,
         Encryptor $encryptor
     ) {
         $this->customerRegistry = $customerRegistry;
         $this->customerResourceModel = $customerResourceModel;
         $this->passwordVerifier = $passwordVerifier;
+        $this->passwordHashResolver = $passwordHashResolver;
         $this->encryptor = $encryptor;
     }
 
     /**
-     * Replace customer password hash in case it is Bcrypt algorithm
+     * Replace customer password hash in case it is Bcrypt or sha-512 algorithms
      *
      * @param Authentication $subject
      * @param int $customerId
@@ -67,11 +75,9 @@ class AuthenticationPlugin
         $customerId,
         $password
     ) {
-        $customerSecure = $this->customerRegistry->retrieveSecureData($customerId);
-        $hash = $customerSecure->getPasswordHash();
-        if ($this->passwordVerifier->isBcrypt($hash)
-            && $this->passwordVerifier->verify($password, $hash)
-        ) {
+        $customer = $this->customerRegistry->retrieve($customerId);
+        $hash = $this->passwordHashResolver->resolve($customer);
+        if ($this->passwordVerifier->verify($password, $hash)) {
             $this->customerRegistry->remove($customerId);
             $hash = $this->encryptor->getHash($password, true);
             $this->customerResourceModel->getConnection()->update(

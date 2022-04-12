@@ -16,6 +16,7 @@ use Migration\ResourceModel\Record;
 use Migration\App\ProgressBar;
 use Migration\Logger\Manager as LogManager;
 use Migration\Logger\Logger;
+use Migration\RecordTransformer;
 
 /**
  * Class Data
@@ -114,7 +115,15 @@ class Data implements StageInterface
             }
             $destDocument = $this->destination->getDocument($destinationName);
             $this->destination->clearDocument($destinationName);
-
+            /** @var RecordTransformer $recordTransformer */
+            $recordTransformer = $this->recordTransformerFactory->create(
+                [
+                    'sourceDocument' => $sourceDocument,
+                    'destDocument' => $destDocument,
+                    'mapReader' => $this->map
+                ]
+            );
+            $recordTransformer->init();
             $pageNumber = 0;
             $this->logger->debug('migrating', ['table' => $sourceDocName]);
             $this->progress->start($this->source->getRecordsCount($sourceDocName), LogManager::LOG_LEVEL_DEBUG);
@@ -127,11 +136,11 @@ class Data implements StageInterface
                 $destinationRecords = $destDocument->getRecords();
                 foreach ($bulk as $recordData) {
                     $this->progress->advance(LogManager::LOG_LEVEL_DEBUG);
+                    /** @var Record $record */
+                    $record = $this->recordFactory->create(['document' => $sourceDocument, 'data' => $recordData]);
                     /** @var Record $destRecord */
-                    $destRecord = $this->recordFactory->create([
-                        'document'  => $destDocument,
-                        'data'      => $recordData,
-                    ]);
+                    $destRecord = $this->recordFactory->create(['document' => $destDocument]);
+                    $recordTransformer->transform($record, $destRecord);
                     $destinationRecords->addRecord($destRecord);
                 }
                 $this->destination->saveRecords($destinationName, $destinationRecords);
@@ -175,6 +184,7 @@ class Data implements StageInterface
             'customer_id'   => 'lc.customer_id',
             'session_id'    => 'lv.session_id',
             'last_visit_at' => 'lv.last_visit_at',
+            'first_visit_at' => 'lv.first_visit_at',
         ];
         /** @var \Magento\Framework\DB\Select $select */
         $select = $this->sourceAdapter->getSelect();
@@ -186,7 +196,7 @@ class Data implements StageInterface
             )
             ->group('lv.visitor_id')
             ->order('lv.visitor_id');
-        
+
         return $select;
     }
 

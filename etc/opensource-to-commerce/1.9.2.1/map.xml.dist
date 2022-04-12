@@ -2437,6 +2437,9 @@
                 <document>email_coupon_attribute</document>
             </ignore>
             <ignore>
+                <document>jwt_auth_revoked</document>
+            </ignore>
+            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>

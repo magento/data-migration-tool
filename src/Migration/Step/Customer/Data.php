@@ -6,6 +6,7 @@
 namespace Migration\Step\Customer;
 
 use Migration\App\Step\StageInterface;
+use Migration\Model\PasswordVerifier;
 use Migration\Reader\MapInterface;
 use Migration\Reader\GroupsFactory;
 use Migration\Reader\Map;
@@ -87,6 +88,11 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
     private $attributesToStatic;
 
     /**
+     * @var PasswordVerifier
+     */
+    private $passwordVerifier;
+
+    /**
      * @param \Migration\Config $config
      * @param ProgressBar\LogLevelProcessor $progressBar
      * @param Progress $progress
@@ -100,6 +106,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      * @param MapFactory $mapFactory
      * @param GroupsFactory $groupsFactory
      * @param Logger $logger
+     * @param PasswordVerifier $passwordVerifier
      * @SuppressWarnings(PHPMD.ExcessiveParameterList)
      */
     public function __construct(
@@ -115,7 +122,8 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         Model\AttributesToStatic $attributesToStatic,
         MapFactory $mapFactory,
         GroupsFactory $groupsFactory,
-        Logger $logger
+        Logger $logger,
+        PasswordVerifier $passwordVerifier
     ) {
         $this->source = $source;
         $this->destination = $destination;
@@ -129,6 +137,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $this->attributesDataToCustomerEntityRecords = $attributesDataToCustomerEntityRecords;
         $this->attributesDataToSkip = $attributesDataToSkip;
         $this->attributesToStatic = $attributesToStatic;
+        $this->passwordVerifier = $passwordVerifier;
         parent::__construct($config);
     }
 
@@ -141,7 +150,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         $sourceDocuments = array_keys($this->readerGroups->getGroup('source_documents'));
         $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
         $sourceDataDocuments = array_diff($sourceDocuments, $sourceEntityDocuments);
-        $skippedAttributes = array_keys($this->attributesDataToSkip->getSkippedAttributes());
+        $skippedAttributes = $this->attributesDataToSkip->getSkippedAttributes();
         $processedDocuments = $this->progress->getProcessedEntities($this, $stage);
         $this->progressBar->start(count($sourceDocuments), LogManager::LOG_LEVEL_INFO);
         foreach (array_diff($sourceEntityDocuments, $processedDocuments) as $sourceEntityDocument) {
@@ -195,10 +204,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
             $pageNumber++;
             $destinationRecords = $destDocument->getRecords();
             foreach ($bulk as $recordData) {
-                if ($attributesToSkip !== null
-                    && isset($recordData['attribute_id'])
-                    && in_array($recordData['attribute_id'], $attributesToSkip)
-                ) {
+                if ($this->skipRecordAttribute($recordData, $attributesToSkip)) {
                     continue;
                 }
                 /** @var Record $record */
@@ -218,5 +224,33 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
         }
         $this->progressBar->advance(LogManager::LOG_LEVEL_INFO);
         $this->progressBar->finish(LogManager::LOG_LEVEL_DEBUG);
+    }
+
+    /**
+     * Skip record attribute
+     *
+     * @param $recordData
+     * @param $attributesToSkip
+     * @return bool
+     */
+    private function skipRecordAttribute($recordData, $attributesToSkip)
+    {
+        $passwordHashSha512 = function($recordData, $attributesToSkip) {
+            if ($attributesToSkip[$recordData['attribute_id']] === 'password_hash'
+                && $this->passwordVerifier->isSha512($recordData['value'])
+            ) {
+                return true;
+            }
+            return false;
+        };
+
+        if ($attributesToSkip !== null
+            && isset($recordData['attribute_id'])
+            && isset($attributesToSkip[$recordData['attribute_id']])
+            && !$passwordHashSha512($recordData, $attributesToSkip)
+        ) {
+            return true;
+        }
+        return false;
     }
 }

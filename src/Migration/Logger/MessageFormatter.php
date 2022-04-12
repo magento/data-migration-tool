@@ -18,7 +18,7 @@ class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Mono
     /**
      * @inheritdoc
      */
-    public function format(array $record)
+    public function format(array $record): string
     {
         $this->format = $this->getLevelFormat($record['level_name']);
         return parent::format($record);
