@@ -32,7 +32,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function current()
+    public function current(): mixed
     {
         return $this->data[$this->position];
     }
@@ -40,7 +40,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function key()
+    public function key(): mixed
     {
         return $this->position;
     }
@@ -48,7 +48,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function next()
+    public function next(): void
     {
         $this->position++;
     }
@@ -56,7 +56,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function rewind()
+    public function rewind(): void
     {
         $this->position = 0;
     }
@@ -64,7 +64,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function valid()
+    public function valid(): bool
     {
         return $this->key() < count($this->data);
     }
@@ -72,7 +72,7 @@ abstract class AbstractCollection implements \Iterator, \Countable
     /**
      * @inheritdoc
      */
-    public function count()
+    public function count(): int
     {
         return count($this->data);
     }
