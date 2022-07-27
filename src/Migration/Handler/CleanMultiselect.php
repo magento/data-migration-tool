@@ -51,7 +51,7 @@ class CleanMultiselect extends AbstractHandler implements HandlerInterface
     {
         $attributeIds = $this->getAttributeIds();
         if ($attributeIds && in_array($recordToHandle->getValue('attribute_id'), $attributeIds)) {
-            $value = $recordToHandle->getValue($this->field);
+            $value = $recordToHandle->getValue($this->field) ? $recordToHandle->getValue($this->field) : '';
             $value = explode(',', $value);
             $value = array_filter($value);
             $value = implode(',', $value);
