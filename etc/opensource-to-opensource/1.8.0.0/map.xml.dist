@@ -1900,6 +1900,9 @@
                 <document>queue_lock</document>
             </ignore>
             <ignore>
+                <document>admin_adobe_ims_webapi</document>
+            </ignore>
+            <ignore>
                 <document>queue_message</document>
             </ignore>
             <ignore>

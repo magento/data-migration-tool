@@ -837,6 +837,10 @@
                 <to>cms_block_store.row_id</to>
             </move>
             <move>
+                <field>salesrule_label.rule_id</field>
+                <to>salesrule_label.row_id</to>
+            </move>
+            <move>
                 <field>cms_page_store.page_id</field>
                 <to>cms_page_store.row_id</to>
             </move>
@@ -2453,6 +2457,9 @@
             </ignore>
             <ignore>
                 <document>queue_lock</document>
+            </ignore>
+            <ignore>
+                <document>admin_adobe_ims_webapi</document>
             </ignore>
             <ignore>
                 <document>queue_message</document>
