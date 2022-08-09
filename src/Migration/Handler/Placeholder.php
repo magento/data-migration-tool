@@ -62,6 +62,7 @@ class Placeholder extends AbstractHandler implements HandlerInterface
         $classDestination = [];
         foreach ($this->classMap->getMap() as $classOldFashion => $classNewStyle) {
             $classSource[] = sprintf('type="%s"', $classOldFashion);
+            $classNewStyle = $classNewStyle ?? '';
             $classDestination[] = sprintf('type="%s"', str_replace('\\', '\\\\', $classNewStyle));
         }
         $content = str_replace($classSource, $classDestination, $content);
