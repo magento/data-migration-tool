@@ -22,7 +22,7 @@ class SetValue extends AbstractHandler implements HandlerInterface
      */
     public function __construct($value)
     {
-        $this->value = (strtoupper($value) === 'NULL') ? null : $value;
+        $this->value = (strtoupper($value) === 'NULL') ? '' : $value;
     }
 
     /**
