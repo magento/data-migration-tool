@@ -5,6 +5,7 @@
  */
 namespace Migration\Console;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -54,8 +55,9 @@ class MigrateSettingsCommand extends AbstractMigrateCommand
     /**
      * @inheritdoc
      */
-    protected function execute(InputInterface $input, OutputInterface $output)
+    protected function execute(InputInterface $input, OutputInterface $output): int
     {
         $this->settingsMode->run();
+        return Command::SUCCESS;
     }
 }
