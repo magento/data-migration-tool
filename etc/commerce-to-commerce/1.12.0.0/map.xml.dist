@@ -3257,6 +3257,12 @@
                 <datatype>weee_tax.state</datatype>
             </ignore>
             <ignore>
+                <field>importexport_importdata.updated_at</field>
+            </ignore>
+            <ignore>
+                <field>importexport_importdata.is_processed</field>
+            </ignore>
+            <ignore>
                 <datatype>magento_catalogevent_event.date_start</datatype>
             </ignore>
             <ignore>
