@@ -2196,6 +2196,12 @@
                 <field>newsletter_template.is_legacy</field>
             </ignore>
             <ignore>
+                <field>importexport_importdata.updated_at</field>
+            </ignore>
+            <ignore>
+                <field>importexport_importdata.is_processed</field>
+            </ignore>
+            <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
