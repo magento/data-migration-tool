@@ -2962,6 +2962,9 @@
             <ignore>
                 <document>jwt_auth_revoked</document>
             </ignore>
+            <ignore>
+                <document>event_data</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>

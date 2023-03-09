@@ -1950,6 +1950,9 @@
                 <document>jwt_auth_revoked</document>
             </ignore>
             <ignore>
+                <document>event_data</document>
+            </ignore>
+            <ignore>
                 <document>magento_acknowledged_bulk</document>
             </ignore>
             <ignore>
