@@ -5,6 +5,7 @@
  */
 namespace Migration\Console;
 
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -57,5 +58,6 @@ class MigrateDataCommand extends AbstractMigrateCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $this->dataMode->run();
+        return Command::SUCCESS;
     }
 }

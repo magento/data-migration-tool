@@ -2014,6 +2014,9 @@
             <ignore>
                 <datatype>paypal_settlement_report.report_date</datatype>
             </ignore>
+            <ignore>
+                <datatype>sales_flat_order_item.report_date</datatype>
+            </ignore>
         </field_rules>
     </source>
     <destination>
@@ -2882,6 +2885,9 @@
             <ignore>
                 <document>jwt_auth_revoked</document>
             </ignore>
+            <ignore>
+                <document>event_data</document>
+            </ignore>
         </document_rules>
         <field_rules>
             <transform>
@@ -3437,6 +3443,12 @@
                 <field>newsletter_template.is_legacy</field>
             </ignore>
             <ignore>
+                <field>importexport_importdata.updated_at</field>
+            </ignore>
+            <ignore>
+                <field>importexport_importdata.is_processed</field>
+            </ignore>
+            <ignore>
                 <datatype>salesrule_coupon.expiration_date</datatype>
             </ignore>
             <ignore>
@@ -3591,6 +3603,9 @@
             </ignore>
             <ignore>
                 <datatype>paypal_settlement_report.report_date</datatype>
+            </ignore>
+            <ignore>
+                <datatype>sales_order_item.product_options</datatype>
             </ignore>
         </field_rules>
     </destination>

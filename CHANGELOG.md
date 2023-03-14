@@ -1,3 +1,14 @@
+2.4.6
+=============
+* Added support for versions:
+
+    * Magento Open Source: 2.4.6
+    * Magento Commerce: 2.4.6
+
+* Fixed bugs:
+
+    * 8.1 support
+
 2.4.5
 =============
 * Added support for versions:
