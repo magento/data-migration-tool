@@ -90,7 +90,13 @@ class TruncateSuffix extends AbstractHandler implements HandlerInterface
         if (in_array($recordToHandle->getValue('attribute_id'), $attributeIds)) {
             $suffix = '~' . preg_quote($this->getSuffix()) . '$~';
             $value = $recordToHandle->getValue($this->field);
-            $value = preg_replace($suffix, '', $value);
+            
+            // custom edit start
+            if ($value !== null) {
+                $value = preg_replace($suffix, '', $value);
+            }
+            // custom edit end
+
             $recordToHandle->setValue($this->field, $value);
         }
     }
