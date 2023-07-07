@@ -125,6 +125,8 @@ class TemporaryTable
      */
     private $suffix;
 
+    private $configReader;
+
     /**
      * @var string[]
      */
