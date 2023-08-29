@@ -624,6 +624,18 @@
             <ignore>
                 <document>core_website</document>
             </ignore>
+            <ignore>
+                <document>directory_country</document>
+            </ignore>
+            <ignore>
+                <document>directory_country_format</document>
+            </ignore>
+            <ignore>
+                <document>directory_country_region</document>
+            </ignore>
+            <ignore>
+                <document>directory_country_region_name</document>
+            </ignore>
             <rename>
                 <document>catalogsearch_query</document>
                 <to>search_query</to>
