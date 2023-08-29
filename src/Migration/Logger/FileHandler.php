@@ -34,6 +34,11 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
     protected $config;
 
     /**
+     * @var \Magento\Framework\Filesystem
+     */
+    private $filesystem;
+
+    /**
      * @var FormatterInterface
      */
     private $formatter;

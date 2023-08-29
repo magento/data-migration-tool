@@ -11,6 +11,8 @@ use Migration\Reader\GroupsFactory;
 use Migration\Reader\MapFactory;
 use Migration\ResourceModel;
 use Migration\App\ProgressBar;
+use Migration\Reader\Map;
+use Migration\Reader\Groups;
 
 /**
  * Class Volume
@@ -38,6 +40,16 @@ class Volume extends AbstractVolume
      * @var Logger
      */
     protected $logger;
+
+    /*
+     * Map
+     */
+    protected $map;
+
+    /*
+     * Groups
+     */
+    protected $groups;
 
     /**
      * @param Logger $logger

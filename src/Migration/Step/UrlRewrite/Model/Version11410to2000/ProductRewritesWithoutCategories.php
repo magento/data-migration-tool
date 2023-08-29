@@ -34,6 +34,8 @@ class ProductRewritesWithoutCategories implements ProductRewritesWithoutCategori
      */
     private $sourceAdapter;
 
+    private $suffix;
+
     /**
      * @param Source $source
      * @param Suffix $suffix

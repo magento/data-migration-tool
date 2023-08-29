@@ -20,6 +20,11 @@ class SourceRecordsCounter
     private $source;
 
     /**
+     * @var EntityTypeCode
+     */
+    private $entityTypeCode;
+
+    /**
      * @var AttributesDataToSkip
      */
     private $attributesDataToSkip;

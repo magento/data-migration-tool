@@ -13,6 +13,12 @@ use Magento\Customer\Model\ResourceModel\Customer as CustomerResourceModel;
  */
 class PasswordHashResolver
 {
+
+    /**
+     * @var CustomerResourceModel
+     */
+    protected $customerResourceModel;
+
     /**
      * @param CustomerResourceModel $customerResourceModel
      */

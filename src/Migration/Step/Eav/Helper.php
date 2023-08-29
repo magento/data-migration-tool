@@ -30,6 +30,11 @@ class Helper
      */
     protected $destination;
 
+     /**
+     * @var Source
+     */
+    protected $source;
+
     /**
      * @var RecordTransformerFactory
      */
