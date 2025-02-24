@@ -6,7 +6,8 @@
 
 namespace Migration\Logger;
 
-use Monolog\DateTimeImmutable;
+use Monolog\JsonSerializableDateTimeImmutable;
+use Monolog\Level;
 
 /**
  * Processing logger handler creation for migration application
@@ -33,7 +34,8 @@ class Logger extends \Monolog\Logger
     /**
      * @inheritdoc
      */
-    public function addRecord(int $level, string $message, array $context = [], DateTimeImmutable $datetime = null): bool
+
+    public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null): bool
     {
         $processed = parent::addRecord($level, $message, $context);
         self::$messages[$level][] = $message;

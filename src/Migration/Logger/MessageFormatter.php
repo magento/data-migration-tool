@@ -5,6 +5,8 @@
  */
 namespace Migration\Logger;
 
+use Monolog\LogRecord;
+
 /**
  * Format logger messages corresponding to verbosity level
  */
@@ -13,12 +15,12 @@ class MessageFormatter extends \Monolog\Formatter\LineFormatter implements \Mono
     /**
      * @inheritdoc
      */
-    protected $format;
+    protected string $format;
 
     /**
      * @inheritdoc
      */
-    public function format(array $record): string
+    public function format(LogRecord $record): string
     {
         $this->format = $this->getLevelFormat($record['level_name']);
         return parent::format($record);
