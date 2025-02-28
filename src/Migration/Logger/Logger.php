@@ -37,8 +37,9 @@ class Logger extends \Monolog\Logger
 
     public function addRecord(int|Level $level, string $message, array $context = [], JsonSerializableDateTimeImmutable|null $datetime = null): bool
     {
-        $processed = parent::addRecord($level, $message, $context);
-        self::$messages[$level][] = $message;
+        $levelValue = $level instanceof Level ? $level->value : $level;
+        $processed = parent::addRecord($levelValue, $message, $context);
+        self::$messages[$levelValue][] = $message;
         return $processed;
     }
 
