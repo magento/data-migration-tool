@@ -1,0 +1,24 @@
+{
+  "templateVersion": "0.2",
+  "product": {
+    "name": "Data Migration Tool",
+    "description": "Tool that migrate data from old Magento (1.X) into new, helping with upgrade for merchants"
+  },
+  "contacts": {
+    "team": {
+      "name": "Support Tier4",
+      "DL": "magento-support-experts@adobe.com",
+      "slackChannel": "#support_experts_public"
+    }
+  },
+  "ticketTracker": {
+    "functionalJiraQueue": {
+      "projectKey": "ACP2E",
+      "component": "Tools/ DataMigrationTool"
+    },
+    "securityJiraQueue": {
+      "projectKey": "MAGREQ"
+    }
+  },
+  "productionCodeBranches": ["2.4-develop"]
+}
