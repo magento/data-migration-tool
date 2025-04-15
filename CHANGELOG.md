@@ -1,3 +1,17 @@
+2.4.8
+=============
+* Added support for versions:
+
+  * Magento Open Source: 2.4.8
+  * Adobe Commerce: 2.4.8
+
+2.4.7
+=============
+* Added support for versions:
+
+  * Magento Open Source: 2.4.7
+  * Adobe Commerce: 2.4.7
+
 2.4.6
 =============
 * Added support for versions:
