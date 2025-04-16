@@ -5,6 +5,8 @@
  */
 namespace Migration\Logger;
 
+use Monolog\LogRecord;
+
 /**
  * Logger messages processor
  */
@@ -23,10 +25,10 @@ class MessageProcessor
     /**
      * Set extra
      *
-     * @param array $record
+     * @param LogRecord $record
      * @return array
      */
-    public function setExtra(array $record)
+    public function setExtra(LogRecord $record)
     {
         foreach ($record['context'] as $key => $value) {
             switch ($key) {

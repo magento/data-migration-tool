@@ -10,6 +10,7 @@ use Migration\Config;
 use Magento\Framework\App\Filesystem\DirectoryList;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Handler\HandlerInterface;
+use Monolog\LogRecord;
 
 /**
  * Processing logger handler creation for migration application
@@ -59,7 +60,7 @@ class FileHandler extends \Monolog\Handler\AbstractHandler implements \Monolog\H
     /**
      * @inheritdoc
      */
-    public function handle(array $record): bool
+    public function handle(LogRecord $record): bool
     {
         if (!$this->isHandling($record)) {
             return false;

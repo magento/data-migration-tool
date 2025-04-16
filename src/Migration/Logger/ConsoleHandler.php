@@ -10,6 +10,7 @@ use Monolog\Handler\FormattableHandlerInterface;
 use Monolog\Handler\HandlerInterface;
 use Monolog\Handler\AbstractHandler;
 use Psr\Log\LogLevel;
+use Monolog\LogRecord;
 
 /**
  * Processing logger handler creation for migration application
@@ -46,7 +47,7 @@ class ConsoleHandler extends AbstractHandler implements HandlerInterface, Format
     /**
      * @inheritdoc
      */
-    public function handle(array $record): bool
+    public function handle(LogRecord $record): bool
     {
         if (!$this->isHandling($record)) {
             return false;
