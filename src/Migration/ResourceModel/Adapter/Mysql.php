@@ -112,7 +112,7 @@ class Mysql implements \Migration\ResourceModel\AdapterInterface
         $pageSize,
         $identityField = null,
         $identityId = null,
-        \Zend_Db_Expr $condition = null
+        ?\Zend_Db_Expr $condition = null
     ) {
         $select = $this->getSelect();
         $select->from($documentName, '*');
