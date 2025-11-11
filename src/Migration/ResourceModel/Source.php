@@ -62,7 +62,7 @@ class Source extends AbstractResource
      * @param \Zend_Db_Expr $condition
      * @return array
      */
-    public function getRecords($documentName, $pageNumber, $pageSize = null, \Zend_Db_Expr $condition = null)
+    public function getRecords($documentName, $pageNumber, $pageSize = null, ?\Zend_Db_Expr $condition = null)
     {
         $pageSize = $pageSize ?: $this->getPageSize($documentName) ;
         $identityField = $this->getIdentityField($documentName);

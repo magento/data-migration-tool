@@ -174,7 +174,7 @@ class Data extends \Migration\Step\DatabaseStage implements StageInterface
      */
     private function transformDocumentRecords(
         $sourceDocName,
-        array $attributesToSkip = null
+        array $attributesToSkip = []
     ) {
         $sourceEntityDocuments = array_keys($this->readerGroups->getGroup('source_entity_documents'));
         $sourceDocument = $this->source->getDocument($sourceDocName);

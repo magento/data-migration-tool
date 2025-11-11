@@ -31,7 +31,7 @@ class Record
      * @param array $data
      * @param Document $document
      */
-    public function __construct(array $data = [], Document $document = null)
+    public function __construct(array $data = [], ?Document $document = null)
     {
         $this->data = $data;
         if ($document !== null) {

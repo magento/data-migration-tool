@@ -24,7 +24,7 @@ class ConsoleOutputFactory
     public function create(
         $verbosity = ConsoleOutput::VERBOSITY_NORMAL,
         $decorated = null,
-        OutputFormatterInterface $formatter = null
+        ?OutputFormatterInterface $formatter = null
     ) {
         return new ConsoleOutput($verbosity, $decorated, $formatter);
     }
